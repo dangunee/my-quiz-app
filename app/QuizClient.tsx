@@ -27,7 +27,10 @@ export default function QuizClient() {
   const explanation = explanationOverrides[quiz.id] ?? quiz.explanation;
   const total = QUIZZES.length;
   const isComplete = currentIndex >= total - 1 && showResult;
-  const accuracyRate = isComplete ? Math.round((correctCount / total) * 100) : null;
+  const answeredCount = showResult ? currentIndex + 1 : 0;
+  const accuracyRate = showResult && answeredCount > 0
+    ? Math.round((correctCount / answeredCount) * 100)
+    : null;
 
   const formatExplanation = (text: string) =>
     (text || "")
@@ -62,7 +65,7 @@ export default function QuizClient() {
             <span className="quiz-counter">
               {currentIndex + 1} / {total}
             </span>
-            {isComplete && accuracyRate !== null && (
+            {accuracyRate !== null && (
               <span className="quiz-accuracy">정답률 {accuracyRate}%</span>
             )}
           </div>
