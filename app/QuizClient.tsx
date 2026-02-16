@@ -18,7 +18,6 @@ export default function QuizClient() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
-  const koreanRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
@@ -26,15 +25,16 @@ export default function QuizClient() {
   }, []);
 
   useEffect(() => {
-    const jap = japaneseRef.current;
-    const kor = koreanRef.current;
-    if (jap && kor) {
-      const japWidth = jap.offsetWidth;
-      const korWidth = kor.offsetWidth;
-      const reserved = 120;
-      setBlankWidth(Math.min(japWidth, Math.max(0, korWidth - reserved)));
-    }
-  }, [currentIndex, showResult]);
+    const el = japaneseRef.current;
+    if (!el) return;
+    const span = el.querySelector(".measure-span") as HTMLElement;
+    if (!span) return;
+    const measure = () => setBlankWidth(span.offsetWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [quiz?.japanese]);
 
   useEffect(() => {
     fetch("/api/explanations")
@@ -105,8 +105,23 @@ export default function QuizClient() {
 
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
-          <div ref={japaneseRef} className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
-          <div ref={koreanRef} className="quiz-sentence quiz-korean">
+          <div ref={japaneseRef} className="quiz-sentence quiz-japanese" style={{ position: "relative" }}>
+            {quiz.japanese}
+            <span
+              className="measure-span"
+              aria-hidden
+              style={{
+                position: "absolute",
+                left: -9999,
+                whiteSpace: "nowrap",
+                visibility: "hidden",
+                pointerEvents: "none",
+              }}
+            >
+              {quiz.japanese}
+            </span>
+          </div>
+          <div className="quiz-sentence quiz-korean">
             {quiz.koreanTemplate.split(BLANK).map((part, i) => (
               <span key={i}>
                 {part}
