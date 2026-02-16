@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QUIZZES } from "./quiz-data";
 
 const BLANK = "_________________________";
@@ -14,8 +14,17 @@ export default function QuizClient() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
+  const [explanationOverrides, setExplanationOverrides] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    fetch("/api/explanations")
+      .then((r) => r.json())
+      .then((data) => setExplanationOverrides(data.overrides || {}))
+      .catch(() => {});
+  }, []);
 
   const quiz = QUIZZES[currentIndex];
+  const explanation = explanationOverrides[quiz.id] ?? quiz.explanation;
   const total = QUIZZES.length;
   const isComplete = currentIndex >= total - 1 && showResult;
   const accuracyRate = isComplete ? Math.round((correctCount / total) * 100) : null;
@@ -103,7 +112,7 @@ export default function QuizClient() {
                 {selectedAnswer === quiz.correctAnswer ? "正解！" : "不正解"}
               </div>
               <div className="result-explanation">
-                <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(quiz.explanation)}</p>
+                <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(explanation)}</p>
                 {quiz.vocabulary && quiz.vocabulary.length > 0 && (
                   <div className="vocabulary-list">
                     {quiz.vocabulary.map((v, i) => (
