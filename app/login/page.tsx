@@ -71,6 +71,10 @@ export default function LoginPage() {
                   type="text"
                   value={id}
                   onChange={(e) => setId(e.target.value)}
+                  onInvalid={(e) => {
+                    (e.target as HTMLInputElement).setCustomValidity("ユーザーIDを入力してください。");
+                  }}
+                  onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                   placeholder="username"
                   className="w-full border rounded px-3 py-2"
                   required
@@ -82,6 +86,10 @@ export default function LoginPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  onInvalid={(e) => {
+                    (e.target as HTMLInputElement).setCustomValidity("お名前を入力してください。");
+                  }}
+                  onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                   placeholder="山田太郎"
                   className="w-full border rounded px-3 py-2"
                   required
@@ -95,7 +103,16 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@example.com"
+              onInvalid={(e) => {
+                const target = e.target as HTMLInputElement;
+                target.setCustomValidity(
+                  target.validity.valueMissing
+                    ? "メールアドレスを入力してください。"
+                    : "メールアドレスを正しく入力してください。"
+                );
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+              placeholder="メールアドレスを入力"
               className="w-full border rounded px-3 py-2"
               required
             />
@@ -106,6 +123,10 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onInvalid={(e) => {
+                (e.target as HTMLInputElement).setCustomValidity("パスワードを入力してください。");
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               placeholder="••••••••"
               className="w-full border rounded px-3 py-2"
               required
