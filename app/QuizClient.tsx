@@ -60,7 +60,15 @@ export default function QuizClient() {
     <div className="app-wrapper">
       <div className="quiz-container">
         <header className="quiz-header">
-          <h1>クイズで学ぶ韓国語</h1>
+          <div className="flex justify-between items-start">
+            <h1>クイズで学ぶ韓国語</h1>
+            <a
+              href="/login"
+              className="text-white/90 text-sm hover:underline"
+            >
+              로그인
+            </a>
+          </div>
           <div className="quiz-meta">
             <span className="quiz-counter">
               {currentIndex + 1} / {total}
