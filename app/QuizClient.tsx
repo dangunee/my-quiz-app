@@ -80,18 +80,19 @@ export default function QuizClient() {
     <div className="app-wrapper">
       <div className="quiz-container">
         <header className="quiz-header">
-          <div className="flex justify-between items-center gap-4">
-            <h1 className="min-w-0 flex-1">クイズで学ぶ韓国語</h1>
+          <div className="flex justify-between items-start gap-4">
+            <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
             {isLoggedIn ? (
-              <div className="flex shrink-0 items-center gap-2.5">
-                <a
-                  href="/profile"
-                  className="text-white/95 text-sm hover:underline whitespace-nowrap py-1"
-                >
-                  マイページ
-                </a>
-                <span className="text-white/60 text-sm select-none">|</span>
-                <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                <div className="flex items-center gap-2">
+                  <a
+                    href="/profile"
+                    className="text-white/95 text-sm hover:underline whitespace-nowrap"
+                  >
+                    マイページ
+                  </a>
+                  <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -99,7 +100,7 @@ export default function QuizClient() {
                     localStorage.removeItem("quiz_user");
                     setIsLoggedIn(false);
                   }}
-                  className="shrink-0 px-3 py-1.5 text-sm font-medium text-red-600 bg-white rounded shadow-sm hover:bg-gray-100"
+                  className="px-3 py-1.5 text-sm font-medium text-red-600 bg-white rounded shadow-sm hover:bg-gray-100"
                 >
                   ログアウト
                 </button>
