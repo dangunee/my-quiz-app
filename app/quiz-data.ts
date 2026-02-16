@@ -3,7 +3,7 @@ export const QUIZZES = [
     "id": 1,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「今日も上司に一言いわれた。」",
-    "koreanTemplate": "오늘도 _________________________.",
+    "koreanTemplate": "오늘도 _________________________",
     "options": [
       {
         "id": 1,
@@ -30,7 +30,7 @@ export const QUIZZES = [
     "id": 2,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「メールで返事してほしいです。」",
-    "koreanTemplate": "메일로 _________________________.",
+    "koreanTemplate": "메일로 _________________________",
     "options": [
       {
         "id": 1,
@@ -57,7 +57,7 @@ export const QUIZZES = [
     "id": 3,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「そうするわけにはいきません」",
-    "koreanTemplate": "그렇게 _________________________.",
+    "koreanTemplate": "그렇게 _________________________",
     "options": [
       {
         "id": 1,
@@ -84,7 +84,7 @@ export const QUIZZES = [
     "id": 4,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「なんでそんなことを言うの？」",
-    "koreanTemplate": "왜 _________________________.",
+    "koreanTemplate": "왜 _________________________",
     "options": [
       {
         "id": 1,
@@ -111,7 +111,7 @@ export const QUIZZES = [
     "id": 5,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「それでも僕はやっていない」",
-    "koreanTemplate": "그래도 내가 _________________________.",
+    "koreanTemplate": "그래도 내가 _________________________",
     "options": [
       {
         "id": 1,
@@ -138,7 +138,7 @@ export const QUIZZES = [
     "id": 6,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「その店は学生時代によく行っていました」",
-    "koreanTemplate": "그 가게는 _________________________.",
+    "koreanTemplate": "그 가게는 _________________________",
     "options": [
       {
         "id": 1,
@@ -165,7 +165,7 @@ export const QUIZZES = [
     "id": 7,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「トイレで水を流しました」",
-    "koreanTemplate": "화장실에서 _________________________.",
+    "koreanTemplate": "화장실에서 _________________________",
     "options": [
       {
         "id": 1,
@@ -192,7 +192,7 @@ export const QUIZZES = [
     "id": 8,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「ゴミは決められた所に出してください」",
-    "koreanTemplate": "쓰레기는 _________________________.",
+    "koreanTemplate": "쓰레기는 _________________________",
     "options": [
       {
         "id": 1,
@@ -219,7 +219,7 @@ export const QUIZZES = [
     "id": 9,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「プロでも失敗することがある」",
-    "koreanTemplate": "프로라도 _________________________.",
+    "koreanTemplate": "프로라도 _________________________",
     "options": [
       {
         "id": 1,
@@ -246,7 +246,7 @@ export const QUIZZES = [
     "id": 10,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「身分証をお持ちですか」",
-    "koreanTemplate": "신분증을 _________________________.",
+    "koreanTemplate": "신분증을 _________________________",
     "options": [
       {
         "id": 1,
@@ -273,7 +273,7 @@ export const QUIZZES = [
     "id": 11,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「こうした方がよく覚えられます」",
-    "koreanTemplate": "이렇게 _________________________.",
+    "koreanTemplate": "이렇게 _________________________",
     "options": [
       {
         "id": 1,
@@ -300,7 +300,7 @@ export const QUIZZES = [
     "id": 12,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「夜中２時なのにまだ起きているんですか？」",
-    "koreanTemplate": "새벽 2시인데 아직도 _________________________.",
+    "koreanTemplate": "새벽 2시인데 아직도 _________________________",
     "options": [
       {
         "id": 1,
@@ -354,7 +354,7 @@ export const QUIZZES = [
     "id": 14,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「今日面接なのでとても緊張する」",
-    "koreanTemplate": "오늘 _________________________.",
+    "koreanTemplate": "오늘 _________________________",
     "options": [
       {
         "id": 1,
@@ -381,7 +381,7 @@ export const QUIZZES = [
     "id": 15,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「彼は何度も自分のことが好きなのか聞いた」",
-    "koreanTemplate": "그는 _________________________ 물었다.",
+    "koreanTemplate": "그는 _________________________ 물었다",
     "options": [
       {
         "id": 1,
@@ -408,7 +408,7 @@ export const QUIZZES = [
     "id": 16,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「今忙しいから掃除は明日やります」",
-    "koreanTemplate": "지금 _______ 청소는 내일 ________.",
+    "koreanTemplate": "지금 _______ 청소는 내일 ________",
     "options": [
       {
         "id": 1,
@@ -435,7 +435,7 @@ export const QUIZZES = [
     "id": 17,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「韓国ドラマを観て韓国のことが好きになった」",
-    "koreanTemplate": "한국드라마를 _________________________.",
+    "koreanTemplate": "한국드라마를 _________________________",
     "options": [
       {
         "id": 1,
@@ -462,7 +462,7 @@ export const QUIZZES = [
     "id": 18,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「あなたに出会って幸せだった」",
-    "koreanTemplate": "당신을 _________________________.",
+    "koreanTemplate": "당신을 _________________________",
     "options": [
       {
         "id": 1,
@@ -489,7 +489,7 @@ export const QUIZZES = [
     "id": 19,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「前もって言ってくれればよかったのに 。」",
-    "koreanTemplate": "미리 _________________________.",
+    "koreanTemplate": "미리 _________________________",
     "options": [
       {
         "id": 1,
@@ -516,7 +516,7 @@ export const QUIZZES = [
     "id": 20,
     "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
     "japanese": "「それは二度と買いません」",
-    "koreanTemplate": "그건 _________________________안 사요.",
+    "koreanTemplate": "그건 _________________________안 사요",
     "options": [
       {
         "id": 1,
