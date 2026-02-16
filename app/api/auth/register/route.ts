@@ -27,11 +27,18 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+    const origin =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      request.headers.get("origin") ||
+      new URL(request.url).origin;
+    const redirectTo = `${origin}/login`;
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { username: id, name },
+        emailRedirectTo: redirectTo,
       },
     });
 

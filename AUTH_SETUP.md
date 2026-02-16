@@ -5,11 +5,17 @@
 Vercel에 이미 Supabase 설정이 있다면 추가 설정 없이 동작합니다.
 `SUPABASE_SERVICE_ROLE_KEY` 또는 `NEXT_PUBLIC_SUPABASE_ANON_KEY`가 필요합니다.
 
+(선택) `NEXT_PUBLIC_SITE_URL`: 배포 URL (예: `https://quiz.mirinae.jp`). 이메일 확인 리다이렉트용.
+
 ## Supabase Auth 설정
 
 1. Supabase 대시보드 → **Authentication** → **Providers**
 2. **Email**이 활성화되어 있는지 확인
-3. (선택) **Authentication** → **Settings** → **Email Auth**  
+3. **Authentication** → **URL Configuration** (중요!)
+   - **Site URL**: `https://quiz.mirinae.jp` (실제 배포 URL로 설정)
+   - **Redirect URLs**에 추가: `https://quiz.mirinae.jp/login`, `https://quiz.mirinae.jp/**`
+   - 이메일 확인 링크가 이 URL로 연결됩니다. localhost로 설정되어 있으면 확인 시 연결 오류 발생
+4. (선택) **Authentication** → **Settings** → **Email Auth**  
    - 이메일 인증 비활성화: "Confirm email" 끄면 가입 후 바로 로그인 가능
 
 ## API 엔드포인트
