@@ -92,17 +92,16 @@ export default function QuizClient() {
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
           <div className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
-          <div className="quiz-sentence quiz-korean">
-            {quiz.koreanTemplate.split(BLANK).map((part, i) => (
-              <span key={i}>
-                {part}
-                {i === 0 && (
-                  <span className="blank">
-                    <span className="blank-sizer" aria-hidden="true">{quiz.japanese}</span>
-                  </span>
-                )}
-              </span>
-            ))}
+          <div className="quiz-sentence quiz-korean korean-sentence-wrap">
+            <span className="korean-width-ref" aria-hidden="true">{quiz.japanese}</span>
+            <span className="korean-sentence-inner">
+              {quiz.koreanTemplate.split(BLANK).map((part, i) => (
+                <span key={i}>
+                  {part}
+                  {i === 0 && <span className="blank" />}
+                </span>
+              ))}
+            </span>
           </div>
 
           <div className="quiz-options">
