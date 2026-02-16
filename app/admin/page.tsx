@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { QUIZZES } from "../quiz-data";
 
-function getFullKorean(q: (typeof QUIZZES)[0]) {
+function getFullKorean(q: (typeof QUIZZES)[number]) {
   const correctOption = q.options.find((o) => o.id === q.correctAnswer);
   if (!correctOption) return q.koreanTemplate;
   const text = correctOption.text;
