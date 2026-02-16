@@ -17,7 +17,7 @@ function formatJapanese(s: string) {
   return stripped + "。";
 }
 
-function getFullKorean(q: (typeof QUIZZES)[number]) {
+function getFullKorean(q: { options: readonly { id: number; text: string }[]; correctAnswer: number; koreanTemplate: string }) {
   const correctOption = q.options.find((o) => o.id === q.correctAnswer);
   if (!correctOption) return q.koreanTemplate;
   const text = correctOption.text;
