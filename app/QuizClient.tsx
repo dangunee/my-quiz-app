@@ -84,6 +84,13 @@ export default function QuizClient() {
             <h1 className="min-w-0 flex-1">クイズで学ぶ韓国語</h1>
             {isLoggedIn ? (
               <div className="flex shrink-0 items-center gap-2">
+                <a
+                  href="/profile"
+                  className="text-white/90 text-sm hover:underline whitespace-nowrap"
+                >
+                  マイページ
+                </a>
+                <span className="text-white/90 text-sm">|</span>
                 <span className="text-white/90 text-sm whitespace-nowrap">ログイン中</span>
                 <button
                   type="button"
