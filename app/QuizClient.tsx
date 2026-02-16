@@ -40,6 +40,10 @@ export default function QuizClient() {
 
   const getOptionNumber = (id: number) => ["❶", "❷", "❸", "❹"][id - 1];
 
+  // ❶❷❸❹ 앞에 줄바꿈 추가
+  const formatExplanation = (text: string) =>
+    (text || "").replace(/([❶❷❸❹])/g, "\n$1").replace(/^\n+/, "");
+
   return (
     <div className="quiz-container">
       <header className="quiz-header">
@@ -98,7 +102,7 @@ export default function QuizClient() {
               {selectedAnswer === quiz.correctAnswer ? "正解！" : "不正解"}
             </div>
             <div className="result-explanation">
-              <p>{quiz.explanation}</p>
+              <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(quiz.explanation)}</p>
               {quiz.vocabulary && quiz.vocabulary.length > 0 && (
                 <div className="vocabulary-list">
                   {quiz.vocabulary.map((v, i) => (
