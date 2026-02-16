@@ -109,10 +109,31 @@ body {
   color: #1a1a1a;
 }
 
-.quiz-korean .blank {
+.quiz-korean .korean-sentence-wrap {
   display: inline-block;
+  position: relative;
+}
+
+.quiz-korean .korean-width-ref {
+  visibility: hidden;
+  white-space: nowrap;
+  font-size: 1.15rem;
+}
+
+.quiz-korean .korean-sentence-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+}
+
+.quiz-korean .korean-sentence-content .blank {
+  flex: 1;
+  min-width: 0;
   margin: 0 0.25rem;
-  color: transparent;
   border-bottom: 2px solid var(--foreground);
 }
 
