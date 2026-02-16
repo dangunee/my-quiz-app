@@ -11,6 +11,12 @@ export default function AdminPage() {
   const [editValue, setEditValue] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const PER_PAGE = 10;
+  const totalPages = Math.ceil(QUIZZES.length / PER_PAGE);
+  const startIdx = (currentPage - 1) * PER_PAGE;
+  const quizzesOnPage = QUIZZES.slice(startIdx, startIdx + PER_PAGE);
 
   useEffect(() => {
     fetch("/api/explanations")
@@ -92,8 +98,9 @@ export default function AdminPage() {
         {loading ? (
           <p>로딩 중...</p>
         ) : (
+          <>
           <div className="space-y-4">
-            {QUIZZES.map((q) => (
+            {quizzesOnPage.map((q) => (
               <div
                 key={q.id}
                 className="bg-white p-4 rounded-lg shadow"
@@ -145,6 +152,29 @@ export default function AdminPage() {
               </div>
             ))}
           </div>
+
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-center gap-2">
+              <button
+                onClick={() => { setEditing(null); setCurrentPage((p) => Math.max(1, p - 1)); }}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                이전
+              </button>
+              <span className="px-4 py-2 text-sm">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                onClick={() => { setEditing(null); setCurrentPage((p) => Math.min(totalPages, p + 1)); }}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                다음
+              </button>
+            </div>
+          )}
+          </>
         )}
       </div>
     </div>
