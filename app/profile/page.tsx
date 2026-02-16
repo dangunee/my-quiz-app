@@ -119,6 +119,18 @@ export default function ProfilePage() {
 
         <button
           type="button"
+          onClick={() => {
+            localStorage.removeItem("quiz_token");
+            localStorage.removeItem("quiz_user");
+            window.location.href = "/";
+          }}
+          className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 mb-3"
+        >
+          ログアウト
+        </button>
+
+        <button
+          type="button"
           onClick={handleDeleteAccount}
           disabled={deleting}
           className="w-full py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 disabled:opacity-50"
