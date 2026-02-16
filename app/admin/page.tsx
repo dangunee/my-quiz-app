@@ -40,9 +40,19 @@ export default function AdminPage() {
     const stored = typeof window !== "undefined" ? localStorage.getItem(ADMIN_STORAGE_KEY) : null;
     if (stored) {
       setAuthKey(stored);
-      setIsAuthenticated(true);
+      fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${stored}` },
+      })
+        .then((r) => {
+          if (r.ok) setIsAuthenticated(true);
+          else localStorage.removeItem(ADMIN_STORAGE_KEY);
+        })
+        .catch(() => localStorage.removeItem(ADMIN_STORAGE_KEY))
+        .finally(() => setAuthChecked(true));
+    } else {
+      setAuthChecked(true);
     }
-    setAuthChecked(true);
   }, []);
   const [overrides, setOverrides] = useState<Record<number, OverrideRow>>({});
   const [editing, setEditing] = useState<number | null>(null);
@@ -84,12 +94,30 @@ export default function AdminPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const key = authKey.trim();
-    if (key) {
-      localStorage.setItem(ADMIN_STORAGE_KEY, key);
-      setIsAuthenticated(true);
+    if (!key) return;
+    setLoginError("");
+    setLoginLoading(true);
+    try {
+      const res = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      if (res.ok) {
+        localStorage.setItem(ADMIN_STORAGE_KEY, key);
+        setIsAuthenticated(true);
+      } else {
+        setLoginError("비밀번호가 올바르지 않습니다.");
+      }
+    } catch {
+      setLoginError("연결에 실패했습니다.");
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -150,15 +178,19 @@ export default function AdminPage() {
           <input
             type="password"
             value={authKey}
-            onChange={(e) => setAuthKey(e.target.value)}
+            onChange={(e) => { setAuthKey(e.target.value); setLoginError(""); }}
             placeholder="ADMIN_SECRET 입력"
-            className="w-full border rounded px-3 py-2 mb-4"
+            className="w-full border rounded px-3 py-2 mb-2"
           />
+          {loginError && (
+            <p className="text-red-600 text-sm mb-2">{loginError}</p>
+          )}
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+            disabled={loginLoading}
+            className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 disabled:opacity-50"
           >
-            로그인
+            {loginLoading ? "확인 중..." : "로그인"}
           </button>
         </form>
       </div>
