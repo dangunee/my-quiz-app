@@ -19,6 +19,8 @@ export default function QuizClient() {
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
+  const quiz = QUIZZES[currentIndex];
+
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
     setIsLoggedIn(!!token);
@@ -42,8 +44,6 @@ export default function QuizClient() {
       .then((data) => setExplanationOverrides(data.overrides || {}))
       .catch(() => {});
   }, []);
-
-  const quiz = QUIZZES[currentIndex];
   const explanation = explanationOverrides[quiz.id] ?? quiz.explanation;
   const total = QUIZZES.length;
   const isComplete = currentIndex >= total - 1 && showResult;
