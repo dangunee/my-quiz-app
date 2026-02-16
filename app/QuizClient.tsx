@@ -80,11 +80,11 @@ export default function QuizClient() {
     <div className="app-wrapper">
       <div className="quiz-container">
         <header className="quiz-header">
-          <div className="flex justify-between items-start">
-            <h1>クイズで学ぶ韓国語</h1>
+          <div className="flex justify-between items-start gap-4">
+            <h1 className="min-w-0 flex-1">クイズで学ぶ韓国語</h1>
             {isLoggedIn ? (
-              <div className="flex items-center gap-2">
-                <span className="text-white/90 text-sm">ログイン中</span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="text-white/90 text-sm whitespace-nowrap">ログイン中</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -92,7 +92,7 @@ export default function QuizClient() {
                     localStorage.removeItem("quiz_user");
                     setIsLoggedIn(false);
                   }}
-                  className="px-2 py-1 text-xs font-medium text-white bg-white/20 rounded hover:bg-white/30"
+                  className="shrink-0 px-3 py-1.5 text-sm font-medium text-red-600 bg-white rounded shadow-sm hover:bg-gray-100"
                 >
                   ログアウト
                 </button>
@@ -100,7 +100,7 @@ export default function QuizClient() {
             ) : (
               <a
                 href="/login"
-                className="text-white/90 text-sm hover:underline"
+                className="shrink-0 text-white/90 text-sm hover:underline"
               >
                 ログイン
               </a>
