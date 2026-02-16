@@ -83,7 +83,20 @@ export default function QuizClient() {
           <div className="flex justify-between items-start">
             <h1>クイズで学ぶ韓国語</h1>
             {isLoggedIn ? (
-              <span className="text-white/90 text-sm">ログイン中</span>
+              <div className="flex items-center gap-3">
+                <span className="text-white/90 text-sm">ログイン中</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem("quiz_token");
+                    localStorage.removeItem("quiz_user");
+                    setIsLoggedIn(false);
+                  }}
+                  className="text-white/80 text-sm hover:underline hover:text-white"
+                >
+                  ログアウト
+                </button>
+              </div>
             ) : (
               <a
                 href="/login"
