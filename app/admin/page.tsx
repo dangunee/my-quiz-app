@@ -6,6 +6,18 @@ import { QUIZZES } from "../quiz-data";
 export default function AdminPage() {
   const [authKey, setAuthKey] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  const ADMIN_STORAGE_KEY = "admin_auth";
+
+  useEffect(() => {
+    const stored = typeof window !== "undefined" ? localStorage.getItem(ADMIN_STORAGE_KEY) : null;
+    if (stored) {
+      setAuthKey(stored);
+      setIsAuthenticated(true);
+    }
+    setAuthChecked(true);
+  }, []);
   const [overrides, setOverrides] = useState<Record<number, string>>({});
   const [editing, setEditing] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -36,9 +48,17 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (authKey.trim()) {
+    const key = authKey.trim();
+    if (key) {
+      localStorage.setItem(ADMIN_STORAGE_KEY, key);
       setIsAuthenticated(true);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem(ADMIN_STORAGE_KEY);
+    setIsAuthenticated(false);
+    setAuthKey("");
   };
 
   const handleSave = async (quizId: number, explanation: string) => {
@@ -66,7 +86,14 @@ export default function AdminPage() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!authChecked || !isAuthenticated) {
+    if (!authChecked) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+          <p className="text-gray-500">로딩 중...</p>
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <form
@@ -171,9 +198,10 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={() => setActiveTab("quiz")}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex gap-4">
+            <button
+              onClick={() => setActiveTab("quiz")}
             className={`px-4 py-2 rounded font-medium ${activeTab === "quiz" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             답변 설명 수정
@@ -186,6 +214,13 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "users" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             회원 목록
+          </button>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-500 hover:text-gray-700"
+          >
+            로그아웃
           </button>
         </div>
 
