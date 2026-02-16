@@ -109,20 +109,10 @@ body {
   color: #1a1a1a;
 }
 
-.quiz-korean-line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-}
-
 .quiz-korean .blank {
-  flex: 1;
-  min-width: 2em;
-  min-height: 1.2em;
+  display: inline-block;
   margin: 0 0.25rem;
   border-bottom: 2px solid var(--foreground);
-  display: inline-block;
-  vertical-align: baseline;
 }
 
 .quiz-options {

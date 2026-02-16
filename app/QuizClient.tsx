@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { QUIZZES } from "./quiz-data";
 
 const BLANK = "_________________________";
@@ -16,8 +16,6 @@ export default function QuizClient() {
   const [correctCount, setCorrectCount] = useState(0);
   const [explanationOverrides, setExplanationOverrides] = useState<Record<number, string>>({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [japaneseWidth, setJapaneseWidth] = useState<number | null>(null);
-  const japaneseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
@@ -30,17 +28,6 @@ export default function QuizClient() {
       .then((data) => setExplanationOverrides(data.overrides || {}))
       .catch(() => {});
   }, []);
-
-  useEffect(() => {
-    const el = japaneseRef.current;
-    if (!el) return;
-    const observer = new ResizeObserver(() => {
-      setJapaneseWidth(el.getBoundingClientRect().width);
-    });
-    observer.observe(el);
-    setJapaneseWidth(el.getBoundingClientRect().width);
-    return () => observer.disconnect();
-  }, [currentIndex, quiz?.japanese]);
 
   const quiz = QUIZZES[currentIndex];
   const explanation = explanationOverrides[quiz.id] ?? quiz.explanation;
@@ -104,19 +91,19 @@ export default function QuizClient() {
 
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
-          <div ref={japaneseRef} className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
-          <div
-            className="quiz-sentence quiz-korean"
-            style={japaneseWidth ? { width: `${japaneseWidth}px` } : undefined}
-          >
-            <div className="quiz-korean-line">
-              {quiz.koreanTemplate.split(BLANK).map((part, i) => (
-                <span key={i}>
-                  {part}
-                  {i === 0 && <span className="blank">{"\u00A0"}</span>}
-                </span>
-              ))}
-            </div>
+          <div className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
+          <div className="quiz-sentence quiz-korean">
+            {quiz.koreanTemplate.split(BLANK).map((part, i) => (
+              <span key={i}>
+                {part}
+                {i === 0 && (
+                  <span
+                    className="blank"
+                    style={{ minWidth: `${quiz.japanese.length}em`, width: `${quiz.japanese.length}em` }}
+                  />
+                )}
+              </span>
+            ))}
           </div>
 
           <div className="quiz-options">
