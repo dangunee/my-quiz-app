@@ -15,6 +15,9 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"quiz" | "users">("quiz");
   const [users, setUsers] = useState<{ id: string; email: string; name?: string; username?: string; createdAt?: string }[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [editUserForm, setEditUserForm] = useState({ email: "", name: "", username: "" });
+  const [userActionLoading, setUserActionLoading] = useState(false);
 
   const PER_PAGE = 10;
   const totalPages = Math.ceil(QUIZZES.length / PER_PAGE);
@@ -100,6 +103,69 @@ export default function AdminPage() {
       })
       .catch(() => setUsers([]))
       .finally(() => setUsersLoading(false));
+  };
+
+  const handleEditUser = (u: { id: string; email: string; name?: string; username?: string }) => {
+    setEditingUserId(u.id);
+    setEditUserForm({
+      email: u.email || "",
+      name: u.name || "",
+      username: u.username || "",
+    });
+  };
+
+  const handleSaveUser = async () => {
+    if (!editingUserId) return;
+    setUserActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users/${editingUserId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authKey}`,
+        },
+        body: JSON.stringify(editUserForm),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === editingUserId
+              ? { ...u, ...data.user, email: data.user?.email ?? u.email }
+              : u
+          )
+        );
+        setEditingUserId(null);
+      } else {
+        alert(data.error || "저장 실패");
+      }
+    } catch (e) {
+      alert("저장 중 오류 발생");
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, email: string) => {
+    if (!confirm(`"${email}" 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`)) return;
+    setUserActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${authKey}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) => prev.filter((u) => u.id !== userId));
+        if (editingUserId === userId) setEditingUserId(null);
+      } else {
+        alert(data.error || "삭제 실패");
+      }
+    } catch (e) {
+      alert("삭제 중 오류 발생");
+    } finally {
+      setUserActionLoading(false);
+    }
   };
 
   return (
@@ -231,17 +297,88 @@ export default function AdminPage() {
                       <th className="text-left py-2 px-3">이름</th>
                       <th className="text-left py-2 px-3">아이디</th>
                       <th className="text-left py-2 px-3">가입일</th>
+                      <th className="text-left py-2 px-3">관리</th>
                     </tr>
                   </thead>
                   <tbody>
                     {users.map((u) => (
                       <tr key={u.id} className="border-b">
-                        <td className="py-2 px-3">{u.email}</td>
-                        <td className="py-2 px-3">{u.name || "-"}</td>
-                        <td className="py-2 px-3">{u.username || "-"}</td>
-                        <td className="py-2 px-3">
-                          {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
-                        </td>
+                        {editingUserId === u.id ? (
+                          <>
+                            <td className="py-2 px-3">
+                              <input
+                                value={editUserForm.email}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, email: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                                placeholder="이메일"
+                              />
+                            </td>
+                            <td className="py-2 px-3">
+                              <input
+                                value={editUserForm.name}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, name: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                                placeholder="이름"
+                              />
+                            </td>
+                            <td className="py-2 px-3">
+                              <input
+                                value={editUserForm.username}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, username: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                                placeholder="아이디"
+                              />
+                            </td>
+                            <td className="py-2 px-3">
+                              {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
+                            </td>
+                            <td className="py-2 px-3">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={handleSaveUser}
+                                  disabled={userActionLoading}
+                                  className="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
+                                >
+                                  저장
+                                </button>
+                                <button
+                                  onClick={() => setEditingUserId(null)}
+                                  disabled={userActionLoading}
+                                  className="px-2 py-1 bg-gray-300 rounded text-xs hover:bg-gray-400 disabled:opacity-50"
+                                >
+                                  취소
+                                </button>
+                              </div>
+                            </td>
+                          </>
+                        ) : (
+                          <>
+                            <td className="py-2 px-3">{u.email}</td>
+                            <td className="py-2 px-3">{u.name || "-"}</td>
+                            <td className="py-2 px-3">{u.username || "-"}</td>
+                            <td className="py-2 px-3">
+                              {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
+                            </td>
+                            <td className="py-2 px-3">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleEditUser(u)}
+                                  disabled={userActionLoading}
+                                  className="text-red-600 hover:underline text-xs disabled:opacity-50"
+                                >
+                                  수정
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteUser(u.id, u.email)}
+                                  disabled={userActionLoading}
+                                  className="text-red-600 hover:underline text-xs disabled:opacity-50"
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            </td>
+                          </>
+                        )}
                       </tr>
                     ))}
                   </tbody>
