@@ -18,6 +18,7 @@ export default function QuizClient() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
+  const koreanRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
@@ -25,8 +26,13 @@ export default function QuizClient() {
   }, []);
 
   useEffect(() => {
-    if (japaneseRef.current) {
-      setBlankWidth(japaneseRef.current.offsetWidth);
+    const jap = japaneseRef.current;
+    const kor = koreanRef.current;
+    if (jap && kor) {
+      const japWidth = jap.offsetWidth;
+      const korWidth = kor.offsetWidth;
+      const reserved = 120;
+      setBlankWidth(Math.min(japWidth, Math.max(0, korWidth - reserved)));
     }
   }, [currentIndex, showResult]);
 
@@ -100,7 +106,7 @@ export default function QuizClient() {
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
           <div ref={japaneseRef} className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
-          <div className="quiz-sentence quiz-korean">
+          <div ref={koreanRef} className="quiz-sentence quiz-korean">
             {quiz.koreanTemplate.split(BLANK).map((part, i) => (
               <span key={i}>
                 {part}
