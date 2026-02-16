@@ -17,6 +17,17 @@ Vercel에 이미 Supabase 설정이 있다면 추가 설정 없이 동작합니�
    - 이메일 확인 링크가 이 URL로 연결됩니다. localhost로 설정되어 있으면 확인 시 연결 오류 발생
 4. (선택) **Authentication** → **Settings** → **Email Auth**  
    - 이메일 인증 비활성화: "Confirm email" 끄면 가입 후 바로 로그인 가능
+5. **이메일 템플릿 일본어로 변경**: **Authentication** → **Email Templates** → **Confirm signup**
+   - **Subject**: `会員登録の確認`
+   - **Body** (아래 일본어 템플릿으로 교체):
+
+```
+会員登録を完了するには、以下のリンクをクリックしてください。
+
+<a href="{{ .ConfirmationURL }}">メールアドレスを確認する</a>
+
+このメールに心当たりがない場合は、無視してください。
+```
 
 ## API 엔드포인트
 

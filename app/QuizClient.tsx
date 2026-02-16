@@ -15,6 +15,12 @@ export default function QuizClient() {
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [explanationOverrides, setExplanationOverrides] = useState<Record<number, string>>({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     fetch("/api/explanations")
@@ -62,12 +68,16 @@ export default function QuizClient() {
         <header className="quiz-header">
           <div className="flex justify-between items-start">
             <h1>クイズで学ぶ韓国語</h1>
-            <a
-              href="/login"
-              className="text-white/90 text-sm hover:underline"
-            >
-              ログイン
-            </a>
+            {isLoggedIn ? (
+              <span className="text-white/90 text-sm">ログイン中</span>
+            ) : (
+              <a
+                href="/login"
+                className="text-white/90 text-sm hover:underline"
+              >
+                ログイン
+              </a>
+            )}
           </div>
           <div className="quiz-meta">
             <span className="quiz-counter">
