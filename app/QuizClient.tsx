@@ -55,7 +55,7 @@ export default function QuizClient() {
   const formatExplanation = (text: string) =>
     (text || "")
       .replace(/\\n/g, "\n")
-      .replace(/([❶❷❸❹])/g, "\n$1")
+      .replace(/(?<!、)([❶❷❸❹])/g, "\n$1")
       .replace(/\n{2,}/g, "\n")
       .replace(/^\n+/, "");
 
