@@ -3,6 +3,18 @@
 import { useState, useEffect } from "react";
 import { QUIZZES } from "../quiz-data";
 
+function getFullKorean(q: (typeof QUIZZES)[0]) {
+  const correctOption = q.options.find((o) => o.id === q.correctAnswer);
+  if (!correctOption) return q.koreanTemplate;
+  const text = correctOption.text;
+  if (text.includes(" / ")) {
+    const parts = text.split(" / ");
+    let i = 0;
+    return q.koreanTemplate.replace(/_{2,}/g, () => parts[i++] ?? "");
+  }
+  return q.koreanTemplate.replace(/_{10,}/g, text);
+}
+
 export default function AdminPage() {
   const [authKey, setAuthKey] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -308,9 +320,9 @@ export default function AdminPage() {
                         }, 100);
                       }}
                       className="text-left w-full hover:text-red-600 hover:underline block break-words"
-                      title={q.japanese}
+                      title={`${q.japanese} ${getFullKorean(q)}`}
                     >
-                      {q.id}. {q.japanese}
+                      {q.id}. {q.japanese} {getFullKorean(q)}
                     </button>
                   </li>
                 ))}
