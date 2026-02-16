@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { QUIZZES } from "./quiz-data";
 
 const BLANK = "_________________________";
@@ -16,11 +16,19 @@ export default function QuizClient() {
   const [correctCount, setCorrectCount] = useState(0);
   const [explanationOverrides, setExplanationOverrides] = useState<Record<number, string>>({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [blankWidth, setBlankWidth] = useState<number | null>(null);
+  const japaneseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
     setIsLoggedIn(!!token);
   }, []);
+
+  useEffect(() => {
+    if (japaneseRef.current) {
+      setBlankWidth(japaneseRef.current.offsetWidth);
+    }
+  }, [currentIndex, showResult]);
 
   useEffect(() => {
     fetch("/api/explanations")
@@ -91,16 +99,19 @@ export default function QuizClient() {
 
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
-          <div className="quiz-sentences-wrapper">
-            <div className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
-            <div className="quiz-sentence quiz-korean">
-              {quiz.koreanTemplate.split(BLANK).map((part, i) => (
-                <span key={i}>
-                  {part}
-                  {i === 0 && <span className="blank" />}
-                </span>
-              ))}
-            </div>
+          <div ref={japaneseRef} className="quiz-sentence quiz-japanese">{quiz.japanese}</div>
+          <div className="quiz-sentence quiz-korean">
+            {quiz.koreanTemplate.split(BLANK).map((part, i) => (
+              <span key={i}>
+                {part}
+                {i === 0 && (
+                  <span
+                    className="blank"
+                    style={blankWidth != null ? { width: blankWidth, minWidth: blankWidth } : undefined}
+                  />
+                )}
+              </span>
+            ))}
           </div>
 
           <div className="quiz-options">
