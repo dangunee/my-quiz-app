@@ -3,8 +3,12 @@
 import { useState, useEffect } from "react";
 import { QUIZZES } from "../quiz-data";
 
-function stripJapaneseQuotes(s: string) {
-  return (s || "").replace(/[「」]/g, "");
+function formatJapanese(s: string) {
+  const stripped = (s || "").replace(/[「」]/g, "").trim();
+  if (!stripped) return stripped;
+  const lastChar = stripped.slice(-1);
+  if (/[。.?？!！]/.test(lastChar)) return stripped;
+  return stripped + "。";
 }
 
 function getFullKorean(q: (typeof QUIZZES)[number]) {
@@ -262,7 +266,7 @@ export default function AdminPage() {
               >
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">문제 {q.id}</span>
-                  <span className="text-sm text-gray-500">{stripJapaneseQuotes(q.japanese)}</span>
+                  <span className="text-sm text-gray-500">{formatJapanese(q.japanese)}</span>
                 </div>
                 {editing === q.id ? (
                   <div>
@@ -327,9 +331,9 @@ export default function AdminPage() {
                         }, 100);
                       }}
                       className="text-left w-full hover:text-red-600 hover:underline block break-words px-2 py-1.5 rounded"
-                      title={`${stripJapaneseQuotes(q.japanese)} ${getFullKorean(q)}`}
+                      title={`${formatJapanese(q.japanese)} ${getFullKorean(q)}`}
                     >
-                      {q.id}. {stripJapaneseQuotes(q.japanese)} {getFullKorean(q)}
+                      {q.id}. {formatJapanese(q.japanese)} {getFullKorean(q)}
                     </button>
                   </li>
                 ))}

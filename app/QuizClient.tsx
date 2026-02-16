@@ -5,8 +5,12 @@ import { QUIZZES } from "./quiz-data";
 
 const BLANK = "_________________________";
 
-function stripJapaneseQuotes(s: string) {
-  return (s || "").replace(/[「」]/g, "");
+function formatJapanese(s: string) {
+  const stripped = (s || "").replace(/[「」]/g, "").trim();
+  if (!stripped) return stripped;
+  const lastChar = stripped.slice(-1);
+  if (/[。.?？!！]/.test(lastChar)) return stripped;
+  return stripped + "。";
 }
 
 function getOptionNumber(id: number) {
@@ -131,7 +135,7 @@ export default function QuizClient() {
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
           <div ref={japaneseRef} className="quiz-sentence quiz-japanese" style={{ position: "relative" }}>
-            {stripJapaneseQuotes(quiz.japanese)}
+            {formatJapanese(quiz.japanese)}
             <span
               className="measure-span"
               aria-hidden
@@ -143,7 +147,7 @@ export default function QuizClient() {
                 pointerEvents: "none",
               }}
             >
-              {stripJapaneseQuotes(quiz.japanese)}
+              {formatJapanese(quiz.japanese)}
             </span>
           </div>
           <div className="quiz-sentence quiz-korean">
