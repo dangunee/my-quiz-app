@@ -307,9 +307,12 @@ export default function AdminPage() {
           <aside className="w-64 shrink-0">
             <div className="sticky top-4 bg-white rounded-lg shadow p-4">
               <h3 className="font-medium text-sm text-gray-700 mb-3">문제 제목</h3>
-              <ul className="space-y-2 text-sm text-gray-600 max-h-[70vh] overflow-y-auto">
+              <ul className="space-y-0 text-sm text-gray-600 max-h-[70vh] overflow-y-auto">
                 {QUIZZES.map((q) => (
-                  <li key={q.id}>
+                  <li
+                    key={q.id}
+                    className={q.id % 2 === 1 ? "bg-white" : "bg-gray-100"}
+                  >
                     <button
                       type="button"
                       onClick={() => {
@@ -319,7 +322,7 @@ export default function AdminPage() {
                           document.getElementById(`quiz-${q.id}`)?.scrollIntoView({ behavior: "smooth" });
                         }, 100);
                       }}
-                      className="text-left w-full hover:text-red-600 hover:underline block break-words"
+                      className="text-left w-full hover:text-red-600 hover:underline block break-words px-2 py-1.5 rounded"
                       title={`${q.japanese} ${getFullKorean(q)}`}
                     >
                       {q.id}. {q.japanese} {getFullKorean(q)}
