@@ -25,7 +25,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState<"quiz" | "users">("quiz");
-  const [users, setUsers] = useState<{ id: string; email: string; name?: string; username?: string; createdAt?: string }[]>([]);
+  const [users, setUsers] = useState<{ id: string; email: string; name?: string; username?: string; createdAt?: string; lastSignInAt?: string }[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editUserForm, setEditUserForm] = useState({ email: "", name: "", username: "" });
@@ -332,6 +332,7 @@ export default function AdminPage() {
                       <th className="text-left py-2 px-3">이름</th>
                       <th className="text-left py-2 px-3">아이디</th>
                       <th className="text-left py-2 px-3">가입일</th>
+                      <th className="text-left py-2 px-3">마지막 접속</th>
                       <th className="text-left py-2 px-3">관리</th>
                     </tr>
                   </thead>
@@ -368,6 +369,9 @@ export default function AdminPage() {
                               {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
                             </td>
                             <td className="py-2 px-3">
+                              {u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleString("ja-JP") : "-"}
+                            </td>
+                            <td className="py-2 px-3">
                               <div className="flex gap-2">
                                 <button
                                   onClick={handleSaveUser}
@@ -393,6 +397,9 @@ export default function AdminPage() {
                             <td className="py-2 px-3">{u.username || "-"}</td>
                             <td className="py-2 px-3">
                               {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
+                            </td>
+                            <td className="py-2 px-3">
+                              {u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleString("ja-JP") : "-"}
                             </td>
                             <td className="py-2 px-3">
                               <div className="flex gap-2">

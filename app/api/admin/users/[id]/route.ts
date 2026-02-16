@@ -67,6 +67,7 @@ export async function PUT(
         email: data.user?.email,
         name: data.user?.user_metadata?.name,
         username: data.user?.user_metadata?.username,
+        lastSignInAt: data.user?.last_sign_in_at,
       },
     });
   } catch (e) {

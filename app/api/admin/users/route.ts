@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
       name: u.user_metadata?.name,
       username: u.user_metadata?.username,
       createdAt: u.created_at,
+      lastSignInAt: u.last_sign_in_at,
     }));
 
     return NextResponse.json({ users });
