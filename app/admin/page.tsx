@@ -235,6 +235,7 @@ export default function AdminPage() {
         {loading ? (
           <p>로딩 중...</p>
         ) : (
+          <>
           <div className="flex gap-6">
           <div className="flex-1 min-w-0 space-y-4">
             {quizzesOnPage.map((q) => (
