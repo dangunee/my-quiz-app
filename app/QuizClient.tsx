@@ -30,6 +30,11 @@ export default function QuizClient() {
   const japaneseRef = useRef<HTMLDivElement>(null);
 
   const quiz = QUIZZES[currentIndex];
+  const ov = overrides[quiz.id];
+  const explanation =
+    (typeof ov === "string" ? ov : ov?.explanation) ?? quiz.explanation;
+  const japanese = (typeof ov === "object" && ov?.japanese != null ? ov.japanese : null) ?? quiz.japanese;
+  const options = (typeof ov === "object" && ov?.options != null ? ov.options : null) ?? quiz.options;
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
@@ -54,12 +59,6 @@ export default function QuizClient() {
       .then((data) => setOverrides(data.overrides || {}))
       .catch(() => {});
   }, []);
-
-  const ov = overrides[quiz.id];
-  const explanation =
-    (typeof ov === "string" ? ov : ov?.explanation) ?? quiz.explanation;
-  const japanese = (typeof ov === "object" && ov?.japanese != null ? ov.japanese : null) ?? quiz.japanese;
-  const options = (typeof ov === "object" && ov?.options != null ? ov.options : null) ?? quiz.options;
   const total = QUIZZES.length;
   const isComplete = currentIndex >= total - 1 && showResult;
   const answeredCount = showResult ? currentIndex + 1 : 0;
