@@ -66,7 +66,7 @@ export default function QuizClient() {
               href="/login"
               className="text-white/90 text-sm hover:underline"
             >
-              로그인
+              ログイン
             </a>
           </div>
           <div className="quiz-meta">

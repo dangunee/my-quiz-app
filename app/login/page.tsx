@@ -26,9 +26,9 @@ export default function LoginPage() {
         });
         const data = await res.json();
         if (res.ok) {
-          setMessage("회원가입 완료! 이메일 인증 후 로그인해 주세요.");
+          setMessage("会員登録が完了しました。メール認証後にログインしてください。");
         } else {
-          setMessage(data.error || "회원가입 실패");
+          setMessage(data.error || "会員登録に失敗しました");
         }
       } else {
         const res = await fetch("/api/auth/login", {
@@ -38,18 +38,18 @@ export default function LoginPage() {
         });
         const data = await res.json();
         if (res.ok) {
-          setMessage("로그인 성공!");
+          setMessage("ログインに成功しました！");
           if (data.session?.access_token) {
             localStorage.setItem("quiz_token", data.session.access_token);
             localStorage.setItem("quiz_user", JSON.stringify(data.user));
           }
           window.location.href = "/";
         } else {
-          setMessage(data.error || "로그인 실패");
+          setMessage(data.error || "ログインに失敗しました");
         }
       }
     } catch (e) {
-      setMessage("오류가 발생했습니다.");
+      setMessage("エラーが発生しました。");
     } finally {
       setLoading(false);
     }
@@ -59,14 +59,14 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h1 className="text-xl font-bold mb-4 text-center">
-          {isRegister ? "회원가입" : "로그인"}
+          {isRegister ? "会員登録" : "ログイン"}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister && (
             <>
               <div>
-                <label className="block text-sm font-medium mb-1">아이디</label>
+                <label className="block text-sm font-medium mb-1">ユーザーID</label>
                 <input
                   type="text"
                   value={id}
@@ -77,12 +77,12 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">이름</label>
+                <label className="block text-sm font-medium mb-1">お名前</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="홍길동"
+                  placeholder="山田太郎"
                   className="w-full border rounded px-3 py-2"
                   required
                 />
@@ -90,7 +90,7 @@ export default function LoginPage() {
             </>
           )}
           <div>
-            <label className="block text-sm font-medium mb-1">이메일</label>
+            <label className="block text-sm font-medium mb-1">メールアドレス</label>
             <input
               type="email"
               value={email}
@@ -101,7 +101,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">비밀번호</label>
+            <label className="block text-sm font-medium mb-1">パスワード</label>
             <input
               type="password"
               value={password}
@@ -117,7 +117,7 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 disabled:opacity-50"
           >
-            {loading ? "처리 중..." : isRegister ? "가입" : "로그인"}
+            {loading ? "処理中..." : isRegister ? "登録" : "ログイン"}
           </button>
         </form>
 
@@ -133,14 +133,14 @@ export default function LoginPage() {
           }}
           className="mt-4 w-full text-sm text-gray-500 hover:underline"
         >
-          {isRegister ? "이미 계정이 있으신가요? 로그인" : "계정이 없으신가요? 회원가입"}
+          {isRegister ? "すでにアカウントをお持ちですか？ログイン" : "アカウントをお持ちでないですか？会員登録"}
         </button>
 
         <Link
           href="/"
           className="mt-4 block text-center text-sm text-gray-500 hover:underline"
         >
-          퀴즈로 돌아가기
+          クイズに戻る
         </Link>
       </div>
     </div>
