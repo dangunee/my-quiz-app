@@ -56,14 +56,15 @@ body {
 .quiz-header {
   background: linear-gradient(135deg, #cd3737 0%, #e85a5a 100%);
   color: white;
-  padding: 1.5rem 1.75rem;
+  padding: 1.25rem 1.5rem;
 }
 
 .quiz-header h1 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
   margin: 0;
   letter-spacing: 0.02em;
+  line-height: 1.3;
 }
 
 .quiz-meta {

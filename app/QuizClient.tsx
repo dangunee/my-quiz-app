@@ -80,18 +80,18 @@ export default function QuizClient() {
     <div className="app-wrapper">
       <div className="quiz-container">
         <header className="quiz-header">
-          <div className="flex justify-between items-start gap-4">
+          <div className="flex justify-between items-center gap-4">
             <h1 className="min-w-0 flex-1">クイズで学ぶ韓国語</h1>
             {isLoggedIn ? (
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2.5">
                 <a
                   href="/profile"
-                  className="text-white/90 text-sm hover:underline whitespace-nowrap"
+                  className="text-white/95 text-sm hover:underline whitespace-nowrap py-1"
                 >
                   マイページ
                 </a>
-                <span className="text-white/90 text-sm">|</span>
-                <span className="text-white/90 text-sm whitespace-nowrap">ログイン中</span>
+                <span className="text-white/60 text-sm select-none">|</span>
+                <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
                 <button
                   type="button"
                   onClick={() => {
