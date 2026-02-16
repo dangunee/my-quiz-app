@@ -96,7 +96,11 @@ export default function QuizClient() {
             {quiz.koreanTemplate.split(BLANK).map((part, i) => (
               <span key={i}>
                 {part}
-                {i === 0 && <span className="blank" />}
+                {i === 0 && (
+                  <span className="blank" style={{ fontSize: "1.15rem" }}>
+                    {quiz.japanese}
+                  </span>
+                )}
               </span>
             ))}
           </div>

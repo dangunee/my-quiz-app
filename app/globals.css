@@ -111,8 +111,8 @@ body {
 
 .quiz-korean .blank {
   display: inline-block;
-  min-width: 8em;
   margin: 0 0.25rem;
+  color: transparent;
   border-bottom: 2px solid var(--foreground);
 }
 
