@@ -100,7 +100,7 @@ export default function QuizClient() {
                     localStorage.removeItem("quiz_user");
                     setIsLoggedIn(false);
                   }}
-                  className="px-3 py-1.5 text-sm font-medium text-red-600 bg-white rounded shadow-sm hover:bg-gray-100"
+                  className="text-white/90 text-sm hover:underline hover:text-white"
                 >
                   ログアウト
                 </button>
