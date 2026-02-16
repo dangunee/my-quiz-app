@@ -21,7 +21,11 @@ export default function QuizClient() {
   const accuracyRate = isComplete ? Math.round((correctCount / total) * 100) : null;
 
   const formatExplanation = (text: string) =>
-    (text || "").replace(/\\n/g, "\n").replace(/([❶❷❸❹])/g, "\n$1").replace(/^\n+/, "");
+    (text || "")
+      .replace(/\\n/g, "\n")
+      .replace(/([❶❷❸❹])/g, "\n$1")
+      .replace(/\n{2,}/g, "\n")
+      .replace(/^\n+/, "");
 
   const handleSelect = (optionId: number) => {
     if (showResult) return;
