@@ -81,7 +81,15 @@ export default function QuizClient() {
       <div className="quiz-container">
         <header className="quiz-header">
           <div className="flex justify-between items-start gap-4">
-            <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
+            <div className="flex items-center gap-3 min-w-0">
+              <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
+              <a
+                href="/youtube"
+                className="shrink-0 text-white/90 text-sm hover:underline whitespace-nowrap"
+              >
+                YouTube
+              </a>
+            </div>
             {isLoggedIn ? (
               <div className="flex shrink-0 flex-col items-end gap-1.5">
                 <div className="flex items-center gap-2">
