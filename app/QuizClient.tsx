@@ -65,7 +65,7 @@ export default function QuizClient() {
           {quiz.koreanTemplate.split("_________________________").map((part, i) => (
             <span key={i}>
               {part}
-              {i === 0 && <span className="blank">_______________</span>}
+              {i === 0 && <span className="blank" />}
             </span>
           ))}
         </div>
