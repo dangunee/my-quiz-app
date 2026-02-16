@@ -235,11 +235,12 @@ export default function AdminPage() {
         {loading ? (
           <p>로딩 중...</p>
         ) : (
-          <>
-          <div className="space-y-4">
+          <div className="flex gap-6">
+          <div className="flex-1 min-w-0 space-y-4">
             {quizzesOnPage.map((q) => (
               <div
                 key={q.id}
+                id={`quiz-${q.id}`}
                 className="bg-white p-4 rounded-lg shadow"
               >
                 <div className="flex justify-between items-center mb-2">
@@ -288,6 +289,33 @@ export default function AdminPage() {
                 )}
               </div>
             ))}
+          </div>
+
+          <aside className="w-64 shrink-0">
+            <div className="sticky top-4 bg-white rounded-lg shadow p-4">
+              <h3 className="font-medium text-sm text-gray-700 mb-3">문제 제목</h3>
+              <ul className="space-y-2 text-sm text-gray-600 max-h-[70vh] overflow-y-auto">
+                {QUIZZES.map((q) => (
+                  <li key={q.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCurrentPage(Math.ceil(q.id / PER_PAGE));
+                        setEditing(null);
+                        setTimeout(() => {
+                          document.getElementById(`quiz-${q.id}`)?.scrollIntoView({ behavior: "smooth" });
+                        }, 100);
+                      }}
+                      className="text-left w-full hover:text-red-600 hover:underline block break-words"
+                      title={q.japanese}
+                    >
+                      {q.id}. {q.japanese}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
           </div>
 
           {totalPages > 1 && (
