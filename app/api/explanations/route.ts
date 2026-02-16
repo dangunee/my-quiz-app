@@ -13,16 +13,23 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("explanation_overrides")
-      .select("quiz_id, explanation");
+      .select("quiz_id, explanation, japanese, options");
 
     if (error) {
       console.error("Supabase error:", error);
       return NextResponse.json({ overrides: {} });
     }
 
-    const overrides: Record<number, string> = {};
+    const overrides: Record<
+      number,
+      { explanation?: string; japanese?: string | null; options?: { id: number; text: string }[] | null }
+    > = {};
     for (const row of data || []) {
-      overrides[row.quiz_id] = row.explanation;
+      overrides[row.quiz_id] = {
+        explanation: row.explanation,
+        japanese: row.japanese ?? undefined,
+        options: row.options ?? undefined,
+      };
     }
     return NextResponse.json({ overrides });
   } catch (e) {

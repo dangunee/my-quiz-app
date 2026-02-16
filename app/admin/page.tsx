@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import { QUIZZES } from "../quiz-data";
 
+type OverrideRow = {
+  explanation?: string;
+  japanese?: string;
+  options?: { id: number; text: string }[];
+};
+
 function formatJapanese(s: string) {
   const stripped = (s || "").replace(/[「」]/g, "").trim();
   if (!stripped) return stripped;
@@ -38,9 +44,11 @@ export default function AdminPage() {
     }
     setAuthChecked(true);
   }, []);
-  const [overrides, setOverrides] = useState<Record<number, string>>({});
+  const [overrides, setOverrides] = useState<Record<number, OverrideRow>>({});
   const [editing, setEditing] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState("");
+  const [editExplanation, setEditExplanation] = useState("");
+  const [editJapanese, setEditJapanese] = useState("");
+  const [editOptions, setEditOptions] = useState<{ id: number; text: string }[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,7 +68,17 @@ export default function AdminPage() {
     fetch("/api/explanations")
       .then((r) => r.json())
       .then((data) => {
-        setOverrides(data.overrides || {});
+        const raw = data.overrides || {};
+        const normalized: Record<number, OverrideRow> = {};
+        for (const [k, v] of Object.entries(raw)) {
+          const id = parseInt(k, 10);
+          if (isNaN(id)) continue;
+          normalized[id] =
+            typeof v === "string"
+              ? { explanation: v }
+              : (v as OverrideRow);
+        }
+        setOverrides(normalized);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -81,7 +99,12 @@ export default function AdminPage() {
     setAuthKey("");
   };
 
-  const handleSave = async (quizId: number, explanation: string) => {
+  const handleSave = async (
+    quizId: number,
+    explanation: string,
+    japanese: string,
+    options: { id: number; text: string }[]
+  ) => {
     setSaving(true);
     try {
       const res = await fetch(`/api/admin/explanations/${quizId}`, {
@@ -90,10 +113,13 @@ export default function AdminPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authKey}`,
         },
-        body: JSON.stringify({ explanation }),
+        body: JSON.stringify({ explanation, japanese, options }),
       });
       if (res.ok) {
-        setOverrides((prev) => ({ ...prev, [quizId]: explanation }));
+        setOverrides((prev) => ({
+          ...prev,
+          [quizId]: { explanation, japanese, options },
+        }));
         setEditing(null);
       } else {
         const err = await res.json();
@@ -220,11 +246,11 @@ export default function AdminPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div className="flex gap-4">
-            <button
-              onClick={() => setActiveTab("quiz")}
+          <button
+            onClick={() => setActiveTab("quiz")}
             className={`px-4 py-2 rounded font-medium ${activeTab === "quiz" ? "bg-red-600 text-white" : "bg-white"}`}
           >
-            답변 설명 수정
+            퀴즈 수정
           </button>
           <button
             onClick={() => {
@@ -246,10 +272,9 @@ export default function AdminPage() {
 
         {activeTab === "quiz" && (
           <>
-        <h1 className="text-2xl font-bold mb-4">답변 설명 수정</h1>
+        <h1 className="text-2xl font-bold mb-4">퀴즈 수정</h1>
         <p className="text-sm text-gray-600 mb-6">
-          퀴즈 ID별로 설명을 수정할 수 있습니다. Supabase가 설정되어 있어야
-          합니다.
+          문제(일본어), 선택지, 설명을 수정할 수 있습니다. Supabase가 설정되어 있어야 합니다.
         </p>
 
         {loading ? (
@@ -258,7 +283,12 @@ export default function AdminPage() {
           <>
           <div className="flex gap-6">
           <div className="flex-1 min-w-0 space-y-4">
-            {quizzesOnPage.map((q) => (
+            {quizzesOnPage.map((q) => {
+              const ov = overrides[q.id];
+              const dispJapanese = ov?.japanese ?? q.japanese;
+              const dispOptions = ov?.options ?? q.options;
+              const dispExplanation = ov?.explanation ?? q.explanation;
+              return (
               <div
                 key={q.id}
                 id={`quiz-${q.id}`}
@@ -266,19 +296,52 @@ export default function AdminPage() {
               >
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">문제 {q.id}</span>
-                  <span className="text-sm text-gray-500">{formatJapanese(q.japanese)}</span>
+                  <span className="text-sm text-gray-500">{formatJapanese(dispJapanese)}</span>
                 </div>
                 {editing === q.id ? (
-                  <div>
-                    <textarea
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      rows={8}
-                      className="w-full border rounded px-3 py-2 font-mono text-sm"
-                    />
-                    <div className="mt-2 flex gap-2">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">문제 (일본어 문장)</label>
+                      <input
+                        value={editJapanese}
+                        onChange={(e) => setEditJapanese(e.target.value)}
+                        className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none"
+                        placeholder="일본어 문장 입력"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">선택지</label>
+                      <div className="space-y-2">
+                        {editOptions.map((opt) => (
+                          <div key={opt.id} className="flex items-center gap-2">
+                            <span className="text-gray-500 w-6">{["❶","❷","❸","❹"][opt.id - 1]}</span>
+                            <input
+                              value={opt.text}
+                              onChange={(e) =>
+                                setEditOptions((prev) =>
+                                  prev.map((o) =>
+                                    o.id === opt.id ? { ...o, text: e.target.value } : o
+                                  )
+                                )
+                              }
+                              className="flex-1 border rounded px-3 py-2 text-sm"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-1">답변 설명</label>
+                      <textarea
+                        value={editExplanation}
+                        onChange={(e) => setEditExplanation(e.target.value)}
+                        rows={6}
+                        className="w-full border rounded px-3 py-2 font-mono text-sm"
+                      />
+                    </div>
+                    <div className="flex gap-2">
                       <button
-                        onClick={() => handleSave(q.id, editValue)}
+                        onClick={() => handleSave(q.id, editExplanation, editJapanese, editOptions)}
                         disabled={saving}
                         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
                       >
@@ -294,12 +357,24 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   <div>
-                    <pre className="text-sm whitespace-pre-wrap bg-gray-50 p-3 rounded overflow-x-auto max-h-32 overflow-y-auto">
-                      {(overrides[q.id] ?? q.explanation).replace(/\\n/g, "\n")}
+                    <div className="text-base font-medium text-gray-800 mb-2 py-2 border-b">
+                      문제: {formatJapanese(dispJapanese)}
+                    </div>
+                    <div className="text-sm text-gray-700 mb-2">
+                      <span className="font-medium">선택지: </span>
+                      {dispOptions.map((o) => o.text).join(" / ")}
+                    </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      <span className="font-medium">설명: </span>
+                    </div>
+                    <pre className="text-sm whitespace-pre-wrap bg-gray-50 p-3 rounded overflow-x-auto max-h-24 overflow-y-auto mb-2">
+                      {(dispExplanation || "").replace(/\\n/g, "\n")}
                     </pre>
                     <button
                       onClick={() => {
-                        setEditValue((overrides[q.id] ?? q.explanation).replace(/\\n/g, "\n"));
+                        setEditJapanese(dispJapanese);
+                        setEditOptions(JSON.parse(JSON.stringify(dispOptions)));
+                        setEditExplanation((dispExplanation || "").replace(/\\n/g, "\n"));
                         setEditing(q.id);
                       }}
                       className="mt-2 text-sm text-red-600 hover:underline"
@@ -309,14 +384,20 @@ export default function AdminPage() {
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
 
           <aside className="w-64 shrink-0">
             <div className="sticky top-4 bg-white rounded-lg shadow p-4">
               <h3 className="font-medium text-sm text-gray-700 mb-3">문제 제목</h3>
               <ul className="space-y-0 text-sm text-gray-600 max-h-[70vh] overflow-y-auto">
-                {QUIZZES.map((q) => (
+                {QUIZZES.map((q) => {
+                  const ov = overrides[q.id];
+                  const j = ov?.japanese ?? q.japanese;
+                  const opts = ov?.options ?? q.options;
+                  const qWithOverrides = { ...q, japanese: j, options: opts };
+                  return (
                   <li
                     key={q.id}
                     className={q.id % 2 === 1 ? "bg-white" : "bg-gray-100"}
@@ -331,12 +412,13 @@ export default function AdminPage() {
                         }, 100);
                       }}
                       className="text-left w-full hover:text-red-600 hover:underline block break-words px-2 py-1.5 rounded"
-                      title={`${formatJapanese(q.japanese)} ${getFullKorean(q)}`}
+                      title={`${formatJapanese(j)} ${getFullKorean(qWithOverrides)}`}
                     >
-                      {q.id}. {formatJapanese(q.japanese)} {getFullKorean(q)}
+                      {q.id}. {formatJapanese(j)} {getFullKorean(qWithOverrides)}
                     </button>
                   </li>
-                ))}
+                );
+                })}
               </ul>
             </div>
           </aside>

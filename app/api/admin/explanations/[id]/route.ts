@@ -33,19 +33,39 @@ export async function PUT(
   }
 
   const body = await request.json();
-  const { explanation } = body;
+  const { explanation, japanese, options } = body;
   if (typeof explanation !== "string") {
     return NextResponse.json({ error: "explanation required" }, { status: 400 });
   }
+  if (
+    options !== undefined &&
+    (!Array.isArray(options) ||
+      !options.every(
+        (o: unknown) =>
+          o != null &&
+          typeof o === "object" &&
+          "id" in o &&
+          "text" in o &&
+          typeof (o as { id: unknown }).id === "number" &&
+          typeof (o as { text: unknown }).text === "string"
+      ))
+  ) {
+    return NextResponse.json({ error: "options must be array of {id, text}" }, { status: 400 });
+  }
+
+  const payload: Record<string, unknown> = {
+    quiz_id: quizId,
+    explanation,
+    updated_at: new Date().toISOString(),
+  };
+  if (japanese !== undefined) payload.japanese = japanese;
+  if (options !== undefined) payload.options = options;
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { error } = await supabase
       .from("explanation_overrides")
-      .upsert(
-        { quiz_id: quizId, explanation, updated_at: new Date().toISOString() },
-        { onConflict: "quiz_id" }
-      );
+      .upsert(payload, { onConflict: "quiz_id" });
 
     if (error) {
       console.error("Supabase error:", error);

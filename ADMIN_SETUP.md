@@ -6,6 +6,11 @@
 
 1. [supabase.com](https://supabase.com)에서 로그인 후 새 프로젝트 생성
 2. **SQL Editor**에서 `supabase-schema.sql` 내용 실행하여 테이블 생성
+3. 기존에 테이블이 있다면 `japanese`, `options` 컬럼 추가를 위해 아래 SQL 실행:
+   ```sql
+   alter table explanation_overrides add column if not exists japanese text;
+   alter table explanation_overrides add column if not exists options jsonb;
+   ```
 
 ## 2. 환경 변수 설정 (Vercel)
 
@@ -26,9 +31,9 @@ Vercel 프로젝트 설정 → Environment Variables에 추가:
 ## API 엔드포인트
 
 - **GET /api/explanations** – 설명 오버라이드 목록 (공개)
-- **PUT /api/admin/explanations/[id]** – 설명 수정 (인증 필요)
+- **PUT /api/admin/explanations/[id]** – 설명/문제/선택지 수정 (인증 필요)
   - Header: `Authorization: Bearer {ADMIN_SECRET}`
-  - Body: `{ "explanation": "수정된 설명 텍스트" }`
+  - Body: `{ "explanation": "설명", "japanese": "일본어 문장", "options": [{ "id": 1, "text": "선택지1" }, ...] }`
 
 ## Supabase 미설정 시
 

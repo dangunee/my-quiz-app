@@ -22,7 +22,9 @@ export default function QuizClient() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-  const [explanationOverrides, setExplanationOverrides] = useState<Record<number, string>>({});
+  const [overrides, setOverrides] = useState<
+    Record<number, { explanation?: string; japanese?: string; options?: { id: number; text: string }[] }>
+  >({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
@@ -44,15 +46,20 @@ export default function QuizClient() {
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [quiz?.japanese]);
+  }, [japanese]);
 
   useEffect(() => {
     fetch("/api/explanations")
       .then((r) => r.json())
-      .then((data) => setExplanationOverrides(data.overrides || {}))
+      .then((data) => setOverrides(data.overrides || {}))
       .catch(() => {});
   }, []);
-  const explanation = explanationOverrides[quiz.id] ?? quiz.explanation;
+
+  const ov = overrides[quiz.id];
+  const explanation =
+    (typeof ov === "string" ? ov : ov?.explanation) ?? quiz.explanation;
+  const japanese = (typeof ov === "object" && ov?.japanese != null ? ov.japanese : null) ?? quiz.japanese;
+  const options = (typeof ov === "object" && ov?.options != null ? ov.options : null) ?? quiz.options;
   const total = QUIZZES.length;
   const isComplete = currentIndex >= total - 1 && showResult;
   const answeredCount = showResult ? currentIndex + 1 : 0;
@@ -135,7 +142,7 @@ export default function QuizClient() {
         <main className="quiz-main">
           <p className="quiz-instruction">{quiz.question}</p>
           <div ref={japaneseRef} className="quiz-sentence quiz-japanese" style={{ position: "relative" }}>
-            {formatJapanese(quiz.japanese)}
+            {formatJapanese(japanese)}
             <span
               className="measure-span"
               aria-hidden
@@ -147,7 +154,7 @@ export default function QuizClient() {
                 pointerEvents: "none",
               }}
             >
-              {formatJapanese(quiz.japanese)}
+              {formatJapanese(japanese)}
             </span>
           </div>
           <div className="quiz-sentence quiz-korean">
@@ -165,7 +172,7 @@ export default function QuizClient() {
           </div>
 
           <div className="quiz-options">
-            {quiz.options.map((option) => {
+            {options.map((option) => {
               const isSelected = selectedAnswer === option.id;
               const isCorrect = option.id === quiz.correctAnswer;
               const showCorrectness = showResult && (isSelected || isCorrect);
