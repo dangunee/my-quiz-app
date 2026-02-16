@@ -15,12 +15,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  min-height: 100vh;
   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
 }
 
@@ -39,18 +40,6 @@ body {
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .quiz-header {
@@ -63,7 +52,6 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
-  letter-spacing: 0.02em;
 }
 
 .quiz-meta {
@@ -130,9 +118,10 @@ body {
   flex-wrap: nowrap;
 }
 
-.quiz-korean .korean-sentence-content .blank {
+.quiz-korean .blank {
   flex: 1;
-  min-width: 0;
+  min-width: 2em;
+  min-height: 1.2em;
   margin: 0 0.25rem;
   border-bottom: 2px solid var(--foreground);
 }
@@ -193,18 +182,6 @@ body {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .result-badge {
@@ -247,15 +224,6 @@ body {
 .vocab-item {
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
-}
-
-.vocab-item:last-child {
-  margin-bottom: 0;
-}
-
-.vocab-item strong {
-  color: var(--accent);
-  margin-right: 0.5rem;
 }
 
 .result-actions {

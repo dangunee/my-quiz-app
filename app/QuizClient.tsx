@@ -32,7 +32,6 @@ export default function QuizClient() {
   const quiz = QUIZZES[currentIndex];
   const explanation = explanationOverrides[quiz.id] ?? quiz.explanation;
   const total = QUIZZES.length;
-  const isComplete = currentIndex >= total - 1 && showResult;
   const answeredCount = showResult ? currentIndex + 1 : 0;
   const accuracyRate = showResult && answeredCount > 0
     ? Math.round((correctCount / answeredCount) * 100)
@@ -71,18 +70,13 @@ export default function QuizClient() {
             {isLoggedIn ? (
               <span className="text-white/90 text-sm">ログイン中</span>
             ) : (
-              <a
-                href="/login"
-                className="text-white/90 text-sm hover:underline"
-              >
+              <a href="/login" className="text-white/90 text-sm hover:underline">
                 ログイン
               </a>
             )}
           </div>
           <div className="quiz-meta">
-            <span className="quiz-counter">
-              {currentIndex + 1} / {total}
-            </span>
+            <span className="quiz-counter">{currentIndex + 1} / {total}</span>
             {accuracyRate !== null && (
               <span className="quiz-accuracy">정답률 {accuracyRate}%</span>
             )}
