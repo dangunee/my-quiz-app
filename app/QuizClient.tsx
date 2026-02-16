@@ -111,7 +111,7 @@ export default function QuizClient() {
               {currentIndex + 1} / {total}
             </span>
             {accuracyRate !== null && (
-              <span className="quiz-accuracy">정답률 {accuracyRate}%</span>
+              <span className="quiz-accuracy">正解率 {accuracyRate}%</span>
             )}
           </div>
         </header>
