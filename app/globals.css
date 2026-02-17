@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf8f5;
+  --background: #e8f6fc;
+  --background-deep: #d4edfa;
   --foreground: #2c2c2c;
   --accent: #cd3737;
   --accent-dark: #a52d2d;
   --correct: #2d7d46;
   --wrong: #c53030;
   --card-bg: #fff;
-  --border: #e8e4df;
+  --border: #c5e3f0;
   --muted: #6b6b6b;
 }
 
@@ -18,7 +19,7 @@
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(180deg, #e0f4ff 0%, #c8ebfa 40%, #b0e0f5 100%);
   color: var(--foreground);
   min-height: 100vh;
   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
@@ -96,7 +97,7 @@ body {
   line-height: 1.6;
   margin-bottom: 1rem;
   padding: 1rem 1.25rem;
-  background: var(--background);
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
   border: 1px solid var(--border);
 }
@@ -139,7 +140,7 @@ body {
 
 .quiz-option:hover:not(:disabled) {
   border-color: var(--accent);
-  background: #fff9f9;
+  background: #fff5f5;
 }
 
 .quiz-option:disabled {
@@ -220,7 +221,7 @@ body {
 .vocabulary-list {
   margin-top: 1rem;
   padding: 1rem;
-  background: var(--background);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
 }
 
