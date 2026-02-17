@@ -187,12 +187,12 @@ export default function QuizClient() {
                   disabled={showResult}
                 >
                   <span className="option-number">{getOptionNumber(option.id)}</span>
+                  <span className="option-text">{option.text}</span>
                   {showMark && (
                     <span className="option-mark" aria-hidden>
                       {isCorrect ? "⭕" : "❌"}
                     </span>
                   )}
-                  <span className="option-text">{option.text}</span>
                 </button>
               );
             })}
