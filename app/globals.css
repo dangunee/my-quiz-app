@@ -55,7 +55,7 @@ body {
 }
 
 .quiz-header {
-  background: linear-gradient(135deg, #cd3737 0%, #e85a5a 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #7dd3fc 100%);
   color: white;
   padding: 1.25rem 1.5rem;
 }
