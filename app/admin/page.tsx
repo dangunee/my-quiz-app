@@ -388,15 +388,15 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   <div>
-                    <div className="text-base font-medium text-gray-800 mb-2 py-2 border-b">
+                    <div className="text-base font-medium text-gray-800 mb-2 py-2">
                       <span className="font-medium">한글: </span>
                       {q.koreanTemplate.replace(/_{10,}/g, "________________________")}
                     </div>
-                    <div className="text-sm text-gray-700 mb-2">
+                    <div className="text-sm text-gray-700 mb-2 py-2 border-b">
                       <span className="font-medium">問題: </span>
                       {formatJapanese(dispJapanese)}
                     </div>
-                    <div className="text-sm text-gray-700 mb-2">
+                    <div className="text-sm text-gray-700 mb-2 pt-2">
                       <span className="font-medium">選択肢(韓国語): </span>
                       {dispOptions.map((o) => o.text).join(" / ")}
                     </div>
