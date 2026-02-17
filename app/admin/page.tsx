@@ -69,10 +69,19 @@ export default function AdminPage() {
   const [editUserForm, setEditUserForm] = useState({ email: "", name: "", username: "" });
   const [userActionLoading, setUserActionLoading] = useState(false);
 
+  const [searchKeyword, setSearchKeyword] = useState("");
   const PER_PAGE = 10;
-  const totalPages = Math.ceil(QUIZZES.length / PER_PAGE);
-  const startIdx = (currentPage - 1) * PER_PAGE;
-  const quizzesOnPage = QUIZZES.slice(startIdx, startIdx + PER_PAGE);
+  const filteredQuizzes = searchKeyword.trim()
+    ? QUIZZES.filter((q) => {
+        const ov = overrides[q.id];
+        const expl = (typeof ov === "string" ? ov : ov?.explanation) ?? q.explanation ?? "";
+        return expl.replace(/\\n/g, "\n").toLowerCase().includes(searchKeyword.trim().toLowerCase());
+      })
+    : QUIZZES;
+  const totalPages = Math.ceil(filteredQuizzes.length / PER_PAGE) || 1;
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIdx = (safePage - 1) * PER_PAGE;
+  const quizzesOnPage = filteredQuizzes.slice(startIdx, startIdx + PER_PAGE);
 
   useEffect(() => {
     fetch("/api/explanations")
@@ -305,12 +314,31 @@ export default function AdminPage() {
         {activeTab === "quiz" && (
           <>
         <h1 className="text-2xl font-bold mb-4">クイズ編集</h1>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-gray-600 mb-4">
           問題(日本語)、選択肢(韓国語)、説明を編集できます。Supabaseの設定が必要です。
         </p>
+        <div className="mb-6">
+          <input
+            type="text"
+            value={searchKeyword}
+            onChange={(e) => {
+              setSearchKeyword(e.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder="説明でキーワード検索"
+            className="w-full max-w-md border rounded-lg px-4 py-2.5 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+          />
+          {searchKeyword.trim() && (
+            <p className="mt-1 text-sm text-gray-500">
+              {filteredQuizzes.length}件
+            </p>
+          )}
+        </div>
 
         {loading ? (
           <p>読み込み中...</p>
+        ) : filteredQuizzes.length === 0 ? (
+          <p className="text-gray-500">該当する問題がありません。</p>
         ) : (
           <>
           <div className="flex gap-6">
@@ -427,7 +455,7 @@ export default function AdminPage() {
             <div className="sticky top-4 bg-white rounded-lg shadow p-4">
               <h3 className="font-medium text-sm text-gray-700 mb-3">問題タイトル</h3>
               <ul className="space-y-0 text-sm text-gray-600 max-h-[70vh] overflow-y-auto">
-                {QUIZZES.map((q) => {
+                {filteredQuizzes.map((q, idx) => {
                   const ov = overrides[q.id];
                   const j = ov?.japanese ?? q.japanese;
                   const opts = ov?.options ?? q.options;
@@ -440,7 +468,7 @@ export default function AdminPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setCurrentPage(Math.ceil(q.id / PER_PAGE));
+                        setCurrentPage(Math.ceil((idx + 1) / PER_PAGE) || 1);
                         setEditing(null);
                         setTimeout(() => {
                           document.getElementById(`quiz-${q.id}`)?.scrollIntoView({ behavior: "smooth" });
@@ -463,17 +491,17 @@ export default function AdminPage() {
             <div className="mt-6 flex items-center justify-center gap-2">
               <button
                 onClick={() => { setEditing(null); setCurrentPage((p) => Math.max(1, p - 1)); }}
-                disabled={currentPage === 1}
+                disabled={safePage === 1}
                 className="px-4 py-2 bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 前へ
               </button>
               <span className="px-4 py-2 text-sm">
-                {currentPage} / {totalPages}
+                {safePage} / {totalPages}
               </span>
               <button
                 onClick={() => { setEditing(null); setCurrentPage((p) => Math.min(totalPages, p + 1)); }}
-                disabled={currentPage === totalPages}
+                disabled={safePage === totalPages}
                 className="px-4 py-2 bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 次へ
