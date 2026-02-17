@@ -74,8 +74,19 @@ export default function AdminPage() {
   const filteredQuizzes = searchKeyword.trim()
     ? QUIZZES.filter((q) => {
         const ov = overrides[q.id];
+        const kw = searchKeyword.trim().toLowerCase();
         const expl = (typeof ov === "string" ? ov : ov?.explanation) ?? q.explanation ?? "";
-        return expl.replace(/\\n/g, "\n").toLowerCase().includes(searchKeyword.trim().toLowerCase());
+        const jpn = (typeof ov === "object" && ov?.japanese != null ? ov.japanese : null) ?? q.japanese ?? "";
+        const opts = (typeof ov === "object" && ov?.options != null ? ov.options : null) ?? q.options ?? [];
+        const searchable =
+          expl.replace(/\\n/g, "\n") +
+          " " +
+          jpn +
+          " " +
+          q.koreanTemplate +
+          " " +
+          opts.map((o) => o.text).join(" ");
+        return searchable.toLowerCase().includes(kw);
       })
     : QUIZZES;
   const totalPages = Math.ceil(filteredQuizzes.length / PER_PAGE) || 1;
@@ -325,7 +336,7 @@ export default function AdminPage() {
               setSearchKeyword(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="説明でキーワード検索"
+            placeholder="問題・選択肢・説明でキーワード検索"
             className="w-full max-w-md border rounded-lg px-4 py-2.5 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
           />
           {searchKeyword.trim() && (
