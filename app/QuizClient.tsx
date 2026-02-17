@@ -26,6 +26,7 @@ export default function QuizClient() {
     Record<number, { explanation?: string; japanese?: string; options?: { id: number; text: string }[] }>
   >({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
@@ -90,43 +91,118 @@ export default function QuizClient() {
     }
   };
 
+  const navLinks = isLoggedIn ? (
+    <>
+      <a
+        href="/profile"
+        className="block py-3 text-gray-800 hover:text-red-600"
+        onClick={() => setMenuOpen(false)}
+      >
+        マイページ
+      </a>
+      <span className="block py-2 text-sm text-gray-500">ログイン中</span>
+      <button
+        type="button"
+        onClick={() => {
+          localStorage.removeItem("quiz_token");
+          localStorage.removeItem("quiz_user");
+          setIsLoggedIn(false);
+          setMenuOpen(false);
+        }}
+        className="block w-full text-left py-3 text-gray-800 hover:text-red-600"
+      >
+        ログアウト
+      </button>
+    </>
+  ) : (
+    <a
+      href="/login"
+      className="block py-3 text-gray-800 hover:text-red-600"
+      onClick={() => setMenuOpen(false)}
+    >
+      ログイン
+    </a>
+  );
+
   return (
     <div className="app-wrapper">
+      {menuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/30 sm:hidden"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden
+          />
+          <aside
+            className="fixed left-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl sm:hidden"
+            style={{ animation: "slideIn 0.2s ease" }}
+          >
+            <div className="flex items-center justify-between border-b px-4 py-3">
+              <span className="font-semibold text-gray-800">メニュー</span>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="rounded p-2 text-gray-500 hover:bg-gray-100"
+                aria-label="メニューを閉じる"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <nav className="p-4">{navLinks}</nav>
+          </aside>
+        </>
+      )}
       <div className="quiz-container">
         <header className="quiz-header">
           <div className="flex justify-between items-start gap-4">
-            <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
-            {isLoggedIn ? (
-              <div className="flex shrink-0 flex-col items-end gap-1.5">
-                <div className="flex items-center gap-2">
-                  <a
-                    href="/profile"
-                    className="text-white/95 text-sm hover:underline whitespace-nowrap"
-                  >
-                    マイページ
-                  </a>
-                  <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    localStorage.removeItem("quiz_token");
-                    localStorage.removeItem("quiz_user");
-                    setIsLoggedIn(false);
-                  }}
-                  className="text-white/90 text-sm hover:underline hover:text-white"
-                >
-                  ログアウト
-                </button>
-              </div>
-            ) : (
-              <a
-                href="/login"
-                className="shrink-0 text-white/90 text-sm hover:underline"
+            <div className="flex items-center gap-2 min-w-0">
+              <button
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                className="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 text-white sm:hidden"
+                aria-label="メニューを開く"
               >
-                ログイン
-              </a>
-            )}
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
+            </div>
+            <div className="hidden sm:block shrink-0">
+              {isLoggedIn ? (
+                <div className="flex flex-col items-end gap-1.5">
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="/profile"
+                      className="text-white/95 text-sm hover:underline whitespace-nowrap"
+                    >
+                      マイページ
+                    </a>
+                    <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      localStorage.removeItem("quiz_token");
+                      localStorage.removeItem("quiz_user");
+                      setIsLoggedIn(false);
+                    }}
+                    className="text-white/90 text-sm hover:underline hover:text-white"
+                  >
+                    ログアウト
+                  </button>
+                </div>
+              ) : (
+                <a
+                  href="/login"
+                  className="text-white/90 text-sm hover:underline"
+                >
+                  ログイン
+                </a>
+              )}
+            </div>
           </div>
           <div className="quiz-meta">
             <span className="quiz-counter">
