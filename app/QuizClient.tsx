@@ -175,6 +175,7 @@ export default function QuizClient() {
               const isSelected = selectedAnswer === option.id;
               const isCorrect = option.id === quiz.correctAnswer;
               const showCorrectness = showResult && (isSelected || isCorrect);
+              const showMark = showCorrectness && (isCorrect || (isSelected && !isCorrect));
 
               return (
                 <button
@@ -186,6 +187,11 @@ export default function QuizClient() {
                   disabled={showResult}
                 >
                   <span className="option-number">{getOptionNumber(option.id)}</span>
+                  {showMark && (
+                    <span className="option-mark" aria-hidden>
+                      {isCorrect ? "⭕" : "❌"}
+                    </span>
+                  )}
                   <span className="option-text">{option.text}</span>
                 </button>
               );
