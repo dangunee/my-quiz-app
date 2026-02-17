@@ -68,6 +68,16 @@ export default function AdminPage() {
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editUserForm, setEditUserForm] = useState({ email: "", name: "", username: "" });
   const [userActionLoading, setUserActionLoading] = useState(false);
+  const [userSearchKeyword, setUserSearchKeyword] = useState("");
+  const filteredUsers = userSearchKeyword.trim()
+    ? users.filter((u) => {
+        const kw = userSearchKeyword.trim().toLowerCase();
+        const email = (u.email || "").toLowerCase();
+        const name = (u.name || "").toLowerCase();
+        const username = (u.username || "").toLowerCase();
+        return email.includes(kw) || name.includes(kw) || username.includes(kw);
+      })
+    : users;
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const PER_PAGE = 10;
@@ -527,10 +537,26 @@ export default function AdminPage() {
         {activeTab === "users" && (
           <div className="bg-white p-6 rounded-lg shadow">
             <h1 className="text-2xl font-bold mb-4">会員登録データ</h1>
+            <div className="mb-4">
+              <input
+                type="text"
+                value={userSearchKeyword}
+                onChange={(e) => setUserSearchKeyword(e.target.value)}
+                placeholder="メール・名前・IDで検索"
+                className="w-full max-w-md border rounded-lg px-4 py-2.5 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+              />
+              {userSearchKeyword.trim() && (
+                <p className="mt-1 text-sm text-gray-500">
+                  {filteredUsers.length}件
+                </p>
+              )}
+            </div>
             {usersLoading ? (
               <p>読み込み中...</p>
             ) : users.length === 0 ? (
               <p className="text-gray-500">登録された会員はいません。</p>
+            ) : filteredUsers.length === 0 ? (
+              <p className="text-gray-500">該当する会員がありません。</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -545,7 +571,7 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map((u) => (
+                    {filteredUsers.map((u) => (
                       <tr key={u.id} className="border-b">
                         {editingUserId === u.id ? (
                           <>
