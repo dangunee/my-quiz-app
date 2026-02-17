@@ -112,10 +112,10 @@ export default function AdminPage() {
         localStorage.setItem(ADMIN_STORAGE_KEY, key);
         setIsAuthenticated(true);
       } else {
-        setLoginError("비밀번호가 올바르지 않습니다.");
+        setLoginError("パスワードが正しくありません。");
       }
     } catch {
-      setLoginError("연결에 실패했습니다.");
+        setLoginError("接続に失敗しました。");
     } finally {
       setLoginLoading(false);
     }
@@ -151,10 +151,10 @@ export default function AdminPage() {
         setEditing(null);
       } else {
         const err = await res.json();
-        alert(err.error || "저장 실패");
+        alert(err.error || "保存に失敗しました");
       }
     } catch (e) {
-      alert("저장 중 오류 발생");
+      alert("保存中にエラーが発生しました");
     } finally {
       setSaving(false);
     }
@@ -164,7 +164,7 @@ export default function AdminPage() {
     if (!authChecked) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-          <p className="text-gray-500">로딩 중...</p>
+          <p className="text-gray-500">読み込み中...</p>
         </div>
       );
     }
@@ -174,12 +174,12 @@ export default function AdminPage() {
           onSubmit={handleLogin}
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
         >
-          <h1 className="text-xl font-bold mb-4">관리자 로그인</h1>
+          <h1 className="text-xl font-bold mb-4">管理者ログイン</h1>
           <input
             type="password"
             value={authKey}
             onChange={(e) => { setAuthKey(e.target.value); setLoginError(""); }}
-            placeholder="ADMIN_SECRET 입력"
+            placeholder="ADMIN_SECRETを入力"
             className="w-full border rounded px-3 py-2 mb-2"
           />
           {loginError && (
@@ -190,7 +190,7 @@ export default function AdminPage() {
             disabled={loginLoading}
             className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 disabled:opacity-50"
           >
-            {loginLoading ? "확인 중..." : "로그인"}
+            {loginLoading ? "確認中..." : "ログイン"}
           </button>
         </form>
       </div>
@@ -242,17 +242,17 @@ export default function AdminPage() {
         );
         setEditingUserId(null);
       } else {
-        alert(data.error || "저장 실패");
+        alert(data.error || "保存に失敗しました");
       }
     } catch (e) {
-      alert("저장 중 오류 발생");
+      alert("保存中にエラーが発生しました");
     } finally {
       setUserActionLoading(false);
     }
   };
 
   const handleDeleteUser = async (userId: string, email: string) => {
-    if (!confirm(`"${email}" 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`"${email}" を削除しますか？この操作は取り消せません。`)) return;
     setUserActionLoading(true);
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
@@ -264,10 +264,10 @@ export default function AdminPage() {
         setUsers((prev) => prev.filter((u) => u.id !== userId));
         if (editingUserId === userId) setEditingUserId(null);
       } else {
-        alert(data.error || "삭제 실패");
+        alert(data.error || "削除に失敗しました");
       }
     } catch (e) {
-      alert("삭제 중 오류 발생");
+      alert("削除中にエラーが発生しました");
     } finally {
       setUserActionLoading(false);
     }
@@ -282,7 +282,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab("quiz")}
             className={`px-4 py-2 rounded font-medium ${activeTab === "quiz" ? "bg-red-600 text-white" : "bg-white"}`}
           >
-            퀴즈 수정
+            クイズ編集
           </button>
           <button
             onClick={() => {
@@ -291,26 +291,26 @@ export default function AdminPage() {
             }}
             className={`px-4 py-2 rounded font-medium ${activeTab === "users" ? "bg-red-600 text-white" : "bg-white"}`}
           >
-            회원 목록
+            会員一覧
           </button>
           </div>
           <button
             onClick={handleLogout}
             className="text-sm text-gray-500 hover:text-gray-700"
           >
-            로그아웃
+            ログアウト
           </button>
         </div>
 
         {activeTab === "quiz" && (
           <>
-        <h1 className="text-2xl font-bold mb-4">퀴즈 수정</h1>
+        <h1 className="text-2xl font-bold mb-4">クイズ編集</h1>
         <p className="text-sm text-gray-600 mb-6">
-          문제(일본어), 선택지, 설명을 수정할 수 있습니다. Supabase가 설정되어 있어야 합니다.
+          問題(日本語)、選択肢(韓国語)、説明を編集できます。Supabaseの設定が必要です。
         </p>
 
         {loading ? (
-          <p>로딩 중...</p>
+          <p>読み込み中...</p>
         ) : (
           <>
           <div className="flex gap-6">
@@ -327,22 +327,22 @@ export default function AdminPage() {
                 className="bg-white p-4 rounded-lg shadow"
               >
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium">문제 {q.id}</span>
+                  <span className="font-medium">問題 {q.id}</span>
                   <span className="text-sm text-gray-500">{formatJapanese(dispJapanese)}</span>
                 </div>
                 {editing === q.id ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-800 mb-2">문제 (일본어 문장)</label>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">問題（日本語の文）</label>
                       <input
                         value={editJapanese}
                         onChange={(e) => setEditJapanese(e.target.value)}
                         className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none"
-                        placeholder="일본어 문장 입력"
+                        placeholder="日本語の文を入力"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-800 mb-2">선택지</label>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">選択肢（韓国語）</label>
                       <div className="space-y-2">
                         {editOptions.map((opt) => (
                           <div key={opt.id} className="flex items-center gap-2">
@@ -363,7 +363,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">답변 설명</label>
+                      <label className="block text-sm font-medium text-gray-600 mb-1">回答の説明</label>
                       <textarea
                         value={editExplanation}
                         onChange={(e) => setEditExplanation(e.target.value)}
@@ -377,27 +377,27 @@ export default function AdminPage() {
                         disabled={saving}
                         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
                       >
-                        저장
+                        保存
                       </button>
                       <button
                         onClick={() => setEditing(null)}
                         className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                       >
-                        취소
+                        キャンセル
                       </button>
                     </div>
                   </div>
                 ) : (
                   <div>
                     <div className="text-base font-medium text-gray-800 mb-2 py-2 border-b">
-                      문제: {formatJapanese(dispJapanese)}
+                      問題: {formatJapanese(dispJapanese)}
                     </div>
                     <div className="text-sm text-gray-700 mb-2">
-                      <span className="font-medium">선택지: </span>
+                      <span className="font-medium">選択肢(韓国語): </span>
                       {dispOptions.map((o) => o.text).join(" / ")}
                     </div>
                     <div className="text-sm text-gray-600 mb-2">
-                      <span className="font-medium">설명: </span>
+                      <span className="font-medium">説明: </span>
                     </div>
                     <pre className="text-sm whitespace-pre-wrap bg-gray-50 p-3 rounded overflow-x-auto max-h-24 overflow-y-auto mb-2">
                       {(dispExplanation || "").replace(/\\n/g, "\n")}
@@ -411,7 +411,7 @@ export default function AdminPage() {
                       }}
                       className="mt-2 text-sm text-red-600 hover:underline"
                     >
-                      수정
+                      編集
                     </button>
                   </div>
                 )}
@@ -422,7 +422,7 @@ export default function AdminPage() {
 
           <aside className="w-64 shrink-0">
             <div className="sticky top-4 bg-white rounded-lg shadow p-4">
-              <h3 className="font-medium text-sm text-gray-700 mb-3">문제 제목</h3>
+              <h3 className="font-medium text-sm text-gray-700 mb-3">問題タイトル</h3>
               <ul className="space-y-0 text-sm text-gray-600 max-h-[70vh] overflow-y-auto">
                 {QUIZZES.map((q) => {
                   const ov = overrides[q.id];
@@ -463,7 +463,7 @@ export default function AdminPage() {
                 disabled={currentPage === 1}
                 className="px-4 py-2 bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                이전
+                前へ
               </button>
               <span className="px-4 py-2 text-sm">
                 {currentPage} / {totalPages}
@@ -473,7 +473,7 @@ export default function AdminPage() {
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                다음
+                次へ
               </button>
             </div>
           )}
@@ -484,22 +484,22 @@ export default function AdminPage() {
 
         {activeTab === "users" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">회원 등록 데이터</h1>
+            <h1 className="text-2xl font-bold mb-4">会員登録データ</h1>
             {usersLoading ? (
-              <p>로딩 중...</p>
+              <p>読み込み中...</p>
             ) : users.length === 0 ? (
-              <p className="text-gray-500">등록된 회원이 없습니다.</p>
+              <p className="text-gray-500">登録された会員はいません。</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-2 px-3">이메일</th>
-                      <th className="text-left py-2 px-3">이름</th>
-                      <th className="text-left py-2 px-3">아이디</th>
-                      <th className="text-left py-2 px-3">가입일</th>
-                      <th className="text-left py-2 px-3">마지막 접속</th>
-                      <th className="text-left py-2 px-3">관리</th>
+                      <th className="text-left py-2 px-3">メール</th>
+                      <th className="text-left py-2 px-3">名前</th>
+                      <th className="text-left py-2 px-3">ID</th>
+                      <th className="text-left py-2 px-3">登録日</th>
+                      <th className="text-left py-2 px-3">最終アクセス</th>
+                      <th className="text-left py-2 px-3">管理</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -512,7 +512,7 @@ export default function AdminPage() {
                                 value={editUserForm.email}
                                 onChange={(e) => setEditUserForm((f) => ({ ...f, email: e.target.value }))}
                                 className="w-full border rounded px-2 py-1 text-sm"
-                                placeholder="이메일"
+                                placeholder="メール"
                               />
                             </td>
                             <td className="py-2 px-3">
@@ -520,7 +520,7 @@ export default function AdminPage() {
                                 value={editUserForm.name}
                                 onChange={(e) => setEditUserForm((f) => ({ ...f, name: e.target.value }))}
                                 className="w-full border rounded px-2 py-1 text-sm"
-                                placeholder="이름"
+                                placeholder="名前"
                               />
                             </td>
                             <td className="py-2 px-3">
@@ -528,7 +528,7 @@ export default function AdminPage() {
                                 value={editUserForm.username}
                                 onChange={(e) => setEditUserForm((f) => ({ ...f, username: e.target.value }))}
                                 className="w-full border rounded px-2 py-1 text-sm"
-                                placeholder="아이디"
+                                placeholder="ID"
                               />
                             </td>
                             <td className="py-2 px-3">
@@ -544,14 +544,14 @@ export default function AdminPage() {
                                   disabled={userActionLoading}
                                   className="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 disabled:opacity-50"
                                 >
-                                  저장
+                                  保存
                                 </button>
                                 <button
                                   onClick={() => setEditingUserId(null)}
                                   disabled={userActionLoading}
                                   className="px-2 py-1 bg-gray-300 rounded text-xs hover:bg-gray-400 disabled:opacity-50"
                                 >
-                                  취소
+                                  キャンセル
                                 </button>
                               </div>
                             </td>
@@ -574,14 +574,14 @@ export default function AdminPage() {
                                   disabled={userActionLoading}
                                   className="text-red-600 hover:underline text-xs disabled:opacity-50"
                                 >
-                                  수정
+                                  編集
                                 </button>
                                 <button
                                   onClick={() => handleDeleteUser(u.id, u.email)}
                                   disabled={userActionLoading}
                                   className="text-red-600 hover:underline text-xs disabled:opacity-50"
                                 >
-                                  삭제
+                                  削除
                                 </button>
                               </div>
                             </td>
@@ -597,7 +597,7 @@ export default function AdminPage() {
               onClick={loadUsers}
               className="mt-4 text-sm text-red-600 hover:underline"
             >
-              새로고침
+              更新
             </button>
           </div>
         )}
