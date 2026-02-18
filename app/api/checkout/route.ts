@@ -27,7 +27,7 @@ export async function POST() {
           price_data: {
             currency: "jpy",
             product_data: {
-              name: "クイズで学ぶ韓国語 全問題アンロック",
+              name: "ミリネ韓国語教室 クイズで学ぶ韓国語 全問題アンロック",
               description: "10問以降の全問題にアクセスできます",
               images: [],
             },

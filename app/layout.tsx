@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "クイズで学ぶ韓国語",
+  title: "ミリネ韓国語教室 クイズで学ぶ韓国語",
   description: "日本語を韓国語に訳すクイズで韓国語を学ぼう",
 };
 

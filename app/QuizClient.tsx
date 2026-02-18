@@ -468,7 +468,7 @@ export default function QuizClient() {
         ) : showPaywall ? (
           <>
             <header className="quiz-header">
-              <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
+              <h1 className="shrink-0 whitespace-nowrap">ミリネ韓国語教室 クイズで学ぶ韓国語</h1>
               <div className="quiz-meta">
                 <span className="quiz-counter">{FREE_QUIZ_LIMIT} / {total}</span>
               </div>
@@ -510,7 +510,7 @@ export default function QuizClient() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
+              <h1 className="shrink-0 whitespace-nowrap">ミリネ韓国語教室 クイズで学ぶ韓国語</h1>
             </div>
             <div className="hidden sm:block md:hidden shrink-0">
               {isLoggedIn ? (
