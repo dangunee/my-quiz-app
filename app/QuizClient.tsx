@@ -46,6 +46,7 @@ export default function QuizClient() {
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
+  const [expandedKotaeUrl, setExpandedKotaeUrl] = useState<string | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
   const filteredKotae = kotaeSearch.trim()
@@ -64,6 +65,10 @@ export default function QuizClient() {
   useEffect(() => {
     setKotaePage(0);
   }, [kotaeSearch]);
+
+  useEffect(() => {
+    setExpandedKotaeUrl(null);
+  }, [kotaePage, kotaeSearch]);
 
   useEffect(() => {
     const shuffled = shuffle(
@@ -315,14 +320,43 @@ export default function QuizClient() {
               ) : (
                 kotaePaginated.map((item, i) => (
                   <li key={i} className="border-b border-gray-200 last:border-b-0">
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block py-3 px-4 text-gray-800 text-sm"
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedKotaeUrl((prev) => (prev === item.url ? null : item.url))
+                      }
+                      className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                     >
-                      {item.title}
-                    </a>
+                      <span>{item.title}</span>
+                      <span
+                        className={`shrink-0 text-gray-400 transition-transform ${
+                          expandedKotaeUrl === item.url ? "rotate-180" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
+                    </button>
+                    {expandedKotaeUrl === item.url && (
+                      <div className="border-t border-gray-200 bg-gray-50">
+                        <div className="p-2 flex items-center justify-between gap-2 border-b border-gray-200">
+                          <span className="text-xs text-gray-500">kotae.mirinae.jp より</span>
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-[#0ea5e9] hover:underline"
+                          >
+                            元のページで開く →
+                          </a>
+                        </div>
+                        <iframe
+                          src={item.url}
+                          title={item.title}
+                          className="w-full h-[400px] border-0"
+                          sandbox="allow-scripts allow-same-origin"
+                        />
+                      </div>
+                    )}
                   </li>
                 ))
               )}
