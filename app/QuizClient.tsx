@@ -332,8 +332,8 @@ export default function QuizClient() {
             onClick={() => setActiveTab("quiz")}
             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
-                ? "bg-[#0ea5e9] text-white shadow"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
+                ? "bg-[#2d5a4a] text-white shadow"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-[#2d5a4a] hover:text-[#2d5a4a]"
             }`}
           >
             クイズ
@@ -343,8 +343,8 @@ export default function QuizClient() {
             onClick={() => setActiveTab("kotae")}
             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-lg transition ${
               activeTab === "kotae"
-                ? "bg-[#0ea5e9] text-white shadow"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
+                ? "bg-[#2d5a4a] text-white shadow"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-[#2d5a4a] hover:text-[#2d5a4a]"
             }`}
           >
             Q&A
@@ -410,7 +410,7 @@ export default function QuizClient() {
                             href={kotaeContent.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block py-2 px-4 text-center text-xs text-[#0ea5e9] hover:underline border-t border-gray-100"
+                            className="block py-2 px-4 text-center text-xs text-[#2d5a4a] hover:underline border-t border-gray-100"
                           >
                             ブログで続きを読む →
                           </a>
