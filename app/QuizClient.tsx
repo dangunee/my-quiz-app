@@ -45,6 +45,7 @@ export default function QuizClient() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
   const [kotaeSearch, setKotaeSearch] = useState("");
+  const [kotaePage, setKotaePage] = useState(0);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
   const filteredKotae = kotaeSearch.trim()
@@ -52,6 +53,17 @@ export default function QuizClient() {
         item.title.toLowerCase().includes(kotaeSearch.trim().toLowerCase())
       )
     : KOTAE_LIST;
+
+  const KOTAE_PAGE_SIZE = 20;
+  const kotaeTotalPages = Math.ceil(filteredKotae.length / KOTAE_PAGE_SIZE) || 1;
+  const kotaePaginated = filteredKotae.slice(
+    kotaePage * KOTAE_PAGE_SIZE,
+    (kotaePage + 1) * KOTAE_PAGE_SIZE
+  );
+
+  useEffect(() => {
+    setKotaePage(0);
+  }, [kotaeSearch]);
 
   useEffect(() => {
     const shuffled = shuffle(
@@ -301,13 +313,13 @@ export default function QuizClient() {
                   該当する質問がありません
                 </li>
               ) : (
-                filteredKotae.map((item, i) => (
+                kotaePaginated.map((item, i) => (
                   <li key={i} className="border-b border-gray-200 last:border-b-0">
                     <a
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block py-3 px-4 text-gray-800 text-sm hover:bg-amber-50/80 active:bg-amber-100/80 transition"
+                      className="block py-3 px-4 text-gray-800 text-sm"
                     >
                       {item.title}
                     </a>
@@ -315,6 +327,29 @@ export default function QuizClient() {
                 ))
               )}
             </ul>
+            {filteredKotae.length > KOTAE_PAGE_SIZE && (
+              <div className="flex items-center justify-center gap-2 py-3 px-4 border-t border-gray-200 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setKotaePage((p) => Math.max(0, p - 1))}
+                  disabled={kotaePage === 0}
+                  className="px-3 py-1.5 text-sm rounded border border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  前へ
+                </button>
+                <span className="text-sm text-gray-600">
+                  {kotaePage + 1} / {kotaeTotalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setKotaePage((p) => Math.min(kotaeTotalPages - 1, p + 1))}
+                  disabled={kotaePage >= kotaeTotalPages - 1}
+                  className="px-3 py-1.5 text-sm rounded border border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  次へ
+                </button>
+              </div>
+            )}
           </div>
         ) : showPaywall ? (
           <>
