@@ -296,3 +296,35 @@ body {
   background: var(--accent);
   transition: width 0.3s ease;
 }
+
+.kotae-blog-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.kotae-blog-content p {
+  margin: 0 0 0.75rem;
+}
+
+.kotae-blog-content h1,
+.kotae-blog-content h2,
+.kotae-blog-content h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.kotae-blog-content ul,
+.kotae-blog-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.kotae-blog-content a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.kotae-blog-content strong {
+  font-weight: 600;
+}

@@ -47,6 +47,9 @@ export default function QuizClient() {
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
   const [expandedKotaeUrl, setExpandedKotaeUrl] = useState<string | null>(null);
+  const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
+  const [kotaeLoading, setKotaeLoading] = useState(false);
+  const [kotaeError, setKotaeError] = useState<string | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
   const filteredKotae = kotaeSearch.trim()
@@ -68,7 +71,38 @@ export default function QuizClient() {
 
   useEffect(() => {
     setExpandedKotaeUrl(null);
+    setKotaeContent(null);
+    setKotaeError(null);
   }, [kotaePage, kotaeSearch]);
+
+  useEffect(() => {
+    if (!expandedKotaeUrl) {
+      setKotaeContent(null);
+      setKotaeError(null);
+      return;
+    }
+    const item = KOTAE_LIST.find((i) => i.url === expandedKotaeUrl);
+    if (!item) return;
+
+    setKotaeLoading(true);
+    setKotaeError(null);
+    fetch(`/api/kotae-blog?title=${encodeURIComponent(item.title)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error && !data.html) {
+          setKotaeError(data.error);
+          setKotaeContent(null);
+        } else {
+          setKotaeContent({ html: data.html || "", url: data.url || "" });
+          setKotaeError(null);
+        }
+      })
+      .catch((err) => {
+        setKotaeError(err.message || "読み込みに失敗しました");
+        setKotaeContent(null);
+      })
+      .finally(() => setKotaeLoading(false));
+  }, [expandedKotaeUrl]);
 
   useEffect(() => {
     const shuffled = shuffle(
@@ -338,22 +372,28 @@ export default function QuizClient() {
                     </button>
                     {expandedKotaeUrl === item.url && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
-                        <div className="relative h-[500px] overflow-hidden">
-                          <iframe
-                            src={item.url}
-                            title={item.title}
-                            className="absolute left-0 w-full h-[700px] border-0 -top-[200px]"
-                            sandbox="allow-scripts allow-same-origin"
-                          />
+                        <div className="max-h-[500px] overflow-y-auto p-4">
+                          {kotaeLoading ? (
+                            <p className="text-center text-gray-500 py-8">読み込み中...</p>
+                          ) : kotaeError ? (
+                            <p className="text-center text-red-500 py-4">{kotaeError}</p>
+                          ) : kotaeContent?.html ? (
+                            <div
+                              className="kotae-blog-content text-gray-800"
+                              dangerouslySetInnerHTML={{ __html: kotaeContent.html }}
+                            />
+                          ) : null}
                         </div>
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block py-2 px-4 text-center text-xs text-[#0ea5e9] hover:underline border-t border-gray-100"
-                        >
-                          元のページで開く →
-                        </a>
+                        {kotaeContent?.url && (
+                          <a
+                            href={kotaeContent.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block py-2 px-4 text-center text-xs text-[#0ea5e9] hover:underline border-t border-gray-100"
+                          >
+                            ブログで続きを読む →
+                          </a>
+                        )}
                       </div>
                     )}
                   </li>
