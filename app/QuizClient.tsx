@@ -332,8 +332,8 @@ export default function QuizClient() {
             onClick={() => setActiveTab("quiz")}
             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
-                ? "bg-[#2d5a4a] text-white shadow"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-[#2d5a4a] hover:text-[#2d5a4a]"
+                ? "bg-[#0ea5e9] text-white shadow"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
             }`}
           >
             クイズ
