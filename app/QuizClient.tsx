@@ -350,6 +350,16 @@ export default function QuizClient() {
           {desktopMenuToggle}
           <button
             type="button"
+            onClick={() => setMenuOpen(true)}
+            className="md:hidden shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+            aria-label="メニューを開く"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab("quiz")}
             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
