@@ -342,7 +342,7 @@ export default function QuizClient() {
                           <iframe
                             src={item.url}
                             title={item.title}
-                            className="w-full h-[600px] border-0 absolute -top-[180px] left-0"
+                            className="w-full h-[700px] border-0 absolute -top-[300px] left-0"
                             sandbox="allow-scripts allow-same-origin"
                           />
                         </div>
