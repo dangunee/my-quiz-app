@@ -588,7 +588,7 @@ export default function QuizClient() {
           <div className="quiz-sentence quiz-korean">
             {quiz.koreanTemplate.split(BLANK).map((part, i) => (
               <span key={i}>
-                {part}
+                {part.trim() === "." ? "" : part}
                 {i === 0 && (
                   <span
                     className="blank"
