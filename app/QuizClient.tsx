@@ -59,6 +59,63 @@ export default function QuizClient() {
   const [kotaeLoading, setKotaeLoading] = useState(false);
   const [kotaeError, setKotaeError] = useState<string | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
+  const analyticsSessionRef = useRef<{ id: string; start: number } | null>(null);
+
+  useEffect(() => {
+    const storageKey = "quiz_analytics_session";
+    let sessionId = typeof sessionStorage !== "undefined" ? sessionStorage.getItem(storageKey) : null;
+    if (!sessionId) {
+      sessionId = crypto.randomUUID?.() ?? `s-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      sessionStorage?.setItem(storageKey, sessionId);
+    }
+    const start = Date.now();
+    analyticsSessionRef.current = { id: sessionId, start };
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "session_start",
+        session_id: sessionId,
+        referrer: typeof document !== "undefined" ? document.referrer || undefined : undefined,
+        app_type: activeTab,
+      }),
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const s = analyticsSessionRef.current;
+    if (!s) return;
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "tab_view", session_id: s.id, app_type: activeTab }),
+    }).catch(() => {});
+  }, [activeTab]);
+
+  useEffect(() => {
+    const sendEnd = () => {
+      const s = analyticsSessionRef.current;
+      if (!s) return;
+      const duration = Math.round((Date.now() - s.start) / 1000);
+      const body = JSON.stringify({
+        event: "session_end",
+        session_id: s.id,
+        duration_seconds: duration,
+      });
+      navigator.sendBeacon?.("/api/analytics", new Blob([body], { type: "application/json" }));
+      analyticsSessionRef.current = null;
+    };
+    const onHide = () => sendEnd();
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") onHide();
+      });
+      window.addEventListener("pagehide", onHide);
+      return () => {
+        window.removeEventListener("pagehide", onHide);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     fetch("/api/kotae-list")

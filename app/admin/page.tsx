@@ -62,13 +62,21 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics">("quiz");
   const [users, setUsers] = useState<{ id: string; email: string; name?: string; username?: string; createdAt?: string; lastSignInAt?: string }[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editUserForm, setEditUserForm] = useState({ email: "", name: "", username: "" });
   const [userActionLoading, setUserActionLoading] = useState(false);
   const [userSearchKeyword, setUserSearchKeyword] = useState("");
+  const [analytics, setAnalytics] = useState<{
+    referrers: { domain: string; count: number }[];
+    quizStats: { sessions: number; avgDuration: number };
+    kotaeStats: { sessions: number; avgDuration: number };
+    totalSessions: number;
+  } | null>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsDays, setAnalyticsDays] = useState(30);
   const filteredUsers = userSearchKeyword.trim()
     ? users.filter((u) => {
         const kw = userSearchKeyword.trim().toLowerCase();
@@ -322,6 +330,25 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "users" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             会員一覧
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("analytics");
+              setAnalyticsLoading(true);
+              fetch(`/api/admin/analytics?days=${analyticsDays}`, {
+                headers: { Authorization: `Bearer ${authKey}` },
+              })
+                .then((r) => r.json())
+                .then((data) => {
+                  if (data.error) throw new Error(data.error);
+                  setAnalytics(data);
+                })
+                .catch(() => setAnalytics(null))
+                .finally(() => setAnalyticsLoading(false));
+            }}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "analytics" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            アクセス解析
           </button>
           </div>
           <button
@@ -667,6 +694,99 @@ export default function AdminPage() {
             >
               更新
             </button>
+          </div>
+        )}
+
+        {activeTab === "analytics" && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">アクセス解析</h1>
+            <p className="text-sm text-gray-600 mb-4">
+              クイズ・Q&Aアプリへのアクセス元と滞在時間を分析します。
+            </p>
+            <div className="mb-4 flex items-center gap-2">
+              <label className="text-sm">期間:</label>
+              <select
+                value={analyticsDays}
+                onChange={(e) => setAnalyticsDays(parseInt(e.target.value, 10))}
+                className="border rounded px-3 py-1.5 text-sm"
+              >
+                <option value={7}>過去7日</option>
+                <option value={30}>過去30日</option>
+                <option value={90}>過去90日</option>
+              </select>
+              <button
+                onClick={() => {
+                  setAnalyticsLoading(true);
+                  fetch(`/api/admin/analytics?days=${analyticsDays}`, {
+                    headers: { Authorization: `Bearer ${authKey}` },
+                  })
+                    .then((r) => r.json())
+                    .then((data) => {
+                      if (data.error) throw new Error(data.error);
+                      setAnalytics(data);
+                    })
+                    .catch(() => setAnalytics(null))
+                    .finally(() => setAnalyticsLoading(false));
+                }}
+                className="px-3 py-1.5 text-sm bg-gray-100 rounded hover:bg-gray-200"
+              >
+                更新
+              </button>
+            </div>
+            {analyticsLoading ? (
+              <p>読み込み中...</p>
+            ) : analytics ? (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="font-semibold text-blue-800 mb-1">クイズ</h3>
+                    <p className="text-2xl font-bold text-blue-600">{analytics.quizStats.sessions}</p>
+                    <p className="text-sm text-gray-600">アクセス数</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      平均滞在 {Math.floor(analytics.quizStats.avgDuration / 60)}分{analytics.quizStats.avgDuration % 60}秒
+                    </p>
+                  </div>
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <h3 className="font-semibold text-green-800 mb-1">Q&A</h3>
+                    <p className="text-2xl font-bold text-green-600">{analytics.kotaeStats.sessions}</p>
+                    <p className="text-sm text-gray-600">アクセス数</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      平均滞在 {Math.floor(analytics.kotaeStats.avgDuration / 60)}分{analytics.kotaeStats.avgDuration % 60}秒
+                    </p>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="font-semibold text-gray-800 mb-1">合計</h3>
+                    <p className="text-2xl font-bold text-gray-600">{analytics.totalSessions}</p>
+                    <p className="text-sm text-gray-600">セッション数</p>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3">アクセス元（参照元）</h3>
+                  {analytics.referrers.length === 0 ? (
+                    <p className="text-gray-500">データがありません。</p>
+                  ) : (
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-3">参照元</th>
+                          <th className="text-right py-2 px-3">アクセス数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.referrers.map((r) => (
+                          <tr key={r.domain} className="border-b">
+                            <td className="py-2 px-3">{r.domain}</td>
+                            <td className="py-2 px-3 text-right">{r.count}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500">データを読み込んでください。</p>
+            )}
           </div>
         )}
       </div>
