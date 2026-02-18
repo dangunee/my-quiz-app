@@ -44,7 +44,14 @@ export default function QuizClient() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
+  const [kotaeSearch, setKotaeSearch] = useState("");
   const japaneseRef = useRef<HTMLDivElement>(null);
+
+  const filteredKotae = kotaeSearch.trim()
+    ? KOTAE_LIST.filter((item) =>
+        item.title.toLowerCase().includes(kotaeSearch.trim().toLowerCase())
+      )
+    : KOTAE_LIST;
 
   useEffect(() => {
     const shuffled = shuffle(
@@ -276,22 +283,39 @@ export default function QuizClient() {
           </button>
         </div>
         {activeTab === "kotae" ? (
-          <div className="kotae-list p-4 max-h-[70vh] overflow-y-auto">
-            <h2 className="text-base font-semibold text-gray-800 mb-1">韓国語の微妙なニュアンス Q&A</h2>
-            <p className="text-sm text-gray-500 mb-4">{KOTAE_LIST.length}件の質問</p>
-            <ul className="space-y-2">
-              {KOTAE_LIST.map((item, i) => (
-                <li key={i}>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block py-2 px-3 rounded-lg text-gray-800 hover:bg-[#e8f6fc] hover:text-[#0ea5e9] transition text-sm border-b border-gray-100 last:border-b-0"
-                  >
-                    {item.title}
-                  </a>
+          <div className="kotae-list flex flex-col max-h-[70vh] overflow-hidden">
+            <div className="bg-[#2d5a4a] text-white text-center py-3 px-4 font-semibold text-base shrink-0">
+              韓国語の微妙なニュアンス Q&A
+            </div>
+            <div className="p-4 shrink-0 border-b border-gray-200">
+              <input
+                type="search"
+                placeholder="質問を検索... (例: 違い、使い方)"
+                value={kotaeSearch}
+                onChange={(e) => setKotaeSearch(e.target.value)}
+                className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2d5a4a]/30 focus:border-[#2d5a4a]"
+              />
+              <p className="text-sm text-gray-500 mt-2">{filteredKotae.length}件の質問</p>
+            </div>
+            <ul className="flex-1 overflow-y-auto min-h-0">
+              {filteredKotae.length === 0 ? (
+                <li className="py-8 px-4 text-center text-gray-500 text-sm">
+                  該当する質問がありません
                 </li>
-              ))}
+              ) : (
+                filteredKotae.map((item, i) => (
+                  <li key={i} className="border-b border-gray-200 last:border-b-0">
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block py-3 px-4 text-gray-800 text-sm hover:bg-amber-50/80 active:bg-amber-100/80 transition"
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         ) : showPaywall ? (
