@@ -220,6 +220,31 @@ export default function QuizClient() {
 
   return (
     <div className="app-wrapper">
+      <div className="fixed top-0 left-0 right-0 z-20 flex gap-2 p-3 bg-white/95 backdrop-blur shadow-sm border-b border-gray-200">
+        <button
+          type="button"
+          onClick={() => setActiveTab("quiz")}
+          className={`flex-1 max-w-[200px] mx-auto py-2.5 px-4 text-sm font-bold rounded-lg transition ${
+            activeTab === "quiz"
+              ? "bg-[#0ea5e9] text-white shadow"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          }`}
+        >
+          クイズ
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("kotae")}
+          className={`flex-1 max-w-[200px] mx-auto py-2.5 px-4 text-sm font-bold rounded-lg transition ${
+            activeTab === "kotae"
+              ? "bg-[#0ea5e9] text-white shadow"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          }`}
+        >
+          Q&A
+        </button>
+      </div>
+      <div className="pt-16" />
       {menuOpen && (
         <>
           <div
@@ -249,30 +274,6 @@ export default function QuizClient() {
         </>
       )}
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl md:px-4">
-        <div className="tab-bar flex gap-1 mb-4 shrink-0 w-full max-w-md mx-auto md:mx-0">
-          <button
-            type="button"
-            onClick={() => setActiveTab("quiz")}
-            className={`flex-1 py-3 px-6 text-sm font-bold rounded-xl transition ${
-              activeTab === "quiz"
-                ? "bg-[#0ea5e9] text-white shadow-md"
-                : "bg-white text-gray-600 border-2 border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
-            }`}
-          >
-            クイズ
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("kotae")}
-            className={`flex-1 py-3 px-6 text-sm font-bold rounded-xl transition ${
-              activeTab === "kotae"
-                ? "bg-[#0ea5e9] text-white shadow-md"
-                : "bg-white text-gray-600 border-2 border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
-            }`}
-          >
-            Q&A
-          </button>
-        </div>
       <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0">
         <div className="quiz-container w-full md:shrink-0">
         {activeTab === "kotae" ? (
