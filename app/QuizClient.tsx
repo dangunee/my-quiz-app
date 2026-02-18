@@ -2,8 +2,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import { QUIZZES } from "./quiz-data";
+import { KOTAE_LIST } from "./kotae-data";
 
 const BLANK = "_________________________";
+const FREE_QUIZ_LIMIT = 10;
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 function formatJapanese(s: string) {
   const stripped = (s || "").replace(/[「」]/g, "").trim();
@@ -18,6 +29,7 @@ function getOptionNumber(id: number) {
 }
 
 export default function QuizClient() {
+  const [quizzes, setQuizzes] = useState(QUIZZES);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -28,9 +40,23 @@ export default function QuizClient() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
+  const [hasPaid, setHasPaid] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
   const japaneseRef = useRef<HTMLDivElement>(null);
 
-  const quiz = QUIZZES[currentIndex];
+  useEffect(() => {
+    const shuffled = shuffle(
+      QUIZZES.map((q) => ({
+        ...q,
+        options: shuffle([...q.options]),
+      }))
+    ) as unknown as typeof QUIZZES;
+    setQuizzes(shuffled);
+  }, []);
+
+  const quiz = quizzes[currentIndex];
   const ov = overrides[quiz.id];
   const explanation =
     (typeof ov === "string" ? ov : ov?.explanation) ?? quiz.explanation;
@@ -41,6 +67,17 @@ export default function QuizClient() {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
     setIsLoggedIn(!!token);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHasPaid(localStorage.getItem("quiz_has_paid") === "true");
+    }
+  }, []);
+
+  useEffect(() => {
+    const shouldShow = currentIndex >= FREE_QUIZ_LIMIT && !hasPaid;
+    setShowPaywall(shouldShow);
+  }, [currentIndex, hasPaid]);
 
   useEffect(() => {
     const el = japaneseRef.current;
@@ -60,7 +97,7 @@ export default function QuizClient() {
       .then((data) => setOverrides(data.overrides || {}))
       .catch(() => {});
   }, []);
-  const total = QUIZZES.length;
+  const total = quizzes.length;
   const isComplete = currentIndex >= total - 1 && showResult;
   const answeredCount = showResult ? currentIndex + 1 : 0;
   const accuracyRate = showResult && answeredCount > 0
@@ -85,43 +122,100 @@ export default function QuizClient() {
 
   const handleNext = () => {
     if (currentIndex < total - 1) {
-      setCurrentIndex((i) => i + 1);
+      const nextIndex = currentIndex + 1;
+      if (nextIndex >= FREE_QUIZ_LIMIT && !hasPaid) {
+        setShowPaywall(true);
+        return;
+      }
+      setCurrentIndex(nextIndex);
       setSelectedAnswer(null);
       setShowResult(false);
     }
   };
 
-  const navLinks = isLoggedIn ? (
-    <>
-      <a
-        href="/profile"
-        className="block py-3 text-gray-800 hover:text-red-600"
-        onClick={() => setMenuOpen(false)}
-      >
-        マイページ
-      </a>
-      <span className="block py-2 text-sm text-gray-500">ログイン中</span>
-      <button
-        type="button"
-        onClick={() => {
-          localStorage.removeItem("quiz_token");
-          localStorage.removeItem("quiz_user");
-          setIsLoggedIn(false);
-          setMenuOpen(false);
-        }}
-        className="block w-full text-left py-3 text-gray-800 hover:text-red-600"
-      >
-        ログアウト
-      </button>
-    </>
-  ) : (
-    <a
-      href="/login"
-      className="block py-3 text-gray-800 hover:text-red-600"
-      onClick={() => setMenuOpen(false)}
-    >
-      ログイン
-    </a>
+  const handleCheckout = async () => {
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else throw new Error(data.error || "Checkout failed");
+    } catch (e) {
+      console.error(e);
+      setCheckoutLoading(false);
+    }
+  };
+
+  const menuLinks = [
+    { label: "ログイン", href: "/login", external: false },
+    { label: "ホームページ", href: "https://mirinae.jp", external: true },
+    { label: "個人レッスン", href: "https://mirinae.jp/kojin.html?tab=tab01", external: true },
+    { label: "発音講座", href: "https://mirinae.jp/kaiwa.html?tab=tab03", external: true },
+    { label: "会話クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab01", external: true },
+    { label: "音読クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
+    { label: "集中講座", href: "https://mirinae.jp/syutyu.html?tab=tab02", external: true },
+    { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab01", external: true },
+  ];
+
+  const navLinks = (
+    <div className="space-y-0">
+      {isLoggedIn ? (
+        <>
+          <a
+            href="/profile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block py-3 text-gray-800 hover:text-red-600 border-b"
+            onClick={() => setMenuOpen(false)}
+          >
+            マイページ
+          </a>
+          <span className="block py-2 text-sm text-gray-500 border-b">ログイン中</span>
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.removeItem("quiz_token");
+              localStorage.removeItem("quiz_user");
+              setIsLoggedIn(false);
+              setMenuOpen(false);
+            }}
+            className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b"
+          >
+            ログアウト
+          </button>
+        </>
+      ) : (
+        <a
+          href="/login"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block py-3 text-gray-800 hover:text-red-600 border-b"
+          onClick={() => setMenuOpen(false)}
+        >
+          ログイン
+        </a>
+      )}
+      {menuLinks.slice(1).map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+          className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
+          onClick={() => setMenuOpen(false)}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  );
+
+  const rightMenu = (
+    <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 md:bg-white md:rounded-2xl md:shadow-lg md:border md:border-gray-200 md:overflow-hidden">
+      <div className="px-4 py-4 border-b border-gray-200">
+        <span className="font-semibold text-gray-800">メニュー</span>
+      </div>
+      <nav className="flex-1 overflow-y-auto p-4">{navLinks}</nav>
+    </aside>
   );
 
   return (
@@ -129,12 +223,12 @@ export default function QuizClient() {
       {menuOpen && (
         <>
           <div
-            className="fixed inset-0 z-40 bg-black/30 sm:hidden"
+            className="fixed inset-0 z-40 bg-black/30 md:hidden"
             onClick={() => setMenuOpen(false)}
             aria-hidden
           />
           <aside
-            className="fixed left-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl sm:hidden"
+            className="fixed left-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden"
             style={{ animation: "slideIn 0.2s ease" }}
           >
             <div className="flex items-center justify-between border-b px-4 py-3">
@@ -154,14 +248,89 @@ export default function QuizClient() {
           </aside>
         </>
       )}
-      <div className="quiz-container">
+      <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full max-w-4xl md:px-4">
+        <div className="quiz-container w-full md:shrink-0">
+        <div className="tab-bar flex border-b border-gray-200 bg-white/50">
+          <button
+            type="button"
+            onClick={() => setActiveTab("quiz")}
+            className={`flex-1 py-3 px-4 text-sm font-medium transition ${
+              activeTab === "quiz"
+                ? "text-[#0ea5e9] border-b-2 border-[#0ea5e9] bg-white"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            クイズ
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("kotae")}
+            className={`flex-1 py-3 px-4 text-sm font-medium transition ${
+              activeTab === "kotae"
+                ? "text-[#0ea5e9] border-b-2 border-[#0ea5e9] bg-white"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            韓国語の微妙なニュアンス Q&A
+          </button>
+        </div>
+        {activeTab === "kotae" ? (
+          <div className="kotae-list p-4 max-h-[70vh] overflow-y-auto">
+            <p className="text-sm text-gray-500 mb-4">{KOTAE_LIST.length}件の質問</p>
+            <ul className="space-y-2">
+              {KOTAE_LIST.map((item, i) => (
+                <li key={i}>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block py-2 px-3 rounded-lg text-gray-800 hover:bg-[#e8f6fc] hover:text-[#0ea5e9] transition text-sm border-b border-gray-100 last:border-b-0"
+                  >
+                    {item.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : showPaywall ? (
+          <>
+            <header className="quiz-header">
+              <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
+              <div className="quiz-meta">
+                <span className="quiz-counter">{FREE_QUIZ_LIMIT} / {total}</span>
+              </div>
+            </header>
+            <div className="quiz-main p-8 text-center">
+              <p className="text-lg text-gray-700 mb-4">
+                無料で{FREE_QUIZ_LIMIT}問までお楽しみいただけます。
+              </p>
+              <p className="text-gray-600 mb-6">
+                11問目以降をご利用になるには、決済が必要です。
+              </p>
+              <p className="text-2xl font-bold text-[#cd3737] mb-2">¥980</p>
+              <p className="text-sm text-gray-500 mb-6">（税込）全問題アンロック</p>
+              <button
+                type="button"
+                onClick={handleCheckout}
+                disabled={checkoutLoading}
+                className="w-full py-4 px-6 bg-[#cd3737] text-white font-semibold rounded-xl hover:opacity-90 disabled:opacity-70 transition"
+              >
+                {checkoutLoading ? "処理中..." : "決済して続ける"}
+              </button>
+              <p className="mt-4 text-xs text-gray-400">
+                Stripe決済により安全に処理されます
+              </p>
+            </div>
+          </>
+        ) : (
+        <>
         <header className="quiz-header">
           <div className="flex justify-between items-start gap-4">
             <div className="flex items-center gap-2 min-w-0">
               <button
                 type="button"
                 onClick={() => setMenuOpen(true)}
-                className="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 text-white sm:hidden"
+                className="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 text-white md:hidden"
                 aria-label="メニューを開く"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +339,7 @@ export default function QuizClient() {
               </button>
               <h1 className="shrink-0 whitespace-nowrap">クイズで学ぶ韓国語</h1>
             </div>
-            <div className="hidden sm:block shrink-0">
+            <div className="hidden sm:block md:hidden shrink-0">
               {isLoggedIn ? (
                 <div className="flex flex-col items-end gap-1.5">
                   <div className="flex items-center gap-2">
@@ -314,6 +483,10 @@ export default function QuizClient() {
             />
           </div>
         </footer>
+        </>
+        )}
+        </div>
+        {rightMenu}
       </div>
     </div>
   );
