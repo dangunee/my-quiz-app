@@ -382,7 +382,7 @@ export default function QuizClient() {
           </button>
         </div>
         {activeTab === "kotae" ? (
-          <div className="kotae-list flex flex-col max-h-[calc(100dvh-8rem)] md:max-h-[70vh] overflow-hidden">
+          <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
             <div className="bg-[#2d5a4a] text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10">
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
               <input
@@ -453,7 +453,7 @@ export default function QuizClient() {
               )}
             </ul>
             {filteredKotae.length > KOTAE_PAGE_SIZE && (
-              <div className="flex items-center justify-center gap-2 py-3 px-4 border-t border-gray-200 shrink-0">
+              <div className="flex items-center justify-center gap-2 py-2 px-4 border-t border-gray-200 shrink-0">
                 <button
                   type="button"
                   onClick={() => setKotaePage((p) => Math.max(0, p - 1))}
