@@ -323,8 +323,8 @@ export default function QuizClient() {
           </aside>
         </>
       )}
-      <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl md:px-4">
-      <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl mx-auto md:px-4">
+      <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full">
         {rightMenu}
         <div className="quiz-container w-full md:shrink-0">
         <div className="flex gap-2 p-3 border-b border-gray-200 bg-gray-50 rounded-t-[20px]">
