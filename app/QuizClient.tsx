@@ -2,9 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { QUIZZES } from "./quiz-data";
-import { KOTAE_LIST } from "./kotae-data";
 
 const BLANK = "_________________________";
+
+interface KotaeItem {
+  id: number;
+  title: string;
+  url: string;
+}
 const FREE_QUIZ_LIMIT = 10;
 
 function shuffle<T>(arr: T[]): T[] {
@@ -28,13 +33,6 @@ function getOptionNumber(id: number) {
   return ["❶", "❷", "❸", "❹"][id - 1] || "❶";
 }
 
-function formatKotaeTitle(title: string): string {
-  const m = title.match(/^Q(\d+)(.*)$/);
-  if (!m) return title;
-  const rest = m[2].trimStart();
-  return rest ? `質問${m[1]}. ${rest}` : `質問${m[1]}.`;
-}
-
 export default function QuizClient() {
   const [quizzes, setQuizzes] = useState(QUIZZES);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,17 +51,29 @@ export default function QuizClient() {
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
-  const [expandedKotaeUrl, setExpandedKotaeUrl] = useState<string | null>(null);
+  const [kotaeList, setKotaeList] = useState<KotaeItem[]>([]);
+  const [kotaeListLoading, setKotaeListLoading] = useState(true);
+  const [expandedKotaeId, setExpandedKotaeId] = useState<number | null>(null);
   const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
   const [kotaeLoading, setKotaeLoading] = useState(false);
   const [kotaeError, setKotaeError] = useState<string | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    fetch("/api/kotae-list")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setKotaeList(data);
+      })
+      .catch(() => setKotaeList([]))
+      .finally(() => setKotaeListLoading(false));
+  }, []);
+
   const filteredKotae = kotaeSearch.trim()
-    ? KOTAE_LIST.filter((item) =>
+    ? kotaeList.filter((item) =>
         item.title.toLowerCase().includes(kotaeSearch.trim().toLowerCase())
       )
-    : KOTAE_LIST;
+    : kotaeList;
 
   const KOTAE_PAGE_SIZE = 20;
   const kotaeTotalPages = Math.ceil(filteredKotae.length / KOTAE_PAGE_SIZE) || 1;
@@ -77,23 +87,23 @@ export default function QuizClient() {
   }, [kotaeSearch]);
 
   useEffect(() => {
-    setExpandedKotaeUrl(null);
+    setExpandedKotaeId(null);
     setKotaeContent(null);
     setKotaeError(null);
   }, [kotaePage, kotaeSearch]);
 
   useEffect(() => {
-    if (!expandedKotaeUrl) {
+    if (!expandedKotaeId) {
       setKotaeContent(null);
       setKotaeError(null);
       return;
     }
-    const item = KOTAE_LIST.find((i) => i.url === expandedKotaeUrl);
+    const item = kotaeList.find((i) => i.id === expandedKotaeId);
     if (!item) return;
 
     setKotaeLoading(true);
     setKotaeError(null);
-    fetch(`/api/kotae-blog?title=${encodeURIComponent(item.title)}`)
+    fetch(`/api/kotae-blog?p=${item.id}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error && !data.html) {
@@ -109,7 +119,7 @@ export default function QuizClient() {
         setKotaeContent(null);
       })
       .finally(() => setKotaeLoading(false));
-  }, [expandedKotaeUrl]);
+  }, [expandedKotaeId, kotaeList]);
 
   useEffect(() => {
     const shuffled = shuffle(
@@ -354,30 +364,34 @@ export default function QuizClient() {
               <p className="text-sm text-white/90 mt-2">{filteredKotae.length}件の質問</p>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
-              {filteredKotae.length === 0 ? (
+              {kotaeListLoading ? (
+                <li className="py-8 px-4 text-center text-gray-500 text-sm">
+                  読み込み中...
+                </li>
+              ) : filteredKotae.length === 0 ? (
                 <li className="py-8 px-4 text-center text-gray-500 text-sm">
                   該当する質問がありません
                 </li>
               ) : (
                 kotaePaginated.map((item, i) => (
-                  <li key={i} className="border-b border-gray-200 last:border-b-0">
+                  <li key={item.id} className="border-b border-gray-200 last:border-b-0">
                     <button
                       type="button"
                       onClick={() =>
-                        setExpandedKotaeUrl((prev) => (prev === item.url ? null : item.url))
+                        setExpandedKotaeId((prev) => (prev === item.id ? null : item.id))
                       }
                       className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                     >
-                      <span>{formatKotaeTitle(item.title)}</span>
+                      <span>{item.title}</span>
                       <span
                         className={`shrink-0 text-gray-400 transition-transform ${
-                          expandedKotaeUrl === item.url ? "rotate-180" : ""
+                          expandedKotaeId === item.id ? "rotate-180" : ""
                         }`}
                       >
                         ▼
                       </span>
                     </button>
-                    {expandedKotaeUrl === item.url && (
+                    {expandedKotaeId === item.id && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
                         <div className="max-h-[500px] overflow-y-auto p-4">
                           {kotaeLoading ? (

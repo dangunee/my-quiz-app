@@ -4,37 +4,45 @@ const BLOG_BASE = "https://mirinae.jp/blog";
 const BLOG_CAT = "7"; // Q&A 카테고리
 
 function extractSearchTerm(title: string): string {
-  const m = title.match(/^Q\d+\s*(.+)$/);
+  const m = title.match(/(?:^Q\d+|^質問\d+\)?)\s*(.+)$/);
   return (m ? m[1] : title).trim().slice(0, 80);
 }
 
 export async function GET(req: NextRequest) {
   try {
+    const postId = req.nextUrl.searchParams.get("p");
     const title = req.nextUrl.searchParams.get("title") || req.nextUrl.searchParams.get("q") || "";
-    if (!title.trim()) {
-      return NextResponse.json({ error: "title or q required" }, { status: 400 });
+
+    let postUrl: string | null = null;
+
+    if (postId && /^\d+$/.test(postId)) {
+      postUrl = `${BLOG_BASE}/?p=${postId}`;
+    } else if (title.trim()) {
+      const searchTerm = extractSearchTerm(title);
+      const searchUrl = `${BLOG_BASE}/?s=${encodeURIComponent(searchTerm)}&cat=${BLOG_CAT}`;
+
+      const searchRes = await fetch(searchUrl, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; QuizApp/1.0)" },
+      });
+      if (!searchRes.ok) throw new Error("Blog search failed");
+      const searchHtml = await searchRes.text();
+
+      const postMatch =
+        searchHtml.match(/href=["'](https?:\/\/mirinae\.jp\/blog\/\?p=\d+)[^"']*["']/i) ||
+        searchHtml.match(/href=["'](\/blog\/\?p=\d+)[^"']*["']/i);
+      postUrl = postMatch
+        ? postMatch[1].startsWith("http")
+          ? postMatch[1]
+          : `https://mirinae.jp${postMatch[1]}`
+        : null;
     }
 
-    const searchTerm = extractSearchTerm(title);
-    const searchUrl = `${BLOG_BASE}/?s=${encodeURIComponent(searchTerm)}&cat=${BLOG_CAT}`;
-
-    const searchRes = await fetch(searchUrl, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; QuizApp/1.0)" },
-    });
-    if (!searchRes.ok) throw new Error("Blog search failed");
-    const searchHtml = await searchRes.text();
-
-    const postMatch =
-      searchHtml.match(/href=["'](https?:\/\/mirinae\.jp\/blog\/\?p=\d+)[^"']*["']/i) ||
-      searchHtml.match(/href=["'](\/blog\/\?p=\d+)[^"']*["']/i);
-    const postUrl = postMatch
-      ? postMatch[1].startsWith("http")
-        ? postMatch[1]
-        : `https://mirinae.jp${postMatch[1]}`
-      : null;
-
     if (!postUrl) {
-      return NextResponse.json({ error: "No matching post found", html: null }, { status: 404 });
+      const status = !title.trim() ? 400 : 404;
+      const error = !title.trim()
+        ? "title or q required"
+        : "No matching post found";
+      return NextResponse.json({ error, html: null }, { status });
     }
 
     const postRes = await fetch(postUrl, {
