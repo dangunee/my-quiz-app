@@ -284,18 +284,16 @@ export default function QuizClient() {
         </div>
         {activeTab === "kotae" ? (
           <div className="kotae-list flex flex-col max-h-[70vh] overflow-hidden">
-            <div className="bg-[#2d5a4a] text-white text-center py-3 px-4 font-semibold text-base shrink-0">
-              韓国語の微妙なニュアンス Q&A
-            </div>
-            <div className="p-4 shrink-0 border-b border-gray-200">
+            <div className="bg-[#2d5a4a] text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10">
+              <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
               <input
                 type="search"
                 placeholder="質問を検索... (例: 違い、使い方)"
                 value={kotaeSearch}
                 onChange={(e) => setKotaeSearch(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2d5a4a]/30 focus:border-[#2d5a4a]"
+                className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
-              <p className="text-sm text-gray-500 mt-2">{filteredKotae.length}件の質問</p>
+              <p className="text-sm text-white/90 mt-2">{filteredKotae.length}件の質問</p>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
               {filteredKotae.length === 0 ? (
