@@ -250,14 +250,14 @@ export default function QuizClient() {
       )}
       <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full max-w-4xl md:px-4">
         <div className="quiz-container w-full md:shrink-0">
-        <div className="tab-bar flex border-b border-gray-200 bg-white/50">
+        <div className="tab-bar flex border-b-2 border-gray-200 bg-gray-50 shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab("quiz")}
-            className={`flex-1 py-3 px-4 text-sm font-medium transition ${
+            className={`flex-1 py-3 px-4 text-sm font-semibold transition rounded-t-lg ${
               activeTab === "quiz"
-                ? "text-[#0ea5e9] border-b-2 border-[#0ea5e9] bg-white"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                ? "text-[#0ea5e9] bg-white border-b-2 border-white -mb-0.5 shadow-sm"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             }`}
           >
             クイズ
@@ -265,17 +265,18 @@ export default function QuizClient() {
           <button
             type="button"
             onClick={() => setActiveTab("kotae")}
-            className={`flex-1 py-3 px-4 text-sm font-medium transition ${
+            className={`flex-1 py-3 px-4 text-sm font-semibold transition rounded-t-lg ${
               activeTab === "kotae"
-                ? "text-[#0ea5e9] border-b-2 border-[#0ea5e9] bg-white"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                ? "text-[#0ea5e9] bg-white border-b-2 border-white -mb-0.5 shadow-sm"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             }`}
           >
-            韓国語の微妙なニュアンス Q&A
+            Q&A
           </button>
         </div>
         {activeTab === "kotae" ? (
           <div className="kotae-list p-4 max-h-[70vh] overflow-y-auto">
+            <h2 className="text-base font-semibold text-gray-800 mb-1">韓国語の微妙なニュアンス Q&A</h2>
             <p className="text-sm text-gray-500 mb-4">{KOTAE_LIST.length}件の質問</p>
             <ul className="space-y-2">
               {KOTAE_LIST.map((item, i) => (
