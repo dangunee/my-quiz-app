@@ -3,7 +3,12 @@ export interface KotaeItem {
   url: string;
 }
 
-export const KOTAE_LIST: KotaeItem[] = [
+function getQNumber(title: string): number {
+  const m = title.match(/^Q(\d+)/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+const KOTAE_LIST_RAW: KotaeItem[] = [
   { title: "Q2003봐서는vs보니까", url: "https://kotae.mirinae.jp/q/bwaseoneun-bonikka" },
   { title: "Q2002～고 그러지 말라 vs ～지 말라", url: "https://kotae.mirinae.jp/q/gora-geuraeji-malla" },
   { title: "Q2001소원と소망の違いが分からず困っています。", url: "https://kotae.mirinae.jp/q/sowon-somang" },
@@ -199,4 +204,11 @@ export const KOTAE_LIST: KotaeItem[] = [
   { title: "Q185日本語の「気」を使った表現について教えてください。", url: "https://kotae.mirinae.jp/q/185" },
   { title: "Q186複数を表す~들の使い方について教えてください。", url: "https://kotae.mirinae.jp/q/186" },
   { title: "Q187形容詞の場合-던vs-았/었던の違いは？", url: "https://kotae.mirinae.jp/q/187" },
+  { title: "Q188", url: "https://mirinae.jp/blog/?cat=7" },
+  { title: "Q189", url: "https://mirinae.jp/blog/?cat=7" },
+  { title: "Q190", url: "https://mirinae.jp/blog/?cat=7" },
 ];
+
+export const KOTAE_LIST: KotaeItem[] = [...KOTAE_LIST_RAW].sort(
+  (a, b) => getQNumber(a.title) - getQNumber(b.title)
+);
