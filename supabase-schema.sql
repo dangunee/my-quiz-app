@@ -50,6 +50,11 @@ create table if not exists app_analytics (
   session_id text not null,
   referrer text,
   referrer_domain text,
+  source_type text,
+  source_media text,
+  country text,
+  region text,
+  is_logged_in boolean,
   app_type text not null check (app_type in ('quiz', 'kotae')),
   quiz_viewed boolean default false,
   kotae_viewed boolean default false,
@@ -61,3 +66,13 @@ create table if not exists app_analytics (
 create index if not exists idx_app_analytics_session on app_analytics(session_id);
 create index if not exists idx_app_analytics_started on app_analytics(started_at);
 create index if not exists idx_app_analytics_referrer on app_analytics(referrer_domain);
+create index if not exists idx_app_analytics_source on app_analytics(source_type);
+create index if not exists idx_app_analytics_country on app_analytics(country);
+create index if not exists idx_app_analytics_logged_in on app_analytics(is_logged_in);
+
+-- If table already exists, run this to add new columns:
+-- alter table app_analytics add column if not exists source_type text;
+-- alter table app_analytics add column if not exists source_media text;
+-- alter table app_analytics add column if not exists country text;
+-- alter table app_analytics add column if not exists region text;
+-- alter table app_analytics add column if not exists is_logged_in boolean;

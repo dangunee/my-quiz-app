@@ -14,6 +14,45 @@ function getReferrerDomain(referrer: string | null): string | null {
   }
 }
 
+const SEARCH_DOMAINS = [
+  "google.com", "google.co.jp", "google.co.kr", "google.co.uk",
+  "bing.com", "yahoo.co.jp", "yahoo.com", "duckduckgo.com",
+  "baidu.com", "yandex.ru", "naver.com", "daum.net",
+];
+
+const SNS_MEDIA: Record<string, string> = {
+  "facebook.com": "facebook",
+  "www.facebook.com": "facebook",
+  "m.facebook.com": "facebook",
+  "twitter.com": "twitter",
+  "x.com": "twitter",
+  "t.co": "twitter",
+  "instagram.com": "instagram",
+  "www.instagram.com": "instagram",
+  "line.me": "line",
+  "line.naver.jp": "line",
+  "tiktok.com": "tiktok",
+  "www.tiktok.com": "tiktok",
+  "linkedin.com": "linkedin",
+  "www.linkedin.com": "linkedin",
+  "youtube.com": "youtube",
+  "www.youtube.com": "youtube",
+  "reddit.com": "reddit",
+  "www.reddit.com": "reddit",
+};
+
+function getSourceTypeAndMedia(domain: string | null): { source_type: string; source_media: string | null } {
+  if (!domain) return { source_type: "direct", source_media: null };
+  const lower = domain.toLowerCase();
+  if (SEARCH_DOMAINS.some((d) => lower.includes(d))) {
+    return { source_type: "search", source_media: null };
+  }
+  for (const [d, media] of Object.entries(SNS_MEDIA)) {
+    if (lower.includes(d)) return { source_type: "sns", source_media: media };
+  }
+  return { source_type: "referral", source_media: null };
+}
+
 export async function POST(request: NextRequest) {
   if (!supabaseUrl || !supabaseKey) {
     return NextResponse.json({ ok: true }); // no-op when not configured
@@ -21,23 +60,32 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { event, session_id, referrer, app_type, duration_seconds } = body as {
+    const { event, session_id, referrer, app_type, duration_seconds, is_logged_in } = body as {
       event: "session_start" | "tab_view" | "session_end";
       session_id?: string;
       referrer?: string;
       app_type?: "quiz" | "kotae";
       duration_seconds?: number;
+      is_logged_in?: boolean;
     };
 
     const supabase = createClient(supabaseUrl, supabaseKey);
     const ref = referrer ?? request.headers.get("referer") ?? null;
     const domain = getReferrerDomain(ref);
+    const { source_type, source_media } = getSourceTypeAndMedia(domain);
+    const country = request.headers.get("x-vercel-ip-country") ?? null;
+    const region = request.headers.get("x-vercel-ip-country-region") ?? request.headers.get("x-vercel-ip-city") ?? null;
 
     if (event === "session_start" && session_id && app_type) {
       await supabase.from("app_analytics").insert({
         session_id,
         referrer: ref,
         referrer_domain: domain,
+        source_type,
+        source_media,
+        country,
+        region,
+        is_logged_in: is_logged_in ?? false,
         app_type,
         quiz_viewed: app_type === "quiz",
         kotae_viewed: app_type === "kotae",

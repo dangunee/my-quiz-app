@@ -70,11 +70,19 @@ export default function AdminPage() {
   const [userActionLoading, setUserActionLoading] = useState(false);
   const [userSearchKeyword, setUserSearchKeyword] = useState("");
   const [analytics, setAnalytics] = useState<{
-    referrers: { domain: string; count: number }[];
+    referrers: { domain: string; count: number; avgDuration?: number }[];
+    userTypes?: { type: string; count: number; avgDuration?: number }[];
+    sourceTypes?: { type: string; count: number; avgDuration?: number }[];
+    sourceMedias?: { media: string; count: number; avgDuration?: number }[];
+    countries?: { country: string; count: number; avgDuration?: number }[];
+    regions?: { region: string; count: number; avgDuration?: number }[];
     quizStats: { sessions: number; avgDuration: number };
     kotaeStats: { sessions: number; avgDuration: number };
     totalSessions: number;
   } | null>(null);
+
+  const formatDuration = (sec: number) =>
+    sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
   const filteredUsers = userSearchKeyword.trim()
@@ -743,7 +751,7 @@ export default function AdminPage() {
                     <p className="text-2xl font-bold text-blue-600">{analytics.quizStats.sessions}</p>
                     <p className="text-sm text-gray-600">アクセス数</p>
                     <p className="text-sm text-gray-600 mt-1">
-                      平均滞在 {Math.floor(analytics.quizStats.avgDuration / 60)}分{analytics.quizStats.avgDuration % 60}秒
+                      平均滞在 {formatDuration(analytics.quizStats.avgDuration)}
                     </p>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg">
@@ -751,7 +759,7 @@ export default function AdminPage() {
                     <p className="text-2xl font-bold text-green-600">{analytics.kotaeStats.sessions}</p>
                     <p className="text-sm text-gray-600">アクセス数</p>
                     <p className="text-sm text-gray-600 mt-1">
-                      平均滞在 {Math.floor(analytics.kotaeStats.avgDuration / 60)}分{analytics.kotaeStats.avgDuration % 60}秒
+                      平均滞在 {formatDuration(analytics.kotaeStats.avgDuration)}
                     </p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-lg">
@@ -760,6 +768,125 @@ export default function AdminPage() {
                     <p className="text-sm text-gray-600">セッション数</p>
                   </div>
                 </div>
+                {(analytics.userTypes?.length ?? 0) > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">会員 / 外部</h3>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-3">区分</th>
+                          <th className="text-right py-2 px-3">アクセス数</th>
+                          <th className="text-right py-2 px-3">平均滞在</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.userTypes!.map((s) => (
+                          <tr key={s.type} className="border-b">
+                            <td className="py-2 px-3">
+                              {s.type === "member" ? "ログイン会員" : "外部アクセス"}
+                            </td>
+                            <td className="py-2 px-3 text-right">{s.count}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? 0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {(analytics.sourceTypes?.length ?? 0) > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">流入元タイプ</h3>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-3">タイプ</th>
+                          <th className="text-right py-2 px-3">アクセス数</th>
+                          <th className="text-right py-2 px-3">平均滞在</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.sourceTypes!.map((s) => (
+                          <tr key={s.type} className="border-b">
+                            <td className="py-2 px-3">
+                              {s.type === "search" ? "検索" : s.type === "sns" ? "SNS" : s.type === "direct" ? "直接" : s.type === "referral" ? "その他" : s.type}
+                            </td>
+                            <td className="py-2 px-3 text-right">{s.count}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? 0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {(analytics.sourceMedias?.length ?? 0) > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">SNSメディア別</h3>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-3">メディア</th>
+                          <th className="text-right py-2 px-3">アクセス数</th>
+                          <th className="text-right py-2 px-3">平均滞在</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.sourceMedias!.map((s) => (
+                          <tr key={s.media} className="border-b">
+                            <td className="py-2 px-3">{s.media}</td>
+                            <td className="py-2 px-3 text-right">{s.count}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? 0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {(analytics.countries?.length ?? 0) > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">国・地域別</h3>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-3">国・地域</th>
+                          <th className="text-right py-2 px-3">アクセス数</th>
+                          <th className="text-right py-2 px-3">平均滞在</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.countries!.map((c) => (
+                          <tr key={c.country} className="border-b">
+                            <td className="py-2 px-3">{c.country}</td>
+                            <td className="py-2 px-3 text-right">{c.count}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(c.avgDuration ?? 0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                {(analytics.regions?.length ?? 0) > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">地域詳細（国 / 都道府県・都市）</h3>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-3">地域</th>
+                          <th className="text-right py-2 px-3">アクセス数</th>
+                          <th className="text-right py-2 px-3">平均滞在</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {analytics.regions!.map((r) => (
+                          <tr key={r.region} className="border-b">
+                            <td className="py-2 px-3">{r.region}</td>
+                            <td className="py-2 px-3 text-right">{r.count}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? 0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
                 <div>
                   <h3 className="font-semibold mb-3">アクセス元（参照元）</h3>
                   {analytics.referrers.length === 0 ? (
@@ -770,6 +897,7 @@ export default function AdminPage() {
                         <tr className="border-b">
                           <th className="text-left py-2 px-3">参照元</th>
                           <th className="text-right py-2 px-3">アクセス数</th>
+                          <th className="text-right py-2 px-3">平均滞在</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -777,6 +905,7 @@ export default function AdminPage() {
                           <tr key={r.domain} className="border-b">
                             <td className="py-2 px-3">{r.domain}</td>
                             <td className="py-2 px-3 text-right">{r.count}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? 0)}</td>
                           </tr>
                         ))}
                       </tbody>

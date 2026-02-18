@@ -70,6 +70,7 @@ export default function QuizClient() {
     }
     const start = Date.now();
     analyticsSessionRef.current = { id: sessionId, start };
+    const isLoggedIn = typeof localStorage !== "undefined" && !!localStorage.getItem("quiz_token");
     fetch("/api/analytics", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -78,6 +79,7 @@ export default function QuizClient() {
         session_id: sessionId,
         referrer: typeof document !== "undefined" ? document.referrer || undefined : undefined,
         app_type: activeTab,
+        is_logged_in: isLoggedIn,
       }),
     }).catch(() => {});
   }, []);
