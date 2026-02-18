@@ -337,24 +337,23 @@ export default function QuizClient() {
                       </span>
                     </button>
                     {expandedKotaeUrl === item.url && (
-                      <div className="border-t border-gray-200 bg-gray-50">
-                        <div className="p-2 flex items-center justify-between gap-2 border-b border-gray-200">
-                          <span className="text-xs text-gray-500">kotae.mirinae.jp より</span>
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-[#0ea5e9] hover:underline"
-                          >
-                            元のページで開く →
-                          </a>
+                      <div className="border-t border-gray-200 bg-white overflow-hidden">
+                        <div className="relative h-[420px] overflow-hidden">
+                          <iframe
+                            src={item.url}
+                            title={item.title}
+                            className="w-full h-[600px] border-0 absolute -top-[180px] left-0"
+                            sandbox="allow-scripts allow-same-origin"
+                          />
                         </div>
-                        <iframe
-                          src={item.url}
-                          title={item.title}
-                          className="w-full h-[400px] border-0"
-                          sandbox="allow-scripts allow-same-origin"
-                        />
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block py-1.5 px-3 text-xs text-[#0ea5e9] hover:underline text-right"
+                        >
+                          元のページで開く →
+                        </a>
                       </div>
                     )}
                   </li>
