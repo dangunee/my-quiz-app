@@ -338,11 +338,11 @@ export default function QuizClient() {
                     </button>
                     {expandedKotaeUrl === item.url && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
-                        <div className="relative h-[420px] overflow-hidden">
+                        <div className="relative h-[500px] overflow-hidden">
                           <iframe
                             src={item.url}
                             title={item.title}
-                            className="w-full h-[700px] border-0 absolute -top-[300px] left-0"
+                            className="absolute left-0 w-full h-[700px] border-0 -top-[200px]"
                             sandbox="allow-scripts allow-same-origin"
                           />
                         </div>
@@ -350,7 +350,7 @@ export default function QuizClient() {
                           href={item.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block py-1.5 px-3 text-xs text-[#0ea5e9] hover:underline text-right"
+                          className="block py-2 px-4 text-center text-xs text-[#0ea5e9] hover:underline border-t border-gray-100"
                         >
                           元のページで開く →
                         </a>
