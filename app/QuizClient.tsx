@@ -372,7 +372,7 @@ export default function QuizClient() {
           </button>
         </div>
         {activeTab === "kotae" ? (
-          <div className="kotae-list flex flex-col max-h-[70vh] overflow-hidden">
+          <div className="kotae-list flex flex-col max-h-[calc(100dvh-8rem)] md:max-h-[70vh] overflow-hidden">
             <div className="bg-[#2d5a4a] text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10">
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
               <input
