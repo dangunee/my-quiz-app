@@ -28,6 +28,13 @@ function getOptionNumber(id: number) {
   return ["❶", "❷", "❸", "❹"][id - 1] || "❶";
 }
 
+function formatKotaeTitle(title: string): string {
+  const m = title.match(/^Q(\d+)(.*)$/);
+  if (!m) return title;
+  const rest = m[2].trimStart();
+  return rest ? `質問${m[1]}. ${rest}` : `質問${m[1]}.`;
+}
+
 export default function QuizClient() {
   const [quizzes, setQuizzes] = useState(QUIZZES);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -361,7 +368,7 @@ export default function QuizClient() {
                       }
                       className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                     >
-                      <span>{item.title}</span>
+                      <span>{formatKotaeTitle(item.title)}</span>
                       <span
                         className={`shrink-0 text-gray-400 transition-transform ${
                           expandedKotaeUrl === item.url ? "rotate-180" : ""
