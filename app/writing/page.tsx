@@ -473,8 +473,8 @@ export default function WritingPage() {
                           <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">④</span>ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します</li>
                         </ul>
                       </div>
-                      <div className="pt-4 border-t border-[#e5dfd4] overflow-hidden rounded-lg border border-gray-300">
-                        <div className="bg-[#1e3a5f] px-4 py-2">
+                      <div className="pt-4 border-t border-[#e5dfd4] overflow-hidden rounded-lg border border-gray-300 bg-[#1e3a5f]">
+                        <div className="px-4 py-2">
                           <h3 className="font-semibold text-white text-sm">詳細</h3>
                         </div>
                         <div className="border-collapse text-sm">

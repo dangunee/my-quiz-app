@@ -142,7 +142,7 @@ export default function AdminPage() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const PER_PAGE = 10;
   const filteredQuizzes = searchKeyword.trim()
-    ? QUIZZES.filter((q) => {
+    ? (QUIZZES || []).filter((q) => {
         const ov = overrides[q.id];
         const kw = searchKeyword.trim().toLowerCase();
         const expl = (typeof ov === "string" ? ov : ov?.explanation) ?? q.explanation ?? "";
@@ -158,7 +158,7 @@ export default function AdminPage() {
           opts.map((o) => o.text).join(" ");
         return searchable.toLowerCase().includes(kw);
       })
-    : QUIZZES;
+    : (QUIZZES || []);
   const totalPages = Math.ceil(filteredQuizzes.length / PER_PAGE) || 1;
   const safePage = Math.min(Math.max(1, currentPage), totalPages);
   const startIdx = (safePage - 1) * PER_PAGE;
@@ -410,7 +410,7 @@ export default function AdminPage() {
         body: JSON.stringify(newForm),
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data?.assignment) {
         setAssignments((prev) => [...prev, data.assignment]);
         setNewForm({ title_ko: "", title_ja: "", description: "", sort_order: 0 });
       } else {
