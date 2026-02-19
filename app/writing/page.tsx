@@ -267,11 +267,11 @@ export default function WritingPage() {
         <div className="flex flex-col gap-1">
           <Link href="/profile" target="_blank" rel="noopener noreferrer" className={menuItemClass} onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
             <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            마이페이지
+            マイページ
           </Link>
           <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); setSidebarCollapsed(true); window.location.href = redirectPath; }} className={`${menuItemClass} w-full text-left`}>
             <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-            로그아웃
+            ログアウト
           </button>
           <div className="mt-3 pt-3 border-t border-[#e5dfd4]">
             <p className="px-3 py-1 text-xs text-gray-500 truncate">{user.name || user.username || user.email}</p>
@@ -280,7 +280,7 @@ export default function WritingPage() {
       ) : (
         <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className={menuItemClass} onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
           <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-          로그인
+          ログイン
         </Link>
       )}
     </nav>
@@ -293,8 +293,8 @@ export default function WritingPage() {
           <div className="fixed inset-0 z-40 bg-black/30 md:hidden" onClick={() => setMenuOpen(false)} aria-hidden />
           <aside className="fixed left-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden" style={{ animation: "slideIn 0.2s ease" }}>
             <div className="flex items-center justify-between border-b px-4 py-3">
-              <span className="font-semibold text-gray-800">메뉴</span>
-              <button type="button" onClick={() => setMenuOpen(false)} className="rounded p-2 text-gray-500 hover:bg-gray-100" aria-label="메뉴 닫기">
+              <span className="font-semibold text-gray-800">メニュー</span>
+              <button type="button" onClick={() => setMenuOpen(false)} className="rounded p-2 text-gray-500 hover:bg-gray-100" aria-label="メニューを閉じる">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
@@ -303,17 +303,15 @@ export default function WritingPage() {
         </>
       )}
 
-      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "메뉴 열기" : "메뉴 닫기"}>
+      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
+        <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
+          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex absolute left-4 md:left-6 shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="메뉴 열기">
+          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-2xl md:text-4xl font-bold tracking-wide">ミリネ韓国語教室・作文トレーニング</h1>
-          </div>
+          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室・作文トレーニング</h1>
         </div>
       </header>
 
@@ -322,7 +320,7 @@ export default function WritingPage() {
           {!sidebarCollapsed && (
             <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-r border-[#e5dfd4]">
               <div className="p-4">
-                <button onClick={() => setSidebarCollapsed(true)} className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-[#ebe5da] transition-colors" aria-label="사이드바 접기">
+                <button onClick={() => setSidebarCollapsed(true)} className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-[#ebe5da] transition-colors" aria-label="サイドバーを閉じる">
                   <span className="text-gray-500">◀</span>
                 </button>
               </div>
@@ -404,7 +402,7 @@ export default function WritingPage() {
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
                                 <div className="mt-3 p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
                                   <p className="text-gray-800 leading-relaxed">요즘 쁘띠 성형이라고 해서 칼을 대지 않고도 성형을 할 수 있는 시대가 되었다. 연예인들도 자신의 성형을 당당히 밝히고 있는데, 성형수술, 어떻게 생각하는지 쓰시오</p>
-                                  <p className="text-gray-600 font-medium">참고 단어: 미의 기준, 다이어트, 자기만족, 중독, 자연스럽다, 성격</p>
+                                  <p className="text-gray-600 font-medium">参考単語: 미의 기준, 다이어트, 자기만족, 중독, 자연스럽다, 성격</p>
                                   <p className="text-gray-600 font-medium">下記に提示された文型を、必ず2つ以上使用すること。</p>
                                   <div className="space-y-2 pt-2">
                                     <div className="text-gray-700">
@@ -436,7 +434,7 @@ export default function WritingPage() {
                                   </div>
                                   <div className="pt-4 mt-4 overflow-hidden rounded-lg border border-[#e5dfd4]">
                                     <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">모범문</span>
+                                      <span className="font-semibold text-white text-sm">模範文</span>
                                     </div>
                                     <div className="p-4 bg-[#f5f0e6]">
                                       <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">한국 사람이라고 해서 누구나 성형수술에 관대한 것은 아니지만, 나는 어느 쪽인가 하면 적당한 성형에 찬성하는 편이다. 평생 콤플렉스를 가진 채 고민하며 사느니 조금 고쳐서 자신감을 갖는 것이 더 낫다고 생각하기 때문이다. 내 주변에는 성형중독은 없지만 쌍커풀 수술이나 코 수술 정도는 몇 명이나 있다.
@@ -452,16 +450,16 @@ export default function WritingPage() {
                             <button type="button" onClick={() => setExpandedCheombi(!expandedCheombi)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
                               <div className="flex items-center gap-3">
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedCheombi ? "▼" : "▶"}</span>
-                                <span className="font-medium text-gray-800">첨삭문・비교문・모범문</span>
+                                <span className="font-medium text-gray-800">添削文・比較文・模範文</span>
                               </div>
-                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">옷과 패션에 대한 첨삭 예시</p>
+                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">服とファッションの添削例</p>
                             </button>
                             {expandedCheombi && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
                                 <div className="mt-3 p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
                                   <div className="overflow-hidden rounded-lg border border-gray-300">
                                     <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">첨삭문</span>
+                                      <span className="font-semibold text-white text-sm">添削文</span>
                                     </div>
                                     <div className="p-4 bg-white text-sm leading-relaxed">
                                       <p>나는 어렸을 때부터 옷을 좋아해서 어머니와 함께 쇼핑을 가서 옷을 고르는 것이 즐거움이었다. 중학생 까지는<span className="text-red-600 font-medium">중학생까지는</span> 항상 어머니가 고른옷을<span className="text-red-600 font-medium">고르신 옷을</span> 입고 있었다.<span className="text-red-600 font-medium">입었다.</span> 고등학생 때는 옷은 친구와 함께 사러 가게되었다.<span className="text-red-600 font-medium">가게 되었다.</span> 당시 마추다 세이고 씨가<span className="text-red-600 font-medium">마쓰다 세이코 씨가</span> 인기가 있어서 그녀를 흉내내서 예쁜 옷을 고르고 입고 있었다.<span className="text-red-600 font-medium">골라서 입었다.</span> 이십 대는 &quot;보디곤&quot; 으로 불리는 몸의 선이 나온 옷이<span className="text-red-600 font-medium">몸의 선이 드러나는 옷이</span> 인기가 있었고 나도 좋아해서 입고 있었다.<span className="text-red-600 font-medium">입었다.</span> 지금보다 10킬로그램 정도 빼고 있었다.<span className="text-red-600 font-medium">날씬했기 때문에 그때는</span> 자신이 곱게 보이는 옷을 고르고 입고 있었다.<span className="text-red-600 font-medium">나 자신이 예뻐 보이는 옷을 골라서 입었다.</span> 결혼해서 아이가 어렸을 때는 움직이기 편한 옷을 입고 있었다.<span className="text-red-600 font-medium">입었다.</span> 항상 청바지를 입고 아이들과 뛰어다니고 있었다.<span className="text-red-600 font-medium">뛰어다녔다.</span> 매일 바빠서 멋내기는 생각 못 했다.<span className="text-red-600 font-medium">생각도 못 했다.</span> 그리고 나는 이제 나이를 먹어서 50대가 되었다. 다시 멋을 낼 수 있는 연대 지만<span className="text-red-600 font-medium">아직 멋을 낼 수 있는 연령이지만</span> 살이 쪄서 옷을 잘 소화할 수 없었다.<span className="text-red-600 font-medium">없다.</span> 요즘은 몸의선이 숨 은 옷만<span className="text-red-600 font-medium">몸매가 드러나지 않는 옷만 입는다.</span> 나잇값으로<span className="text-red-600 font-medium">나이에 맞게</span> 멋지게 옷을 소화할 수 있는 여성이 되고 싶다.</p>
@@ -469,7 +467,7 @@ export default function WritingPage() {
                                   </div>
                                   <div className="overflow-hidden rounded-lg border border-[#1e3a5f]">
                                     <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">비교문</span>
+                                      <span className="font-semibold text-white text-sm">比較文</span>
                                     </div>
                                     <div className="p-4 bg-[#1e3a5f]/10">
                                       <p className="text-[#1e3a5f] leading-relaxed text-sm whitespace-pre-line">나는 어렸을 때부터 옷을 좋아해서 어머니와 함께 쇼핑을 가서 옷을 고르는 것이 즐거움이었다. 중학생까지는 항상 어머니가 골라 주신 옷을 입었다. 하지만 고등학생 때부터는 옷을 친구와 함께 사러 가게 되었다. 당시 마쓰다 세이코 씨가 인기가 있어서 그녀를 따라 예쁜 옷을 골라서 입었다. 이십 대 때는 &apos;보디곤&apos;으로 불리는 몸의 선이 드러나는 옷이 인기가 있었고 나도 좋아해서 그것을 주로 입었다. 지금보다 10킬로그램 정도 날씬했기 때문에 그때는 나 자신이 예뻐 보이는 옷을 골라서 입었다. 그러나 결혼하고 아이가 생긴 후 움직이기 편한 옷을 입기 시작했다. 항상 청바지를 입고 아이들과 뛰어다녔다. 매일 바빠서 멋내기는 생각도 못 했다. 그리고 이제 나이를 먹고 50대가 되었다. 아직 멋을 낼 수 있는 나이지만 살이 쪄서 옷을 잘 소화할 수 없다. 그래서 요즘은 몸매가 드러나지 않는 옷만 입는다. 나이에 맞게 멋지게 옷을 소화할 수 있는 여성이 되고 싶다.</p>
@@ -477,7 +475,7 @@ export default function WritingPage() {
                                   </div>
                                   <div className="overflow-hidden rounded-lg border border-[#e5dfd4]">
                                     <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">모범문</span>
+                                      <span className="font-semibold text-white text-sm">模範文</span>
                                     </div>
                                     <div className="p-4 bg-[#f5f0e6]">
                                       <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">나는 어렸을 때부터 옷을 좋아하는 사람이었다. 옷을 잘 입는 사람은 아니지만 유행에도 민감하고 늘 패션에 관심은 두고 있었다. 그래서 교복을 입던 학생 때는 너무 지루했는데, 대학생이 되어서 옷 가게에서 아르바이트를 시작했다. 약 1년 반 정도 계속했었는데, 옷에 둘러싸여 있는 세상은 참 재미있었지만 어려운 일이었다.
@@ -497,7 +495,7 @@ export default function WritingPage() {
                       </div>
                       <div className="pt-4">
                         <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer">
-                          <img src="/experience-sample.png" alt="첨삭문・비교문・모범문" className="w-full h-auto" />
+                          <img src="/experience-sample.png" alt="添削文・比較文・模範文" className="w-full h-auto" />
                         </button>
                         <p className="text-center text-gray-500 text-xs mt-1">クリックで拡大</p>
                       </div>
@@ -506,7 +504,7 @@ export default function WritingPage() {
                           <button type="button" onClick={() => setShowImageModal(false)} className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30" aria-label="閉じる">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                           </button>
-                          <img src="/experience-sample.png" alt="첨삭문・비교문・모범문（拡大）" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+                          <img src="/experience-sample.png" alt="添削文・比較文・模範文（拡大）" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
                         </div>
                       )}
                       <div className="pt-4 text-center">
@@ -524,17 +522,17 @@ export default function WritingPage() {
                 <>
                   <div className="md:hidden mb-4">
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
-                      <h2 className="font-semibold text-gray-800 mb-2 text-sm">과제 제출</h2>
+                      <h2 className="font-semibold text-gray-800 mb-2 text-sm">課題提出</h2>
                       <button onClick={handleSubmitClick} className="w-full py-3 px-4 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">
-                        과제 제출 버튼
+                        課題提出ボタン
                       </button>
                     </div>
                   </div>
 
                   <div className="mb-6 md:mb-8">
-                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">과제 예시 게시판</h2>
+                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                      <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">과제 예시 (10개)</div>
+                      <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">課題例（10件）</div>
                       <div className="divide-y divide-[#e5dfd4]">
                         {ASSIGNMENT_EXAMPLES.map((ex) => (
                           <div key={ex.id}>
@@ -564,7 +562,7 @@ export default function WritingPage() {
                                   </div>
                                   <div className="sm:shrink-0 flex sm:flex-col justify-end">
                                     <button onClick={handleExampleSubmitClick} className="w-full sm:w-auto px-5 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md whitespace-nowrap">
-                                      과제 제출
+                                      課題提出
                                     </button>
                                   </div>
                                 </div>
@@ -576,7 +574,7 @@ export default function WritingPage() {
                     </div>
                   </div>
 
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">게시글 리스트</h2>
+                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">投稿リスト</h2>
 
                   <div className="space-y-4 md:space-y-6">
                     {sortedDateRanges.map((dateRange) => (
@@ -586,10 +584,10 @@ export default function WritingPage() {
                           <table className="w-full">
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
-                                <th className="text-left py-3 px-4 font-medium">과제</th>
-                                <th className="text-left py-3 px-4 font-medium">과제 제출</th>
-                                <th className="text-left py-3 px-4 font-medium">첨삭</th>
-                                <th className="text-left py-3 px-4 font-medium">학생 보기</th>
+                                <th className="text-left py-3 px-4 font-medium">課題</th>
+                                <th className="text-left py-3 px-4 font-medium">課題提出</th>
+                                <th className="text-left py-3 px-4 font-medium">添削</th>
+                                <th className="text-left py-3 px-4 font-medium">学生を見る</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -598,20 +596,20 @@ export default function WritingPage() {
                                   <td className="py-3 px-4"><span className="font-medium text-gray-800">{a.title}</span></td>
                                   <td className="py-3 px-4">
                                     {a.status === "미제출" ? (
-                                      <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">미제출</button>
+                                      <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
                                     ) : (
-                                      <span className="text-[#2d7d46] font-medium">{a.status}</span>
+                                      <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>
                                     )}
                                   </td>
                                   <td className="py-3 px-4">
                                     {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
-                                      <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline font-medium">확인</button>
+                                      <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline font-medium">確認</button>
                                     ) : (
-                                      <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction}</button>
+                                      <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "완료" ? "完了" : a.correction === "확인" ? "確認" : a.correction}</button>
                                     )}
                                   </td>
                                   <td className="py-3 px-4">
-                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">학생 보기</button> : <span className="text-gray-400">-</span>}
+                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生を見る</button> : <span className="text-gray-400">-</span>}
                                   </td>
                                 </tr>
                               ))}
@@ -623,12 +621,12 @@ export default function WritingPage() {
                             <div key={a.id} className="p-4 space-y-2">
                               <div className="flex justify-between items-center">
                                 <span className="font-medium text-gray-800">{a.title}</span>
-                                {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-sm text-[#c53030] font-medium underline">미제출</button> : <span className="text-sm text-[#2d7d46] font-medium">{a.status}</span>}
+                                {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-sm text-[#c53030] font-medium underline">未提出</button> : <span className="text-sm text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
                               </div>
                               <div className="flex flex-wrap gap-3 text-sm">
-                                {a.content && <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "첨삭하기" : "첨삭 확인"}</button>}
-                                {a.content && <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">학생 보기</button>}
-                                {!a.content && <span className="text-gray-400">첨삭: -</span>}
+                                {a.content && <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>}
+                                {a.content && <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生を見る</button>}
+                                {!a.content && <span className="text-gray-400">添削: -</span>}
                               </div>
                             </div>
                           ))}
@@ -657,7 +655,7 @@ export default function WritingPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="relative px-4 sm:px-6 py-4 shrink-0 border-b border-gray-200">
-              <h3 className="text-lg font-bold text-gray-800 text-center pr-14">과제 제출 - {selectedExample.title}</h3>
+              <h3 className="text-lg font-bold text-gray-800 text-center pr-14">課題提出 - {selectedExample.title}</h3>
               <button onClick={handleCloseExampleSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">취소</button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
@@ -697,7 +695,7 @@ export default function WritingPage() {
                 disabled={!exampleSubmitContent.trim()}
                 className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl"
               >
-                제출하기
+                提出する
               </button>
             </div>
           </div>
@@ -722,7 +720,7 @@ export default function WritingPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">과제 선택</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
                 <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
                   <option value="">선택하세요</option>
                   {assignments.map((a) => (
@@ -731,13 +729,13 @@ export default function WritingPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">과제 내용</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
                 <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
               </div>
             </div>
             <div className="px-4 sm:px-6 py-4 flex justify-end shrink-0">
               <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                {submitLoading ? "제출 중..." : "게시"}
+                {submitLoading ? "提出中..." : "投稿"}
               </button>
             </div>
           </div>
@@ -748,7 +746,7 @@ export default function WritingPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
-              <h3 className="text-lg font-bold text-gray-800">학생 보기 - {viewingStudent.title}</h3>
+              <h3 className="text-lg font-bold text-gray-800">学生を見る - {viewingStudent.title}</h3>
               <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
             </div>
             <div className="px-4 py-2 border-b border-gray-200 flex flex-wrap gap-2 shrink-0 bg-gray-50">
@@ -762,14 +760,14 @@ export default function WritingPage() {
               <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
               {viewingStudent.feedback && (
                 <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
-                  <h4 className="font-semibold text-[#166534] mb-2">첨삭 피드백</h4>
+                  <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
                   <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
                 </div>
               )}
             </div>
             <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2 shrink-0">
               <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
-              <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">첨삭 저장</button>
+              <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
             </div>
           </div>
         </div>
@@ -779,19 +777,19 @@ export default function WritingPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-800">첨삭 - {feedbackModal.title}</h3>
+              <h3 className="text-lg font-bold text-gray-800">添削 - {feedbackModal.title}</h3>
               <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
             </div>
             <div className="p-6 flex-1 overflow-y-auto space-y-4">
               {feedbackModal.content && (
                 <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">학생 제출 내용</h4>
+                  <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
                   <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
                 </div>
               )}
               <div>
-                <label className="block font-semibold text-gray-700 mb-2">첨삭 피드백</label>
-                <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="첨삭 내용을 입력해 주세요..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
+                <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
+                <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
               </div>
             </div>
             <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
