@@ -399,11 +399,11 @@ export default function WritingPage() {
                             { label: "募集期間", content: "～2026年1月7日(水)" },
                             { label: "テキスト", content: "ミリネ独自テキスト(PDF)※事前にメールでお送りします" },
                           ].map((row, i) => (
-                            <div key={row.label} className="flex flex-col md:flex-row border-b border-gray-300 last:border-b-0">
-                              <div className="w-fit md:w-32 shrink-0 px-3 py-2.5 bg-gray-200 font-medium text-gray-800 md:border-r border-gray-300">
+                            <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
+                              <div className="w-20 md:w-32 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">
                                 {row.label}
                               </div>
-                              <div className={`w-fit md:flex-1 px-3 py-2.5 text-gray-700 ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                              <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
                                 {row.content}
                               </div>
                             </div>
@@ -445,22 +445,22 @@ export default function WritingPage() {
                                       <p className="text-gray-600 pl-2">예) 한국에 관광 가는 김에 성형까지 하고 오는 사람도 있다</p>
                                     </div>
                                   </div>
-                                  <div className="pt-4 mt-4 border-t border-[#e5dfd4]">
-                                    <div className="px-3 py-2 bg-[#1e3a5f] rounded-t-lg">
-                                      <span className="font-semibold text-white text-sm">添削事例</span>
+                                  <div className="pt-4 mt-4 border-t border-gray-300 md:border-[#e5dfd4]">
+                                    <div className="py-2 font-semibold text-gray-800 text-sm border-b border-gray-200 md:border-0 md:px-3 md:py-2 md:bg-[#1e3a5f] md:rounded-t-lg">
+                                      <span className="md:text-white">添削事例</span>
                                     </div>
-                                    <div className="p-4 rounded-b-lg border border-t-0 border-gray-300 bg-gray-50">
-                                      <p className="text-gray-800 leading-relaxed">
+                                    <div className="py-3 md:p-4 md:rounded-b-lg md:border md:border-t-0 md:border-gray-300 md:bg-gray-50">
+                                      <p className="text-gray-800 leading-relaxed text-base">
                                         요즘 성형수술을 <span className="text-gray-700">많이 하다</span><span className="text-gray-400 mx-1">→</span><span className="text-red-600 font-medium">하는 사람이 많다</span>. 나는 성형을 생각할 때 참다 못해 부모님이 <span className="text-gray-700">물려주신</span><span className="text-gray-400 mx-1">→</span><span className="text-red-600 font-medium">물려 주신 소중한</span> 몸이므로 <span className="text-gray-700">성형하면</span><span className="text-gray-400 mx-1">→</span><span className="text-red-600 font-medium">성형을 해서는</span> 안 된다고 생각한다.
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="pt-4 mt-4 overflow-hidden rounded-lg border border-[#e5dfd4]">
-                                    <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">模範文</span>
+                                  <div className="pt-4 mt-4 border-t border-gray-300 md:border-0 md:overflow-hidden md:rounded-lg md:border md:border-[#e5dfd4]">
+                                    <div className="py-2 font-semibold text-gray-800 text-sm border-b border-gray-200 md:border-0 md:px-3 md:py-2 md:bg-[#1e3a5f] md:rounded-t-lg">
+                                      <span className="md:text-white">模範文</span>
                                     </div>
-                                    <div className="p-4 bg-[#f5f0e6]">
-                                      <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">한국 사람이라고 해서 누구나 성형수술에 관대한 것은 아니지만, 나는 어느 쪽인가 하면 적당한 성형에 찬성하는 편이다. 평생 콤플렉스를 가진 채 고민하며 사느니 조금 고쳐서 자신감을 갖는 것이 더 낫다고 생각하기 때문이다. 내 주변에는 성형중독은 없지만 쌍커풀 수술이나 코 수술 정도는 몇 명이나 있다.
+                                    <div className="py-3 md:p-4 md:bg-[#f5f0e6]">
+                                      <p className="text-gray-700 leading-relaxed text-base whitespace-pre-line">한국 사람이라고 해서 누구나 성형수술에 관대한 것은 아니지만, 나는 어느 쪽인가 하면 적당한 성형에 찬성하는 편이다. 평생 콤플렉스를 가진 채 고민하며 사느니 조금 고쳐서 자신감을 갖는 것이 더 낫다고 생각하기 때문이다. 내 주변에는 성형중독은 없지만 쌍커풀 수술이나 코 수술 정도는 몇 명이나 있다.
 고등학교 때 콧대가 낮은 것이 콤플렉스였던 친구는 대학에 들어가자마자 참다 못해 수술을 했고, 코 수술하는 김에 쌍커풀도 손을 봤다. 그 후 자신감을 얻어 유명한 영어 강사가 되고 멋진 남자와 결혼도 했다. 친구 중 한 명은 교통사고가 나서 보험금을 많이 받게 되었는데 어차피 회사를 1년 정도 쉬기 때문에 그 김에 치아교정을 하기도 했다.
 그렇지만, 이렇게 성공한 사람이 있는가 하면 수술을 안하느니만 못하게 실패한 사람도 있다. 그러므로 성형수술은 훨씬 예뻐지겠다고 욕심을 내서는 안 되고 적당히 자연스럽게 콤플렉스만 해결할 수 있을 정도로 해야 한다고 생각한다. (501자)</p>
                                     </div>
@@ -479,29 +479,29 @@ export default function WritingPage() {
                             </button>
                             {expandedCheombi && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
-                                <div className="mt-3 p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
-                                  <div className="overflow-hidden rounded-lg border border-gray-300">
-                                    <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">添削文</span>
+                                <div className="mt-3 p-4 md:rounded-xl md:bg-white md:border md:border-[#e5dfd4] text-sm space-y-0 md:space-y-4 divide-y divide-gray-200 md:divide-y-0">
+                                  <div className="pt-4 first:pt-0 md:pt-0 md:overflow-hidden md:rounded-lg md:border md:border-gray-300">
+                                    <div className="py-2 font-semibold text-gray-800 text-sm border-b border-gray-200 md:border-0 md:px-3 md:py-2 md:bg-[#1e3a5f]">
+                                      <span className="md:text-white">添削文</span>
                                     </div>
-                                    <div className="p-4 bg-white text-sm leading-relaxed">
+                                    <div className="py-3 md:p-4 md:bg-white text-base leading-relaxed">
                                       <p>나는 어렸을 때부터 옷을 좋아해서 어머니와 함께 쇼핑을 가서 옷을 고르는 것이 즐거움이었다. 중학생 까지는<span className="text-red-600 font-medium">중학생까지는</span> 항상 어머니가 고른옷을<span className="text-red-600 font-medium">고르신 옷을</span> 입고 있었다.<span className="text-red-600 font-medium">입었다.</span> 고등학생 때는 옷은 친구와 함께 사러 가게되었다.<span className="text-red-600 font-medium">가게 되었다.</span> 당시 마추다 세이고 씨가<span className="text-red-600 font-medium">마쓰다 세이코 씨가</span> 인기가 있어서 그녀를 흉내내서 예쁜 옷을 고르고 입고 있었다.<span className="text-red-600 font-medium">골라서 입었다.</span> 이십 대는 &quot;보디곤&quot; 으로 불리는 몸의 선이 나온 옷이<span className="text-red-600 font-medium">몸의 선이 드러나는 옷이</span> 인기가 있었고 나도 좋아해서 입고 있었다.<span className="text-red-600 font-medium">입었다.</span> 지금보다 10킬로그램 정도 빼고 있었다.<span className="text-red-600 font-medium">날씬했기 때문에 그때는</span> 자신이 곱게 보이는 옷을 고르고 입고 있었다.<span className="text-red-600 font-medium">나 자신이 예뻐 보이는 옷을 골라서 입었다.</span> 결혼해서 아이가 어렸을 때는 움직이기 편한 옷을 입고 있었다.<span className="text-red-600 font-medium">입었다.</span> 항상 청바지를 입고 아이들과 뛰어다니고 있었다.<span className="text-red-600 font-medium">뛰어다녔다.</span> 매일 바빠서 멋내기는 생각 못 했다.<span className="text-red-600 font-medium">생각도 못 했다.</span> 그리고 나는 이제 나이를 먹어서 50대가 되었다. 다시 멋을 낼 수 있는 연대 지만<span className="text-red-600 font-medium">아직 멋을 낼 수 있는 연령이지만</span> 살이 쪄서 옷을 잘 소화할 수 없었다.<span className="text-red-600 font-medium">없다.</span> 요즘은 몸의선이 숨 은 옷만<span className="text-red-600 font-medium">몸매가 드러나지 않는 옷만 입는다.</span> 나잇값으로<span className="text-red-600 font-medium">나이에 맞게</span> 멋지게 옷을 소화할 수 있는 여성이 되고 싶다.</p>
                                     </div>
                                   </div>
-                                  <div className="overflow-hidden rounded-lg border border-[#1e3a5f]">
-                                    <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">比較文</span>
+                                  <div className="pt-4 md:pt-0 md:overflow-hidden md:rounded-lg md:border md:border-[#1e3a5f]">
+                                    <div className="py-2 font-semibold text-gray-800 text-sm border-b border-gray-200 md:border-0 md:px-3 md:py-2 md:bg-[#1e3a5f]">
+                                      <span className="md:text-white">比較文</span>
                                     </div>
-                                    <div className="p-4 bg-[#1e3a5f]/10">
-                                      <p className="text-[#1e3a5f] leading-relaxed text-sm whitespace-pre-line">나는 어렸을 때부터 옷을 좋아해서 어머니와 함께 쇼핑을 가서 옷을 고르는 것이 즐거움이었다. 중학생까지는 항상 어머니가 골라 주신 옷을 입었다. 하지만 고등학생 때부터는 옷을 친구와 함께 사러 가게 되었다. 당시 마쓰다 세이코 씨가 인기가 있어서 그녀를 따라 예쁜 옷을 골라서 입었다. 이십 대 때는 &apos;보디곤&apos;으로 불리는 몸의 선이 드러나는 옷이 인기가 있었고 나도 좋아해서 그것을 주로 입었다. 지금보다 10킬로그램 정도 날씬했기 때문에 그때는 나 자신이 예뻐 보이는 옷을 골라서 입었다. 그러나 결혼하고 아이가 생긴 후 움직이기 편한 옷을 입기 시작했다. 항상 청바지를 입고 아이들과 뛰어다녔다. 매일 바빠서 멋내기는 생각도 못 했다. 그리고 이제 나이를 먹고 50대가 되었다. 아직 멋을 낼 수 있는 나이지만 살이 쪄서 옷을 잘 소화할 수 없다. 그래서 요즘은 몸매가 드러나지 않는 옷만 입는다. 나이에 맞게 멋지게 옷을 소화할 수 있는 여성이 되고 싶다.</p>
+                                    <div className="py-3 md:p-4 md:bg-[#1e3a5f]/10">
+                                      <p className="text-[#1e3a5f] leading-relaxed text-base whitespace-pre-line">나는 어렸을 때부터 옷을 좋아해서 어머니와 함께 쇼핑을 가서 옷을 고르는 것이 즐거움이었다. 중학생까지는 항상 어머니가 골라 주신 옷을 입었다. 하지만 고등학생 때부터는 옷을 친구와 함께 사러 가게 되었다. 당시 마쓰다 세이코 씨가 인기가 있어서 그녀를 따라 예쁜 옷을 골라서 입었다. 이십 대 때는 &apos;보디곤&apos;으로 불리는 몸의 선이 드러나는 옷이 인기가 있었고 나도 좋아해서 그것을 주로 입었다. 지금보다 10킬로그램 정도 날씬했기 때문에 그때는 나 자신이 예뻐 보이는 옷을 골라서 입었다. 그러나 결혼하고 아이가 생긴 후 움직이기 편한 옷을 입기 시작했다. 항상 청바지를 입고 아이들과 뛰어다녔다. 매일 바빠서 멋내기는 생각도 못 했다. 그리고 이제 나이를 먹고 50대가 되었다. 아직 멋을 낼 수 있는 나이지만 살이 쪄서 옷을 잘 소화할 수 없다. 그래서 요즘은 몸매가 드러나지 않는 옷만 입는다. 나이에 맞게 멋지게 옷을 소화할 수 있는 여성이 되고 싶다.</p>
                                     </div>
                                   </div>
-                                  <div className="overflow-hidden rounded-lg border border-[#e5dfd4]">
-                                    <div className="px-3 py-2 bg-[#1e3a5f]">
-                                      <span className="font-semibold text-white text-sm">模範文</span>
+                                  <div className="pt-4 md:pt-0 md:overflow-hidden md:rounded-lg md:border md:border-[#e5dfd4]">
+                                    <div className="py-2 font-semibold text-gray-800 text-sm border-b border-gray-200 md:border-0 md:px-3 md:py-2 md:bg-[#1e3a5f]">
+                                      <span className="md:text-white">模範文</span>
                                     </div>
-                                    <div className="p-4 bg-[#f5f0e6]">
-                                      <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">나는 어렸을 때부터 옷을 좋아하는 사람이었다. 옷을 잘 입는 사람은 아니지만 유행에도 민감하고 늘 패션에 관심은 두고 있었다. 그래서 교복을 입던 학생 때는 너무 지루했는데, 대학생이 되어서 옷 가게에서 아르바이트를 시작했다. 약 1년 반 정도 계속했었는데, 옷에 둘러싸여 있는 세상은 참 재미있었지만 어려운 일이었다.
+                                    <div className="py-3 md:p-4 md:bg-[#f5f0e6]">
+                                      <p className="text-gray-700 leading-relaxed text-base whitespace-pre-line">나는 어렸을 때부터 옷을 좋아하는 사람이었다. 옷을 잘 입는 사람은 아니지만 유행에도 민감하고 늘 패션에 관심은 두고 있었다. 그래서 교복을 입던 학생 때는 너무 지루했는데, 대학생이 되어서 옷 가게에서 아르바이트를 시작했다. 약 1년 반 정도 계속했었는데, 옷에 둘러싸여 있는 세상은 참 재미있었지만 어려운 일이었다.
 
 옷을 팔 때는 어울리는 옷을 제안하거나 관리 및 세탁법을 알려 드려야 하고, 손님과의 대화 기술 등 많은 지식이 필요했다. 아마 나에게 조금이나마 감각이 있었다면 계속 옷에 관련된 일을 했을지도 모른다. 그러나 불행하게도 나에게는 그런 재능이 없었고, 그걸 깨달은 이상 더 이상 옷과 관련된 일을 할 수는 없었다.
 
