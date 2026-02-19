@@ -139,6 +139,7 @@ export default function WritingPage() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileDeleting, setProfileDeleting] = useState(false);
   const [profileMessage, setProfileMessage] = useState("");
+  const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -643,6 +644,13 @@ export default function WritingPage() {
                             <p className="font-semibold text-gray-800 mb-2">H様 | 2019.3月</p>
                             <p className="text-gray-700 text-sm leading-relaxed">10回のご指導をありがとうございました。最初は、決められた文型を入れて文章を作ることに時間がかかりましたが、だんだん慣れてきたとは思います。私は思った以上に、分かち書きと形容詞の한다体が間違いやすく、まだまだ慣れていかないとだめだなと感じています。ですが間違いなく、韓国語文字を入力することは、速くなりました(笑)打ち間違いが多くて変な文章内容だったりと、先生も添削に悪戦苦闘されたと思います。根気よくチェックしていただいて、本当にありがとうございました。</p>
                           </div>
+                          {!expandedSeitoVoice && (
+                            <button type="button" onClick={() => setExpandedSeitoVoice(true)} className="w-full py-3 text-[#1a4d2e] font-medium hover:bg-[#f5f0e6] rounded-lg border border-[#e5dfd4] transition-colors">
+                              もっと読む
+                            </button>
+                          )}
+                          {expandedSeitoVoice && (
+                            <>
                           <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
                             <p className="font-semibold text-gray-800 mb-2">S様 | 2018.7月~9月</p>
                             <p className="text-gray-700 text-sm leading-relaxed">10回の課題を終えて、添削していただきありがとうございました。毎週韓国語で文章を作るということは、とても意味のあることだと感じました。先生が直してくださった文と自分の文を比較することで、勉強になることがたくさんありました。普段使わないようなネイティブの表現も学ぶことができ、模範文を読むのも楽しみでした。</p>
@@ -691,6 +699,11 @@ export default function WritingPage() {
                             <p className="font-semibold text-gray-800 mb-2">U様 | 2016.3月</p>
                             <p className="text-gray-700 text-sm leading-relaxed">3ヶ月間のご指導ありがとうございました。仕事が忙しく、添削していただいた課題を復習する時間をなかなか作れませんでした。副詞の使い方や辞書の選び方に悩み、深く考えすぎると何も書けなくなってしまうこともありました。語彙力や文末表現の不足で、初級レベルの作文に間違いだらけで恥ずかしい思いをしました。TOPIKの作文は、制限時間内に大量に書かなければならず特に大変でした。繰り返し練習すればもっと書けるようになると思います。緊張するとテーマが浮かばないこともあるので、作文は一人ではできないので、このような講座を続けて練習したいと思います。これからもよろしくお願いいたします。</p>
                           </div>
+                            <button type="button" onClick={() => setExpandedSeitoVoice(false)} className="w-full py-3 text-[#1a4d2e] font-medium hover:bg-[#f5f0e6] rounded-lg border border-[#e5dfd4] transition-colors">
+                              閉じる
+                            </button>
+                            </>
+                          )}
                         </div>
                       </div>
                       {showTrialModal && (
