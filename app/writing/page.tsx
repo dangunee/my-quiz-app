@@ -368,7 +368,7 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
-                <div className="max-w-3xl md:max-w-[52.75rem] w-full">
+                <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
                   <div className="bg-white rounded-none md:rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-4">
                       <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
@@ -687,7 +687,7 @@ export default function WritingPage() {
               )}
 
               {activeTab === "topik" && (
-                <div className="max-w-2xl">
+                <div className="max-w-2xl mx-auto">
                   <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">TOPIK作文トレーニング</h2>
                   <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-6">
                     <p className="text-gray-600">TOPIK作文トレーニングのコンテンツはこちらに表示されます。</p>
