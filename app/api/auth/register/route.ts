@@ -5,6 +5,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function POST(request: NextRequest) {
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { id, password, email, name } = body;
+  const { id, password, email, name, region } = body;
 
   if (!id || !password || !email || !name) {
     return NextResponse.json(
@@ -44,6 +45,14 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    if (data.user?.id && supabaseServiceKey && typeof region === "string" && region && region !== "選択してください") {
+      const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+      await adminClient.from("customer_profiles").upsert(
+        { user_id: data.user.id, region },
+        { onConflict: "user_id" }
+      );
     }
 
     return NextResponse.json({
