@@ -326,12 +326,12 @@ export default function WritingPage() {
         </>
       )}
 
-      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg">
-        <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center gap-3 min-h-[2.5rem] md:min-h-[2.5rem]">
-          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
+      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
+        <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
+          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex absolute left-4 md:left-6 shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
+          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室・作文トレーニング</h1>
@@ -353,12 +353,12 @@ export default function WritingPage() {
 
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
-              <nav className="flex gap-4 sm:gap-8 overflow-x-auto px-4 md:px-6 py-2">
+              <nav className="flex overflow-x-auto px-4 md:px-6 py-2">
                 {TABS.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-[#1a4d2e] text-[#1a4d2e]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                    className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-[#1a4d2e] text-[#1a4d2e]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
                   >
                     {tab.label}
                   </button>
