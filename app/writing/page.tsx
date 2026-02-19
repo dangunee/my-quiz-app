@@ -127,6 +127,7 @@ export default function WritingPage() {
   const [feedbackModal, setFeedbackModal] = useState<Assignment | null>(null);
   const [teacherFeedback, setTeacherFeedback] = useState("");
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
+  const [expandedExperience, setExpandedExperience] = useState(false);
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -391,6 +392,48 @@ export default function WritingPage() {
                           詳細・お申込みはこちら
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                         </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
+                    <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">体験例</div>
+                    <div className="divide-y divide-[#e5dfd4]">
+                      <div>
+                        <button type="button" onClick={() => setExpandedExperience(!expandedExperience)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
+                          <div className="flex items-center gap-3">
+                            <span className="text-gray-500 text-xs w-4 inline-block">{expandedExperience ? "▼" : "▶"}</span>
+                            <span className="font-medium text-gray-800">성형수술</span>
+                          </div>
+                          <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">성형수술에 대해 어떻게 생각하는지 쓰시오</p>
+                        </button>
+                        {expandedExperience && (
+                          <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
+                            <div className="mt-3 p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
+                              <p className="text-gray-800 leading-relaxed">요즘 쁘띠 성형이라고 해서 칼을 대지 않고도 성형을 할 수 있는 시대가 되었다. 연예인들도 자신의 성형을 당당히 밝히고 있는데, 성형수술, 어떻게 생각하는지 쓰시오</p>
+                              <p className="text-gray-600 font-medium">참고 단어: 미의 기준, 다이어트, 자기만족, 중독, 자연스럽다, 성격</p>
+                              <p className="text-gray-600 font-medium">下記に提示された文型を、必ず2つ以上使用すること。</p>
+                              <div className="space-y-2 pt-2">
+                                <div className="text-gray-700">
+                                  <p className="font-medium text-gray-800">○ -다 못해　～しきれなくて、～してもどうにもならなくて</p>
+                                  <p className="text-gray-600 pl-2">예) 참다 못해 성형을 했다고 한다</p>
+                                </div>
+                                <div className="text-gray-700">
+                                  <p className="font-medium text-gray-800">○ -(으)ㄴ가/는가 하면 ～するかと思えば、～する一方で</p>
+                                  <p className="text-gray-600 pl-2">예) 한번 성형하면 끝인가 하면 중독이 되는 사람도 많다고 한다</p>
+                                </div>
+                                <div className="text-gray-700">
+                                  <p className="font-medium text-gray-800">○ -(으)므로 ～ので、（だ）から</p>
+                                  <p className="text-gray-600 pl-2">예) 부모님이 물려 주신 소중한 몸이므로 성형을 해서는 안된다고 생각한다</p>
+                                </div>
+                                <div className="text-gray-700">
+                                  <p className="font-medium text-gray-800">○ -(으)ㄴ/는 김에 ～するついでに</p>
+                                  <p className="text-gray-600 pl-2">예) 한국에 관광 가는 김에 성형까지 하고 오는 사람도 있다</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
