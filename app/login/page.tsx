@@ -172,7 +172,15 @@ export default function LoginPage() {
         </form>
 
         {message && (
-          <p className="mt-4 text-sm text-center text-gray-600">{message}</p>
+          <p
+            className={`mt-4 text-center ${
+              message === "会員登録が完了しました。メール認証後にログインしてください。"
+                ? "text-lg md:text-xl font-bold text-gray-800"
+                : "text-sm text-gray-600"
+            }`}
+          >
+            {message}
+          </p>
         )}
 
         <button

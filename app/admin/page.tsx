@@ -529,7 +529,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full md:max-w-[80vw] mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div className="flex gap-4">
           <button
