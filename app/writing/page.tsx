@@ -558,7 +558,7 @@ export default function WritingPage() {
                               ) : (
                                 <iframe
                                   title={trialActiveTab === "tab1" ? "体験申込" : "講座申込"}
-                                  srcDoc={`<!DOCTYPE html><html><head><base href="https://mirinae.jp/"/><link rel="stylesheet" href="https://mirinae.jp/css/reset.css"/><link rel="stylesheet" href="https://mirinae.jp/css/style.css"/></head><body style="padding:1rem;">${trialActiveTab === "tab1" ? trialTab1 : trialTab2}</body></html>`}
+                                  srcDoc={`<!DOCTYPE html><html><head><base href="https://mirinae.jp/"/><link rel="stylesheet" href="https://mirinae.jp/css/reset.css"/><link rel="stylesheet" href="https://mirinae.jp/css/style.css"/><style>body{background:#fff!important;background-image:none!important}*{background-image:none!important}.conbox{display:block!important}</style></head><body style="padding:1rem;background:#fff">${trialActiveTab === "tab1" ? trialTab1 : trialTab2}</body></html>`}
                                   className="w-full flex-1 min-h-[400px] border-0"
                                   sandbox="allow-forms allow-same-origin"
                                 />
