@@ -568,7 +568,8 @@ export default function WritingPage() {
               )}
 
               {activeTab === "writing" && (
-                <div className="px-4 md:px-0 w-[80%] max-w-full mx-auto">
+                <div className="px-4 md:px-0 mx-auto max-w-2xl w-full">
+                  <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
                   <div className="md:hidden mb-4">
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
                       <h2 className="font-semibold text-gray-800 mb-2 text-sm">課題提出</h2>
@@ -683,13 +684,14 @@ export default function WritingPage() {
                       </div>
                     ))}
                   </div>
+                  </div>
                 </div>
               )}
 
               {activeTab === "topik" && (
-                <div className="max-w-2xl mx-auto">
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">TOPIK作文トレーニング</h2>
-                  <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-6">
+                <div className="px-4 md:px-0 mx-auto max-w-2xl w-full">
+                  <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
+                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">TOPIK作文トレーニング</h2>
                     <p className="text-gray-600">TOPIK作文トレーニングのコンテンツはこちらに表示されます。</p>
                     <p className="text-gray-500 text-sm mt-2">準備中です。</p>
                   </div>
