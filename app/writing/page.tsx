@@ -435,11 +435,15 @@ export default function WritingPage() {
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="pt-4 mt-4">
-                                    <p className="text-sm font-semibold text-gray-800 mb-2">모범문</p>
-                                    <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">한국 사람이라고 해서 누구나 성형수술에 관대한 것은 아니지만, 나는 어느 쪽인가 하면 적당한 성형에 찬성하는 편이다. 평생 콤플렉스를 가진 채 고민하며 사느니 조금 고쳐서 자신감을 갖는 것이 더 낫다고 생각하기 때문이다. 내 주변에는 성형중독은 없지만 쌍커풀 수술이나 코 수술 정도는 몇 명이나 있다.
+                                  <div className="pt-4 mt-4 overflow-hidden rounded-lg border border-[#e5dfd4]">
+                                    <div className="px-3 py-2 bg-[#1e3a5f]">
+                                      <span className="font-semibold text-white text-sm">모범문</span>
+                                    </div>
+                                    <div className="p-4 bg-[#f5f0e6]">
+                                      <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">한국 사람이라고 해서 누구나 성형수술에 관대한 것은 아니지만, 나는 어느 쪽인가 하면 적당한 성형에 찬성하는 편이다. 평생 콤플렉스를 가진 채 고민하며 사느니 조금 고쳐서 자신감을 갖는 것이 더 낫다고 생각하기 때문이다. 내 주변에는 성형중독은 없지만 쌍커풀 수술이나 코 수술 정도는 몇 명이나 있다.
 고등학교 때 콧대가 낮은 것이 콤플렉스였던 친구는 대학에 들어가자마자 참다 못해 수술을 했고, 코 수술하는 김에 쌍커풀도 손을 봤다. 그 후 자신감을 얻어 유명한 영어 강사가 되고 멋진 남자와 결혼도 했다. 친구 중 한 명은 교통사고가 나서 보험금을 많이 받게 되었는데 어차피 회사를 1년 정도 쉬기 때문에 그 김에 치아교정을 하기도 했다.
 그렇지만, 이렇게 성공한 사람이 있는가 하면 수술을 안하느니만 못하게 실패한 사람도 있다. 그러므로 성형수술은 훨씬 예뻐지겠다고 욕심을 내서는 안 되고 적당히 자연스럽게 콤플렉스만 해결할 수 있을 정도로 해야 한다고 생각한다. (501자)</p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
