@@ -366,10 +366,10 @@ export default function WritingPage() {
               </nav>
             </div>
 
-            <div className="flex-1 overflow-auto p-4 md:p-6 pb-24 md:pb-6">
+            <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
-                <div className="max-w-3xl md:max-w-[52.75rem]">
-                  <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
+                <div className="max-w-3xl md:max-w-[52.75rem] w-full">
+                  <div className="bg-white rounded-none md:rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-4">
                       <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
                       <p className="text-white/90 text-sm mt-1">300～500字作文 作文添削 ＋ ネイティブ比較文 ＋ 模範文 までつく！</p>
