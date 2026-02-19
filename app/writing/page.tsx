@@ -390,7 +390,7 @@ export default function WritingPage() {
                         </div>
                         <div className="border-collapse text-sm">
                           {[
-                            { label: "授業について", content: "毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。" },
+                            { label: "特徴", content: "毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。" },
                             { label: "対象", content: "初、中、上級(レベルの区別はありません)" },
                             { label: "目標", content: "語彙・文型を増やし、自然な韓国語の表現を身につける" },
                             { label: "授業の流れ", content: <>金曜にテーマ送付 → 月曜夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出</> },
@@ -399,11 +399,11 @@ export default function WritingPage() {
                             { label: "募集期間", content: "～2026年1月7日(水)" },
                             { label: "テキスト", content: "ミリネ独自テキスト(PDF)※事前にメールでお送りします" },
                           ].map((row, i) => (
-                            <div key={row.label} className="flex border-b border-gray-300 last:border-b-0">
-                              <div className="w-32 shrink-0 px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300">
+                            <div key={row.label} className="flex flex-col md:flex-row border-b border-gray-300 last:border-b-0">
+                              <div className="w-fit md:w-32 shrink-0 px-3 py-2.5 bg-gray-200 font-medium text-gray-800 md:border-r border-gray-300">
                                 {row.label}
                               </div>
-                              <div className={`flex-1 px-3 py-2.5 text-gray-700 ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                              <div className={`w-fit md:flex-1 px-3 py-2.5 text-gray-700 ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
                                 {row.content}
                               </div>
                             </div>
@@ -535,9 +535,8 @@ export default function WritingPage() {
                         </div>
                       )}
                       <div className="pt-4 text-center">
-                        <button type="button" onClick={handleTrialClick} className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
+                        <button type="button" onClick={handleTrialClick} className="inline-flex items-center justify-center min-w-[200px] px-8 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
                           お申し込み
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                         </button>
                       </div>
                       {showTrialModal && (
