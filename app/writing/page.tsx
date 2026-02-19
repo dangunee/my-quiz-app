@@ -344,93 +344,47 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto p-4 md:p-6 pb-24 md:pb-6">
               {activeTab === "experience" && (
-                <div className="max-w-3xl space-y-8">
-                  <div className="text-center mb-8">
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">通信講座・ネットレッスン</h2>
-                    <p className="text-gray-600">日本全国どこでも、お家で楽しく勉強できるコースです。</p>
-                  </div>
-
-                  {/* 作文トレーニング */}
+                <div className="max-w-3xl space-y-6">
                   <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-4">
-                      <h3 className="text-lg font-bold text-white">メールで作文トレーニング</h3>
-                      <p className="text-white/90 text-sm mt-1">300～500字作文 添削＋ネイティブ比較文＋模範文</p>
+                      <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
+                      <p className="text-white/90 text-sm mt-1">300～500字作文 作文添削 ＋ ネイティブ比較文 ＋ 模範文 までつく！</p>
                     </div>
-                    <div className="p-6 space-y-4">
-                      <ul className="space-y-2 text-gray-700 text-sm">
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">①</span>自分の書いた文章を自然な韓国語に直してもらいます</li>
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">②</span>毎週違うテーマで作文にチャレンジできます</li>
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">③</span>厳選された文型を必ず使用するよう出題します</li>
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">④</span>模範作文で読解力も向上します</li>
-                      </ul>
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        <span className="px-3 py-1 bg-[#f0fdf4] text-[#166534] rounded-lg text-sm font-medium">対象：初・中・上級</span>
-                        <span className="px-3 py-1 bg-[#f0fdf4] text-[#166534] rounded-lg text-sm font-medium">10回 23,980円(税込)</span>
+                    <div className="p-6 space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-800 mb-3 text-sm">特徴</h3>
+                        <ul className="space-y-2 text-gray-700 text-sm">
+                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">①</span>自分の書いた文章を自然な韓国語に直してもらいます</li>
+                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">②</span>表現力をアップさせるために、毎週毎回違うテーマについての作文にチャレンジできます</li>
+                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">③</span>課題は、さらに厳選された文型を必ず使用するよう出題します</li>
+                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">④</span>ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します</li>
+                        </ul>
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4 pt-4 border-t border-[#e5dfd4]">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">対象</p>
+                          <p className="text-sm text-gray-800">初、中、上級(レベルの区別はありません)</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">目標</p>
+                          <p className="text-sm text-gray-800">作文と添削指導の繰り返しを通じて、語彙や文型を効果的に増やし、最も自然な韓国語の表現を身につける</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">授業の流れ</p>
+                          <p className="text-sm text-gray-800">毎週金曜日にメールで作文テーマと使用すべき文型を送信。テーマに沿った作文を作成して翌週の月曜日夜9時までに提出</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">授業料</p>
+                          <p className="text-sm font-bold text-[#1a4d2e]">10回 23,980円(税込)</p>
+                        </div>
+                      </div>
+                      <div className="pt-4 text-center">
+                        <a href="https://mirinae.jp/netlesson.html?tab=tab01" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
+                          詳細・お申込みはこちら
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        </a>
                       </div>
                     </div>
-                  </div>
-
-                  {/* 音読トレーニング */}
-                  <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                    <div className="bg-[#2d6a4a] px-6 py-4">
-                      <h3 className="text-lg font-bold text-white">メールで音読トレーニング</h3>
-                      <p className="text-white/90 text-sm mt-1">発音・抑揚の矯正で会話力アップ</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <ul className="space-y-2 text-gray-700 text-sm">
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">①</span>声に出して言うのに自信が付きます</li>
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">②</span>語彙・文型・表現パターンを覚えます</li>
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">③</span>ネイティブ添削文と模範音声で改善</li>
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">④</span>話すスピードも速くなり会話力アップ</li>
-                      </ul>
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        <span className="px-3 py-1 bg-[#f0fdf4] text-[#166534] rounded-lg text-sm font-medium">初中級 23,980円 / 中上級 29,920円(税込)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* TOPIK作文トレーニング */}
-                  <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                    <div className="bg-[#1a4d2e] px-6 py-4">
-                      <h3 className="text-lg font-bold text-white">メールでTOPIK作文トレーニング</h3>
-                      <p className="text-white/90 text-sm mt-1">6回通信添削 オンラインTOPIK作文対策</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <ul className="space-y-2 text-gray-700 text-sm">
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">①</span>TOPIK長文作文に慣れます</li>
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">②</span>中級以上の合格に必要な文法・表現・構成</li>
-                        <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">③</span>ネイティブ添削で問題点を把握</li>
-                      </ul>
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        <span className="px-3 py-1 bg-[#f0fdf4] text-[#166534] rounded-lg text-sm font-medium">6回 29,568円(税込)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ネットレッスン */}
-                  <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                    <div className="bg-[#2d6a4a] px-6 py-4">
-                      <h3 className="text-lg font-bold text-white">ネットレッスン（スカイプ）</h3>
-                      <p className="text-white/90 text-sm mt-1">日本全国どこでもレッスンが受けられます</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <ul className="space-y-2 text-gray-700 text-sm">
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">①</span>レッスンの7割は音読や会話</li>
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">②</span>文法のポイントを学び練習問題で反復</li>
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">③</span>「書くチカラ」も身につきます</li>
-                        <li className="flex gap-2"><span className="text-[#2d6a4a] font-medium shrink-0">④</span>学んだことを韓国語で声に出す復習</li>
-                      </ul>
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        <span className="px-3 py-1 bg-[#f0fdf4] text-[#166534] rounded-lg text-sm font-medium">12回 60,720円～(税込)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-center pt-4">
-                    <a href="https://mirinae.jp/netlesson.html?tab=tab01" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
-                      詳細・お申込みはこちら
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                    </a>
                   </div>
                 </div>
               )}
