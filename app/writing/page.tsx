@@ -115,7 +115,6 @@ export default function WritingPage() {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("experience");
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
@@ -282,30 +281,50 @@ export default function WritingPage() {
     setTeacherFeedback("");
   };
 
-  const menuItemClass = "flex items-center gap-3 py-3 px-3 rounded-lg text-gray-700 hover:bg-[#1a4d2e]/10 hover:text-[#1a4d2e] transition-colors duration-200 text-sm font-medium";
+  const menuLinks = [
+    { label: "ログイン", href: "/login", external: false },
+    { label: "クイズ", href: "https://quiz.mirinae.jp", external: true },
+    { label: "ホームページ", href: "https://mirinae.jp", external: true },
+    { label: "個人レッスン", href: "https://mirinae.jp/kojin.html?tab=tab01", external: true },
+    { label: "発音講座", href: "https://mirinae.jp/kaiwa.html?tab=tab03", external: true },
+    { label: "会話クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab01", external: true },
+    { label: "音読クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
+    { label: "集中講座", href: "https://mirinae.jp/syutyu.html?tab=tab02", external: true },
+    { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab01", external: true },
+  ];
 
   const sidebarContent = (
-    <nav className="px-2 py-4">
+    <nav className="space-y-0">
       {user ? (
-        <div className="flex flex-col gap-1">
-          <Link href="/profile" target="_blank" rel="noopener noreferrer" className={menuItemClass} onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-            <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        <>
+          <Link href="/profile" target="_blank" rel="noopener noreferrer" className="block py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]" onClick={() => setMenuOpen(false)}>
             マイページ
           </Link>
-          <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); setSidebarCollapsed(true); window.location.href = redirectPath; }} className={`${menuItemClass} w-full text-left`}>
-            <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+          <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>
+          <button
+            type="button"
+            onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); window.location.href = redirectPath; }}
+            className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]"
+          >
             ログアウト
           </button>
-          <div className="mt-3 pt-3 border-t border-[#e5dfd4]">
-            <p className="px-3 py-1 text-xs text-gray-500 truncate">{user.name || user.username || user.email}</p>
-          </div>
-        </div>
+        </>
       ) : (
-        <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className={menuItemClass} onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-          <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="block py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]" onClick={() => setMenuOpen(false)}>
           ログイン
         </Link>
       )}
+      {menuLinks.slice(1).map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+          className="block py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4] last:border-b-0"
+          onClick={() => setMenuOpen(false)}
+        >
+          {item.label}
+        </a>
+      ))}
     </nav>
   );
 
@@ -328,9 +347,6 @@ export default function WritingPage() {
 
       <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
         <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
-          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex absolute left-4 md:left-6 shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
           <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
@@ -340,16 +356,12 @@ export default function WritingPage() {
 
       <div className="flex flex-1 justify-center">
         <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
-          {!sidebarCollapsed && (
-            <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-r border-[#e5dfd4]">
-              <div className="p-4">
-                <button onClick={() => setSidebarCollapsed(true)} className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-[#ebe5da] transition-colors" aria-label="サイドバーを閉じる">
-                  <span className="text-gray-500">◀</span>
-                </button>
-              </div>
-              {sidebarContent}
-            </aside>
-          )}
+          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-r border-[#e5dfd4]">
+            <div className="px-4 py-4 border-b border-[#e5dfd4]">
+              <span className="font-semibold text-gray-800">メニュー</span>
+            </div>
+            <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
+          </aside>
 
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
