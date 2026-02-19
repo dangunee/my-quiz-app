@@ -130,6 +130,11 @@ export default function WritingPage() {
   const [expandedExperience, setExpandedExperience] = useState(false);
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showTrialModal, setShowTrialModal] = useState(false);
+  const [trialTab1, setTrialTab1] = useState("");
+  const [trialTab2, setTrialTab2] = useState("");
+  const [trialLoading, setTrialLoading] = useState(false);
+  const [trialActiveTab, setTrialActiveTab] = useState<"tab1" | "tab2">("tab1");
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -173,6 +178,24 @@ export default function WritingPage() {
     };
     return parseDate(b) - parseDate(a);
   });
+
+  const handleTrialClick = async () => {
+    setShowTrialModal(true);
+    if (trialTab1 || trialTab2) return;
+    setTrialLoading(true);
+    try {
+      const res = await fetch("/api/trial");
+      if (!res.ok) throw new Error("Fetch failed");
+      const { tab1, tab2 } = await res.json();
+      setTrialTab1(tab1);
+      setTrialTab2(tab2);
+    } catch {
+      setTrialTab1("<p class=\"text-red-600\">読み込みに失敗しました。<a href=\"https://mirinae.jp/trial.html?tab=tab01\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">こちら</a>からお申し込みください。</p>");
+      setTrialTab2("");
+    } finally {
+      setTrialLoading(false);
+    }
+  };
 
   const handleSubmitClick = () => {
     setSelectedAssignment(null);
@@ -512,11 +535,38 @@ export default function WritingPage() {
                         </div>
                       )}
                       <div className="pt-4 text-center">
-                        <a href="https://mirinae.jp/netlesson.html?tab=tab01" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
-                          詳細・お申込みはこちら
+                        <button type="button" onClick={handleTrialClick} className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
+                          お申し込み
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                        </a>
+                        </button>
                       </div>
+                      {showTrialModal && (
+                        <div className="fixed inset-0 z-50 flex flex-col bg-black/70" onClick={() => setShowTrialModal(false)}>
+                          <div className="shrink-0 flex justify-end p-2">
+                            <button type="button" onClick={() => setShowTrialModal(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30" aria-label="閉じる">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                          </div>
+                          <div className="flex-1 overflow-hidden flex flex-col mx-auto w-full max-w-4xl bg-white rounded-t-xl" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex border-b border-[#e5dfd4] shrink-0">
+                              <button type="button" onClick={() => setTrialActiveTab("tab1")} className={`flex-1 py-3 px-4 font-medium text-sm ${trialActiveTab === "tab1" ? "border-b-2 border-[#1a4d2e] text-[#1a4d2e]" : "text-gray-500 hover:text-gray-700"}`}>体験申込</button>
+                              <button type="button" onClick={() => setTrialActiveTab("tab2")} className={`flex-1 py-3 px-4 font-medium text-sm ${trialActiveTab === "tab2" ? "border-b-2 border-[#1a4d2e] text-[#1a4d2e]" : "text-gray-500 hover:text-gray-700"}`}>講座申込</button>
+                            </div>
+                            <div className="flex-1 overflow-auto min-h-0 flex flex-col">
+                              {trialLoading ? (
+                                <div className="flex items-center justify-center py-16 text-gray-500">読み込み中...</div>
+                              ) : (
+                                <iframe
+                                  title={trialActiveTab === "tab1" ? "体験申込" : "講座申込"}
+                                  srcDoc={`<!DOCTYPE html><html><head><base href="https://mirinae.jp/"/><link rel="stylesheet" href="https://mirinae.jp/css/reset.css"/><link rel="stylesheet" href="https://mirinae.jp/css/style.css"/></head><body style="padding:1rem;">${trialActiveTab === "tab1" ? trialTab1 : trialTab2}</body></html>`}
+                                  className="w-full flex-1 min-h-[400px] border-0"
+                                  sandbox="allow-forms allow-same-origin"
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
