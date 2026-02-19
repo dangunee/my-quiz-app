@@ -326,15 +326,16 @@ export default function WritingPage() {
         </>
       )}
 
-      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
-        <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
+      <header className="text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative bg-cover bg-center" style={{ backgroundImage: "url('/header-bg.png')" }}>
+        <div className="absolute inset-0 bg-[#1a4d2e]/60" aria-hidden />
+        <div className="relative z-10 max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
           <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex absolute left-4 md:left-6 shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室・作文トレーニング</h1>
+          <h1 className="text-base md:text-4xl font-bold tracking-wide text-center pl-14 md:pl-0 shrink min-w-0 whitespace-nowrap">ミリネ韓国語教室・作文トレーニング</h1>
         </div>
       </header>
 
