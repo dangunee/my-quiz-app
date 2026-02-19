@@ -130,10 +130,16 @@ export default function WritingPage() {
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showTrialModal, setShowTrialModal] = useState(false);
-  const [trialTab1, setTrialTab1] = useState("");
-  const [trialTab2, setTrialTab2] = useState("");
-  const [trialLoading, setTrialLoading] = useState(false);
-  const [trialActiveTab, setTrialActiveTab] = useState<"tab1" | "tab2">("tab1");
+  const [trialForm, setTrialForm] = useState({
+    title: "体験レッスン",
+    name: "",
+    furigana: "",
+    age: "選択してください",
+    prefecture: "選択してください",
+    email: "",
+  });
+  const [trialSubmitting, setTrialSubmitting] = useState(false);
+  const [trialSuccess, setTrialSuccess] = useState(false);
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -237,21 +243,55 @@ export default function WritingPage() {
     return parseDate(b) - parseDate(a);
   });
 
-  const handleTrialClick = async () => {
+  const TRIAL_PREFECTURES = [
+    "選択してください", "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
+    "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京23区", "東京都", "神奈川県", "山梨県",
+    "長野県", "新潟県", "富山県", "石川県", "福井県", "岐阜県", "静岡県", "愛知県", "三重県",
+    "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県",
+    "広島県", "山口県", "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県",
+    "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
+  ];
+  const TRIAL_AGES = ["選択してください", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"];
+
+  const handleTrialClick = () => {
     setShowTrialModal(true);
-    if (trialTab1 || trialTab2) return;
-    setTrialLoading(true);
+    setTrialForm({
+      title: "体験レッスン",
+      name: "",
+      furigana: "",
+      age: "選択してください",
+      prefecture: "選択してください",
+      email: "",
+    });
+    setTrialSuccess(false);
+  };
+
+  const handleTrialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTrialSubmitting(true);
     try {
-      const res = await fetch("/api/trial");
-      if (!res.ok) throw new Error("Fetch failed");
-      const { tab1, tab2 } = await res.json();
-      setTrialTab1(tab1);
-      setTrialTab2(tab2);
+      const res = await fetch("/api/trial/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: trialForm.title,
+          name: trialForm.name,
+          furigana: trialForm.furigana,
+          age: trialForm.age === "選択してください" ? "" : trialForm.age,
+          prefecture: trialForm.prefecture === "選択してください" ? "" : trialForm.prefecture,
+          email: trialForm.email,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setTrialSuccess(true);
+      } else {
+        alert(data.error || "送信に失敗しました");
+      }
     } catch {
-      setTrialTab1("<p class=\"text-red-600\">読み込みに失敗しました。<a href=\"https://mirinae.jp/trial.html?tab=tab01\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">こちら</a>からお申し込みください。</p>");
-      setTrialTab2("");
+      alert("送信に失敗しました");
     } finally {
-      setTrialLoading(false);
+      setTrialSubmitting(false);
     }
   };
 
@@ -742,28 +782,63 @@ export default function WritingPage() {
                       </div>
                       {showTrialModal && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowTrialModal(false)}>
-                          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl flex flex-col max-h-[calc(100vh-2rem)] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg flex flex-col max-h-[calc(100vh-2rem)] overflow-hidden" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center justify-between gap-4 p-4 border-b border-[#e5dfd4] shrink-0">
-                              <div className="flex border-b border-[#e5dfd4] flex-1">
-                                <button type="button" onClick={() => setTrialActiveTab("tab1")} className={`flex-1 py-3 px-4 font-medium text-sm ${trialActiveTab === "tab1" ? "border-b-2 border-[#1a4d2e] text-[#1a4d2e]" : "text-gray-500 hover:text-gray-700"}`}>体験申込</button>
-                                <button type="button" onClick={() => setTrialActiveTab("tab2")} className={`flex-1 py-3 px-4 font-medium text-sm ${trialActiveTab === "tab2" ? "border-b-2 border-[#1a4d2e] text-[#1a4d2e]" : "text-gray-500 hover:text-gray-700"}`}>講座申込</button>
-                              </div>
-                              <button type="button" onClick={() => setShowTrialModal(false)} className="shrink-0 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded" aria-label="閉じる">
+                              <h2 className="text-lg font-bold text-gray-800">体験申込</h2>
+                              <button type="button" onClick={() => setShowTrialModal(false)} className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded" aria-label="閉じる">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                               </button>
                             </div>
-                            {trialLoading ? (
-                              <div className="flex items-center justify-center py-16 text-gray-500 flex-1">読み込み中...</div>
-                            ) : (
-                              <div className="flex-1 min-h-0 overflow-auto">
-                                <iframe
-                                  title={trialActiveTab === "tab1" ? "体験申込" : "講座申込"}
-                                  srcDoc={`<!DOCTYPE html><html><head><base href="https://mirinae.jp/"/><link rel="stylesheet" href="https://mirinae.jp/css/reset.css"/><link rel="stylesheet" href="https://mirinae.jp/css/style.css"/><style>body{background:#fff!important;background-image:none!important}*{background-image:none!important}.conbox{display:block!important}</style></head><body style="padding:1rem;background:#fff">${trialActiveTab === "tab1" ? trialTab1 : trialTab2}</body></html>`}
-                                  className="w-full border-0 min-h-[85vh] md:min-h-[calc(100vh-8rem)]"
-                                  sandbox="allow-forms allow-same-origin"
-                                />
-                              </div>
-                            )}
+                            <div className="flex-1 min-h-0 overflow-auto p-6">
+                              {trialSuccess ? (
+                                <div className="text-center py-8">
+                                  <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
+                                  <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
+                                </div>
+                              ) : (
+                                <form onSubmit={handleTrialSubmit} className="space-y-4">
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">タイトル(*必須)</label>
+                                    <select value={trialForm.title} onChange={(e) => setTrialForm((f) => ({ ...f, title: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" required>
+                                      <option value="体験レッスン">体験レッスン</option>
+                                      <option value="レベルテスト">レベルテスト</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">お名前(*必須)</label>
+                                    <input type="text" value={trialForm.name} onChange={(e) => setTrialForm((f) => ({ ...f, name: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="お名前" required />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ふりがな(*必須)</label>
+                                    <input type="text" value={trialForm.furigana} onChange={(e) => setTrialForm((f) => ({ ...f, furigana: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="ふりがな" required />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">年齢</label>
+                                    <select value={trialForm.age} onChange={(e) => setTrialForm((f) => ({ ...f, age: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                      {TRIAL_AGES.map((a) => <option key={a} value={a}>{a}</option>)}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">都道府県</label>
+                                    <select value={trialForm.prefecture} onChange={(e) => setTrialForm((f) => ({ ...f, prefecture: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                      {TRIAL_PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス(*必須)</label>
+                                    <p className="text-xs text-gray-500 mb-1">☆携帯メールの場合は返信のため、パソコン受信設定のチェックをお願いします。</p>
+                                    <input type="email" value={trialForm.email} onChange={(e) => setTrialForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="メールアドレスを入力" required />
+                                  </div>
+                                  <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
+                                    {trialSubmitting ? "送信中..." : "送信"}
+                                  </button>
+                                  <p className="text-center text-sm text-gray-500 mt-4">
+                                    講座申込は
+                                    <a href="https://mirinae.jp/trial.html?tab=tab02" target="_blank" rel="noopener noreferrer" className="text-[#1a4d2e] hover:underline ml-1">こちら</a>
+                                  </p>
+                                </form>
+                              )}
+                            </div>
                           </div>
                         </div>
                       )}
