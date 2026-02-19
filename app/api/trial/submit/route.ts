@@ -5,10 +5,11 @@ const FORMSUBMIT_AJAX = "https://formsubmit.co/ajax/mirinae@kaonnuri.com";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, name, furigana, age, prefecture, email } = body;
+    const { formType, title, name, furigana, age, prefecture, email } = body;
+    const subjectPrefix = formType === "course" ? "講座申込" : "体験申込";
 
     const payload = {
-      _subject: `体験申込（作文アプリ）: ${title || ""}`,
+      _subject: `${subjectPrefix}（作文アプリ）: ${title || ""}`,
       _replyto: email,
       タイトル: title,
       お名前: name,

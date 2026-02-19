@@ -130,6 +130,7 @@ export default function WritingPage() {
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showTrialModal, setShowTrialModal] = useState(false);
+  const [trialActiveTab, setTrialActiveTab] = useState<"trial" | "course">("trial");
   const [trialForm, setTrialForm] = useState({
     title: "体験レッスン",
     name: "",
@@ -253,19 +254,6 @@ export default function WritingPage() {
   ];
   const TRIAL_AGES = ["選択してください", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"];
 
-  const handleTrialClick = () => {
-    setShowTrialModal(true);
-    setTrialForm({
-      title: "体験レッスン",
-      name: "",
-      furigana: "",
-      age: "選択してください",
-      prefecture: "選択してください",
-      email: "",
-    });
-    setTrialSuccess(false);
-  };
-
   const handleTrialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTrialSubmitting(true);
@@ -274,6 +262,7 @@ export default function WritingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          formType: trialActiveTab,
           title: trialForm.title,
           name: trialForm.name,
           furigana: trialForm.furigana,
@@ -777,10 +766,16 @@ export default function WritingPage() {
                       )}
                       <div className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
-                          <button type="button" onClick={handleTrialClick} className="w-full px-6 py-4 flex items-center justify-between bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium text-left">
-                            <span>体験申込</span>
-                            <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>
-                          </button>
+                          <div className="flex">
+                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ title: "体験レッスン", name: "", furigana: "", age: "選択してください", prefecture: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                              <span>体験申込</span>
+                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                            </button>
+                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ title: "講座の申し込み", name: "", furigana: "", age: "選択してください", prefecture: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                              <span>講座申込</span>
+                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                            </button>
+                          </div>
                           {showTrialModal && (
                             <div className="p-6 border-t border-[#e5dfd4]">
                               {trialSuccess ? (
@@ -793,8 +788,14 @@ export default function WritingPage() {
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">タイトル(*必須)</label>
                                     <select value={trialForm.title} onChange={(e) => setTrialForm((f) => ({ ...f, title: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" required>
-                                      <option value="体験レッスン">体験レッスン</option>
-                                      <option value="レベルテスト">レベルテスト</option>
+                                      {trialActiveTab === "trial" ? (
+                                        <>
+                                          <option value="体験レッスン">体験レッスン</option>
+                                          <option value="レベルテスト">レベルテスト</option>
+                                        </>
+                                      ) : (
+                                        <option value="講座の申し込み">講座の申し込み</option>
+                                      )}
                                     </select>
                                   </div>
                                   <div>
@@ -826,8 +827,11 @@ export default function WritingPage() {
                                     {trialSubmitting ? "送信中..." : "送信"}
                                   </button>
                                   <p className="text-sm text-gray-500">
-                                    講座申込は
-                                    <a href="https://mirinae.jp/trial.html?tab=tab02" target="_blank" rel="noopener noreferrer" className="text-[#1a4d2e] hover:underline ml-1">こちら</a>
+                                    {trialActiveTab === "trial" ? (
+                                      <>講座申込は<button type="button" onClick={() => { setTrialActiveTab("course"); setTrialForm((f) => ({ ...f, title: "講座の申し込み" })); setTrialSuccess(false); }} className="text-[#1a4d2e] hover:underline ml-1">こちら</button></>
+                                    ) : (
+                                      <>体験申込は<button type="button" onClick={() => { setTrialActiveTab("trial"); setTrialForm((f) => ({ ...f, title: "体験レッスン" })); setTrialSuccess(false); }} className="text-[#1a4d2e] hover:underline ml-1">こちら</button></>
+                                    )}
                                   </p>
                                 </form>
                               )}
