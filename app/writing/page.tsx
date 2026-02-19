@@ -128,6 +128,7 @@ export default function WritingPage() {
   const [teacherFeedback, setTeacherFeedback] = useState("");
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
   const [expandedExperience, setExpandedExperience] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -471,6 +472,20 @@ export default function WritingPage() {
                           </div>
                         </div>
                       </div>
+                      <div className="pt-4">
+                        <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer">
+                          <img src="/experience-sample.png" alt="첨삭문・비교문・모범문" className="w-full h-auto" />
+                        </button>
+                        <p className="text-center text-gray-500 text-xs mt-1">クリックで拡大</p>
+                      </div>
+                      {showImageModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setShowImageModal(false)}>
+                          <button type="button" onClick={() => setShowImageModal(false)} className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30" aria-label="閉じる">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                          <img src="/experience-sample.png" alt="첨삭문・비교문・모범문（拡大）" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+                        </div>
+                      )}
                       <div className="pt-4 text-center">
                         <a href="https://mirinae.jp/netlesson.html?tab=tab01" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors">
                           詳細・お申込みはこちら
