@@ -474,8 +474,8 @@ export default function WritingPage() {
                         </ul>
                       </div>
                       <div className="pt-4 border-t border-[#e5dfd4] overflow-hidden rounded-lg border border-gray-300 bg-[#1e3a5f]">
-                        <div className="px-4 py-2">
-                          <h3 className="font-semibold text-white text-sm">詳細</h3>
+                        <div className="px-4 py-1">
+                          <h3 className="font-semibold text-white text-base">詳細</h3>
                         </div>
                         <div className="border-collapse text-sm">
                           {[

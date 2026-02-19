@@ -217,6 +217,30 @@ export default function AdminPage() {
     setAuthKey("");
   };
 
+  const loadAssignments = () => {
+    setWritingLoading(true);
+    fetch("/api/writing/admin/assignments", { headers: { Authorization: `Bearer ${authKey}` } })
+      .then((r) => r.json())
+      .then((data) => setAssignments(data.assignments || []))
+      .catch(() => setAssignments([]))
+      .finally(() => setWritingLoading(false));
+  };
+
+  const loadSubmissions = () => {
+    setWritingLoading(true);
+    fetch("/api/writing/admin/submissions", { headers: { Authorization: `Bearer ${authKey}` } })
+      .then((r) => r.json())
+      .then((data) => setSubmissions(data.submissions || []))
+      .catch(() => setSubmissions([]))
+      .finally(() => setWritingLoading(false));
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated || !authKey) return;
+    if (activeTab === "assignments") loadAssignments();
+    else if (activeTab === "submissions") loadSubmissions();
+  }, [isAuthenticated, authKey, activeTab]);
+
   const handleSave = async (
     quizId: number,
     explanation: string,
@@ -289,13 +313,9 @@ export default function AdminPage() {
 
   const loadUsers = () => {
     setUsersLoading(true);
-    fetch("/api/admin/users", {
-      headers: { Authorization: `Bearer ${authKey}` },
-    })
+    fetch("/api/admin/users", { headers: { Authorization: `Bearer ${authKey}` } })
       .then((r) => r.json())
-      .then((data) => {
-        setUsers(data.users || []);
-      })
+      .then((data) => setUsers(data.users || []))
       .catch(() => setUsers([]))
       .finally(() => setUsersLoading(false));
   };
@@ -361,24 +381,6 @@ export default function AdminPage() {
     } finally {
       setUserActionLoading(false);
     }
-  };
-
-  const loadAssignments = () => {
-    setWritingLoading(true);
-    fetch("/api/writing/admin/assignments", { headers: { Authorization: `Bearer ${authKey}` } })
-      .then((r) => r.json())
-      .then((data) => setAssignments(data.assignments || []))
-      .catch(() => setAssignments([]))
-      .finally(() => setWritingLoading(false));
-  };
-
-  const loadSubmissions = () => {
-    setWritingLoading(true);
-    fetch("/api/writing/admin/submissions", { headers: { Authorization: `Bearer ${authKey}` } })
-      .then((r) => r.json())
-      .then((data) => setSubmissions(data.submissions || []))
-      .catch(() => setSubmissions([]))
-      .finally(() => setWritingLoading(false));
   };
 
   const handleSeedAssignments = async () => {
@@ -491,12 +493,6 @@ export default function AdminPage() {
       setWritingSaving(false);
     }
   };
-
-  useEffect(() => {
-    if (!isAuthenticated || !authKey) return;
-    if (activeTab === "assignments") loadAssignments();
-    else if (activeTab === "submissions") loadSubmissions();
-  }, [isAuthenticated, authKey, activeTab]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
