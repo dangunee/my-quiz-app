@@ -568,7 +568,7 @@ export default function WritingPage() {
               )}
 
               {activeTab === "writing" && (
-                <>
+                <div className="px-4 md:px-0 w-full">
                   <div className="md:hidden mb-4">
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
                       <h2 className="font-semibold text-gray-800 mb-2 text-sm">課題提出</h2>
@@ -683,7 +683,7 @@ export default function WritingPage() {
                       </div>
                     ))}
                   </div>
-                </>
+                </div>
               )}
 
               {activeTab === "topik" && (
