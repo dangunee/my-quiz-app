@@ -396,7 +396,7 @@ export default function WritingPage() {
                             <button type="button" onClick={() => setExpandedExperience(!expandedExperience)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
                               <div className="flex items-center gap-3">
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedExperience ? "▼" : "▶"}</span>
-                                <span className="font-medium text-gray-800">성형수술</span>
+                                <span className="font-medium text-gray-800">課題提示、文型、添削事例</span>
                               </div>
                               <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">성형수술에 대해 어떻게 생각하는지 쓰시오</p>
                             </button>
@@ -429,7 +429,6 @@ export default function WritingPage() {
                                       <span className="font-semibold text-white text-sm">添削事例</span>
                                     </div>
                                     <div className="p-4 rounded-b-lg border border-t-0 border-gray-300 bg-gray-50">
-                                      <p className="text-xs font-medium text-gray-500 mb-2">제출 사례문</p>
                                       <p className="text-gray-800 leading-relaxed">
                                         요즘 성형수술을 <span className="text-gray-700">많이 하다</span><span className="text-gray-400 mx-1">→</span><span className="text-red-600 font-medium">하는 사람이 많다</span>. 나는 성형을 생각할 때 참다 못해 부모님이 <span className="text-gray-700">물려주신</span><span className="text-gray-400 mx-1">→</span><span className="text-red-600 font-medium">물려 주신 소중한</span> 몸이므로 <span className="text-gray-700">성형하면</span><span className="text-gray-400 mx-1">→</span><span className="text-red-600 font-medium">성형을 해서는</span> 안 된다고 생각한다.
                                       </p>
