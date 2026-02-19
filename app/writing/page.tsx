@@ -141,6 +141,7 @@ export default function WritingPage() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileMessage, setProfileMessage] = useState("");
   const [profileEditForm, setProfileEditForm] = useState({ name: "", username: "" });
+  const [profileEditing, setProfileEditing] = useState(false);
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -175,6 +176,7 @@ export default function WritingPage() {
         name: user.name || "",
         username: user.username || "",
       });
+      setProfileEditing(false);
       setProfileMessage("");
     }
   }, [showProfileModal, user]);
@@ -198,6 +200,7 @@ export default function WritingPage() {
         const updated = { ...user!, name: data.user.name ?? user!.name, username: data.user.username ?? user!.username };
         setUser(updated);
         if (typeof window !== "undefined") localStorage.setItem("quiz_user", JSON.stringify(updated));
+        setProfileEditing(false);
         setProfileMessage("");
       } else {
         setProfileMessage(data.error || "保存に失敗しました");
@@ -438,34 +441,62 @@ export default function WritingPage() {
               </div>
               <div>
                 <label className="block text-sm text-gray-500 mb-1">お名前</label>
-                <input
-                  type="text"
-                  value={profileEditForm.name}
-                  onChange={(e) => setProfileEditForm((f) => ({ ...f, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#1a4d2e] focus:border-[#1a4d2e]"
-                  placeholder="お名前"
-                />
+                {profileEditing ? (
+                  <input
+                    type="text"
+                    value={profileEditForm.name}
+                    onChange={(e) => setProfileEditForm((f) => ({ ...f, name: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#1a4d2e] focus:border-[#1a4d2e]"
+                    placeholder="お名前"
+                  />
+                ) : (
+                  <p className="font-medium text-gray-700">{user.name || "-"}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm text-gray-500 mb-1">ユーザーID</label>
-                <input
-                  type="text"
-                  value={profileEditForm.username}
-                  onChange={(e) => setProfileEditForm((f) => ({ ...f, username: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#1a4d2e] focus:border-[#1a4d2e]"
-                  placeholder="ユーザーID"
-                />
+                {profileEditing ? (
+                  <input
+                    type="text"
+                    value={profileEditForm.username}
+                    onChange={(e) => setProfileEditForm((f) => ({ ...f, username: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#1a4d2e] focus:border-[#1a4d2e]"
+                    placeholder="ユーザーID"
+                  />
+                ) : (
+                  <p className="font-medium text-gray-700">{user.username || "-"}</p>
+                )}
               </div>
             </div>
             {profileMessage && <p className="mb-4 text-sm text-red-600 text-center">{profileMessage}</p>}
-            <button
-              type="button"
-              onClick={handleProfileSave}
-              disabled={profileSaving}
-              className="w-full py-2 bg-[#1a4d2e] text-white rounded hover:bg-[#153d24] disabled:opacity-50 mb-3"
-            >
-              {profileSaving ? "保存中..." : "プロフィールを保存"}
-            </button>
+            {profileEditing ? (
+              <div className="flex gap-2 mb-3">
+                <button
+                  type="button"
+                  onClick={handleProfileSave}
+                  disabled={profileSaving}
+                  className="flex-1 py-2 bg-[#1a4d2e] text-white rounded hover:bg-[#153d24] disabled:opacity-50"
+                >
+                  {profileSaving ? "保存中..." : "保存"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setProfileEditing(false); setProfileEditForm({ name: user.name || "", username: user.username || "" }); setProfileMessage(""); }}
+                  disabled={profileSaving}
+                  className="flex-1 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50"
+                >
+                  キャンセル
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setProfileEditing(true)}
+                className="w-full py-2 bg-[#1a4d2e] text-white rounded hover:bg-[#153d24] mb-3"
+              >
+                編集
+              </button>
+            )}
             <button
               type="button"
               onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setUser(null); setShowProfileModal(false); window.location.href = redirectPath; }}
