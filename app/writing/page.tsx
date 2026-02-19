@@ -309,8 +309,7 @@ export default function WritingPage() {
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-xl md:text-3xl font-bold tracking-wide">writing.mirinae.jp</h1>
-            <p className="text-xs md:text-base mt-1 opacity-90">ミリネ韓国語教室・作文トレーニング</p>
+            <h1 className="text-2xl md:text-4xl font-bold tracking-wide">ミリネ韓国語教室・作文トレーニング</h1>
           </div>
         </div>
       </header>
