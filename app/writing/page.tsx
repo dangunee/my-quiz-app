@@ -142,6 +142,7 @@ export default function WritingPage() {
   const [profileMessage, setProfileMessage] = useState("");
   const [profileEditForm, setProfileEditForm] = useState({ name: "", username: "" });
   const [profileEditing, setProfileEditing] = useState(false);
+  const [customerProfile, setCustomerProfile] = useState<{ region: string | null; plan_type: string | null } | null>(null);
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -178,6 +179,15 @@ export default function WritingPage() {
       });
       setProfileEditing(false);
       setProfileMessage("");
+      const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
+      if (token) {
+        fetch("/api/customer/profile", { headers: { Authorization: `Bearer ${token}` } })
+          .then((r) => r.json())
+          .then((data) => setCustomerProfile({ region: data.region ?? null, plan_type: data.plan_type ?? null }))
+          .catch(() => setCustomerProfile(null));
+      } else {
+        setCustomerProfile(null);
+      }
     }
   }, [showProfileModal, user]);
 
@@ -435,6 +445,14 @@ export default function WritingPage() {
               </button>
             </div>
             <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">地域</label>
+                <p className="font-medium text-gray-700">{customerProfile?.region || "-"}</p>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">無料/有料</label>
+                <p className="font-medium text-gray-700">{customerProfile?.plan_type || "-"}</p>
+              </div>
               <div>
                 <label className="block text-sm text-gray-500 mb-1">メールアドレス</label>
                 <p className="font-medium text-gray-700">{user.email}</p>

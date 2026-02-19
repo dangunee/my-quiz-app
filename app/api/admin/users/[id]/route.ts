@@ -33,7 +33,18 @@ export async function PUT(
 
   const { id } = await params;
   const body = await request.json();
-  const { email, name, username } = body;
+  const {
+    email,
+    name,
+    username,
+    region,
+    plan_type,
+    course_type,
+    payment_status,
+    period,
+    interval,
+    start_date,
+  } = body;
 
   if (!id) {
     return NextResponse.json({ error: "User ID required" }, { status: 400 });
@@ -41,33 +52,71 @@ export async function PUT(
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const updates: { email?: string; user_metadata?: Record<string, string> } = {};
+    const authUpdates: { email?: string; user_metadata?: Record<string, string> } = {};
 
-    if (typeof email === "string") updates.email = email;
+    if (typeof email === "string") authUpdates.email = email;
     if (typeof name === "string" || typeof username === "string") {
-      updates.user_metadata = {};
-      if (typeof name === "string") updates.user_metadata.name = name;
-      if (typeof username === "string") updates.user_metadata.username = username;
+      authUpdates.user_metadata = {};
+      if (typeof name === "string") authUpdates.user_metadata.name = name;
+      if (typeof username === "string") authUpdates.user_metadata.username = username;
     }
 
-    if (Object.keys(updates).length === 0) {
+    const profileFields: Record<string, unknown> = {};
+    if (region !== undefined) profileFields.region = region === "" ? null : region;
+    if (plan_type !== undefined) profileFields.plan_type = plan_type === "" ? null : plan_type;
+    if (course_type !== undefined) profileFields.course_type = course_type === "" ? null : course_type;
+    if (payment_status !== undefined) profileFields.payment_status = payment_status === "" ? null : payment_status;
+    if (period !== undefined) profileFields.period = period === "" || period == null ? null : Number(period);
+    if (interval !== undefined) profileFields.course_interval = interval === "" ? null : interval;
+    if (start_date !== undefined) profileFields.start_date = start_date === "" ? null : start_date;
+
+    if (Object.keys(authUpdates).length === 0 && Object.keys(profileFields).length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
     }
 
-    const { data, error } = await supabase.auth.admin.updateUserById(id, updates);
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (Object.keys(authUpdates).length > 0) {
+      const { error } = await supabase.auth.admin.updateUserById(id, authUpdates);
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
     }
 
+    if (Object.keys(profileFields).length > 0) {
+      profileFields.updated_at = new Date().toISOString();
+      const { error: upsertError } = await supabase
+        .from("customer_profiles")
+        .upsert(
+          { user_id: id, ...profileFields },
+          { onConflict: "user_id" }
+        );
+      if (upsertError) {
+        return NextResponse.json({ error: upsertError.message }, { status: 400 });
+      }
+    }
+
+    const { data: userData } = await supabase.auth.admin.getUserById(id);
+    const { data: profileData } = await supabase
+      .from("customer_profiles")
+      .select("*")
+      .eq("user_id", id)
+      .single();
+
+    const p = profileData;
     return NextResponse.json({
       success: true,
       user: {
-        id: data.user?.id,
-        email: data.user?.email,
-        name: data.user?.user_metadata?.name,
-        username: data.user?.user_metadata?.username,
-        lastSignInAt: data.user?.last_sign_in_at,
+        id: userData?.user?.id,
+        email: userData?.user?.email,
+        name: userData?.user?.user_metadata?.name,
+        username: userData?.user?.user_metadata?.username,
+        lastSignInAt: userData?.user?.last_sign_in_at,
+        region: p?.region ?? null,
+        plan_type: p?.plan_type ?? null,
+        course_type: p?.course_type ?? null,
+        payment_status: p?.payment_status ?? null,
+        period: p?.period ?? null,
+        interval: p?.course_interval ?? null,
+        start_date: p?.start_date ?? null,
       },
     });
   } catch (e) {

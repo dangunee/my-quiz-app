@@ -76,3 +76,25 @@ create index if not exists idx_app_analytics_logged_in on app_analytics(is_logge
 -- alter table app_analytics add column if not exists country text;
 -- alter table app_analytics add column if not exists region text;
 -- alter table app_analytics add column if not exists is_logged_in boolean;
+
+-- ========== Customer Profiles (고객 데이터) ==========
+create table if not exists customer_profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  region text,
+  plan_type text check (plan_type in ('無料', '有料')),
+  course_type text check (course_type in ('作文', '音読', '無')),
+  payment_status text check (payment_status in ('未定', '完了')),
+  period int check (period >= 1 and period <= 8),
+  course_interval text check (course_interval in ('1週', '2週')),
+  start_date date,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index if not exists idx_customer_profiles_region on customer_profiles(region);
+create index if not exists idx_customer_profiles_plan_type on customer_profiles(plan_type);
+
+-- RLS: customers can read own profile
+alter table customer_profiles enable row level security;
+create policy "Users can read own profile" on customer_profiles for select using (auth.uid() = user_id);
+create policy "Service role full access" on customer_profiles for all using (auth.role() = 'service_role');

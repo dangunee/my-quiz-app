@@ -33,14 +33,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const users = (data?.users || []).map((u) => ({
-      id: u.id,
-      email: u.email,
-      name: u.user_metadata?.name,
-      username: u.user_metadata?.username,
-      createdAt: u.created_at,
-      lastSignInAt: u.last_sign_in_at,
-    }));
+    const userIds = (data?.users || []).map((u) => u.id);
+    const { data: profiles } = await supabase
+      .from("customer_profiles")
+      .select("*")
+      .in("user_id", userIds);
+    const profileMap = new Map(
+      (profiles || []).map((p) => [p.user_id, p])
+    );
+
+    const users = (data?.users || []).map((u) => {
+      const p = profileMap.get(u.id);
+      return {
+        id: u.id,
+        email: u.email,
+        name: u.user_metadata?.name,
+        username: u.user_metadata?.username,
+        createdAt: u.created_at,
+        lastSignInAt: u.last_sign_in_at,
+        region: p?.region ?? null,
+        plan_type: p?.plan_type ?? null,
+        course_type: p?.course_type ?? null,
+        payment_status: p?.payment_status ?? null,
+        period: p?.period ?? null,
+        interval: p?.course_interval ?? null,
+        start_date: p?.start_date ?? null,
+      };
+    });
 
     return NextResponse.json({ users });
   } catch (e) {

@@ -107,10 +107,36 @@ export default function AdminPage() {
   const [feedbackText, setFeedbackText] = useState("");
   const [writingSaving, setWritingSaving] = useState(false);
   const [seedLoading, setSeedLoading] = useState(false);
-  const [users, setUsers] = useState<{ id: string; email: string; name?: string; username?: string; createdAt?: string; lastSignInAt?: string }[]>([]);
+  type UserRow = {
+  id: string;
+  email: string;
+  name?: string;
+  username?: string;
+  createdAt?: string;
+  lastSignInAt?: string;
+  region?: string | null;
+  plan_type?: string | null;
+  course_type?: string | null;
+  payment_status?: string | null;
+  period?: number | null;
+  interval?: string | null;
+  start_date?: string | null;
+};
+  const [users, setUsers] = useState<UserRow[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
-  const [editUserForm, setEditUserForm] = useState({ email: "", name: "", username: "" });
+  const [editUserForm, setEditUserForm] = useState({
+    email: "",
+    name: "",
+    username: "",
+    region: "",
+    plan_type: "",
+    course_type: "",
+    payment_status: "",
+    period: "",
+    interval: "",
+    start_date: "",
+  });
   const [userActionLoading, setUserActionLoading] = useState(false);
   const [userSearchKeyword, setUserSearchKeyword] = useState("");
   const [analytics, setAnalytics] = useState<{
@@ -320,12 +346,19 @@ export default function AdminPage() {
       .finally(() => setUsersLoading(false));
   };
 
-  const handleEditUser = (u: { id: string; email: string; name?: string; username?: string }) => {
+  const handleEditUser = (u: UserRow) => {
     setEditingUserId(u.id);
     setEditUserForm({
       email: u.email || "",
       name: u.name || "",
       username: u.username || "",
+      region: u.region ?? "",
+      plan_type: u.plan_type ?? "",
+      course_type: u.course_type ?? "",
+      payment_status: u.payment_status ?? "",
+      period: u.period != null ? String(u.period) : "",
+      interval: u.interval ?? "",
+      start_date: u.start_date ?? "",
     });
   };
 
@@ -787,6 +820,13 @@ export default function AdminPage() {
                       <th className="text-left py-2 px-3">メール</th>
                       <th className="text-left py-2 px-3">名前</th>
                       <th className="text-left py-2 px-3">ID</th>
+                      <th className="text-left py-2 px-3">地域</th>
+                      <th className="text-left py-2 px-3">無料/有料</th>
+                      <th className="text-left py-2 px-3">作文/音読/無</th>
+                      <th className="text-left py-2 px-3">決済</th>
+                      <th className="text-left py-2 px-3">期目</th>
+                      <th className="text-left py-2 px-3">間隔</th>
+                      <th className="text-left py-2 px-3">開始日</th>
                       <th className="text-left py-2 px-3">登録日</th>
                       <th className="text-left py-2 px-3">最終アクセス</th>
                       <th className="text-left py-2 px-3">管理</th>
@@ -801,7 +841,7 @@ export default function AdminPage() {
                               <input
                                 value={editUserForm.email}
                                 onChange={(e) => setEditUserForm((f) => ({ ...f, email: e.target.value }))}
-                                className="w-full border rounded px-2 py-1 text-sm"
+                                className="w-full min-w-[120px] border rounded px-2 py-1 text-sm"
                                 placeholder="メール"
                               />
                             </td>
@@ -819,6 +859,79 @@ export default function AdminPage() {
                                 onChange={(e) => setEditUserForm((f) => ({ ...f, username: e.target.value }))}
                                 className="w-full border rounded px-2 py-1 text-sm"
                                 placeholder="ID"
+                              />
+                            </td>
+                            <td className="py-2 px-3">
+                              <input
+                                value={editUserForm.region}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, region: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                                placeholder="地域"
+                              />
+                            </td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={editUserForm.plan_type}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, plan_type: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              >
+                                <option value="">-</option>
+                                <option value="無料">無料</option>
+                                <option value="有料">有料</option>
+                              </select>
+                            </td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={editUserForm.course_type}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, course_type: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              >
+                                <option value="">-</option>
+                                <option value="作文">作文</option>
+                                <option value="音読">音読</option>
+                                <option value="無">無</option>
+                              </select>
+                            </td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={editUserForm.payment_status}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, payment_status: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              >
+                                <option value="">-</option>
+                                <option value="未定">未定</option>
+                                <option value="完了">完了</option>
+                              </select>
+                            </td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={editUserForm.period}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, period: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              >
+                                <option value="">-</option>
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                                  <option key={n} value={n}>{n}</option>
+                                ))}
+                              </select>
+                            </td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={editUserForm.interval}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, interval: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              >
+                                <option value="">-</option>
+                                <option value="1週">1週</option>
+                                <option value="2週">2週</option>
+                              </select>
+                            </td>
+                            <td className="py-2 px-3">
+                              <input
+                                type="date"
+                                value={editUserForm.start_date}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, start_date: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
                               />
                             </td>
                             <td className="py-2 px-3">
@@ -851,6 +964,13 @@ export default function AdminPage() {
                             <td className="py-2 px-3">{u.email}</td>
                             <td className="py-2 px-3">{u.name || "-"}</td>
                             <td className="py-2 px-3">{u.username || "-"}</td>
+                            <td className="py-2 px-3">{u.region || "-"}</td>
+                            <td className="py-2 px-3">{u.plan_type || "-"}</td>
+                            <td className="py-2 px-3">{u.course_type || "-"}</td>
+                            <td className="py-2 px-3">{u.payment_status || "-"}</td>
+                            <td className="py-2 px-3">{u.period ?? "-"}</td>
+                            <td className="py-2 px-3">{u.interval || "-"}</td>
+                            <td className="py-2 px-3">{u.start_date ? new Date(u.start_date).toLocaleDateString("ja-JP") : "-"}</td>
                             <td className="py-2 px-3">
                               {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
                             </td>

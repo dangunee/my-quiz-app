@@ -12,6 +12,7 @@ type User = {
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
+  const [customerProfile, setCustomerProfile] = useState<{ region: string | null; plan_type: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState("");
@@ -29,6 +30,18 @@ export default function ProfilePage() {
     }
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
+    if (user && token) {
+      fetch("/api/customer/profile", { headers: { Authorization: `Bearer ${token}` } })
+        .then((r) => r.json())
+        .then((data) => setCustomerProfile({ region: data.region ?? null, plan_type: data.plan_type ?? null }))
+        .catch(() => setCustomerProfile(null));
+    } else {
+      setCustomerProfile(null);
+    }
+  }, [user]);
 
   const handleDeleteAccount = async () => {
     if (!confirm("本当にアカウントを削除しますか？この操作は取り消せません。")) return;
@@ -99,6 +112,14 @@ export default function ProfilePage() {
         <h1 className="text-xl font-bold mb-6 text-center">マイページ</h1>
 
         <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">地域</label>
+            <p className="font-medium">{customerProfile?.region || "-"}</p>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-500 mb-1">無料/有料</label>
+            <p className="font-medium">{customerProfile?.plan_type || "-"}</p>
+          </div>
           <div>
             <label className="block text-sm text-gray-500 mb-1">メールアドレス</label>
             <p className="font-medium">{user.email}</p>
