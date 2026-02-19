@@ -105,15 +105,15 @@ function saveAssignments(assignments: Assignment[]) {
 type TabId = "experience" | "writing" | "topik";
 
 const TABS: { id: TabId; label: string }[] = [
-  { id: "experience", label: "体験例" },
-  { id: "writing", label: "作文トレーニング" },
+  { id: "experience", label: "作文トレーニング" },
+  { id: "writing", label: "課題提出" },
   { id: "topik", label: "TOPIK作文トレーニング" },
 ];
 
 export default function WritingPage() {
   const { redirectPath } = useWritingBase();
   const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState<TabId>("writing");
+  const [activeTab, setActiveTab] = useState<TabId>("experience");
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
