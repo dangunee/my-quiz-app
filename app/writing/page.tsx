@@ -111,7 +111,7 @@ const TABS: { id: TabId; label: string }[] = [
 ];
 
 export default function WritingPage() {
-  const { adminPath, redirectPath, quizLink } = useWritingBase();
+  const { redirectPath } = useWritingBase();
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("writing");
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
@@ -256,43 +256,31 @@ export default function WritingPage() {
     setTeacherFeedback("");
   };
 
+  const menuItemClass = "flex items-center gap-3 py-3 px-3 rounded-lg text-gray-700 hover:bg-[#1a4d2e]/10 hover:text-[#1a4d2e] transition-colors duration-200 text-sm font-medium";
+
   const sidebarContent = (
-    <div className="px-4 pb-6 space-y-4">
-      {/* 과제 제출 - 두 번째 이미지와 동일 */}
-      <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
-        <h2 className="font-semibold text-gray-800 mb-3 text-sm">과제 제출</h2>
-        <button
-          onClick={handleSubmitClick}
-          className="w-full py-3 px-4 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg active:scale-[0.98]"
-        >
-          과제 제출 버튼
-        </button>
-      </div>
-      {/* 로그인/로그아웃 */}
-      <nav className="flex flex-col gap-0 border-t border-[#e5dfd4] pt-4">
-        {user ? (
-          <>
-            <Link href="/profile" target="_blank" rel="noopener noreferrer" className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-              마이페이지
-            </Link>
-            <span className="block py-1 text-xs text-gray-500">{user.name || user.username || user.email}</span>
-            <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); setSidebarCollapsed(true); window.location.href = redirectPath; }} className="block w-full text-left py-2 text-gray-800 hover:text-[#1a4d2e] text-sm">
-              로그아웃
-            </button>
-          </>
-        ) : (
-          <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-            로그인
+    <nav className="px-2 py-4">
+      {user ? (
+        <div className="flex flex-col gap-1">
+          <Link href="/profile" target="_blank" rel="noopener noreferrer" className={menuItemClass} onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
+            <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            마이페이지
           </Link>
-        )}
-        <Link href={adminPath} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-          관리자
+          <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); setSidebarCollapsed(true); window.location.href = redirectPath; }} className={`${menuItemClass} w-full text-left`}>
+            <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            로그아웃
+          </button>
+          <div className="mt-3 pt-3 border-t border-[#e5dfd4]">
+            <p className="px-3 py-1 text-xs text-gray-500 truncate">{user.name || user.username || user.email}</p>
+          </div>
+        </div>
+      ) : (
+        <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className={menuItemClass} onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
+          <svg className="w-5 h-5 text-[#1a4d2e]/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+          로그인
         </Link>
-        <Link href={quizLink} {...(quizLink.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-          퀴즈 앱
-        </Link>
-      </nav>
-    </div>
+      )}
+    </nav>
   );
 
   return (
