@@ -362,40 +362,38 @@ export default function WritingPage() {
                       </div>
                       <div className="pt-4 border-t border-[#e5dfd4]">
                         <h3 className="font-semibold text-gray-800 mb-4 text-sm">詳細</h3>
-                        <div className="space-y-4 text-sm text-gray-700">
-                          <div>
-                            <p className="font-medium text-gray-800 mb-1">授業について</p>
-                            <p className="leading-relaxed">「会話が自己紹介から先に進まない・・・」「もっと自分の関心のある分野について自由に話してみたいのに・・・」こういったお悩みはありませんか？解決策があります！今なら作文トレーニングで、自分の書いた文章を自然な韓国語に直してもらえて、表現力をアップさせることができます。外国語をマスターするために最もいい方法は、自分の考えを一度文章にしてみて、それが自然なのかどうかをネイティブにチェックしてもらうこと、そしてそれを何度も繰り返すことです。きちんと作文ができることで表現力をアップさせることができます。ミリネから毎週出題される様々なテーマについての作文にチャレンジして提出、それを韓国語ネイティブ講師が添削指導いたします。課題は毎回違うテーマで、さらに厳選された文型を必ず使用するよう出題しますのでマンネリ作文から脱出できます。ネイティブの添削とあわせて模範作文も送付いたしますので、比較してみることで更に多くの文型や表現に触れることが出来、読解力も向上させられます！TOPIKの合格を左右するポイントとなる作文試験対策としても最適です。全国どこでも、メールが使用できる方なら今すぐスタートできます。</p>
+                        <div className="space-y-3 text-sm">
+                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
+                            <p className="font-semibold text-gray-800 mb-1">授業について</p>
+                            <p className="text-gray-700">毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。</p>
                           </div>
-                          <div className="grid sm:grid-cols-2 gap-4">
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">対象</p>
-                              <p>初、中、上級(レベルの区別はありません)</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">目標</p>
-                              <p>作文と添削指導の繰り返しを通じて、語彙や文型を効果的に増やし、最も自然な韓国語の表現を身につける。</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">授業の流れ</p>
-                              <p>毎週金曜日にメールで作文テーマと使用すべき文型を送信しますので、テーマに沿った作文を作成して翌週の月曜日夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出して下さい。</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">日程</p>
-                              <p>1月9日(金)から10週間</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">教室</p>
-                              <p>オンライン</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">募集期間</p>
-                              <p>～2026年1月7日(水)</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-800 mb-1">テキスト</p>
-                              <p>ミリネ独自のテキスト(PDF)※事前にメールにてお送りします。</p>
-                            </div>
+                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
+                            <p className="font-semibold text-gray-800 mb-1">対象</p>
+                            <p className="text-gray-700">初、中、上級(レベルの区別はありません)</p>
+                          </div>
+                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
+                            <p className="font-semibold text-gray-800 mb-1">目標</p>
+                            <p className="text-gray-700">語彙・文型を増やし、自然な韓国語の表現を身につける</p>
+                          </div>
+                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
+                            <p className="font-semibold text-gray-800 mb-1">授業の流れ</p>
+                            <p className="text-gray-700">金曜にテーマ送付 → 月曜夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出</p>
+                          </div>
+                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
+                            <p className="font-semibold text-gray-800 mb-1">日程</p>
+                            <p className="text-gray-700">1月9日(金)から10週間</p>
+                          </div>
+                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
+                            <p className="font-semibold text-gray-800 mb-1">教室</p>
+                            <p className="text-gray-700">オンライン</p>
+                          </div>
+                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
+                            <p className="font-semibold text-gray-800 mb-1">募集期間</p>
+                            <p className="text-gray-700">～2026年1月7日(水)</p>
+                          </div>
+                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
+                            <p className="font-semibold text-gray-800 mb-1">テキスト</p>
+                            <p className="text-gray-700">ミリネ独自テキスト(PDF)※事前にメールでお送りします</p>
                           </div>
                         </div>
                       </div>
