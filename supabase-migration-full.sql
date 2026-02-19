@@ -39,7 +39,7 @@ create table if not exists customer_profiles (
   plan_type text check (plan_type in ('無料', '有料')),
   course_type text check (course_type is null or course_type in ('作文', '音読')),
   payment_status text check (payment_status in ('未定', '完了')),
-  period int check (period is null or (period >= 1 and period <= 8)),
+  period int check (period >= 1 and period <= 8),
   course_interval text check (course_interval in ('1週', '2週')),
   start_date date,
   created_at timestamptz default now(),
@@ -54,7 +54,7 @@ drop policy if exists "Service role full access" on customer_profiles;
 create policy "Users can read own profile" on customer_profiles for select using (auth.uid() = user_id);
 create policy "Service role full access" on customer_profiles for all using (auth.role() = 'service_role');
 
--- Migration: course_type에서 '無' 제거 (기존 DB용, 테이블이 이미 있을 때)
+-- Migration: course_type '無' 제거 (기존 DB용 - 반드시 이 순서로 실행)
 update customer_profiles set course_type = null where course_type = '無';
 alter table customer_profiles drop constraint if exists customer_profiles_course_type_check;
 alter table customer_profiles add constraint customer_profiles_course_type_check
