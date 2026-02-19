@@ -422,6 +422,37 @@ export default function WritingPage() {
                                       <p className="text-gray-600 pl-2">예) 한국에 관광 가는 김에 성형까지 하고 오는 사람도 있다</p>
                                     </div>
                                   </div>
+                                  <div className="pt-4 mt-4 border-t border-[#e5dfd4]">
+                                    <div className="px-3 py-2 bg-[#1e3a5f] rounded-t-lg">
+                                      <span className="font-semibold text-white text-sm">添削事例</span>
+                                    </div>
+                                    <div className="p-4 rounded-b-lg border border-t-0 border-gray-300 bg-gray-50 space-y-3">
+                                      <div>
+                                        <p className="text-xs font-medium text-gray-500 mb-1">제출 사례문</p>
+                                        <p className="text-gray-800 leading-relaxed">요즘 성형수술을 많이 하다. 나는 성형을 생각할 때 참다 못해 부모님이 물려주신 몸이므로 성형하면 안 된다고 생각한다.</p>
+                                      </div>
+                                      <div>
+                                        <p className="text-xs font-medium text-gray-500 mb-2">添削後</p>
+                                        <div className="space-y-2 text-sm">
+                                          <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-gray-700">많이 하다</span>
+                                            <span className="text-gray-400">→</span>
+                                            <span className="text-red-600 font-medium">하는 사람이 많다</span>
+                                          </div>
+                                          <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-gray-700">물려주신</span>
+                                            <span className="text-gray-400">→</span>
+                                            <span className="text-red-600 font-medium">물려 주신 소중한</span>
+                                          </div>
+                                          <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-gray-700">성형하면</span>
+                                            <span className="text-gray-400">→</span>
+                                            <span className="text-red-600 font-medium">성형을 해서는</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             )}
