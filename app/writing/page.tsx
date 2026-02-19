@@ -628,6 +628,23 @@ export default function WritingPage() {
                           お申し込み
                         </button>
                       </div>
+                      <div className="pt-4 border-t border-[#e5dfd4]">
+                        <div className="px-4 md:px-5 py-3 bg-[#1e3a5f] rounded-t-lg border border-b-0 border-gray-300 font-semibold text-white text-sm md:text-base">生徒の声</div>
+                        <div className="border border-gray-300 rounded-b-lg overflow-hidden p-4 space-y-4 bg-white">
+                          <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
+                            <p className="font-semibold text-gray-800 mb-2">N様 | 2019.3月</p>
+                            <p className="text-gray-700 text-sm leading-relaxed">毎週韓国語で文章を作ることで、自然な韓国語の表現について考える習慣がついたように感じます。自分の言葉で文章を作る難しさも痛感しました。添削していただいた文はすごく勉強になりました。まだ復習しきれていないので、これから1つ1つの添削をじっくり復習したいと思います。ありがとうございました。</p>
+                          </div>
+                          <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
+                            <p className="font-semibold text-gray-800 mb-2">U様 | 2019.3月</p>
+                            <p className="text-gray-700 text-sm leading-relaxed">大きな収穫は、やはり私の作文はただ日本語を韓国語に訳しただけのものだと痛感したことです。韓国語を意識して書いたつもりでも、どうしても日本語脳が働いてしまいます。決められた文型を使うことも難しかったですが、書き終えた時の達成感があり、楽しくトレーニングを受けることができました。ありがとうございました。模範文を繰り返し書いて、次の10回に活かします。</p>
+                          </div>
+                          <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
+                            <p className="font-semibold text-gray-800 mb-2">H様 | 2019.3月</p>
+                            <p className="text-gray-700 text-sm leading-relaxed">10回のご指導をありがとうございました。最初は、決められた文型を入れて文章を作ることに時間がかかりましたが、だんだん慣れてきたとは思います。私は思った以上に、分かち書きと形容詞の한다体が間違いやすく、まだまだ慣れていかないとだめだなと感じています。ですが間違いなく、韓国語文字を入力することは、速くなりました(笑)打ち間違いが多くて変な文章内容だったりと、先生も添削に悪戦苦闘されたと思います。根気よくチェックしていただいて、本当にありがとうございました。</p>
+                          </div>
+                        </div>
+                      </div>
                       {showTrialModal && (
                         <div className="mt-4 pt-4 border-t border-[#e5dfd4]">
                           <div className="flex items-center justify-between gap-4 mb-4">
