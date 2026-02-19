@@ -136,6 +136,9 @@ export default function WritingPage() {
   const [trialActiveTab, setTrialActiveTab] = useState<"tab1" | "tab2">("tab1");
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileDeleting, setProfileDeleting] = useState(false);
+  const [profileMessage, setProfileMessage] = useState("");
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -281,6 +284,37 @@ export default function WritingPage() {
     setTeacherFeedback("");
   };
 
+  const handleProfileDeleteAccount = async () => {
+    if (!confirm("本当にアカウントを削除しますか？この操作は取り消せません。")) return;
+    setProfileDeleting(true);
+    setProfileMessage("");
+    try {
+      const token = localStorage.getItem("quiz_token");
+      if (!token) {
+        setProfileMessage("ログインが必要です");
+        return;
+      }
+      const res = await fetch("/api/auth/delete-account", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.removeItem("quiz_token");
+        localStorage.removeItem("quiz_user");
+        setUser(null);
+        setShowProfileModal(false);
+        window.location.href = redirectPath;
+      } else {
+        setProfileMessage(data.error || "削除に失敗しました");
+      }
+    } catch {
+      setProfileMessage("エラーが発生しました");
+    } finally {
+      setProfileDeleting(false);
+    }
+  };
+
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
     { label: "クイズ", href: "https://quiz.mirinae.jp", external: true },
@@ -297,9 +331,9 @@ export default function WritingPage() {
     <nav className="space-y-0">
       {user ? (
         <>
-          <Link href="/profile" target="_blank" rel="noopener noreferrer" className="block py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]" onClick={() => setMenuOpen(false)}>
+          <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]">
             マイページ
-          </Link>
+          </button>
           <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>
           <button
             type="button"
@@ -343,6 +377,49 @@ export default function WritingPage() {
             <div className="p-4">{sidebarContent}</div>
           </aside>
         </>
+      )}
+
+      {showProfileModal && user && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowProfileModal(false)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800">マイページ</h2>
+              <button type="button" onClick={() => setShowProfileModal(false)} className="rounded p-2 text-gray-500 hover:bg-gray-100" aria-label="閉じる">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">メールアドレス</label>
+                <p className="font-medium">{user.email}</p>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">お名前</label>
+                <p className="font-medium">{user.name || "-"}</p>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-500 mb-1">ユーザーID</label>
+                <p className="font-medium">{user.username || "-"}</p>
+              </div>
+            </div>
+            {profileMessage && <p className="mb-4 text-sm text-red-600 text-center">{profileMessage}</p>}
+            <button
+              type="button"
+              onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setUser(null); setShowProfileModal(false); window.location.href = redirectPath; }}
+              className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 mb-3"
+            >
+              ログアウト
+            </button>
+            <button
+              type="button"
+              onClick={handleProfileDeleteAccount}
+              disabled={profileDeleting}
+              className="w-full py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 disabled:opacity-50"
+            >
+              {profileDeleting ? "処理中..." : "アカウントを削除する"}
+            </button>
+          </div>
+        </div>
       )}
 
       <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
