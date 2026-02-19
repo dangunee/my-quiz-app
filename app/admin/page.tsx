@@ -822,7 +822,7 @@ export default function AdminPage() {
                       <th className="text-left py-2 px-3">ID</th>
                       <th className="text-left py-2 px-3">地域</th>
                       <th className="text-left py-2 px-3">無料/有料</th>
-                      <th className="text-left py-2 px-3">作文/音読/無</th>
+                      <th className="text-left py-2 px-3">作文/音読</th>
                       <th className="text-left py-2 px-3">決済</th>
                       <th className="text-left py-2 px-3">期目</th>
                       <th className="text-left py-2 px-3">間隔</th>
@@ -889,7 +889,6 @@ export default function AdminPage() {
                                 <option value="">-</option>
                                 <option value="作文">作文</option>
                                 <option value="音読">音読</option>
-                                <option value="無">無</option>
                               </select>
                             </td>
                             <td className="py-2 px-3">
