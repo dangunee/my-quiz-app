@@ -14,7 +14,7 @@ type User = {
 
 function useWritingBase() {
   const [base, setBase] = useState({
-    adminPath: "/writing/admin",
+    adminPath: "/admin",
     redirectPath: "/writing",
     quizLink: "/",
   });
@@ -22,7 +22,7 @@ function useWritingBase() {
     if (typeof window !== "undefined") {
       const isWriting = window.location.hostname === WRITING_HOST;
       setBase({
-        adminPath: isWriting ? "/admin" : "/writing/admin",
+        adminPath: "/admin",
         redirectPath: isWriting ? "/" : "/writing",
         quizLink: isWriting ? "https://quiz.mirinae.jp" : "/",
       });

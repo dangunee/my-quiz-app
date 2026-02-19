@@ -48,11 +48,11 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**에서 추가:
 - **퀴즈**: `https://your-domain.vercel.app/`
 - **作文**: `https://your-domain.vercel.app/writing`
 - **관리자**: `https://your-domain.vercel.app/admin`
-- **作文 관리자**: `https://your-domain.vercel.app/writing/admin`
+- **作文 관리자**: `https://your-domain.vercel.app/admin` (통합 관리자 → 作文課題 탭)
 
 ###作文 페이지 초기 설정
 
-1. `/writing/admin` 접속
+1. `/admin` 접속 후 **作文課題** 탭 선택
 2. `ADMIN_SECRET` 입력 후 로그인
 3. **기본 과제 10개 추가** 버튼 클릭
 

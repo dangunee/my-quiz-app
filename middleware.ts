@@ -17,13 +17,13 @@ export function middleware(request: NextRequest) {
     urlHost === WRITING_HOST ||
     urlHost === `www.${WRITING_HOST}`;
 
-  // writing.mirinae.jp: root → /writing (rewrite, URL 유지), /admin → /writing/admin
+  // writing.mirinae.jp: root → /writing (rewrite), /writing/admin → /admin (통합 관리자)
   if (isWritingHost) {
     if (pathname === "/" || pathname === "") {
       return NextResponse.rewrite(new URL("/writing", request.url));
     }
-    if (pathname === "/admin") {
-      return NextResponse.rewrite(new URL("/writing/admin", request.url));
+    if (pathname === "/writing/admin") {
+      return NextResponse.redirect(new URL("/admin", request.url), 302);
     }
     return NextResponse.next();
   }
