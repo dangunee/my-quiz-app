@@ -138,7 +138,9 @@ export default function WritingPage() {
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileDeleting, setProfileDeleting] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
   const [profileMessage, setProfileMessage] = useState("");
+  const [profileEditForm, setProfileEditForm] = useState({ name: "", username: "" });
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -166,6 +168,46 @@ export default function WritingPage() {
   useEffect(() => {
     setAssignments(getStoredAssignments());
   }, []);
+
+  useEffect(() => {
+    if (showProfileModal && user) {
+      setProfileEditForm({
+        name: user.name || "",
+        username: user.username || "",
+      });
+      setProfileMessage("");
+    }
+  }, [showProfileModal, user]);
+
+  const handleProfileSave = async () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
+    if (!token) {
+      setProfileMessage("ログインが必要です");
+      return;
+    }
+    setProfileSaving(true);
+    setProfileMessage("");
+    try {
+      const res = await fetch("/api/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ name: profileEditForm.name, username: profileEditForm.username }),
+      });
+      const data = await res.json();
+      if (res.ok && data.user) {
+        const updated = { ...user!, name: data.user.name ?? user!.name, username: data.user.username ?? user!.username };
+        setUser(updated);
+        if (typeof window !== "undefined") localStorage.setItem("quiz_user", JSON.stringify(updated));
+        setProfileMessage("");
+      } else {
+        setProfileMessage(data.error || "保存に失敗しました");
+      }
+    } catch {
+      setProfileMessage("エラーが発生しました");
+    } finally {
+      setProfileSaving(false);
+    }
+  };
 
   const groupedByDate = assignments.reduce<Record<string, Assignment[]>>((acc, a) => {
     if (!acc[a.dateRange]) acc[a.dateRange] = [];
@@ -392,18 +434,38 @@ export default function WritingPage() {
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm text-gray-500 mb-1">メールアドレス</label>
-                <p className="font-medium">{user.email}</p>
+                <p className="font-medium text-gray-700">{user.email}</p>
               </div>
               <div>
                 <label className="block text-sm text-gray-500 mb-1">お名前</label>
-                <p className="font-medium">{user.name || "-"}</p>
+                <input
+                  type="text"
+                  value={profileEditForm.name}
+                  onChange={(e) => setProfileEditForm((f) => ({ ...f, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#1a4d2e] focus:border-[#1a4d2e]"
+                  placeholder="お名前"
+                />
               </div>
               <div>
                 <label className="block text-sm text-gray-500 mb-1">ユーザーID</label>
-                <p className="font-medium">{user.username || "-"}</p>
+                <input
+                  type="text"
+                  value={profileEditForm.username}
+                  onChange={(e) => setProfileEditForm((f) => ({ ...f, username: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#1a4d2e] focus:border-[#1a4d2e]"
+                  placeholder="ユーザーID"
+                />
               </div>
             </div>
             {profileMessage && <p className="mb-4 text-sm text-red-600 text-center">{profileMessage}</p>}
+            <button
+              type="button"
+              onClick={handleProfileSave}
+              disabled={profileSaving}
+              className="w-full py-2 bg-[#1a4d2e] text-white rounded hover:bg-[#153d24] disabled:opacity-50 mb-3"
+            >
+              {profileSaving ? "保存中..." : "プロフィールを保存"}
+            </button>
             <button
               type="button"
               onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setUser(null); setShowProfileModal(false); window.location.href = redirectPath; }}
