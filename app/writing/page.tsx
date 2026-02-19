@@ -766,8 +766,8 @@ export default function WritingPage() {
                             </button>
                             {expandedExampleId === ex.id && ex.modelContent && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
-                                <div className="mt-3 flex flex-col sm:flex-row gap-3">
-                                  <div className="flex-1 p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
+                                <div className="mt-3 flex flex-col gap-3">
+                                  <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
                                     {ex.modelContent.courseInfo && <p className="text-gray-600 font-medium">{ex.modelContent.courseInfo}：　テーマ： {ex.modelContent.theme}</p>}
                                     {!ex.modelContent.courseInfo && <p className="text-gray-600 font-medium">テーマ：{ex.modelContent.theme}</p>}
                                     <p className="text-gray-800 leading-relaxed">{ex.modelContent.question}</p>
@@ -781,11 +781,9 @@ export default function WritingPage() {
                                       ))}
                                     </div>
                                   </div>
-                                  <div className="sm:shrink-0 flex sm:flex-col justify-end">
-                                    <button onClick={handleExampleSubmitClick} className="w-full sm:w-auto px-5 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md whitespace-nowrap">
-                                      課題提出
-                                    </button>
-                                  </div>
+                                  <button onClick={handleExampleSubmitClick} className="w-full py-3 px-6 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md">
+                                    課題提出
+                                  </button>
                                 </div>
                               </div>
                             )}
