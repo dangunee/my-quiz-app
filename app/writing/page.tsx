@@ -368,7 +368,7 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto p-4 md:p-6 pb-24 md:pb-6">
               {activeTab === "experience" && (
-                <div className="max-w-3xl md:max-w-[57.5rem]">
+                <div className="max-w-3xl md:max-w-[52.75rem]">
                   <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-4">
                       <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
