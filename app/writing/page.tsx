@@ -360,41 +360,30 @@ export default function WritingPage() {
                           <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">④</span>ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します</li>
                         </ul>
                       </div>
-                      <div className="pt-4 border-t border-[#e5dfd4]">
-                        <h3 className="font-semibold text-gray-800 mb-4 text-sm">詳細</h3>
-                        <div className="space-y-3 text-sm">
-                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
-                            <p className="font-semibold text-gray-800 mb-1">授業について</p>
-                            <p className="text-gray-700">毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
-                            <p className="font-semibold text-gray-800 mb-1">対象</p>
-                            <p className="text-gray-700">初、中、上級(レベルの区別はありません)</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
-                            <p className="font-semibold text-gray-800 mb-1">目標</p>
-                            <p className="text-gray-700">語彙・文型を増やし、自然な韓国語の表現を身につける</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
-                            <p className="font-semibold text-gray-800 mb-1">授業の流れ</p>
-                            <p className="text-gray-700">金曜にテーマ送付 → 月曜夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
-                            <p className="font-semibold text-gray-800 mb-1">日程</p>
-                            <p className="text-gray-700">1月9日(金)から10週間</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
-                            <p className="font-semibold text-gray-800 mb-1">教室</p>
-                            <p className="text-gray-700">オンライン</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f0f7f2]">
-                            <p className="font-semibold text-gray-800 mb-1">募集期間</p>
-                            <p className="text-gray-700">～2026年1月7日(水)</p>
-                          </div>
-                          <div className="rounded-lg p-3 bg-[#f5f9f6]">
-                            <p className="font-semibold text-gray-800 mb-1">テキスト</p>
-                            <p className="text-gray-700">ミリネ独自テキスト(PDF)※事前にメールでお送りします</p>
-                          </div>
+                      <div className="pt-4 border-t border-[#e5dfd4] overflow-hidden rounded-lg border border-gray-300">
+                        <div className="bg-[#1e3a5f] px-4 py-2">
+                          <h3 className="font-semibold text-white text-sm">詳細</h3>
+                        </div>
+                        <div className="border-collapse text-sm">
+                          {[
+                            { label: "授業について", content: "毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。" },
+                            { label: "対象", content: "初、中、上級(レベルの区別はありません)" },
+                            { label: "目標", content: "語彙・文型を増やし、自然な韓国語の表現を身につける" },
+                            { label: "授業の流れ", content: <>金曜にテーマ送付 → 月曜夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出</> },
+                            { label: "日程", content: "1月9日(金)から10週間" },
+                            { label: "教室", content: "オンライン" },
+                            { label: "募集期間", content: "～2026年1月7日(水)" },
+                            { label: "テキスト", content: "ミリネ独自テキスト(PDF)※事前にメールでお送りします" },
+                          ].map((row, i) => (
+                            <div key={row.label} className="flex border-b border-gray-300 last:border-b-0">
+                              <div className="w-32 shrink-0 px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300">
+                                {row.label}
+                              </div>
+                              <div className={`flex-1 px-3 py-2.5 text-gray-700 ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                {row.content}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                       <div className="pt-4 text-center">
