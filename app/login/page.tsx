@@ -1,9 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function LoginPage() {
+  const [redirectTo, setRedirectTo] = useState("/");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const r = params.get("redirect");
+      if (r && r.startsWith("/")) setRedirectTo(r);
+    }
+  }, []);
   const [isRegister, setIsRegister] = useState(false);
   const [id, setId] = useState("");
   const [email, setEmail] = useState("");
@@ -43,7 +51,7 @@ export default function LoginPage() {
             localStorage.setItem("quiz_token", data.session.access_token);
             localStorage.setItem("quiz_user", JSON.stringify(data.user));
           }
-          window.location.href = "/";
+          window.location.href = redirectTo;
         } else {
           setMessage(data.error || "ログインに失敗しました");
         }
