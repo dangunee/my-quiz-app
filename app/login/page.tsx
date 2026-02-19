@@ -176,7 +176,9 @@ export default function LoginPage() {
             className={`mt-4 text-center ${
               message === "会員登録が完了しました。メール認証後にログインしてください。"
                 ? "text-lg md:text-xl font-bold text-gray-800"
-                : "text-sm text-gray-600"
+                : message.includes("既に") || message.includes("失敗") || message.includes("エラー")
+                  ? "text-sm font-medium text-red-600"
+                  : "text-sm text-gray-600"
             }`}
           >
             {message}

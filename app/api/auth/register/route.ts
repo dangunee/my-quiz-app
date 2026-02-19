@@ -28,6 +28,32 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+    if (supabaseServiceKey) {
+      const adminClient = createClient(supabaseUrl, supabaseServiceKey);
+      const { data: listData } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
+      const users = listData?.users || [];
+      const idLower = String(id).trim().toLowerCase();
+      const emailLower = String(email).trim().toLowerCase();
+      const usernameExists = users.some(
+        (u) => String(u.user_metadata?.username ?? "").trim().toLowerCase() === idLower
+      );
+      const emailExists = users.some(
+        (u) => String(u.email ?? "").trim().toLowerCase() === emailLower
+      );
+      if (usernameExists) {
+        return NextResponse.json(
+          { error: "このユーザーIDは既に使用されています。" },
+          { status: 400 }
+        );
+      }
+      if (emailExists) {
+        return NextResponse.json(
+          { error: "このメールアドレスは既に登録されています。" },
+          { status: 400 }
+        );
+      }
+    }
+
     const origin =
       process.env.NEXT_PUBLIC_SITE_URL ||
       request.headers.get("origin") ||
@@ -44,6 +70,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
+      const msg = error.message || "";
+      if (/already registered|already exists|duplicate/i.test(msg)) {
+        return NextResponse.json(
+          { error: "このメールアドレスは既に登録されています。" },
+          { status: 400 }
+        );
+      }
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
