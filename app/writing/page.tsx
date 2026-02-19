@@ -171,45 +171,6 @@ export default function WritingPage() {
     return parseDate(b) - parseDate(a);
   });
 
-  const sidebarContent = (
-    <div className="px-4 pb-6 space-y-4">
-      {/* 과제 제출 - 두 번째 이미지와 동일 */}
-      <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
-        <h2 className="font-semibold text-gray-800 mb-3 text-sm">과제 제출</h2>
-        <button
-          onClick={handleSubmitClick}
-          className="w-full py-3 px-4 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg active:scale-[0.98]"
-        >
-          과제 제출 버튼
-        </button>
-      </div>
-      {/* 로그인/로그아웃 */}
-      <nav className="flex flex-col gap-0 border-t border-[#e5dfd4] pt-4">
-        {user ? (
-          <>
-            <Link href="/profile" target="_blank" rel="noopener noreferrer" className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-              마이페이지
-            </Link>
-            <span className="block py-1 text-xs text-gray-500">{user.name || user.username || user.email}</span>
-            <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); setSidebarCollapsed(true); window.location.href = redirectPath; }} className="block w-full text-left py-2 text-gray-800 hover:text-[#1a4d2e] text-sm">
-              로그아웃
-            </button>
-          </>
-        ) : (
-          <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-            로그인
-          </Link>
-        )}
-        <Link href={adminPath} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-          관리자
-        </Link>
-        <Link href={quizLink} {...(quizLink.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
-          퀴즈 앱
-        </Link>
-      </nav>
-    </div>
-  );
-
   const handleSubmitClick = () => {
     setSelectedAssignment(null);
     setSelectedStudentId("");
@@ -294,6 +255,45 @@ export default function WritingPage() {
     setFeedbackModal(null);
     setTeacherFeedback("");
   };
+
+  const sidebarContent = (
+    <div className="px-4 pb-6 space-y-4">
+      {/* 과제 제출 - 두 번째 이미지와 동일 */}
+      <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
+        <h2 className="font-semibold text-gray-800 mb-3 text-sm">과제 제출</h2>
+        <button
+          onClick={handleSubmitClick}
+          className="w-full py-3 px-4 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg active:scale-[0.98]"
+        >
+          과제 제출 버튼
+        </button>
+      </div>
+      {/* 로그인/로그아웃 */}
+      <nav className="flex flex-col gap-0 border-t border-[#e5dfd4] pt-4">
+        {user ? (
+          <>
+            <Link href="/profile" target="_blank" rel="noopener noreferrer" className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
+              마이페이지
+            </Link>
+            <span className="block py-1 text-xs text-gray-500">{user.name || user.username || user.email}</span>
+            <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); setSidebarCollapsed(true); window.location.href = redirectPath; }} className="block w-full text-left py-2 text-gray-800 hover:text-[#1a4d2e] text-sm">
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
+            로그인
+          </Link>
+        )}
+        <Link href={adminPath} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
+          관리자
+        </Link>
+        <Link href={quizLink} {...(quizLink.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-gray-800 hover:text-[#1a4d2e] text-sm" onClick={() => { setMenuOpen(false); setSidebarCollapsed(true); }}>
+          퀴즈 앱
+        </Link>
+      </nav>
+    </div>
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8f6f1]">

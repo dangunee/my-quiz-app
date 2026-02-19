@@ -17,10 +17,10 @@ export function middleware(request: NextRequest) {
     urlHost === WRITING_HOST ||
     urlHost === `www.${WRITING_HOST}`;
 
-  // writing.mirinae.jp: root → /writing (리다이렉트), /admin → /writing/admin
+  // writing.mirinae.jp: root → /writing (rewrite, URL 유지), /admin → /writing/admin
   if (isWritingHost) {
     if (pathname === "/" || pathname === "") {
-      return NextResponse.redirect(new URL("/writing", request.url), 302);
+      return NextResponse.rewrite(new URL("/writing", request.url));
     }
     if (pathname === "/admin") {
       return NextResponse.rewrite(new URL("/writing/admin", request.url));
