@@ -775,28 +775,21 @@ export default function WritingPage() {
                           </div>
                         </div>
                       )}
-                      <div className="pt-4 text-center">
-                        <button type="button" onClick={handleTrialClick} className="inline-flex items-center justify-center min-w-[200px] px-8 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md transition-colors cursor-pointer">
-                          お申し込み
-                        </button>
-                      </div>
-                      {showTrialModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowTrialModal(false)}>
-                          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg flex flex-col max-h-[calc(100vh-2rem)] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex items-center justify-between gap-4 p-4 border-b border-[#e5dfd4] shrink-0">
-                              <h2 className="text-lg font-bold text-gray-800">体験申込</h2>
-                              <button type="button" onClick={() => setShowTrialModal(false)} className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded" aria-label="閉じる">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                              </button>
-                            </div>
-                            <div className="flex-1 min-h-0 overflow-auto p-6">
+                      <div className="pt-4">
+                        <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
+                          <button type="button" onClick={handleTrialClick} className="w-full px-6 py-4 flex items-center justify-between bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium text-left">
+                            <span>体験申込</span>
+                            <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>
+                          </button>
+                          {showTrialModal && (
+                            <div className="p-6 border-t border-[#e5dfd4]">
                               {trialSuccess ? (
                                 <div className="text-center py-8">
                                   <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
                                   <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
                                 </div>
                               ) : (
-                                <form onSubmit={handleTrialSubmit} className="space-y-4">
+                                <form onSubmit={handleTrialSubmit} className="space-y-4 max-w-md">
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">タイトル(*必須)</label>
                                     <select value={trialForm.title} onChange={(e) => setTrialForm((f) => ({ ...f, title: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" required>
@@ -832,16 +825,16 @@ export default function WritingPage() {
                                   <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
                                     {trialSubmitting ? "送信中..." : "送信"}
                                   </button>
-                                  <p className="text-center text-sm text-gray-500 mt-4">
+                                  <p className="text-sm text-gray-500">
                                     講座申込は
                                     <a href="https://mirinae.jp/trial.html?tab=tab02" target="_blank" rel="noopener noreferrer" className="text-[#1a4d2e] hover:underline ml-1">こちら</a>
                                   </p>
                                 </form>
                               )}
                             </div>
-                          </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                       <div className="pt-4 border-t border-[#e5dfd4]">
                         <div className="px-4 md:px-5 py-3 bg-[#1e3a5f] rounded-t-lg border border-b-0 border-gray-300 font-semibold text-white text-sm md:text-base">生徒の声</div>
                         <div className="border border-gray-300 rounded-b-lg overflow-hidden p-4 space-y-4 bg-white">
