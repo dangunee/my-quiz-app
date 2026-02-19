@@ -303,12 +303,12 @@ export default function WritingPage() {
         </>
       )}
 
-      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
-        <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
-          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex absolute left-4 md:left-6 shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
+      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg">
+        <div className="max-w-4xl mx-auto flex items-center justify-center gap-3 min-h-[2.5rem] md:min-h-[2.5rem]">
+          <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
+          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室・作文トレーニング</h1>
@@ -494,17 +494,21 @@ export default function WritingPage() {
                         </div>
                       </div>
                       <div className="pt-4">
-                        <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer">
-                          <img src="/experience-sample.png" alt="添削文・比較文・模範文" className="w-full h-auto" />
+                        <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-x-auto overflow-y-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer md:overflow-hidden">
+                          <img src="/experience-sample.png" alt="添削文・比較文・模範文" className="min-w-[800px] md:min-w-0 md:w-full h-auto" />
                         </button>
                         <p className="text-center text-gray-500 text-xs mt-1">クリックで拡大</p>
                       </div>
                       {showImageModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setShowImageModal(false)}>
-                          <button type="button" onClick={() => setShowImageModal(false)} className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30" aria-label="閉じる">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                          </button>
-                          <img src="/experience-sample.png" alt="添削文・比較文・模範文（拡大）" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+                        <div className="fixed inset-0 z-50 flex flex-col bg-black/70" onClick={() => setShowImageModal(false)}>
+                          <div className="shrink-0 flex justify-end p-2">
+                            <button type="button" onClick={() => setShowImageModal(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30" aria-label="閉じる">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                          </div>
+                          <div className="flex-1 overflow-auto p-4 flex items-start justify-center min-h-0" onClick={(e) => e.stopPropagation()}>
+                            <img src="/experience-sample.png" alt="添削文・比較文・模範文（拡大）" className="min-w-[800px] w-auto rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+                          </div>
                         </div>
                       )}
                       <div className="pt-4 text-center">
