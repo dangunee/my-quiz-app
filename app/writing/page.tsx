@@ -327,7 +327,7 @@ export default function WritingPage() {
       )}
 
       <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg">
-        <div className="max-w-4xl mx-auto flex items-center justify-center gap-3 min-h-[2.5rem] md:min-h-[2.5rem]">
+        <div className="max-w-4xl md:max-w-[90rem] mx-auto flex items-center justify-center gap-3 min-h-[2.5rem] md:min-h-[2.5rem]">
           <button type="button" onClick={() => setSidebarCollapsed((c) => !c)} className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label={sidebarCollapsed ? "メニューを開く" : "メニューを閉じる"}>
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
@@ -339,7 +339,7 @@ export default function WritingPage() {
       </header>
 
       <div className="flex flex-1 justify-center">
-        <div className="flex flex-1 flex-col md:flex-row max-w-4xl w-full">
+        <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[90rem] w-full">
           {!sidebarCollapsed && (
             <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-r border-[#e5dfd4]">
               <div className="p-4">
@@ -368,7 +368,7 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto p-4 md:p-6 pb-24 md:pb-6">
               {activeTab === "experience" && (
-                <div className="max-w-3xl">
+                <div className="max-w-3xl md:max-w-6xl">
                   <div className="bg-white rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-4">
                       <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
