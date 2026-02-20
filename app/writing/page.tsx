@@ -107,7 +107,7 @@ type TabId = "experience" | "writing" | "topik";
 const TABS: { id: TabId; label: string }[] = [
   { id: "experience", label: "作文トレーニング" },
   { id: "writing", label: "課題提出" },
-  { id: "topik", label: "TOPIK作文トレーニング" },
+  { id: "topik", label: "TOPIK作文トレ" },
 ];
 
 export default function WritingPage() {
@@ -557,7 +557,7 @@ export default function WritingPage() {
           <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室オンライン講座</h1>
+          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 オンライン講座</h1>
         </div>
       </header>
 
@@ -1039,8 +1039,8 @@ export default function WritingPage() {
               {activeTab === "topik" && (
                 <div className="px-4 md:px-0 mx-auto max-w-2xl w-full">
                   <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
-                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">TOPIK作文トレーニング</h2>
-                    <p className="text-gray-600">TOPIK作文トレーニングのコンテンツはこちらに表示されます。</p>
+                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">TOPIK作文トレ</h2>
+                    <p className="text-gray-600">TOPIK作文トレのコンテンツはこちらに表示されます。</p>
                     <p className="text-gray-500 text-sm mt-2">準備中です。</p>
                   </div>
                 </div>
