@@ -751,33 +751,26 @@ export default function WritingPage() {
                         <p className="text-center text-gray-500 text-xs mt-1">クリックで拡大</p>
                       </div>
                       <div className="pt-4">
-                        <div className="p-4 md:p-5 rounded-lg border border-teal-300 bg-[#fffde7] space-y-3">
-                          <p className="text-base md:text-lg">
-                            <span className="text-red-600 font-semibold">まずは体験から!</span>
-                            <span className="text-gray-800"> 1回お試し </span>
-                            <span className="text-red-600 font-semibold">1,800円</span>
-                          </p>
-                          <div className="overflow-hidden rounded-lg border border-gray-300">
-                            <table className="w-full text-sm text-gray-800">
-                              <tbody>
-                                <tr className="border-b border-gray-300 last:border-b-0">
-                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">①</td>
-                                  <td className="px-3 py-2">体験申込の締切 : 3月19日(木)</td>
-                                </tr>
-                                <tr className="border-b border-gray-300 last:border-b-0">
-                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">②</td>
-                                  <td className="px-3 py-2">体験課題送信日 : 3月20日(金)</td>
-                                </tr>
-                                <tr className="border-b border-gray-300 last:border-b-0">
-                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">③</td>
-                                  <td className="px-3 py-2">体験添削送信日 : 3月27日(金)</td>
-                                </tr>
-                                <tr>
-                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">④</td>
-                                  <td className="px-3 py-2">当講座開始日 : 4月3日(金)</td>
-                                </tr>
-                              </tbody>
-                            </table>
+                        <div className="overflow-hidden rounded-lg border border-gray-300">
+                          <div className="px-4 py-2 bg-[#1e3a5f]">
+                            <h3 className="font-semibold text-white text-sm">まずは体験から! 1回お試し 1,800円</h3>
+                          </div>
+                          <div className="border-collapse text-sm">
+                            {[
+                              { label: "①", content: "体験申込の締切 : 3月19日(木)" },
+                              { label: "②", content: "体験課題送信日 : 3月20日(金)" },
+                              { label: "③", content: "体験添削送信日 : 3月27日(金)" },
+                              { label: "④", content: "当講座開始日 : 4月3日(金)" },
+                            ].map((row, i) => (
+                              <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
+                                <div className="w-8 md:w-10 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs">
+                                  {row.label}
+                                </div>
+                                <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                  {row.content}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
