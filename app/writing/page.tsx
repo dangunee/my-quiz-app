@@ -130,11 +130,10 @@ export default function WritingPage() {
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showTrialModal, setShowTrialModal] = useState(false);
+  const [trialActiveTab, setTrialActiveTab] = useState<"trial" | "course">("trial");
   const [trialForm, setTrialForm] = useState({
     name: "",
     furigana: "",
-    age: "選択してください",
-    prefecture: "選択してください",
     koreanLevel: "選択してください",
     email: "",
   });
@@ -243,15 +242,6 @@ export default function WritingPage() {
     return parseDate(b) - parseDate(a);
   });
 
-  const TRIAL_PREFECTURES = [
-    "選択してください", "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
-    "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京23区", "東京都", "神奈川県", "山梨県",
-    "長野県", "新潟県", "富山県", "石川県", "福井県", "岐阜県", "静岡県", "愛知県", "三重県",
-    "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県",
-    "広島県", "山口県", "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県",
-    "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
-  ];
-  const TRIAL_AGES = ["選択してください", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"];
   const KOREAN_LEVELS = ["選択してください", "入門", "初級", "初中級", "中級", "中上級", "上級"];
 
   const handleTrialSubmit = async (e: React.FormEvent) => {
@@ -262,10 +252,10 @@ export default function WritingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          formType: trialActiveTab,
+          title: trialActiveTab === "trial" ? "体験レッスン" : "講座の申し込み",
           name: trialForm.name,
           furigana: trialForm.furigana,
-          age: trialForm.age === "選択してください" ? "" : trialForm.age,
-          prefecture: trialForm.prefecture === "選択してください" ? "" : trialForm.prefecture,
           koreanLevel: trialForm.koreanLevel === "選択してください" ? "" : trialForm.koreanLevel,
           email: trialForm.email,
         }),
@@ -608,20 +598,16 @@ export default function WritingPage() {
                         <div className="px-4 py-2 bg-[#1e3a5f]">
                           <h3 className="font-semibold text-white text-sm">特徴</h3>
                         </div>
-                        <div className="border-collapse text-sm">
+                        <div className="text-sm">
                           {[
                             { label: "①", content: "自分の書いた文章を自然な韓国語に直してもらいます" },
                             { label: "②", content: "表現力をアップさせるために、毎週毎回違うテーマについての作文にチャレンジできます" },
                             { label: "③", content: "課題は、さらに厳選された文型を必ず使用するよう出題します" },
                             { label: "④", content: "ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します" },
-                          ].map((row, i) => (
-                            <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
-                              <div className="w-8 md:w-10 shrink-0 px-2 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs">
-                                {row.label}
-                              </div>
-                              <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
-                                {row.content}
-                              </div>
+                          ].map((row) => (
+                            <div key={row.label} className="flex gap-2 px-3 py-2.5 border-b border-gray-300 last:border-b-0 text-gray-700 text-xs md:text-sm">
+                              <span className="text-[#1a4d2e] font-medium shrink-0">{row.label}</span>
+                              <span>{row.content}</span>
                             </div>
                           ))}
                         </div>
@@ -778,10 +764,16 @@ export default function WritingPage() {
                       )}
                       <div id="trial-form-section" className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
-                          <button type="button" onClick={() => { if (!showTrialModal) { setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); } setShowTrialModal((v) => !v); }} className="w-full px-6 py-4 flex items-center justify-between bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium text-left">
-                            <span>お申込み</span>
-                            <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>
-                          </button>
+                          <div className="flex">
+                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                              <span>体験申込</span>
+                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                            </button>
+                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                              <span>講座申込</span>
+                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                            </button>
+                          </div>
                           {showTrialModal && (
                             <div className="p-6 border-t border-[#e5dfd4]">
                               {trialSuccess ? (
@@ -798,18 +790,6 @@ export default function WritingPage() {
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">ふりがな(*必須)</label>
                                     <input type="text" value={trialForm.furigana} onChange={(e) => setTrialForm((f) => ({ ...f, furigana: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="ふりがな" required />
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">年齢</label>
-                                    <select value={trialForm.age} onChange={(e) => setTrialForm((f) => ({ ...f, age: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
-                                      {TRIAL_AGES.map((a) => <option key={a} value={a}>{a}</option>)}
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">都道府県</label>
-                                    <select value={trialForm.prefecture} onChange={(e) => setTrialForm((f) => ({ ...f, prefecture: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
-                                      {TRIAL_PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
-                                    </select>
                                   </div>
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">韓国語レベル</label>
