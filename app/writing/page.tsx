@@ -856,7 +856,7 @@ export default function WritingPage() {
                       <div className="pt-4">
                         <div className="overflow-hidden rounded-lg border border-gray-300">
                           <div className="px-4 py-2 bg-[#1e3a5f]">
-                            <h3 className="font-semibold text-white text-sm">まずは体験から! 1回お試し 1,800円</h3>
+                            <h3 className="font-semibold text-white text-sm">まずは体験から!</h3>
                           </div>
                           <div className="border-collapse text-sm">
                             {[
@@ -874,6 +874,9 @@ export default function WritingPage() {
                                 </div>
                               </div>
                             ))}
+                            <div className="px-2 md:px-3 py-2.5 bg-[#1e3a5f] text-white text-xs md:text-sm font-semibold text-center">
+                              1回お試し 1,800円
+                            </div>
                           </div>
                         </div>
                       </div>
