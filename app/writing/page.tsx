@@ -750,6 +750,37 @@ export default function WritingPage() {
                         </button>
                         <p className="text-center text-gray-500 text-xs mt-1">クリックで拡大</p>
                       </div>
+                      <div className="pt-4">
+                        <div className="p-4 md:p-5 rounded-lg border border-teal-300 bg-[#fffde7] space-y-3">
+                          <p className="text-base md:text-lg">
+                            <span className="text-red-600 font-semibold">まずは体験から!</span>
+                            <span className="text-gray-800"> 1回お試し </span>
+                            <span className="text-red-600 font-semibold">1,800円</span>
+                          </p>
+                          <div className="overflow-hidden rounded-lg border border-gray-300">
+                            <table className="w-full text-sm text-gray-800">
+                              <tbody>
+                                <tr className="border-b border-gray-300 last:border-b-0">
+                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">①</td>
+                                  <td className="px-3 py-2">体験申込の締切 : 3月19日(木)</td>
+                                </tr>
+                                <tr className="border-b border-gray-300 last:border-b-0">
+                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">②</td>
+                                  <td className="px-3 py-2">体験課題送信日 : 3月20日(金)</td>
+                                </tr>
+                                <tr className="border-b border-gray-300 last:border-b-0">
+                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">③</td>
+                                  <td className="px-3 py-2">体験添削送信日 : 3月27日(金)</td>
+                                </tr>
+                                <tr>
+                                  <td className="w-8 md:w-10 shrink-0 px-2 py-2 bg-gray-100 font-medium border-r border-gray-300">④</td>
+                                  <td className="px-3 py-2">当講座開始日 : 4月3日(金)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
                       {showImageModal && (
                         <div className="fixed inset-0 z-50 flex flex-col bg-black/70" onClick={() => setShowImageModal(false)}>
                           <div className="shrink-0 flex justify-end p-2">
