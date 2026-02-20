@@ -451,7 +451,7 @@ export default function QuizClient() {
                 onChange={(e) => setKotaeSearch(e.target.value)}
                 className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
-              <p className="text-sm text-white/90 mt-2">{filteredKotae.length}件の質問</p>
+              <p className="text-sm text-white/90 mt-2">{filteredKotae.length}件の質問と答え</p>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
               {kotaeListLoading ? (
