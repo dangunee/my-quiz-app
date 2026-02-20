@@ -242,6 +242,7 @@ export default function WritingPage() {
   });
   const [trialSubmitting, setTrialSubmitting] = useState(false);
   const [trialSuccess, setTrialSuccess] = useState(false);
+  const [trialError, setTrialError] = useState<string | null>(null);
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -367,10 +368,10 @@ export default function WritingPage() {
       if (res.ok) {
         setTrialSuccess(true);
       } else {
-        alert(data.error || "送信に失敗しました");
+        setTrialError(data.error || "送信に失敗しました");
       }
     } catch {
-      alert("送信に失敗しました");
+      setTrialError("送信に失敗しました");
     } finally {
       setTrialSubmitting(false);
     }
@@ -895,17 +896,27 @@ export default function WritingPage() {
                       <div id="trial-form-section" className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
                           <div className="flex">
-                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
                               <span>体験申込</span>
                               {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
-                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
                               <span>講座申込</span>
                               {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
                           </div>
                           {showTrialModal && (
-                            <div className="p-6 border-t border-[#e5dfd4]">
+                            <div className="p-6 border-t border-[#e5dfd4] relative">
+                              {trialError && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                                  <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6">
+                                    <p className="text-red-600 font-medium mb-4">{trialError}</p>
+                                    <button type="button" onClick={() => setTrialError(null)} className="w-full py-2 bg-[#1e3a5f] text-white rounded-lg hover:bg-[#2a4a7a]">
+                                      閉じる
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
                               {trialSuccess ? (
                                 <div className="text-center py-8">
                                   <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
@@ -955,12 +966,6 @@ export default function WritingPage() {
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr className="bg-white border-b border-[#e5dfd4]">
-                                  <td className="py-3 px-4 font-semibold text-gray-800">1,800円</td>
-                                  <td className="py-3 px-4 font-semibold text-gray-800">1回お試し</td>
-                                  <td className="py-3 px-4 font-semibold text-gray-800">1,800円</td>
-                                  <td className="py-3 px-4 font-semibold text-gray-800">1,980円</td>
-                                </tr>
                                 <tr className="bg-white">
                                   <td className="py-3 px-4 font-semibold text-gray-800">2,180円</td>
                                   <td className="py-3 px-4 font-semibold text-gray-800">10回</td>
