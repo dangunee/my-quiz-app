@@ -938,7 +938,7 @@ export default function WritingPage() {
                           )}
                         </div>
                       </div>
-                      <div className="pt-4 border-t border-[#e5dfd4]">
+                      <div className="pt-4">
                         <div className="border-t-2 border-[#c45c26] pt-2">
                           <h3 className="font-semibold text-[#c45c26] text-base md:text-lg mb-0">授業料</h3>
                           <div className="border border-gray-300 rounded-b-lg overflow-hidden mt-2">
@@ -952,6 +952,12 @@ export default function WritingPage() {
                                 </tr>
                               </thead>
                               <tbody>
+                                <tr className="bg-white border-b border-[#e5dfd4]">
+                                  <td className="py-3 px-4 font-semibold text-gray-800">1,800円</td>
+                                  <td className="py-3 px-4 font-semibold text-gray-800">1回お試し</td>
+                                  <td className="py-3 px-4 font-semibold text-gray-800">1,800円</td>
+                                  <td className="py-3 px-4 font-semibold text-gray-800">1,980円</td>
+                                </tr>
                                 <tr className="bg-white">
                                   <td className="py-3 px-4 font-semibold text-gray-800">2,180円</td>
                                   <td className="py-3 px-4 font-semibold text-gray-800">10回</td>
