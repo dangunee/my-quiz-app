@@ -132,11 +132,12 @@ export default function WritingPage() {
   const [showTrialModal, setShowTrialModal] = useState(false);
   const [trialActiveTab, setTrialActiveTab] = useState<"trial" | "course">("trial");
   const [trialForm, setTrialForm] = useState({
-    title: "体験レッスン",
     name: "",
     furigana: "",
     age: "選択してください",
     prefecture: "選択してください",
+    topikLevel: "選択してください",
+    hanbLevel: "選択してください",
     email: "",
   });
   const [trialSubmitting, setTrialSubmitting] = useState(false);
@@ -253,6 +254,8 @@ export default function WritingPage() {
     "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
   ];
   const TRIAL_AGES = ["選択してください", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"];
+  const TRIAL_TOPIK_LEVELS = ["選択してください", "TOPIK１級", "TOPIK２級", "TOPIK３級", "TOPIK４級", "TOPIK５級", "TOPIK６級"];
+  const TRIAL_HANB_LEVELS = ["選択してください", "ハン検５級", "ハン検４級", "ハン検３級", "ハン検準２級", "ハン検２級", "ハン検１級"];
 
   const handleTrialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,11 +266,13 @@ export default function WritingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           formType: trialActiveTab,
-          title: trialForm.title,
+          title: trialActiveTab === "trial" ? "体験レッスン" : "講座の申し込み",
           name: trialForm.name,
           furigana: trialForm.furigana,
           age: trialForm.age === "選択してください" ? "" : trialForm.age,
           prefecture: trialForm.prefecture === "選択してください" ? "" : trialForm.prefecture,
+          topikLevel: trialForm.topikLevel === "選択してください" ? "" : trialForm.topikLevel,
+          hanbLevel: trialForm.hanbLevel === "選択してください" ? "" : trialForm.hanbLevel,
           email: trialForm.email,
         }),
       });
@@ -767,11 +772,11 @@ export default function WritingPage() {
                       <div className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
                           <div className="flex">
-                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ title: "体験レッスン", name: "", furigana: "", age: "選択してください", prefecture: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
                               <span>体験申込</span>
                               {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
-                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ title: "講座の申し込み", name: "", furigana: "", age: "選択してください", prefecture: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
                               <span>講座申込</span>
                               {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
@@ -784,20 +789,7 @@ export default function WritingPage() {
                                   <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
                                 </div>
                               ) : (
-                                <form onSubmit={handleTrialSubmit} className="space-y-4 max-w-md">
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">タイトル(*必須)</label>
-                                    <select value={trialForm.title} onChange={(e) => setTrialForm((f) => ({ ...f, title: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" required>
-                                      {trialActiveTab === "trial" ? (
-                                        <>
-                                          <option value="体験レッスン">体験レッスン</option>
-                                          <option value="レベルテスト">レベルテスト</option>
-                                        </>
-                                      ) : (
-                                        <option value="講座の申し込み">講座の申し込み</option>
-                                      )}
-                                    </select>
-                                  </div>
+                                <form onSubmit={handleTrialSubmit} className="space-y-4 max-w-xl mx-auto">
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">お名前(*必須)</label>
                                     <input type="text" value={trialForm.name} onChange={(e) => setTrialForm((f) => ({ ...f, name: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="お名前" required />
@@ -816,6 +808,18 @@ export default function WritingPage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">都道府県</label>
                                     <select value={trialForm.prefecture} onChange={(e) => setTrialForm((f) => ({ ...f, prefecture: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
                                       {TRIAL_PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">韓国語TOPIKレベル</label>
+                                    <select value={trialForm.topikLevel} onChange={(e) => setTrialForm((f) => ({ ...f, topikLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                      {TRIAL_TOPIK_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ハングル検定レベル</label>
+                                    <select value={trialForm.hanbLevel} onChange={(e) => setTrialForm((f) => ({ ...f, hanbLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                      {TRIAL_HANB_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
                                     </select>
                                   </div>
                                   <div>

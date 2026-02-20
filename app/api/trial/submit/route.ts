@@ -5,7 +5,7 @@ const FORMSUBMIT_AJAX = "https://formsubmit.co/ajax/mirinae@kaonnuri.com";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { formType, title, name, furigana, age, prefecture, email } = body;
+    const { formType, title, name, furigana, age, prefecture, topikLevel, hanbLevel, email } = body;
     const subjectPrefix = formType === "course" ? "講座申込" : "体験申込";
 
     const payload = {
@@ -16,6 +16,8 @@ export async function POST(request: NextRequest) {
       ふりがな: furigana,
       年齢: age,
       都道府県: prefecture,
+      韓国語TOPIKレベル: topikLevel,
+      ハングル検定レベル: hanbLevel,
       メールアドレス: email,
     };
 
