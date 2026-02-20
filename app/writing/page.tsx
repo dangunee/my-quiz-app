@@ -557,7 +557,7 @@ export default function WritingPage() {
           <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室・作文トレーニング</h1>
+          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室オンライン講座</h1>
         </div>
       </header>
 
@@ -647,7 +647,7 @@ export default function WritingPage() {
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedExperience ? "▼" : "▶"}</span>
                                 <span className="font-medium text-gray-800">課題提示、文型、添削事例</span>
                               </div>
-                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">성형수술에 대해 어떻게 생각하는지 쓰시오</p>
+                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md"><span className="font-semibold">성형수술</span>에 대해 어떻게 생각하는지 쓰시오</p>
                             </button>
                             {expandedExperience && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
@@ -703,7 +703,7 @@ export default function WritingPage() {
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedCheombi ? "▼" : "▶"}</span>
                                 <span className="font-medium text-gray-800">添削文・比較文・模範文</span>
                               </div>
-                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">服とファッションの添削例</p>
+                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md"><span className="font-semibold">옷과 패션</span> <span className="font-semibold">服とファッション</span>の添削例</p>
                             </button>
                             {expandedCheombi && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
@@ -757,16 +757,16 @@ export default function WritingPage() {
                           </div>
                           <div className="border-collapse text-sm">
                             {[
-                              { label: "①", content: "体験申込の締切 : 3月19日(木)" },
-                              { label: "②", content: "体験課題送信日 : 3月20日(金)" },
-                              { label: "③", content: "体験添削送信日 : 3月27日(金)" },
-                              { label: "④", content: "当講座開始日 : 4月3日(金)" },
+                              { label: "体験申込の締切", content: "3月19日(木)" },
+                              { label: "体験課題送信日", content: "3月20日(金)" },
+                              { label: "体験添削送信日", content: "3月27日(金)" },
+                              { label: "当講座開始日", content: "4月3日(金)" },
                             ].map((row, i) => (
                               <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
-                                <div className="w-8 md:w-10 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs">
+                                <div className="w-20 md:w-32 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">
                                   {row.label}
                                 </div>
-                                <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm font-semibold ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
                                   {row.content}
                                 </div>
                               </div>
