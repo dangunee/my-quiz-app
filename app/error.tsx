@@ -13,6 +13,9 @@ export default function Error({
     console.error("Application error:", error);
   }, [error]);
 
+  const isChunkError = /Loading chunk|ChunkLoadError|Loading CSS chunk/i.test(error.message);
+  const handleRetry = () => (isChunkError ? window.location.reload() : reset());
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <h1 className="text-xl font-bold text-gray-800 mb-2">エラーが発生しました</h1>
@@ -20,7 +23,7 @@ export default function Error({
         {error.message || "クライアント側でエラーが発生しました。ブラウザのコンソールで詳細を確認してください。"}
       </p>
       <button
-        onClick={() => reset()}
+        onClick={handleRetry}
         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
       >
         再試行

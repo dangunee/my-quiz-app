@@ -14,6 +14,9 @@ export default function AdminError({
     console.error("Admin error:", error);
   }, [error]);
 
+  const isChunkError = /Loading chunk|ChunkLoadError|Loading CSS chunk/i.test(error.message);
+  const handleRetry = () => (isChunkError ? window.location.reload() : reset());
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <h1 className="text-xl font-bold text-gray-800 mb-2">管理者ページでエラーが発生しました</h1>
@@ -22,7 +25,7 @@ export default function AdminError({
       </p>
       <div className="flex gap-3">
         <button
-          onClick={() => reset()}
+          onClick={handleRetry}
           className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
         >
           再試行
