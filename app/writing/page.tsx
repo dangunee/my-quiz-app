@@ -752,6 +752,30 @@ export default function WritingPage() {
                         </div>
                       </div>
                       <div className="pt-4">
+                        <div className="p-4 md:p-5 rounded-lg border border-teal-300 bg-[#fffde7] space-y-3">
+                          <p className="text-base md:text-lg">
+                            <span className="text-red-600 font-semibold">まずは体験から!</span>
+                            <span className="text-gray-800"> 1回 </span>
+                            <span className="text-red-600 font-semibold">1,800円</span>
+                          </p>
+                          <div>
+                            <p className="text-gray-800 font-medium">1回お試しお申込み期間</p>
+                            <p className="text-red-600 text-sm mt-1 pl-2">ㄴ3月19日(木)までに申し込みフォームを送信してください。</p>
+                          </div>
+                          <div className="flex justify-center">
+                            <button type="button" onClick={() => { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); document.getElementById("trial-form-section")?.scrollIntoView({ behavior: "smooth" }); }} className="px-6 py-3 bg-sky-400 hover:bg-sky-500 text-white font-medium rounded-lg transition-colors">
+                              お申込みの方はクリックしてください
+                            </button>
+                          </div>
+                          <div className="pt-2 space-y-1 text-sm text-gray-800">
+                            <p>① 体験申込の締切 : 3月19日(木)</p>
+                            <p>② 体験課題送信日 : 3月20日(金)</p>
+                            <p>③ 体験添削送信日 : 3月27日(金)</p>
+                            <p>④ 当講座開始日 : 4月3日(金)</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="pt-4">
                         <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-x-auto overflow-y-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer md:overflow-hidden">
                           <img src="/experience-sample.png" alt="添削文・比較文・模範文" className="min-w-[800px] md:min-w-0 md:w-full h-auto" />
                         </button>
@@ -769,7 +793,7 @@ export default function WritingPage() {
                           </div>
                         </div>
                       )}
-                      <div className="pt-4">
+                      <div id="trial-form-section" className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
                           <div className="flex">
                             <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
