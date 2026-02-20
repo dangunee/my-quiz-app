@@ -50,6 +50,14 @@ interface Assignment {
 const MOCK_ASSIGNMENTS: Assignment[] = [
   { id: "1", title: "과제 1", dateRange: "2/15 ~ 2/21", status: "미제출", correction: "-", studentView: false },
   { id: "2", title: "과제 2", dateRange: "2/8 ~ 2/14", status: "미제출", correction: "-", studentView: false },
+  { id: "3", title: "과제 3", dateRange: "2/1 ~ 2/7", status: "미제출", correction: "-", studentView: false },
+  { id: "4", title: "과제 4", dateRange: "1/25 ~ 1/31", status: "미제출", correction: "-", studentView: false },
+  { id: "5", title: "과제 5", dateRange: "1/18 ~ 1/24", status: "미제출", correction: "-", studentView: false },
+  { id: "6", title: "과제 6", dateRange: "1/11 ~ 1/17", status: "미제출", correction: "-", studentView: false },
+  { id: "7", title: "과제 7", dateRange: "1/4 ~ 1/10", status: "미제출", correction: "-", studentView: false },
+  { id: "8", title: "과제 8", dateRange: "12/28 ~ 1/3", status: "미제출", correction: "-", studentView: false },
+  { id: "9", title: "과제 9", dateRange: "12/21 ~ 12/27", status: "미제출", correction: "-", studentView: false },
+  { id: "10", title: "과제 10", dateRange: "12/14 ~ 12/20", status: "미제출", correction: "-", studentView: false },
 ];
 
 const MOCK_STUDENTS = [
@@ -70,18 +78,30 @@ interface AssignmentExample {
   };
 }
 
-const ASSIGNMENT_EXAMPLES: AssignmentExample[] = [
-  { id: 1, title: "오늘 하루 일과", topic: "오늘 하루 동안 한 일을 3문장 이상으로 써 보세요.", modelContent: { courseInfo: "10回コースの第１回課題", theme: "오늘 하루 일과", question: "오늘 하루 동안 무엇을 했습니까? 아침, 점심, 저녁 시간을 어떻게 보냈는지 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄹ/줄 몰랐다　～とは思わなかった", example: "예) 그런 좋은 방법이 있는 줄 몰랐다." }, { pattern: "○-(으)ㄹ까 한다 ～しようかと思う", example: "예) 스트레스를 풀러 여행을 갈까 한다." }] } },
-  { id: 2, title: "스트레스 푸는 법", topic: "스트레스를 느낄 때와 푸는 방법에 대해 써 보세요.", modelContent: { courseInfo: "10回コースの第４回課題", theme: "스트레스 푸는 법", question: "당신은 어떨 때 스트레스를 느낍니까？ 스트레스가 쌓였을 때는 어떤 방법으로 풉니까? 추천하고 싶은 방법이 있으면 소개해 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄹ/줄 몰랐다　～とは思わなかった", example: "예) 그런 좋은 방법이 있는 줄 몰랐다." }, { pattern: "○-(으)ㄹ까 한다 ～しようかと思う", example: "예) 스트레스를 풀러 여행을 갈까 한다." }, { pattern: "○-(으)려고 ～しようと", example: "예) 살을 빼려고 저녁을 굶기로 했다." }] } },
-  { id: 3, title: "내가 좋아하는 음식", topic: "가장 좋아하는 음식과 그 이유를 써 보세요.", modelContent: { theme: "내가 좋아하는 음식", question: "가장 좋아하는 음식은 무엇입니까? 그 음식을 좋아하는 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/는/(으)ㄹ 것 같다 ～ようだ", example: "예) 그 음식은 맛있을 것 같다." }, { pattern: "○-기 때문에 ～ので", example: "예) 맛있기 때문에 자주 먹는다." }] } },
-  { id: 4, title: "주말 계획", topic: "이번 주말에 할 계획을 한국어로 써 보세요.", modelContent: { theme: "주말 계획", question: "이번 주말에 무엇을 할 계획입니까? 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)ㄹ 예정이다 ～予定だ", example: "예) 친구를 만날 예정이다." }, { pattern: "○-기로 했다 ～することにした", example: "예) 영화를 보기로 했다." }] } },
-  { id: 5, title: "가족 소개", topic: "가족 구성원을 소개하는 글을 써 보세요.", modelContent: { theme: "가족 소개", question: "가족 구성원을 소개해 보세요. 각 가족에 대해 1문장 이상씩 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/는/(으)ㄹ N ～するN", example: "예) 요리를 하는 엄마가 있다." }, { pattern: "○-고 ～て（接続）", example: "예) 아버지는 회사에 가고, 엄마는 집에 있다." }] } },
-  { id: 6, title: "한국 여행", topic: "한국에서 가고 싶은 곳과 그 이유를 써 보세요.", modelContent: { theme: "한국 여행", question: "한국에서 가고 싶은 곳이 있습니까? 그곳에 가고 싶은 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)ㄹ까 하다 ～しようかと思う", example: "예) 부산에 갈까 한다." }, { pattern: "○-기로 했다 ～することにした", example: "예) 경복궁을 보기로 했다." }] } },
-  { id: 7, title: "나의 취미", topic: "취미 생활에 대해 5문장 이상으로 써 보세요.", modelContent: { theme: "나의 취미", question: "취미가 무엇입니까? 그 취미를 어떻게 즐기고 있는지 5문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-는/(으)ㄴ/(으)ㄹ 때 ～時", example: "예) 심심할 때 음악을 듣는다." }, { pattern: "○-기 시작하다 ～し始める", example: "예) 3년 전부터 기타를 치기 시작했다." }] } },
-  { id: 8, title: "기억에 남는 날", topic: "특별히 기억에 남는 하루를 써 보세요.", modelContent: { theme: "기억에 남는 날", question: "특별히 기억에 남는 날이 있습니까? 그날 무슨 일이 있었는지 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/(으)ㄹ 때 ～時", example: "예) 그날은 날씨가 좋았다." }, { pattern: "○-기 때문에 ～ので", example: "예) 특별한 날이었기 때문에 잊을 수 없다." }] } },
-  { id: 9, title: "한국어 공부 방법", topic: "한국어를 어떻게 공부하고 있는지 써 보세요.", modelContent: { theme: "한국어 공부 방법", question: "한국어를 어떻게 공부하고 있습니까? 효과적인 방법이 있다면 소개해 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)면서 ～ながら", example: "예) 드라마를 보면서 한국어를 배운다." }, { pattern: "○-는/(으)ㄴ/(으)ㄹ 것 같다 ～ようだ", example: "예) 이 방법이 효과적일 것 같다." }] } },
-  { id: 10, title: "내 꿈", topic: "미래의 꿈이나 목표에 대해 써 보세요.", modelContent: { theme: "내 꿈", question: "미래의 꿈이나 목표가 있습니까? 그 꿈을 위해 무엇을 하고 있는지 5문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)려고 ～しようと", example: "예) 꿈을 이루려고 열심히 공부한다." }, { pattern: "○-기 위해 ～ために", example: "예) 좋은 직업을 갖기 위해 노력한다." }] } },
+const BASE_EXAMPLES: Omit<AssignmentExample, "id">[] = [
+  { title: "오늘 하루 일과", topic: "오늘 하루 동안 한 일을 3문장 이상으로 써 보세요.", modelContent: { courseInfo: "10回コースの第１回課題", theme: "오늘 하루 일과", question: "오늘 하루 동안 무엇을 했습니까? 아침, 점심, 저녁 시간을 어떻게 보냈는지 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄹ/줄 몰랐다　～とは思わなかった", example: "예) 그런 좋은 방법이 있는 줄 몰랐다." }, { pattern: "○-(으)ㄹ까 한다 ～しようかと思う", example: "예) 스트레스를 풀러 여행을 갈까 한다." }] } },
+  { title: "스트레스 푸는 법", topic: "스트레스를 느낄 때와 푸는 방법에 대해 써 보세요.", modelContent: { courseInfo: "10回コースの第４回課題", theme: "스트레스 푸는 법", question: "당신은 어떨 때 스트레스를 느낍니까？ 스트레스가 쌓였을 때는 어떤 방법으로 풉니까? 추천하고 싶은 방법이 있으면 소개해 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄹ/줄 몰랐다　～とは思わなかった", example: "예) 그런 좋은 방법이 있는 줄 몰랐다." }, { pattern: "○-(으)ㄹ까 한다 ～しようかと思う", example: "예) 스트레스를 풀러 여행을 갈까 한다." }, { pattern: "○-(으)려고 ～しようと", example: "예) 살을 빼려고 저녁을 굶기로 했다." }] } },
+  { title: "내가 좋아하는 음식", topic: "가장 좋아하는 음식과 그 이유를 써 보세요.", modelContent: { theme: "내가 좋아하는 음식", question: "가장 좋아하는 음식은 무엇입니까? 그 음식을 좋아하는 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/는/(으)ㄹ 것 같다 ～ようだ", example: "예) 그 음식은 맛있을 것 같다." }, { pattern: "○-기 때문에 ～ので", example: "예) 맛있기 때문에 자주 먹는다." }] } },
+  { title: "주말 계획", topic: "이번 주말에 할 계획을 한국어로 써 보세요.", modelContent: { theme: "주말 계획", question: "이번 주말에 무엇을 할 계획입니까? 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)ㄹ 예정이다 ～予定だ", example: "예) 친구를 만날 예정이다." }, { pattern: "○-기로 했다 ～することにした", example: "예) 영화를 보기로 했다." }] } },
+  { title: "가족 소개", topic: "가족 구성원을 소개하는 글을 써 보세요.", modelContent: { theme: "가족 소개", question: "가족 구성원을 소개해 보세요. 각 가족에 대해 1문장 이상씩 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/는/(으)ㄹ N ～するN", example: "예) 요리를 하는 엄마가 있다." }, { pattern: "○-고 ～て（接続）", example: "예) 아버지는 회사에 가고, 엄마는 집에 있다." }] } },
+  { title: "한국 여행", topic: "한국에서 가고 싶은 곳과 그 이유를 써 보세요.", modelContent: { theme: "한국 여행", question: "한국에서 가고 싶은 곳이 있습니까? 그곳에 가고 싶은 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)ㄹ까 하다 ～しようかと思う", example: "예) 부산에 갈까 한다." }, { pattern: "○-기로 했다 ～することにした", example: "예) 경복궁을 보기로 했다." }] } },
+  { title: "나의 취미", topic: "취미 생활에 대해 5문장 이상으로 써 보세요.", modelContent: { theme: "나의 취미", question: "취미가 무엇입니까? 그 취미를 어떻게 즐기고 있는지 5문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-는/(으)ㄴ/(으)ㄹ 때 ～時", example: "예) 심심할 때 음악을 듣는다." }, { pattern: "○-기 시작하다 ～し始める", example: "예) 3년 전부터 기타를 치기 시작했다." }] } },
+  { title: "기억에 남는 날", topic: "특별히 기억에 남는 하루를 써 보세요.", modelContent: { theme: "기억에 남는 날", question: "특별히 기억에 남는 날이 있습니까? 그날 무슨 일이 있었는지 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/(으)ㄹ 때 ～時", example: "예) 그날은 날씨가 좋았다." }, { pattern: "○-기 때문에 ～ので", example: "예) 특별한 날이었기 때문에 잊을 수 없다." }] } },
+  { title: "한국어 공부 방법", topic: "한국어를 어떻게 공부하고 있는지 써 보세요.", modelContent: { theme: "한국어 공부 방법", question: "한국어를 어떻게 공부하고 있습니까? 효과적인 방법이 있다면 소개해 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)면서 ～ながら", example: "예) 드라마를 보면서 한국어를 배운다." }, { pattern: "○-는/(으)ㄴ/(으)ㄹ 것 같다 ～ようだ", example: "예) 이 방법이 효과적일 것 같다." }] } },
+  { title: "내 꿈", topic: "미래의 꿈이나 목표에 대해 써 보세요.", modelContent: { theme: "내 꿈", question: "미래의 꿈이나 목표가 있습니까? 그 꿈을 위해 무엇을 하고 있는지 5문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)려고 ～しようと", example: "예) 꿈을 이루려고 열심히 공부한다." }, { pattern: "○-기 위해 ～ために", example: "예) 좋은 직업을 갖기 위해 노력한다." }] } },
 ];
+
+const PERIOD_LABELS = ["1期", "2期", "3期", "4期", "5期", "6期", "7期", "8期"] as const;
+
+const ASSIGNMENT_EXAMPLES_BY_PERIOD: AssignmentExample[][] = PERIOD_LABELS.map((_, periodIndex) =>
+  BASE_EXAMPLES.map((base, i) => ({
+    ...base,
+    id: periodIndex * 10 + i + 1,
+    modelContent: base.modelContent ? { ...base.modelContent, courseInfo: `${PERIOD_LABELS[periodIndex]}第${i + 1}回課題` } : undefined,
+  }))
+);
+
+const ASSIGNMENT_EXAMPLES_ALL: AssignmentExample[] = ASSIGNMENT_EXAMPLES_BY_PERIOD.flat();
 
 const STORAGE_KEY = "writing_assignments";
 
@@ -126,6 +146,7 @@ export default function WritingPage() {
   const [feedbackModal, setFeedbackModal] = useState<Assignment | null>(null);
   const [teacherFeedback, setTeacherFeedback] = useState("");
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
+  const [examplePeriodTab, setExamplePeriodTab] = useState<number>(0);
   const [expandedExperience, setExpandedExperience] = useState(false);
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -291,7 +312,7 @@ export default function WritingPage() {
     setExampleSubmitContent("");
   };
 
-  const selectedExample = expandedExampleId ? ASSIGNMENT_EXAMPLES.find((ex) => ex.id === expandedExampleId) : null;
+  const selectedExample = expandedExampleId ? ASSIGNMENT_EXAMPLES_ALL.find((ex) => ex.id === expandedExampleId) : null;
 
   const handleSubmitAssignment = (assignment: Assignment) => {
     setSelectedAssignment(assignment);
@@ -932,9 +953,16 @@ export default function WritingPage() {
                   <div className="mb-6 md:mb-8">
                     <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
+                      <div className="flex border-b border-[#e5dfd4] overflow-x-auto">
+                        {PERIOD_LABELS.map((label, i) => (
+                          <button key={label} type="button" onClick={() => { setExamplePeriodTab(i); setExpandedExampleId(null); }} className={`shrink-0 px-4 py-3 font-medium text-sm ${examplePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
+                            {label}
+                          </button>
+                        ))}
+                      </div>
                       <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">課題例（10件）</div>
                       <div className="divide-y divide-[#e5dfd4]">
-                        {ASSIGNMENT_EXAMPLES.map((ex) => (
+                        {ASSIGNMENT_EXAMPLES_BY_PERIOD[examplePeriodTab].map((ex) => (
                           <div key={ex.id}>
                             <button type="button" onClick={() => setExpandedExampleId(expandedExampleId === ex.id ? null : ex.id)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
                               <div className="flex items-center gap-3">
@@ -985,7 +1013,7 @@ export default function WritingPage() {
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">課題提出</th>
                                 <th className="text-left py-3 px-4 font-medium">添削</th>
-                                <th className="text-left py-3 px-4 font-medium">学生を見る</th>
+                                <th className="text-left py-3 px-4 font-medium">学生提出文</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1007,7 +1035,7 @@ export default function WritingPage() {
                                     )}
                                   </td>
                                   <td className="py-3 px-4">
-                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生を見る</button> : <span className="text-gray-400">-</span>}
+                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button> : <span className="text-gray-400">-</span>}
                                   </td>
                                 </tr>
                               ))}
@@ -1023,7 +1051,7 @@ export default function WritingPage() {
                               </div>
                               <div className="flex flex-wrap gap-3 text-sm">
                                 {a.content && <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>}
-                                {a.content && <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生を見る</button>}
+                                {a.content && <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button>}
                                 {!a.content && <span className="text-gray-400">添削: -</span>}
                               </div>
                             </div>
@@ -1145,7 +1173,7 @@ export default function WritingPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
-              <h3 className="text-lg font-bold text-gray-800">学生を見る - {viewingStudent.title}</h3>
+              <h3 className="text-lg font-bold text-gray-800">学生提出文 - {viewingStudent.title}</h3>
               <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
             </div>
             <div className="px-4 py-2 border-b border-gray-200 flex flex-wrap gap-2 shrink-0 bg-gray-50">
