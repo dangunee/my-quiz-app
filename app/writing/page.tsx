@@ -351,24 +351,29 @@ export default function WritingPage() {
   const handleTrialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTrialSubmitting(true);
+    setTrialError(null);
     try {
-      const res = await fetch("/api/trial/submit", {
+      const subjectPrefix = trialActiveTab === "course" ? "講座申込" : "体験申込";
+      const title = trialActiveTab === "trial" ? "体験レッスン" : "講座の申し込み";
+      const payload = {
+        _subject: `${subjectPrefix}（作文アプリ）: ${title}`,
+        _replyto: trialForm.email,
+        タイトル: title,
+        お名前: trialForm.name,
+        ふりがな: trialForm.furigana,
+        韓国語レベル: trialForm.koreanLevel === "選択してください" ? "" : trialForm.koreanLevel,
+        メールアドレス: trialForm.email,
+      };
+      const res = await fetch("https://formsubmit.co/ajax/mirinae@kaonnuri.com", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          formType: trialActiveTab,
-          title: trialActiveTab === "trial" ? "体験レッスン" : "講座の申し込み",
-          name: trialForm.name,
-          furigana: trialForm.furigana,
-          koreanLevel: trialForm.koreanLevel === "選択してください" ? "" : trialForm.koreanLevel,
-          email: trialForm.email,
-        }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.success !== false && data.success !== "false") {
         setTrialSuccess(true);
       } else {
-        setTrialError(data.error || "送信に失敗しました");
+        setTrialError(data.message || data.error || "送信に失敗しました");
       }
     } catch {
       setTrialError("送信に失敗しました");
