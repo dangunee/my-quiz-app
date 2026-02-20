@@ -826,13 +826,6 @@ export default function WritingPage() {
                                   <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
                                     {trialSubmitting ? "送信中..." : "送信"}
                                   </button>
-                                  <p className="text-sm text-gray-500">
-                                    {trialActiveTab === "trial" ? (
-                                      <>講座申込は<button type="button" onClick={() => { setTrialActiveTab("course"); setTrialForm((f) => ({ ...f, title: "講座の申し込み" })); setTrialSuccess(false); }} className="text-[#1a4d2e] hover:underline ml-1">こちら</button></>
-                                    ) : (
-                                      <>体験申込は<button type="button" onClick={() => { setTrialActiveTab("trial"); setTrialForm((f) => ({ ...f, title: "体験レッスン" })); setTrialSuccess(false); }} className="text-[#1a4d2e] hover:underline ml-1">こちら</button></>
-                                    )}
-                                  </p>
                                 </form>
                               )}
                             </div>
