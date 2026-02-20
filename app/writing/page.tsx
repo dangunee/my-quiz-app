@@ -130,14 +130,12 @@ export default function WritingPage() {
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showTrialModal, setShowTrialModal] = useState(false);
-  const [trialActiveTab, setTrialActiveTab] = useState<"trial" | "course">("trial");
   const [trialForm, setTrialForm] = useState({
     name: "",
     furigana: "",
     age: "選択してください",
     prefecture: "選択してください",
-    topikLevel: "選択してください",
-    hanbLevel: "選択してください",
+    koreanLevel: "選択してください",
     email: "",
   });
   const [trialSubmitting, setTrialSubmitting] = useState(false);
@@ -254,8 +252,7 @@ export default function WritingPage() {
     "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
   ];
   const TRIAL_AGES = ["選択してください", "10代", "20代", "30代", "40代", "50代", "60代", "70代以上"];
-  const TRIAL_TOPIK_LEVELS = ["選択してください", "TOPIK１級", "TOPIK２級", "TOPIK３級", "TOPIK４級", "TOPIK５級", "TOPIK６級"];
-  const TRIAL_HANB_LEVELS = ["選択してください", "ハン検５級", "ハン検４級", "ハン検３級", "ハン検準２級", "ハン検２級", "ハン検１級"];
+  const KOREAN_LEVELS = ["選択してください", "入門", "初級", "初中級", "中級", "中上級", "上級"];
 
   const handleTrialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -265,14 +262,11 @@ export default function WritingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          formType: trialActiveTab,
-          title: trialActiveTab === "trial" ? "体験レッスン" : "講座の申し込み",
           name: trialForm.name,
           furigana: trialForm.furigana,
           age: trialForm.age === "選択してください" ? "" : trialForm.age,
           prefecture: trialForm.prefecture === "選択してください" ? "" : trialForm.prefecture,
-          topikLevel: trialForm.topikLevel === "選択してください" ? "" : trialForm.topikLevel,
-          hanbLevel: trialForm.hanbLevel === "選択してください" ? "" : trialForm.hanbLevel,
+          koreanLevel: trialForm.koreanLevel === "選択してください" ? "" : trialForm.koreanLevel,
           email: trialForm.email,
         }),
       });
@@ -609,19 +603,32 @@ export default function WritingPage() {
                       <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
                       <p className="text-white/90 text-sm mt-1">300～500字作文 作文添削 ＋ ネイティブ比較文 ＋ 模範文 までつく！</p>
                     </div>
-                    <div className="p-6 space-y-6">
-                      <div>
-                        <h3 className="font-semibold text-gray-800 mb-3 text-sm">特徴</h3>
-                        <ul className="space-y-2 text-gray-700 text-sm">
-                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">①</span>自分の書いた文章を自然な韓国語に直してもらいます</li>
-                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">②</span>表現力をアップさせるために、毎週毎回違うテーマについての作文にチャレンジできます</li>
-                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">③</span>課題は、さらに厳選された文型を必ず使用するよう出題します</li>
-                          <li className="flex gap-2"><span className="text-[#1a4d2e] font-medium shrink-0">④</span>ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します</li>
-                        </ul>
+                    <div className="p-6 space-y-4">
+                      <div className="overflow-hidden rounded-lg border border-gray-300">
+                        <div className="px-4 py-2 bg-[#1e3a5f]">
+                          <h3 className="font-semibold text-white text-sm">特徴</h3>
+                        </div>
+                        <div className="border-collapse text-sm">
+                          {[
+                            { label: "①", content: "自分の書いた文章を自然な韓国語に直してもらいます" },
+                            { label: "②", content: "表現力をアップさせるために、毎週毎回違うテーマについての作文にチャレンジできます" },
+                            { label: "③", content: "課題は、さらに厳選された文型を必ず使用するよう出題します" },
+                            { label: "④", content: "ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します" },
+                          ].map((row, i) => (
+                            <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
+                              <div className="w-8 md:w-10 shrink-0 px-2 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs">
+                                {row.label}
+                              </div>
+                              <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                {row.content}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="pt-4 border-t border-[#e5dfd4] overflow-hidden rounded-lg border border-gray-300 bg-[#1e3a5f]">
-                        <div className="px-4 py-1">
-                          <h3 className="font-semibold text-white text-base">詳細</h3>
+                      <div className="overflow-hidden rounded-lg border border-gray-300">
+                        <div className="px-4 py-2 bg-[#1e3a5f]">
+                          <h3 className="font-semibold text-white text-sm">詳細</h3>
                         </div>
                         <div className="border-collapse text-sm">
                           {[
@@ -752,30 +759,6 @@ export default function WritingPage() {
                         </div>
                       </div>
                       <div className="pt-4">
-                        <div className="p-4 md:p-5 rounded-lg border border-teal-300 bg-[#fffde7] space-y-3">
-                          <p className="text-base md:text-lg">
-                            <span className="text-red-600 font-semibold">まずは体験から!</span>
-                            <span className="text-gray-800"> 1回 </span>
-                            <span className="text-red-600 font-semibold">1,800円</span>
-                          </p>
-                          <div>
-                            <p className="text-gray-800 font-medium">1回お試しお申込み期間</p>
-                            <p className="text-red-600 text-sm mt-1 pl-2">ㄴ3月19日(木)までに申し込みフォームを送信してください。</p>
-                          </div>
-                          <div className="flex justify-center">
-                            <button type="button" onClick={() => { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); document.getElementById("trial-form-section")?.scrollIntoView({ behavior: "smooth" }); }} className="px-6 py-3 bg-sky-400 hover:bg-sky-500 text-white font-medium rounded-lg transition-colors">
-                              お申込みの方はクリックしてください
-                            </button>
-                          </div>
-                          <div className="pt-2 space-y-1 text-sm text-gray-800">
-                            <p>① 体験申込の締切 : 3月19日(木)</p>
-                            <p>② 体験課題送信日 : 3月20日(金)</p>
-                            <p>③ 体験添削送信日 : 3月27日(金)</p>
-                            <p>④ 当講座開始日 : 4月3日(金)</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="pt-4">
                         <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-x-auto overflow-y-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer md:overflow-hidden">
                           <img src="/experience-sample.png" alt="添削文・比較文・模範文" className="min-w-[800px] md:min-w-0 md:w-full h-auto" />
                         </button>
@@ -795,16 +778,10 @@ export default function WritingPage() {
                       )}
                       <div id="trial-form-section" className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
-                          <div className="flex">
-                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
-                              <span>体験申込</span>
-                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
-                            </button>
-                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", topikLevel: "選択してください", hanbLevel: "選択してください", email: "" }); setTrialSuccess(false); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
-                              <span>講座申込</span>
-                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
-                            </button>
-                          </div>
+                          <button type="button" onClick={() => { if (!showTrialModal) { setTrialForm({ name: "", furigana: "", age: "選択してください", prefecture: "選択してください", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); } setShowTrialModal((v) => !v); }} className="w-full px-6 py-4 flex items-center justify-between bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium text-left">
+                            <span>お申込み</span>
+                            <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>
+                          </button>
                           {showTrialModal && (
                             <div className="p-6 border-t border-[#e5dfd4]">
                               {trialSuccess ? (
@@ -835,15 +812,9 @@ export default function WritingPage() {
                                     </select>
                                   </div>
                                   <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">韓国語TOPIKレベル</label>
-                                    <select value={trialForm.topikLevel} onChange={(e) => setTrialForm((f) => ({ ...f, topikLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
-                                      {TRIAL_TOPIK_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ハングル検定レベル</label>
-                                    <select value={trialForm.hanbLevel} onChange={(e) => setTrialForm((f) => ({ ...f, hanbLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
-                                      {TRIAL_HANB_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">韓国語レベル</label>
+                                    <select value={trialForm.koreanLevel} onChange={(e) => setTrialForm((f) => ({ ...f, koreanLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                      {KOREAN_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
                                     </select>
                                   </div>
                                   <div>
