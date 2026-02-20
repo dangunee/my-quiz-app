@@ -23,12 +23,14 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "User-Agent": "Mozilla/5.0 (compatible; FormSubmit/1.0)",
       },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15000),
     });
 
+    const text = await res.text();
     if (!res.ok) {
-      const text = await res.text();
       console.error("FormSubmit error:", res.status, text);
       return NextResponse.json(
         { error: "送信に失敗しました" },
