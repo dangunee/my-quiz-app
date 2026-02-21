@@ -311,6 +311,7 @@ export default function QuizClient() {
             type="button"
             onClick={() => {
               localStorage.removeItem("quiz_token");
+              localStorage.removeItem("quiz_refresh_token");
               localStorage.removeItem("quiz_user");
               setIsLoggedIn(false);
               setMenuOpen(false);
@@ -598,6 +599,7 @@ export default function QuizClient() {
                     type="button"
                     onClick={() => {
                       localStorage.removeItem("quiz_token");
+                      localStorage.removeItem("quiz_refresh_token");
                       localStorage.removeItem("quiz_user");
                       setIsLoggedIn(false);
                     }}

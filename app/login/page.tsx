@@ -58,6 +58,9 @@ export default function LoginPage() {
           setMessage("ログインに成功しました！");
           if (data.session?.access_token) {
             localStorage.setItem("quiz_token", data.session.access_token);
+            if (data.session?.refresh_token) {
+              localStorage.setItem("quiz_refresh_token", data.session.refresh_token);
+            }
             localStorage.setItem("quiz_user", JSON.stringify(data.user));
           }
           window.location.href = redirectTo;

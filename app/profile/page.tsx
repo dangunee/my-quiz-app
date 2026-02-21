@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { fetchWithAuth, getStoredToken } from "../../lib/auth";
 
 type User = {
   id: string;
@@ -32,9 +33,9 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
+    const token = getStoredToken();
     if (user && token) {
-      fetch("/api/customer/profile", { headers: { Authorization: `Bearer ${token}` } })
+      fetchWithAuth("/api/customer/profile")
         .then((r) => r.json())
         .then((data) => setCustomerProfile({ region: data.region ?? null, plan_type: data.plan_type ?? null }))
         .catch(() => setCustomerProfile(null));
@@ -50,20 +51,19 @@ export default function ProfilePage() {
     setMessage("");
 
     try {
-      const token = localStorage.getItem("quiz_token");
-      if (!token) {
+      if (!getStoredToken()) {
         setMessage("ログインが必要です");
         return;
       }
 
-      const res = await fetch("/api/auth/delete-account", {
+      const res = await fetchWithAuth("/api/auth/delete-account", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
 
       if (res.ok) {
         localStorage.removeItem("quiz_token");
+        localStorage.removeItem("quiz_refresh_token");
         localStorage.removeItem("quiz_user");
         window.location.href = "/";
       } else {
@@ -142,6 +142,7 @@ export default function ProfilePage() {
           type="button"
           onClick={() => {
             localStorage.removeItem("quiz_token");
+            localStorage.removeItem("quiz_refresh_token");
             localStorage.removeItem("quiz_user");
             window.location.href = "/";
           }}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import { fetchWithAuth, getStoredToken } from "../../lib/auth";
 
 const WRITING_HOST = "writing.mirinae.jp";
 
@@ -229,9 +230,9 @@ export default function WritingPage() {
       });
       setProfileEditing(false);
       setProfileMessage("");
-      const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
+      const token = getStoredToken();
       if (token) {
-        fetch("/api/customer/profile", { headers: { Authorization: `Bearer ${token}` } })
+        fetchWithAuth("/api/customer/profile")
           .then((r) => r.json())
           .then((data) => setCustomerProfile({ region: data.region ?? null, plan_type: data.plan_type ?? null }))
           .catch(() => setCustomerProfile(null));
@@ -242,17 +243,16 @@ export default function WritingPage() {
   }, [showProfileModal, user]);
 
   const handleProfileSave = async () => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
-    if (!token) {
+    if (!getStoredToken()) {
       setProfileMessage("ログインが必要です");
       return;
     }
     setProfileSaving(true);
     setProfileMessage("");
     try {
-      const res = await fetch("/api/auth/profile", {
+      const res = await fetchWithAuth("/api/auth/profile", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: profileEditForm.name, username: profileEditForm.username }),
       });
       const data = await res.json();
@@ -478,18 +478,15 @@ export default function WritingPage() {
     setProfileDeleting(true);
     setProfileMessage("");
     try {
-      const token = localStorage.getItem("quiz_token");
-      if (!token) {
+      if (!getStoredToken()) {
         setProfileMessage("ログインが必要です");
         return;
       }
-      const res = await fetch("/api/auth/delete-account", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetchWithAuth("/api/auth/delete-account", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
         localStorage.removeItem("quiz_token");
+        localStorage.removeItem("quiz_refresh_token");
         localStorage.removeItem("quiz_user");
         setUser(null);
         setShowProfileModal(false);
@@ -526,7 +523,7 @@ export default function WritingPage() {
           <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>
           <button
             type="button"
-            onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); window.location.href = redirectPath; }}
+            onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); window.location.href = redirectPath; }}
             className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]"
           >
             ログアウト
@@ -650,7 +647,7 @@ export default function WritingPage() {
             )}
             <button
               type="button"
-              onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_user"); setUser(null); setShowProfileModal(false); window.location.href = redirectPath; }}
+              onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setUser(null); setShowProfileModal(false); window.location.href = redirectPath; }}
               className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 mb-3"
             >
               ログアウト
@@ -1407,16 +1404,36 @@ export default function WritingPage() {
             </div>
             <div className="px-4 sm:px-6 py-4 flex justify-end shrink-0 border-t border-gray-200">
               <button
-                onClick={() => {
-                  const targetId = assignments.find((x) => x.status === "미제출")?.id;
-                  if (targetId) {
-                    const updated = assignments.map((a) =>
-                      a.id === targetId ? { ...a, status: "제출완료" as AssignmentStatus, content: exampleSubmitContent, submittedAt: new Date().toISOString() } : a
-                    );
-                    setAssignments(updated);
-                    saveAssignments(updated);
+                onClick={async () => {
+                  if (!selectedExample || !exampleSubmitContent.trim()) return;
+                  if (!getStoredToken()) {
+                    alert("로그인이 필요합니다.");
+                    return;
                   }
-                  handleCloseExampleSubmitModal();
+                  const period_index = Math.floor((selectedExample.id - 1) / 10);
+                  const item_index = (selectedExample.id - 1) % 10;
+                  try {
+                    const res = await fetchWithAuth("/api/writing/submissions", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ period_index, item_index, content: exampleSubmitContent.trim() }),
+                    });
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({}));
+                      throw new Error(err.error || `제출 실패 (${res.status})`);
+                    }
+                    const targetId = assignments.find((x) => x.status === "미제출")?.id;
+                    if (targetId) {
+                      const updated = assignments.map((a) =>
+                        a.id === targetId ? { ...a, status: "제출완료" as AssignmentStatus, content: exampleSubmitContent, submittedAt: new Date().toISOString() } : a
+                      );
+                      setAssignments(updated);
+                      saveAssignments(updated);
+                    }
+                    handleCloseExampleSubmitModal();
+                  } catch (e) {
+                    alert(e instanceof Error ? e.message : "제출에 실패했습니다.");
+                  }
                 }}
                 disabled={!exampleSubmitContent.trim()}
                 className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl"
