@@ -1268,7 +1268,7 @@ export default function WritingPage() {
                                         )}
                                       </td>
                                       <td className="py-3 px-4">
-                                        {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button> : <span className="text-gray-400">-</span>}
+                                        {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">CHECK</button> : <span className="text-gray-400">-</span>}
                                       </td>
                                       <td className="py-3 px-4">
                                         {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
@@ -1296,7 +1296,7 @@ export default function WritingPage() {
                                     {a.content && (
                                       <>
                                         <span className="text-gray-500">·</span>
-                                        <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button>
+                                        <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">CHECK</button>
                                         <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
                                       </>
                                     )}
