@@ -465,6 +465,10 @@ export default function WritingPage() {
   };
 
   const handleRequestCloseSubmit = () => {
+    if (selectedAssignment?.status === "제출완료") {
+      handleCloseSubmitModal();
+      return;
+    }
     if (submitContent.trim()) {
       setExitConfirmType("submit");
     } else {
@@ -1259,7 +1263,7 @@ export default function WritingPage() {
                                         {a.status === "미제출" ? (
                                           <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
                                         ) : (
-                                          <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>
+                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>
                                         )}
                                       </td>
                                       <td className="py-3 px-4">
@@ -1284,12 +1288,12 @@ export default function WritingPage() {
                                               <div className="flex flex-col">
                                                 <div className="flex justify-between items-center mb-4">
                                                   <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">{selectedAssignment?.status === "제출완료" ? "閉じる" : "취소"}</button>
                                                 </div>
                                                 <div className="space-y-4">
                                                   <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                                                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} disabled={selectedAssignment?.status === "제출완료"} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
                                                       <option value="">선택하세요</option>
                                                       {MOCK_STUDENTS.map((s) => (
                                                         <option key={s.id} value={s.id}>{s.name}</option>
@@ -1298,7 +1302,7 @@ export default function WritingPage() {
                                                   </div>
                                                   <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                                                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} disabled={selectedAssignment?.status === "제출완료"} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
                                                       <option value="">선택하세요</option>
                                                       {assignments.map((a2) => (
                                                         <option key={a2.id} value={a2.id}>{getAssignmentDisplayTitle(a2)} ({a2.dateRange})</option>
@@ -1307,13 +1311,17 @@ export default function WritingPage() {
                                                   </div>
                                                   <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} readOnly={selectedAssignment?.status === "제출완료"} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent disabled:bg-gray-50 read-only:bg-gray-50 read-only:cursor-default" autoFocus={selectedAssignment?.status !== "제출완료"} />
                                                   </div>
                                                 </div>
                                                 <div className="mt-4 flex justify-end">
-                                                  <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                                                    {submitLoading ? "提出中..." : "投稿"}
-                                                  </button>
+                                                  {selectedAssignment?.status === "제출완료" ? (
+                                                    <button onClick={handleCloseSubmitModal} className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl">閉じる</button>
+                                                  ) : (
+                                                    <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                                                      {submitLoading ? "提出中..." : "投稿"}
+                                                    </button>
+                                                  )}
                                                 </div>
                                               </div>
                                             )}
@@ -1387,7 +1395,7 @@ export default function WritingPage() {
                                     <span className="text-gray-500">·</span>
                                     <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
                                     <span className="text-gray-500">·</span>
-                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
+                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>}
                                     {a.content && (
                                       <>
                                         <span className="text-gray-500">·</span>
@@ -1406,12 +1414,12 @@ export default function WritingPage() {
                                       <div className="flex flex-col">
                                         <div className="flex justify-between items-center mb-4">
                                           <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">{selectedAssignment?.status === "제출완료" ? "閉じる" : "취소"}</button>
                                         </div>
                                         <div className="space-y-4">
                                           <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                                            <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                            <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} disabled={selectedAssignment?.status === "제출완료"} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
                                               <option value="">선택하세요</option>
                                               {MOCK_STUDENTS.map((s) => (
                                                 <option key={s.id} value={s.id}>{s.name}</option>
@@ -1420,7 +1428,7 @@ export default function WritingPage() {
                                           </div>
                                           <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                                            <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                            <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} disabled={selectedAssignment?.status === "제출완료"} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
                                               <option value="">선택하세요</option>
                                               {assignments.map((a2) => (
                                                 <option key={a2.id} value={a2.id}>{getAssignmentDisplayTitle(a2)} ({a2.dateRange})</option>
@@ -1429,13 +1437,17 @@ export default function WritingPage() {
                                           </div>
                                           <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} readOnly={selectedAssignment?.status === "제출완료"} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent disabled:bg-gray-50 read-only:bg-gray-50 read-only:cursor-default" autoFocus={selectedAssignment?.status !== "제출완료"} />
                                           </div>
                                         </div>
                                         <div className="mt-4 flex justify-end">
-                                          <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                                            {submitLoading ? "提出中..." : "投稿"}
-                                          </button>
+                                          {selectedAssignment?.status === "제출완료" ? (
+                                            <button onClick={handleCloseSubmitModal} className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl">閉じる</button>
+                                          ) : (
+                                            <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                                              {submitLoading ? "提出中..." : "投稿"}
+                                            </button>
+                                          )}
                                         </div>
                                       </div>
                                     )}
