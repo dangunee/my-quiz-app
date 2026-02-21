@@ -1223,13 +1223,13 @@ export default function WritingPage() {
                       return (
                       <div key={dateRange} className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                         <div className="hidden md:block overflow-x-auto">
-                          <table className="w-full">
+                          <table className="w-full table-fixed">
                             <colgroup>
                               <col style={{ width: "5rem" }} />
                               <col />
                               <col style={{ width: "7rem" }} />
-                              <col />
-                              <col />
+                              <col style={{ width: "8rem" }} />
+                              <col style={{ width: "6rem" }} />
                             </colgroup>
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
@@ -1259,7 +1259,7 @@ export default function WritingPage() {
                                           })()}
                                         </td>
                                       ) : null}
-                                      <td className="py-3 px-4"><span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span></td>
+                                      <td className="py-3 px-4 min-w-0"><span className="font-medium text-gray-800 break-words">{getAssignmentDisplayTitle(a)}</span></td>
                                       <td className="py-3 px-4" style={{ width: "7rem" }}>
                                         {a.status === "미제출" ? (
                                           <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
@@ -1313,7 +1313,7 @@ export default function WritingPage() {
                               <div className="flex flex-col">
                                 <div className="flex justify-between items-center mb-4">
                                   <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">閉じる</button>
                                 </div>
                                 <div className="space-y-4">
                                   <div>
@@ -1410,7 +1410,7 @@ export default function WritingPage() {
                       <div className="flex flex-col">
                         <div className="flex justify-between items-center mb-4">
                           <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">閉じる</button>
                         </div>
                         <div className="space-y-4">
                           <div>
@@ -1467,7 +1467,7 @@ export default function WritingPage() {
           <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="relative px-4 sm:px-6 py-4 shrink-0 border-b border-gray-200">
               <h3 className="text-lg font-bold text-gray-800 text-center pr-14">課題提出 - {selectedExample.title}</h3>
-              <button onClick={handleCloseExampleSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">취소</button>
+              <button onClick={handleCloseExampleSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">閉じる</button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
               <div className="p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4] text-sm space-y-3">
