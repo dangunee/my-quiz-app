@@ -4,6 +4,45 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+export async function GET(request: NextRequest) {
+  const auth = request.headers.get("authorization");
+  const token = auth?.replace("Bearer ", "");
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+  }
+
+  try {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    if (userError || !user) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from("essay_submissions")
+      .select("period_index, item_index, content, submitted_at")
+      .eq("user_id", user.id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    const submitted = (data || []).map((s) => `${s.period_index}-${s.item_index}`);
+    const submissionsByKey = (data || []).reduce<Record<string, { content: string; submitted_at: string }>>((acc, s) => {
+      acc[`${s.period_index}-${s.item_index}`] = { content: s.content || "", submitted_at: s.submitted_at || "" };
+      return acc;
+    }, {});
+    return NextResponse.json({ submitted, submissionsByKey });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   if (!supabaseUrl || !supabaseKey) {
     return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });

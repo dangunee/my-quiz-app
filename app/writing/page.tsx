@@ -139,6 +139,8 @@ export default function WritingPage() {
   const [myPageError, setMyPageError] = useState<string | null>(null);
   const [myPagePeriodTab, setMyPagePeriodTab] = useState(0);
   const [myPageContentModal, setMyPageContentModal] = useState<{ type: "submit" | "correction" | "model"; periodIndex: number; itemIndex: number; content: string; title?: string } | null>(null);
+  const [submittedKeys, setSubmittedKeys] = useState<Set<string>>(new Set());
+  const [submissionsByKey, setSubmissionsByKey] = useState<Record<string, { content: string; submitted_at: string }>>({});
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileDeleting, setProfileDeleting] = useState(false);
@@ -197,6 +199,21 @@ export default function WritingPage() {
       .then((data) => setExampleOverrides(data.overrides || {}))
       .catch(() => setExampleOverrides({}));
   }, []);
+
+  useEffect(() => {
+    if (!user || !getStoredToken()) return;
+    fetchWithAuth("/api/writing/submissions")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.submitted) {
+          setSubmittedKeys(new Set(data.submitted));
+        }
+        if (data.submissionsByKey) {
+          setSubmissionsByKey(data.submissionsByKey);
+        }
+      })
+      .catch(() => {});
+  }, [user]);
 
   const mergedAssignmentExamplesByPeriod = useMemo(() => {
     return ASSIGNMENT_EXAMPLES_BY_PERIOD.map((periodExamples, periodIndex) =>
@@ -931,6 +948,12 @@ export default function WritingPage() {
                   <div className="mb-6 md:mb-8">
                     <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
+                      {user && (
+                        <div className="px-4 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm">
+                          <span className="text-gray-600">ログイン中：</span>
+                          <span className="font-medium text-gray-800">{user.name || user.username || user.email || "-"}様</span>
+                        </div>
+                      )}
                       <div className="flex border-b border-[#e5dfd4]">
                         {PERIOD_LABELS.map((label, i) => (
                           <button key={label} type="button" onClick={() => { setExamplePeriodTab(i); setExpandedExampleId(null); }} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${examplePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
@@ -945,7 +968,7 @@ export default function WritingPage() {
                             <button type="button" onClick={() => setExpandedExampleId(expandedExampleId === ex.id ? null : ex.id)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
                               <div className="flex items-center gap-3">
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedExampleId === ex.id ? "▼" : "▶"}</span>
-                                <span className="font-medium text-gray-800">{ex.title}</span>
+                                <span className={`font-medium text-gray-800 ${submittedKeys.has(`${examplePeriodTab}-${(ex.id - 1) % 10}`) ? "underline" : ""}`}>{ex.title}</span>
                               </div>
                               {ex.topic && <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">{ex.topic}</p>}
                             </button>
@@ -965,9 +988,28 @@ export default function WritingPage() {
                                       ))}
                                     </div>
                                   </div>
-                                  <button onClick={handleExampleSubmitClick} className="w-full py-3 px-6 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md">
-                                    課題提出
-                                  </button>
+                                  {submittedKeys.has(`${examplePeriodTab}-${(ex.id - 1) % 10}`) ? (
+                                    <>
+                                      <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
+                                        <p className="text-sm font-medium text-[#166534] mb-2">提出された課題</p>
+                                        <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{submissionsByKey[`${examplePeriodTab}-${(ex.id - 1) % 10}`]?.content || ""}</pre>
+                                      </div>
+                                      <button type="button" onClick={() => document.getElementById("mypage-section")?.scrollIntoView({ behavior: "smooth" })} className="w-full py-3 px-6 bg-[#4ade80] hover:bg-[#22c55e] text-gray-800 font-medium rounded-xl shadow-md">
+                                        MY PAGEで確認
+                                      </button>
+                                    </>
+                                  ) : user ? (
+                                    <button onClick={handleExampleSubmitClick} className="w-full py-3 px-6 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md">
+                                      課題提出
+                                    </button>
+                                  ) : (
+                                    <div className="p-4 rounded-xl bg-[#fef3c7] border border-[#fcd34d]">
+                                      <p className="text-gray-700 text-sm mb-2">課題提出はログイン後にご利用いただけます。</p>
+                                      <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg text-sm">
+                                        ログイン
+                                      </Link>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -977,7 +1019,7 @@ export default function WritingPage() {
                     </div>
                   </div>
 
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">MY PAGE</h2>
+                  <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">MY PAGE</h2>
 
                   {!user ? (
                     <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
@@ -1157,6 +1199,8 @@ export default function WritingPage() {
                       const err = await res.json().catch(() => ({}));
                       throw new Error(err.error || `제출 실패 (${res.status})`);
                     }
+                    setSubmittedKeys((prev) => new Set([...prev, `${period_index}-${item_index}`]));
+                    setSubmissionsByKey((prev) => ({ ...prev, [`${period_index}-${item_index}`]: { content: exampleSubmitContent.trim(), submitted_at: new Date().toISOString() } }));
                     const targetId = assignments.find((x) => x.status === "미제출")?.id;
                     if (targetId) {
                       const updated = assignments.map((a) =>
