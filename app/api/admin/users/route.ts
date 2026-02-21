@@ -58,6 +58,7 @@ export async function GET(request: NextRequest) {
         period: p?.period ?? null,
         interval: p?.course_interval ?? null,
         start_date: p?.start_date ?? null,
+        writing_approved: p?.writing_approved ?? false,
       };
     });
 

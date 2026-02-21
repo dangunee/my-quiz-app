@@ -101,6 +101,7 @@ export default function AdminPage() {
   period?: number | null;
   interval?: string | null;
   start_date?: string | null;
+  writing_approved?: boolean;
 };
   const [users, setUsers] = useState<UserRow[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
@@ -116,6 +117,7 @@ export default function AdminPage() {
     period: "",
     interval: "",
     start_date: "",
+    writing_approved: false,
   });
   const [userActionLoading, setUserActionLoading] = useState(false);
   const [userSearchKeyword, setUserSearchKeyword] = useState("");
@@ -344,6 +346,7 @@ export default function AdminPage() {
       period: u.period != null ? String(u.period) : "",
       interval: u.interval ?? "",
       start_date: u.start_date ?? "",
+      writing_approved: u.writing_approved ?? false,
     });
   };
 
@@ -780,6 +783,7 @@ export default function AdminPage() {
                       <th className="text-left py-2 px-3">期目</th>
                       <th className="text-left py-2 px-3">間隔</th>
                       <th className="text-left py-2 px-3">開始日</th>
+                      <th className="text-left py-2 px-3">MY PAGE</th>
                       <th className="text-left py-2 px-3">登録日</th>
                       <th className="text-left py-2 px-3">最終アクセス</th>
                       <th className="text-left py-2 px-3">管理</th>
@@ -887,6 +891,17 @@ export default function AdminPage() {
                               />
                             </td>
                             <td className="py-2 px-3">
+                              <label className="flex items-center gap-1 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={editUserForm.writing_approved}
+                                  onChange={(e) => setEditUserForm((f) => ({ ...f, writing_approved: e.target.checked }))}
+                                  className="rounded"
+                                />
+                                <span className="text-xs">承認</span>
+                              </label>
+                            </td>
+                            <td className="py-2 px-3">
                               {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
                             </td>
                             <td className="py-2 px-3">
@@ -923,6 +938,7 @@ export default function AdminPage() {
                             <td className="py-2 px-3">{u.period ?? "-"}</td>
                             <td className="py-2 px-3">{u.interval || "-"}</td>
                             <td className="py-2 px-3">{u.start_date ? new Date(u.start_date).toLocaleDateString("ja-JP") : "-"}</td>
+                            <td className="py-2 px-3">{u.writing_approved ? "✓" : "-"}</td>
                             <td className="py-2 px-3">
                               {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
                             </td>

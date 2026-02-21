@@ -44,6 +44,7 @@ export async function PUT(
     period,
     interval,
     start_date,
+    writing_approved,
   } = body;
 
   if (!id) {
@@ -69,6 +70,7 @@ export async function PUT(
     if (period !== undefined) profileFields.period = period === "" || period == null ? null : Number(period);
     if (interval !== undefined) profileFields.course_interval = interval === "" ? null : interval;
     if (start_date !== undefined) profileFields.start_date = start_date === "" ? null : start_date;
+    if (writing_approved !== undefined) profileFields.writing_approved = !!writing_approved;
 
     if (Object.keys(authUpdates).length === 0 && Object.keys(profileFields).length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
@@ -117,6 +119,7 @@ export async function PUT(
         period: p?.period ?? null,
         interval: p?.course_interval ?? null,
         start_date: p?.start_date ?? null,
+        writing_approved: p?.writing_approved ?? false,
       },
     });
   } catch (e) {

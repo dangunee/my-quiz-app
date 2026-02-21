@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { fetchWithAuth, getStoredToken } from "../../lib/auth";
 
@@ -61,11 +61,6 @@ const MOCK_ASSIGNMENTS: Assignment[] = [
   { id: "10", title: "과제 10", dateRange: "12/14 ~ 12/20", status: "미제출", correction: "-", studentView: false },
 ];
 
-const MOCK_STUDENTS = [
-  { id: "1", name: "학생 1" },
-  { id: "2", name: "학생 2" },
-];
-
 interface AssignmentExample {
   id: number;
   title: string;
@@ -121,15 +116,6 @@ export default function WritingPage() {
   const [activeTab, setActiveTab] = useState<TabId>("experience");
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
-  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>("");
-  const [submitContent, setSubmitContent] = useState("");
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [viewingStudent, setViewingStudent] = useState<Assignment | null>(null);
-  const [feedbackModal, setFeedbackModal] = useState<Assignment | null>(null);
-  const [teacherFeedback, setTeacherFeedback] = useState("");
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
   const [examplePeriodTab, setExamplePeriodTab] = useState<number>(0);
   const [exampleOverrides, setExampleOverrides] = useState<Record<number, Record<number, { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] }>>>({});
@@ -148,6 +134,11 @@ export default function WritingPage() {
   const [trialSuccess, setTrialSuccess] = useState(false);
   const [trialError, setTrialError] = useState<string | null>(null);
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
+  const [myPageData, setMyPageData] = useState<{ name: string; period: number | null; submissions: { period_index: number; item_index: number; content: string; feedback?: string; corrected_content?: string; submitted_at: string; feedback_at?: string; completed_at?: string; status: string }[] } | null>(null);
+  const [myPageLoading, setMyPageLoading] = useState(false);
+  const [myPageError, setMyPageError] = useState<string | null>(null);
+  const [myPagePeriodTab, setMyPagePeriodTab] = useState(0);
+  const [myPageContentModal, setMyPageContentModal] = useState<{ type: "submit" | "correction" | "model"; periodIndex: number; itemIndex: number; content: string; title?: string } | null>(null);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileDeleting, setProfileDeleting] = useState(false);
@@ -157,9 +148,6 @@ export default function WritingPage() {
   const [profileEditing, setProfileEditing] = useState(false);
   const [customerProfile, setCustomerProfile] = useState<{ region: string | null; plan_type: string | null } | null>(null);
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
-  const [exitConfirmType, setExitConfirmType] = useState<"submit" | "student" | "feedback" | null>(null);
-  const editorRef = useRef<HTMLDivElement>(null);
-  const initialEditorContentRef = useRef<string>("");
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -174,20 +162,34 @@ export default function WritingPage() {
     }
   }, []);
 
-  useLayoutEffect(() => {
-    if (viewingStudent && editorRef.current) {
-      const initial =
-        viewingStudent.correctedContent ??
-        (viewingStudent.content ? viewingStudent.content.replace(/\n/g, "<br>") : "<p><br></p>");
-      editorRef.current.innerHTML = initial;
-      initialEditorContentRef.current = initial;
-      editorRef.current.focus();
-    }
-  }, [viewingStudent]);
-
   useEffect(() => {
     setAssignments(getStoredAssignments());
   }, []);
+
+  useEffect(() => {
+    if (activeTab !== "writing" || !user || !getStoredToken()) return;
+    setMyPageLoading(true);
+    setMyPageError(null);
+    fetchWithAuth("/api/writing/mypage")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error && !data.approved) {
+          setMyPageError(data.error);
+          setMyPageData(null);
+        } else if (data.approved) {
+          setMyPageData({ name: data.name || "", period: data.period ?? null, submissions: data.submissions || [] });
+          setMyPageError(null);
+        } else {
+          setMyPageError(data.error || "読み込みに失敗しました");
+          setMyPageData(null);
+        }
+      })
+      .catch(() => {
+        setMyPageError("読み込みに失敗しました");
+        setMyPageData(null);
+      })
+      .finally(() => setMyPageLoading(false));
+  }, [activeTab, user]);
 
   useEffect(() => {
     fetch("/api/writing/assignment-examples")
@@ -272,34 +274,14 @@ export default function WritingPage() {
     }
   };
 
-  const getAssignmentNumber = (a: Assignment) => {
-    const fromId = parseInt(a.id, 10);
-    if (!isNaN(fromId)) return fromId;
-    const m = a.title.match(/과제\s*(\d+)/);
-    return m ? parseInt(m[1], 10) : 0;
-  };
-
   const getAssignmentDisplayTitle = (a: Assignment) => {
-    const n = getAssignmentNumber(a);
-    const ex = mergedAssignmentExamplesByPeriod[0]?.[n - 1];
-    return ex?.title ?? a.title;
+    const n = parseInt(a.id, 10);
+    if (!isNaN(n)) {
+      const ex = mergedAssignmentExamplesByPeriod[0]?.[n - 1];
+      return ex?.title ?? a.title;
+    }
+    return a.title;
   };
-
-  const formatDateRangeTwoLines = (dateRange: string) => {
-    const parts = dateRange.split(" ~ ");
-    if (parts.length >= 2) return { start: parts[0].trim(), end: parts[1].trim() };
-    return { start: dateRange, end: "" };
-  };
-
-  const sortedAssignments = [...assignments].sort((a, b) => getAssignmentNumber(a) - getAssignmentNumber(b));
-
-  const groupedByDate = sortedAssignments.reduce<Record<string, Assignment[]>>((acc, a) => {
-    if (!acc[a.dateRange]) acc[a.dateRange] = [];
-    acc[a.dateRange].push(a);
-    return acc;
-  }, {});
-
-  const sortedDateRanges = Object.keys(groupedByDate).reverse();
 
   const KOREAN_LEVELS = ["選択してください", "入門", "初級", "初中級", "中級", "中上級", "上級"];
 
@@ -337,15 +319,6 @@ export default function WritingPage() {
     }
   };
 
-  const handleSubmitClick = () => {
-    setShowExampleSubmitModal(false);
-    setSelectedAssignment(null);
-    setSelectedStudentId("");
-    setSelectedAssignmentId("");
-    setSubmitContent("");
-    setShowSubmitModal(true);
-  };
-
   const handleExampleSubmitClick = () => {
     setExampleSubmitContent("");
     setShowExampleSubmitModal(true);
@@ -357,121 +330,6 @@ export default function WritingPage() {
   };
 
   const selectedExample = expandedExampleId ? mergedAssignmentExamplesAll.find((ex) => ex.id === expandedExampleId) : null;
-
-  const handleSubmitAssignment = (assignment: Assignment) => {
-    setShowExampleSubmitModal(false);
-    setSelectedAssignment(assignment);
-    setSelectedAssignmentId(assignment.id);
-    setSelectedStudentId("");
-    setSubmitContent(assignment.content || "");
-    setShowSubmitModal(true);
-  };
-
-  const handleCloseSubmitModal = () => {
-    setShowSubmitModal(false);
-    setSelectedAssignment(null);
-    setSelectedStudentId("");
-    setSelectedAssignmentId("");
-    setSubmitContent("");
-    setExitConfirmType(null);
-  };
-
-  const handleRequestCloseSubmit = () => {
-    if (submitContent.trim()) {
-      setExitConfirmType("submit");
-    } else {
-      handleCloseSubmitModal();
-    }
-  };
-
-  const handleRequestCloseStudent = () => {
-    if (!viewingStudent || !editorRef.current) {
-      setViewingStudent(null);
-      return;
-    }
-    const current = editorRef.current.innerHTML;
-    const initial = initialEditorContentRef.current;
-    if (current !== initial) {
-      setExitConfirmType("student");
-    } else {
-      setViewingStudent(null);
-    }
-  };
-
-  const handleRequestCloseFeedback = () => {
-    if (!feedbackModal) return;
-    if (teacherFeedback.trim() !== (feedbackModal.feedback || "").trim()) {
-      setExitConfirmType("feedback");
-    } else {
-      setFeedbackModal(null);
-      setTeacherFeedback("");
-    }
-  };
-
-  const handleSaveDraft = () => {
-    if (!submitContent.trim()) return;
-    const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중" || x.status === "제출완료")?.id;
-    const updated = assignments.map((a) =>
-      a.id === targetId ? { ...a, content: submitContent, status: a.status === "제출완료" ? ("제출완료" as AssignmentStatus) : ("수정중" as AssignmentStatus) } : a
-    );
-    setAssignments(updated);
-    saveAssignments(updated);
-    handleCloseSubmitModal();
-  };
-
-  const handleConfirmSubmit = () => {
-    if (!submitContent.trim()) return;
-    setSubmitLoading(true);
-    setTimeout(() => {
-      const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중" || x.status === "제출완료")?.id;
-      const updated = assignments.map((a) =>
-        a.id === targetId ? { ...a, status: "제출완료" as AssignmentStatus, content: submitContent, submittedAt: new Date().toISOString() } : a
-      );
-      setAssignments(updated);
-      saveAssignments(updated);
-      setSubmitLoading(false);
-      handleCloseSubmitModal();
-    }, 600);
-  };
-
-  const handleViewStudent = (a: Assignment) => {
-    setViewingStudent(a);
-    setTimeout(() => {
-      document.querySelector("[data-student-panel]")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }, 100);
-  };
-
-  const applyFormat = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
-  };
-
-  const handleSaveCorrectedContent = () => {
-    if (!viewingStudent || !editorRef.current) return;
-    const html = editorRef.current.innerHTML;
-    const updated = assignments.map((a) =>
-      a.id === viewingStudent.id ? { ...a, correctedContent: html, correction: "완료" as CorrectionStatus, status: "첨삭완료" as AssignmentStatus } : a
-    );
-    setAssignments(updated);
-    saveAssignments(updated);
-    setViewingStudent(null);
-  };
-
-  const handleOpenFeedback = (a: Assignment) => {
-    setFeedbackModal(a);
-    setTeacherFeedback(a.feedback || "");
-  };
-
-  const handleSaveFeedback = () => {
-    if (!feedbackModal) return;
-    const updated = assignments.map((a) =>
-      a.id === feedbackModal.id ? { ...a, feedback: teacherFeedback, correction: "완료" as CorrectionStatus, status: "첨삭완료" as AssignmentStatus } : a
-    );
-    setAssignments(updated);
-    saveAssignments(updated);
-    setFeedbackModal(null);
-    setTeacherFeedback("");
-  };
 
   const handleProfileDeleteAccount = async () => {
     if (!confirm("本当にアカウントを削除しますか？この操作は取り消せません。")) return;
@@ -1070,15 +928,6 @@ export default function WritingPage() {
               {activeTab === "writing" && (
                 <div className="px-4 md:px-0 mx-auto max-w-3xl w-full">
                   <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
-                  <div className="md:hidden mb-4">
-                    <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
-                      <h2 className="font-semibold text-gray-800 mb-2 text-sm">課題提出</h2>
-                      <button onClick={handleSubmitClick} className="w-full py-3 px-4 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">
-                        課題提出ボタン
-                      </button>
-                    </div>
-                  </div>
-
                   <div className="mb-6 md:mb-8">
                     <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
@@ -1128,235 +977,104 @@ export default function WritingPage() {
                     </div>
                   </div>
 
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">作文リスト</h2>
+                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">MY PAGE</h2>
 
-                  <div className="space-y-4 md:space-y-6">
-                    {sortedDateRanges.map((dateRange) => {
-                      const hasSelectedInCard = groupedByDate[dateRange].some((x) => (showSubmitModal && selectedAssignment?.id === x.id) || viewingStudent?.id === x.id || feedbackModal?.id === x.id);
-                      return (
-                      <div key={dateRange} className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                        <div className="hidden md:block overflow-x-auto">
-                          <table className="w-full table-fixed">
-                            <colgroup>
-                              <col style={{ width: "5rem" }} />
-                              <col />
-                              <col style={{ width: "7rem" }} />
-                              <col style={{ width: "8rem" }} />
-                              <col style={{ width: "6rem" }} />
-                            </colgroup>
-                            <thead>
-                              <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
-                                <th className="text-left py-3 px-2 font-medium" style={{ width: "5rem" }}>期間</th>
-                                <th className="text-left py-3 px-4 font-medium">課題</th>
-                                <th className="text-left py-3 px-4 font-medium" style={{ width: "7rem" }}>提出する↓</th>
-                                <th className="text-left py-3 px-4 font-medium">学生提出文</th>
-                                <th className="text-left py-3 px-4 font-medium">添削結果</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {groupedByDate[dateRange].map((a, idx) => {
-                                const rowSpan = groupedByDate[dateRange].length;
+                  {!user ? (
+                    <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
+                      <p className="text-gray-600 mb-4">MY PAGEはログイン後にご利用いただけます。</p>
+                      <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-2.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">
+                        ログイン
+                      </Link>
+                    </div>
+                  ) : myPageLoading ? (
+                    <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center text-gray-600">読み込み中...</div>
+                  ) : myPageError ? (
+                    <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
+                      <p className="text-gray-600">{myPageError}</p>
+                    </div>
+                  ) : myPageData ? (
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4]">
+                        <div>
+                          <span className="text-gray-500 text-sm">名前</span>
+                          <p className="font-medium text-gray-800">{myPageData.name || "-"}様</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 text-sm">期目</span>
+                          <p className="font-medium text-gray-800">{myPageData.period != null ? `${myPageData.period}期` : "-"}</p>
+                        </div>
+                      </div>
+                      <div className="overflow-x-auto rounded-xl border border-[#e5dfd4] bg-white">
+                        <div className="flex border-b border-[#e5dfd4]">
+                          {PERIOD_LABELS.map((label, i) => (
+                            <button key={label} type="button" onClick={() => setMyPagePeriodTab(i)} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${myPagePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                        <table className="w-full min-w-[600px]">
+                          <thead>
+                            <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
+                              <th className="text-left py-2 px-3 font-medium w-24"> </th>
+                              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+                                <th key={i} className="text-center py-2 px-2 font-medium">第{i + 1}回</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-t border-[#e5dfd4]">
+                              <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">제출일</td>
+                              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
+                                const row = myPageData.submissions.find((s) => s.period_index === myPagePeriodTab && s.item_index === itemIdx);
+                                const dateStr = row?.submitted_at ? new Date(row.submitted_at).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
                                 return (
-                                  <React.Fragment key={a.id}>
-                                    <tr className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
-                                      {idx === 0 ? (
-                                        <td rowSpan={rowSpan} className="py-3 px-2 align-top bg-[#faf8f5]" style={{ width: "5rem" }}>
-                                          {(() => {
-                                            const { start, end } = formatDateRangeTwoLines(dateRange);
-                                            return (
-                                              <span className="text-xs font-medium text-gray-700 leading-tight block">
-                                                {start}
-                                                {end && <><br />{end}</>}
-                                              </span>
-                                            );
-                                          })()}
-                                        </td>
-                                      ) : null}
-                                      <td className="py-3 px-4 min-w-0"><span className="font-medium text-gray-800 break-words">{getAssignmentDisplayTitle(a)}</span></td>
-                                      <td className="py-3 px-4" style={{ width: "7rem" }}>
-                                        {a.status === "미제출" ? (
-                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
-                                        ) : (
-                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : (a.status === "제출완료" || a.status === "첨삭완료") ? "提出完了" : a.status}</button>
-                                        )}
-                                      </td>
-                                      <td className="py-3 px-4">
-                                        {a.content ? <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleViewStudent(a); }} className="text-[#1a4d2e] hover:underline cursor-pointer">CHECK</button> : <span className="text-gray-400">-</span>}
-                                      </td>
-                                      <td className="py-3 px-4">
-                                        {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
-                                          <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline font-medium">確認</button>
-                                        ) : (
-                                          <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "완료" ? "完了" : a.correction === "확인" ? "確認" : a.correction}</button>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  </React.Fragment>
+                                  <td key={itemIdx} className="py-2 px-2 text-center border-l border-[#e5dfd4]">
+                                    {dateStr ? (
+                                      <button type="button" onClick={() => setMyPageContentModal({ type: "submit", periodIndex: myPagePeriodTab, itemIndex: itemIdx, content: row!.content, title: mergedAssignmentExamplesByPeriod[myPagePeriodTab]?.[itemIdx]?.title })} className="text-[#1a4d2e] hover:underline font-medium">
+                                        {dateStr}
+                                      </button>
+                                    ) : (
+                                      <span className="text-red-600 font-medium">未提出</span>
+                                    )}
+                                  </td>
                                 );
                               })}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="md:hidden divide-y divide-[#e5dfd4]">
-                          {groupedByDate[dateRange].map((a) => (
-                              <div key={a.id} className="p-4">
-                                  <div className="flex flex-wrap items-center gap-2 text-sm">
-                                    <span className="font-semibold text-gray-800 shrink-0">{dateRange}</span>
-                                    <span className="text-gray-500">·</span>
-                                    <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
-                                    <span className="text-gray-500">·</span>
-                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : (a.status === "제출완료" || a.status === "첨삭완료") ? "提出完了" : a.status}</button>}
-                                    {a.content && (
-                                      <>
-                                        <span className="text-gray-500">·</span>
-                                        <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleViewStudent(a); }} className="text-[#1a4d2e] hover:underline cursor-pointer">CHECK</button>
-                                        <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
-                                      </>
+                            </tr>
+                            <tr className="border-t border-[#e5dfd4]">
+                              <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">첨삭일</td>
+                              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
+                                const row = myPageData.submissions.find((s) => s.period_index === myPagePeriodTab && s.item_index === itemIdx);
+                                const hasCorrection = row && (row.corrected_content || row.feedback) && (row.status === "completed" || row.status === "in_progress");
+                                const dateStr = hasCorrection && (row.completed_at || row.feedback_at) ? new Date(row.completed_at || row.feedback_at!).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
+                                const ex = mergedAssignmentExamplesByPeriod[myPagePeriodTab]?.[itemIdx];
+                                const modelContent = ex?.modelContent ? `${ex.modelContent.theme}\n${ex.modelContent.question}\n${ex.modelContent.patterns?.map((p) => `${p.pattern}\n${p.example}`).join("\n") || ""}` : "";
+                                if (dateStr && hasCorrection) {
+                                  return (
+                                    <td key={itemIdx} className="py-2 px-2 text-center border-l border-[#e5dfd4]">
+                                      <button type="button" onClick={() => setMyPageContentModal({ type: "correction", periodIndex: myPagePeriodTab, itemIndex: itemIdx, content: (row!.corrected_content || row!.content || "") + (row!.feedback ? `\n\n【添削】\n${row!.feedback}` : ""), title: ex?.title })} className="text-[#1a4d2e] hover:underline font-medium">
+                                        {dateStr}
+                                      </button>
+                                    </td>
+                                  );
+                                }
+                                return (
+                                  <td key={itemIdx} className="py-2 px-2 text-center border-l border-[#e5dfd4]">
+                                    {row ? (
+                                      <span className="text-gray-400">-</span>
+                                    ) : (
+                                      <button type="button" onClick={() => setMyPageContentModal({ type: "model", periodIndex: myPagePeriodTab, itemIndex: itemIdx, content: modelContent, title: ex?.title })} className="text-[#1a4d2e] hover:underline font-medium">
+                                        模範文
+                                      </button>
                                     )}
-                                  </div>
-                                </div>
-                            ))}
-                        </div>
-                        {hasSelectedInCard && (
-                          <div className="border-t border-[#e5dfd4] bg-[#fafbfc] p-4">
-                            <div className="flex items-center justify-center pb-2 mb-3 border-b border-gray-200">
-                              <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
-                            </div>
-                            {showSubmitModal && (
-                              <div className="flex flex-col">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">閉じる</button>
-                                </div>
-                                <div className="space-y-4">
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                                      <option value="">선택하세요</option>
-                                      {MOCK_STUDENTS.map((s) => (
-                                        <option key={s.id} value={s.id}>{s.name}</option>
-                                      ))}
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                                      <option value="">선택하세요</option>
-                                      {assignments.map((a2) => (
-                                        <option key={a2.id} value={a2.id}>{getAssignmentDisplayTitle(a2)} ({a2.dateRange})</option>
-                                      ))}
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[21rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
-                                  </div>
-                                </div>
-                                <div className="mt-4 flex justify-end">
-                                  <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                                    {submitLoading ? "提出中..." : selectedAssignment?.status === "제출완료" ? "再提出" : "投稿"}
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                            {viewingStudent && !showSubmitModal && !feedbackModal && (
-                              <div className="flex flex-col" data-student-panel>
-                                <div className="flex justify-between items-center mb-4">
-                                  <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
-                                  <button onClick={handleRequestCloseStudent} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
-                                </div>
-                                <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
-                                  <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
-                                  <button type="button" onClick={() => applyFormat("foreColor", "#dc2626")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-red-600" title="빨간색">A</button>
-                                  <button type="button" onClick={() => applyFormat("foreColor", "#2563eb")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-blue-600" title="파란색">A</button>
-                                  <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
-                                  <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
-                                </div>
-                                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[300px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed bg-white" />
-                                {viewingStudent.feedback && (
-                                  <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
-                                    <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
-                                    <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
-                                  </div>
-                                )}
-                                <div className="mt-4 flex justify-end gap-2">
-                                  <button onClick={handleRequestCloseStudent} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">閉じる</button>
-                                  <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
-                                </div>
-                              </div>
-                            )}
-                            {feedbackModal && !showSubmitModal && !viewingStudent && (
-                              <div className="flex flex-col">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
-                                  <button onClick={handleRequestCloseFeedback} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
-                                </div>
-                                <div className="space-y-4">
-                                  {feedbackModal.content && (
-                                    <div>
-                                      <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
-                                      <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
-                                    </div>
-                                  )}
-                                  <div>
-                                    <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
-                                    <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
-                                  </div>
-                                </div>
-                                <div className="mt-4 flex justify-end">
-                                  <button onClick={handleSaveFeedback} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">저장</button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                    })}
-                  </div>
-                  {/* 課題提出ボタンから開いた場合（リスト未選択時）のフォーム */}
-                  {showSubmitModal && !selectedAssignment && !viewingStudent && !feedbackModal && (
-                    <div className="mt-6 rounded-xl border border-[#e5dfd4] bg-[#fafbfc] p-4 overflow-hidden">
-                      <div className="flex items-center justify-center pb-2 mb-3 border-b border-gray-200">
-                        <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">閉じる</button>
-                        </div>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                            <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                              <option value="">선택하세요</option>
-                              {MOCK_STUDENTS.map((s) => (
-                                <option key={s.id} value={s.id}>{s.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                            <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                              <option value="">선택하세요</option>
-                              {assignments.map((a) => (
-                                <option key={a.id} value={a.id}>{getAssignmentDisplayTitle(a)} ({a.dateRange})</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[21rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex justify-end">
-                          <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                            {submitLoading ? "提出中..." : "投稿"}
-                          </button>
-                        </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
-                  )}
+                  ) : null}
                   </div>
                 </div>
               )}
@@ -1374,6 +1092,23 @@ export default function WritingPage() {
           </main>
         </div>
       </div>
+
+      {myPageContentModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="relative px-4 sm:px-6 py-4 shrink-0 border-b border-gray-200">
+              <h3 className="text-lg font-bold text-gray-800 text-center pr-14">
+                {myPageContentModal.type === "submit" ? "제출 내용" : myPageContentModal.type === "correction" ? "添削結果" : "模範文"}
+                {myPageContentModal.title ? ` - ${myPageContentModal.title}` : ""}
+              </h3>
+              <button onClick={() => setMyPageContentModal(null)} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">閉じる</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{myPageContentModal.content || "（内容なし）"}</pre>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showExampleSubmitModal && selectedExample?.modelContent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -1439,48 +1174,6 @@ export default function WritingPage() {
                 className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl"
               >
                 提出する
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {exitConfirmType && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-2">保存しますか？</h3>
-            <p className="text-gray-600 text-sm mb-6">変更内容を破棄すると元に戻せません。</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  if (exitConfirmType === "submit") {
-                    handleSaveDraft();
-                  } else if (exitConfirmType === "student") {
-                    handleSaveCorrectedContent();
-                  } else if (exitConfirmType === "feedback") {
-                    handleSaveFeedback();
-                  }
-                  setExitConfirmType(null);
-                }}
-                className="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl"
-              >
-                保存
-              </button>
-              <button
-                onClick={() => {
-                  if (exitConfirmType === "submit") {
-                    handleCloseSubmitModal();
-                  } else if (exitConfirmType === "student") {
-                    setViewingStudent(null);
-                  } else if (exitConfirmType === "feedback") {
-                    setFeedbackModal(null);
-                    setTeacherFeedback("");
-                  }
-                  setExitConfirmType(null);
-                }}
-                className="flex-1 py-2.5 bg-white hover:bg-gray-100 text-gray-700 font-medium rounded-xl border border-gray-300"
-              >
-                破棄
               </button>
             </div>
           </div>
