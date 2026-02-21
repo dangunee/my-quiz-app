@@ -1037,23 +1037,24 @@ export default function WritingPage() {
                   ) : myPageData ? (
                     <div className="space-y-4">
                       {(() => {
-                        const total = 80;
-                        const subs = myPageData.submissions;
-                        const submitted = subs.length;
-                        const pending = subs.filter((s) => s.status === "pending").length;
-                        const inProgress = subs.filter((s) => s.status === "in_progress").length;
-                        const completed = subs.filter((s) => s.status === "completed").length;
+                        const periodSubs = myPageData.submissions.filter((s) => s.period_index === myPagePeriodTab);
+                        const total = 10;
+                        const submitted = periodSubs.length;
+                        const unsubmitted = total - submitted;
+                        const pending = periodSubs.filter((s) => s.status === "pending").length;
+                        const inProgress = periodSubs.filter((s) => s.status === "in_progress").length;
+                        const completed = periodSubs.filter((s) => s.status === "completed").length;
                         return (
                           <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
-                            <h3 className="font-bold text-gray-800 mb-3">고객 첨삭 상황 진행표</h3>
+                            <h3 className="font-bold text-gray-800 mb-3">添削状況進行表</h3>
                             <div className="flex flex-wrap gap-4 mb-3">
-                              <span className="text-sm"><span className="text-gray-500">未提出:</span> <strong>{total - submitted}</strong></span>
+                              <span className="text-sm"><span className="text-gray-500">未提出:</span> <strong>{unsubmitted}</strong></span>
                               <span className="text-sm"><span className="text-gray-500">未添削:</span> <strong className="text-amber-600">{pending}</strong></span>
                               <span className="text-sm"><span className="text-gray-500">添削中:</span> <strong className="text-blue-600">{inProgress}</strong></span>
                               <span className="text-sm"><span className="text-gray-500">完了:</span> <strong className="text-green-600">{completed}</strong></span>
                             </div>
                             <div className="h-3 bg-gray-200 rounded-full overflow-hidden flex">
-                              <div className="bg-gray-400" style={{ width: `${((total - submitted) / total) * 100}%` }} title="未提出" />
+                              <div className="bg-gray-400" style={{ width: `${(unsubmitted / total) * 100}%` }} title="未提出" />
                               <div className="bg-amber-400" style={{ width: `${(pending / total) * 100}%` }} title="未添削" />
                               <div className="bg-blue-400" style={{ width: `${(inProgress / total) * 100}%` }} title="添削中" />
                               <div className="bg-green-500" style={{ width: `${(completed / total) * 100}%` }} title="完了" />
@@ -1090,7 +1091,7 @@ export default function WritingPage() {
                           </thead>
                           <tbody>
                             <tr className="border-t border-[#e5dfd4]">
-                              <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">제출일</td>
+                              <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">提出日</td>
                               {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
                                 const row = myPageData.submissions.find((s) => s.period_index === myPagePeriodTab && s.item_index === itemIdx);
                                 const dateStr = row?.submitted_at ? new Date(row.submitted_at).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
@@ -1108,13 +1109,12 @@ export default function WritingPage() {
                               })}
                             </tr>
                             <tr className="border-t border-[#e5dfd4]">
-                              <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">첨삭일</td>
+                              <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">添削日</td>
                               {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
                                 const row = myPageData.submissions.find((s) => s.period_index === myPagePeriodTab && s.item_index === itemIdx);
                                 const hasCorrection = row && (row.corrected_content || row.feedback) && (row.status === "completed" || row.status === "in_progress");
                                 const dateStr = hasCorrection && (row.completed_at || row.feedback_at) ? new Date(row.completed_at || row.feedback_at!).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
                                 const ex = mergedAssignmentExamplesByPeriod[myPagePeriodTab]?.[itemIdx];
-                                const modelContent = ex?.modelContent ? `${ex.modelContent.theme}\n${ex.modelContent.question}\n${ex.modelContent.patterns?.map((p) => `${p.pattern}\n${p.example}`).join("\n") || ""}` : "";
                                 if (dateStr && hasCorrection) {
                                   return (
                                     <td key={itemIdx} className="py-2 px-2 text-center border-l border-[#e5dfd4]">
@@ -1126,13 +1126,7 @@ export default function WritingPage() {
                                 }
                                 return (
                                   <td key={itemIdx} className="py-2 px-2 text-center border-l border-[#e5dfd4]">
-                                    {row ? (
-                                      <span className="text-gray-400">-</span>
-                                    ) : (
-                                      <button type="button" onClick={() => setMyPageContentModal({ type: "model", periodIndex: myPagePeriodTab, itemIndex: itemIdx, content: modelContent, title: ex?.title })} className="text-[#1a4d2e] hover:underline font-medium">
-                                        模範文
-                                      </button>
-                                    )}
+                                    <span className="text-gray-400">-</span>
                                   </td>
                                 );
                               })}
