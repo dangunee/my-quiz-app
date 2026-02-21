@@ -371,6 +371,12 @@ export default function WritingPage() {
     return ex?.title ?? a.title;
   };
 
+  const formatDateRangeTwoLines = (dateRange: string) => {
+    const parts = dateRange.split(" ~ ");
+    if (parts.length >= 2) return { start: parts[0].trim(), end: parts[1].trim() };
+    return { start: dateRange, end: "" };
+  };
+
   const sortedAssignments = [...assignments].sort((a, b) => getAssignmentNumber(a) - getAssignmentNumber(b));
 
   const groupedByDate = sortedAssignments.reduce<Record<string, Assignment[]>>((acc, a) => {
@@ -1100,7 +1106,7 @@ export default function WritingPage() {
               )}
 
               {activeTab === "writing" && (
-                <div className="px-4 md:px-0 mx-auto max-w-2xl w-full">
+                <div className="px-4 md:px-0 mx-auto max-w-3xl w-full">
                   <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
                   <div className="md:hidden mb-4">
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
@@ -1169,11 +1175,11 @@ export default function WritingPage() {
                         <div className="hidden md:block overflow-x-auto">
                           <table className="w-full">
                             <colgroup>
-                              <col style={{ width: "10rem" }} />
+                              <col style={{ width: "5rem" }} />
                             </colgroup>
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
-                                <th className="text-left py-3 px-4 font-medium whitespace-nowrap" style={{ width: "10rem" }}>期間</th>
+                                <th className="text-left py-3 px-2 font-medium" style={{ width: "5rem" }}>期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">提出する↓</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
@@ -1188,7 +1194,17 @@ export default function WritingPage() {
                                   <React.Fragment key={a.id}>
                                     <tr className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
                                       {idx === 0 ? (
-                                        <td rowSpan={rowSpan} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5] whitespace-nowrap" style={{ width: "10rem" }}>{dateRange}</td>
+                                        <td rowSpan={rowSpan} className="py-3 px-2 align-top bg-[#faf8f5]" style={{ width: "5rem" }}>
+                                          {(() => {
+                                            const { start, end } = formatDateRangeTwoLines(dateRange);
+                                            return (
+                                              <span className="text-xs font-medium text-gray-700 leading-tight block">
+                                                {start}
+                                                {end && <><br />{end}</>}
+                                              </span>
+                                            );
+                                          })()}
+                                        </td>
                                       ) : null}
                                       <td className="py-3 px-4"><span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span></td>
                                       <td className="py-3 px-4">
@@ -1243,7 +1259,7 @@ export default function WritingPage() {
                                                   </div>
                                                   <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                                                   </div>
                                                 </div>
                                                 <div className="mt-4 flex justify-end">
@@ -1365,7 +1381,7 @@ export default function WritingPage() {
                                           </div>
                                           <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                                           </div>
                                         </div>
                                         <div className="mt-4 flex justify-end">
@@ -1465,7 +1481,7 @@ export default function WritingPage() {
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end">
