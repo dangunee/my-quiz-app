@@ -1155,16 +1155,19 @@ export default function WritingPage() {
                     </div>
                   </div>
 
-                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">投稿リスト</h2>
+                  <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">作文リスト</h2>
 
                   <div className="space-y-4 md:space-y-6">
                     {sortedDateRanges.map((dateRange) => (
                       <div key={dateRange} className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
                         <div className="hidden md:block overflow-x-auto">
                           <table className="w-full">
+                            <colgroup>
+                              <col style={{ width: "8rem" }} />
+                            </colgroup>
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
-                                <th className="text-left py-3 px-4 font-medium">期間</th>
+                                <th className="text-left py-3 px-4 font-medium" style={{ width: "8rem" }}>期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">課題提出</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
@@ -1175,7 +1178,7 @@ export default function WritingPage() {
                               {groupedByDate[dateRange].map((a, idx) => (
                                 <tr key={a.id} className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
                                   {idx === 0 ? (
-                                    <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5]">{dateRange}</td>
+                                    <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5]" style={{ width: "8rem" }}>{dateRange}</td>
                                   ) : null}
                                   <td className="py-3 px-4"><span className="font-medium text-gray-800">{a.title}</span></td>
                                   <td className="py-3 px-4">
