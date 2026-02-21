@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 
 const WRITING_HOST = "writing.mirinae.jp";
@@ -1102,102 +1102,6 @@ export default function WritingPage() {
               {activeTab === "writing" && (
                 <div className="px-4 md:px-0 mx-auto max-w-2xl w-full">
                   <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
-                  {/* 課題提出・添削 プルダウン（タブ内のみ表示） */}
-                  {(showSubmitModal || viewingStudent || feedbackModal) && (
-                    <div className="mb-6 rounded-xl border border-[#e5dfd4] bg-white shadow-sm overflow-hidden">
-                      <div className="flex-shrink-0 flex items-center justify-center py-2 border-b border-gray-200 bg-[#faf8f5]">
-                        <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
-                      </div>
-                      <div className="p-4 sm:p-6">
-                        {showSubmitModal && (
-                          <div className="flex flex-col">
-                            <div className="flex justify-between items-center mb-4">
-                              <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                              <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
-                            </div>
-                            <div className="space-y-4">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                                <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                                  <option value="">선택하세요</option>
-                                  {MOCK_STUDENTS.map((s) => (
-                                    <option key={s.id} value={s.id}>{s.name}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                                <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                                  <option value="">선택하세요</option>
-                                  {assignments.map((a) => (
-                                    <option key={a.id} value={a.id}>{getAssignmentDisplayTitle(a)} ({a.dateRange})</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
-                              </div>
-                            </div>
-                            <div className="mt-4 flex justify-end">
-                              <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                                {submitLoading ? "提出中..." : "投稿"}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {viewingStudent && !showSubmitModal && !feedbackModal && (
-                          <div className="flex flex-col">
-                            <div className="flex justify-between items-center mb-4">
-                              <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
-                              <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
-                            </div>
-                            <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
-                              <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
-                              <button type="button" onClick={() => applyFormat("foreColor", "#dc2626")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-red-600" title="빨간색">A</button>
-                              <button type="button" onClick={() => applyFormat("foreColor", "#2563eb")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-blue-600" title="파란색">A</button>
-                              <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
-                              <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
-                            </div>
-                            <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
-                            {viewingStudent.feedback && (
-                              <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
-                                <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
-                                <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
-                              </div>
-                            )}
-                            <div className="mt-4 flex justify-end gap-2">
-                              <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
-                              <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
-                            </div>
-                          </div>
-                        )}
-                        {feedbackModal && !showSubmitModal && !viewingStudent && (
-                          <div className="flex flex-col">
-                            <div className="flex justify-between items-center mb-4">
-                              <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
-                              <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
-                            </div>
-                            <div className="space-y-4">
-                              {feedbackModal.content && (
-                                <div>
-                                  <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
-                                  <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
-                                </div>
-                              )}
-                              <div>
-                                <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
-                                <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
-                              </div>
-                            </div>
-                            <div className="mt-4 flex justify-end">
-                              <button onClick={handleSaveFeedback} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">저장</button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                   <div className="md:hidden mb-4">
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm p-4">
                       <h2 className="font-semibold text-gray-800 mb-2 text-sm">課題提出</h2>
@@ -1277,57 +1181,301 @@ export default function WritingPage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {groupedByDate[dateRange].map((a, idx) => (
-                                <tr key={a.id} className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
-                                  {idx === 0 ? (
-                                    <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5] whitespace-nowrap" style={{ width: "10rem" }}>{dateRange}</td>
-                                  ) : null}
-                                  <td className="py-3 px-4"><span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span></td>
-                                  <td className="py-3 px-4">
-                                    {a.status === "미제출" ? (
-                                      <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
-                                    ) : (
-                                      <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>
+                              {groupedByDate[dateRange].map((a, idx) => {
+                                const isSelected = (showSubmitModal && selectedAssignment?.id === a.id) || viewingStudent?.id === a.id || feedbackModal?.id === a.id;
+                                const rowSpan = groupedByDate[dateRange].length + (groupedByDate[dateRange].some((x) => (showSubmitModal && selectedAssignment?.id === x.id) || viewingStudent?.id === x.id || feedbackModal?.id === x.id) ? 1 : 0);
+                                return (
+                                  <React.Fragment key={a.id}>
+                                    <tr className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
+                                      {idx === 0 ? (
+                                        <td rowSpan={rowSpan} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5] whitespace-nowrap" style={{ width: "10rem" }}>{dateRange}</td>
+                                      ) : null}
+                                      <td className="py-3 px-4"><span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span></td>
+                                      <td className="py-3 px-4">
+                                        {a.status === "미제출" ? (
+                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
+                                        ) : (
+                                          <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>
+                                        )}
+                                      </td>
+                                      <td className="py-3 px-4">
+                                        {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button> : <span className="text-gray-400">-</span>}
+                                      </td>
+                                      <td className="py-3 px-4">
+                                        {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
+                                          <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline font-medium">確認</button>
+                                        ) : (
+                                          <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "완료" ? "完了" : a.correction === "확인" ? "確認" : a.correction}</button>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    {isSelected && (
+                                      <tr>
+                                        <td colSpan={5} className="p-0 align-top">
+                                          <div className="border-t border-[#e5dfd4] bg-[#fafbfc] p-4">
+                                            <div className="flex items-center justify-center pb-2 mb-3 border-b border-gray-200">
+                                              <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
+                                            </div>
+                                            {showSubmitModal && (
+                                              <div className="flex flex-col">
+                                                <div className="flex justify-between items-center mb-4">
+                                                  <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
+                                                  <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                                </div>
+                                                <div className="space-y-4">
+                                                  <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
+                                                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                                      <option value="">선택하세요</option>
+                                                      {MOCK_STUDENTS.map((s) => (
+                                                        <option key={s.id} value={s.id}>{s.name}</option>
+                                                      ))}
+                                                    </select>
+                                                  </div>
+                                                  <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
+                                                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                                      <option value="">선택하세요</option>
+                                                      {assignments.map((a2) => (
+                                                        <option key={a2.id} value={a2.id}>{getAssignmentDisplayTitle(a2)} ({a2.dateRange})</option>
+                                                      ))}
+                                                    </select>
+                                                  </div>
+                                                  <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
+                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                                  </div>
+                                                </div>
+                                                <div className="mt-4 flex justify-end">
+                                                  <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                                                    {submitLoading ? "提出中..." : "投稿"}
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            )}
+                                            {viewingStudent && !showSubmitModal && !feedbackModal && (
+                                              <div className="flex flex-col">
+                                                <div className="flex justify-between items-center mb-4">
+                                                  <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
+                                                  <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                                </div>
+                                                <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
+                                                  <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
+                                                  <button type="button" onClick={() => applyFormat("foreColor", "#dc2626")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-red-600" title="빨간색">A</button>
+                                                  <button type="button" onClick={() => applyFormat("foreColor", "#2563eb")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-blue-600" title="파란색">A</button>
+                                                  <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
+                                                  <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
+                                                </div>
+                                                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
+                                                {viewingStudent.feedback && (
+                                                  <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
+                                                    <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
+                                                    <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
+                                                  </div>
+                                                )}
+                                                <div className="mt-4 flex justify-end gap-2">
+                                                  <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
+                                                  <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
+                                                </div>
+                                              </div>
+                                            )}
+                                            {feedbackModal && !showSubmitModal && !viewingStudent && (
+                                              <div className="flex flex-col">
+                                                <div className="flex justify-between items-center mb-4">
+                                                  <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
+                                                  <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                                </div>
+                                                <div className="space-y-4">
+                                                  {feedbackModal.content && (
+                                                    <div>
+                                                      <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
+                                                      <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
+                                                    </div>
+                                                  )}
+                                                  <div>
+                                                    <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
+                                                    <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
+                                                  </div>
+                                                </div>
+                                                <div className="mt-4 flex justify-end">
+                                                  <button onClick={handleSaveFeedback} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">저장</button>
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </td>
+                                      </tr>
                                     )}
-                                  </td>
-                                  <td className="py-3 px-4">
-                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button> : <span className="text-gray-400">-</span>}
-                                  </td>
-                                  <td className="py-3 px-4">
-                                    {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
-                                      <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline font-medium">確認</button>
-                                    ) : (
-                                      <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "완료" ? "完了" : a.correction === "확인" ? "確認" : a.correction}</button>
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
+                                  </React.Fragment>
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>
                         <div className="md:hidden divide-y divide-[#e5dfd4]">
-                          {groupedByDate[dateRange].map((a) => (
-                            <div key={a.id} className="p-4">
-                              <div className="flex flex-wrap items-center gap-2 text-sm">
-                                <span className="font-semibold text-gray-800 shrink-0">{dateRange}</span>
-                                <span className="text-gray-500">·</span>
-                                <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
-                                <span className="text-gray-500">·</span>
-                                {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
-                                {a.content && (
-                                  <>
+                          {groupedByDate[dateRange].map((a) => {
+                            const isSelected = (showSubmitModal && selectedAssignment?.id === a.id) || viewingStudent?.id === a.id || feedbackModal?.id === a.id;
+                            return (
+                              <React.Fragment key={a.id}>
+                                <div className="p-4">
+                                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                                    <span className="font-semibold text-gray-800 shrink-0">{dateRange}</span>
                                     <span className="text-gray-500">·</span>
-                                    <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button>
-                                    <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
-                                  </>
+                                    <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
+                                    <span className="text-gray-500">·</span>
+                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
+                                    {a.content && (
+                                      <>
+                                        <span className="text-gray-500">·</span>
+                                        <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button>
+                                        <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                                {isSelected && (
+                                  <div className="border-t border-[#e5dfd4] bg-[#fafbfc] p-4">
+                                    <div className="flex items-center justify-center pb-2 mb-3 border-b border-gray-200">
+                                      <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
+                                    </div>
+                                    {showSubmitModal && (
+                                      <div className="flex flex-col">
+                                        <div className="flex justify-between items-center mb-4">
+                                          <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
+                                          <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                        </div>
+                                        <div className="space-y-4">
+                                          <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
+                                            <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                              <option value="">선택하세요</option>
+                                              {MOCK_STUDENTS.map((s) => (
+                                                <option key={s.id} value={s.id}>{s.name}</option>
+                                              ))}
+                                            </select>
+                                          </div>
+                                          <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
+                                            <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                                              <option value="">선택하세요</option>
+                                              {assignments.map((a2) => (
+                                                <option key={a2.id} value={a2.id}>{getAssignmentDisplayTitle(a2)} ({a2.dateRange})</option>
+                                              ))}
+                                            </select>
+                                          </div>
+                                          <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
+                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                          </div>
+                                        </div>
+                                        <div className="mt-4 flex justify-end">
+                                          <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                                            {submitLoading ? "提出中..." : "投稿"}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+                                    {viewingStudent && !showSubmitModal && !feedbackModal && (
+                                      <div className="flex flex-col">
+                                        <div className="flex justify-between items-center mb-4">
+                                          <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
+                                          <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                        </div>
+                                        <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
+                                          <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
+                                          <button type="button" onClick={() => applyFormat("foreColor", "#dc2626")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-red-600" title="빨간색">A</button>
+                                          <button type="button" onClick={() => applyFormat("foreColor", "#2563eb")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-blue-600" title="파란색">A</button>
+                                          <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
+                                          <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
+                                        </div>
+                                        <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
+                                        {viewingStudent.feedback && (
+                                          <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
+                                            <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
+                                            <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
+                                          </div>
+                                        )}
+                                        <div className="mt-4 flex justify-end gap-2">
+                                          <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
+                                          <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
+                                        </div>
+                                      </div>
+                                    )}
+                                    {feedbackModal && !showSubmitModal && !viewingStudent && (
+                                      <div className="flex flex-col">
+                                        <div className="flex justify-between items-center mb-4">
+                                          <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
+                                          <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                        </div>
+                                        <div className="space-y-4">
+                                          {feedbackModal.content && (
+                                            <div>
+                                              <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
+                                              <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
+                                            </div>
+                                          )}
+                                          <div>
+                                            <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
+                                            <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
+                                          </div>
+                                        </div>
+                                        <div className="mt-4 flex justify-end">
+                                          <button onClick={handleSaveFeedback} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">저장</button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
-                              </div>
-                            </div>
-                          ))}
+                              </React.Fragment>
+                            );
+                          })}
                         </div>
                       </div>
                     ))}
                   </div>
+                  {/* 課題提出ボタンから開いた場合（リスト未選択時）のフォーム */}
+                  {showSubmitModal && !selectedAssignment && !viewingStudent && !feedbackModal && (
+                    <div className="mt-6 rounded-xl border border-[#e5dfd4] bg-[#fafbfc] p-4 overflow-hidden">
+                      <div className="flex items-center justify-center pb-2 mb-3 border-b border-gray-200">
+                        <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
+                      </div>
+                      <div className="flex flex-col">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
+                          <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                        </div>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
+                            <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                              <option value="">선택하세요</option>
+                              {MOCK_STUDENTS.map((s) => (
+                                <option key={s.id} value={s.id}>{s.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
+                            <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                              <option value="">선택하세요</option>
+                              {assignments.map((a) => (
+                                <option key={a.id} value={a.id}>{getAssignmentDisplayTitle(a)} ({a.dateRange})</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
+                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                          </div>
+                        </div>
+                        <div className="mt-4 flex justify-end">
+                          <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                            {submitLoading ? "提出中..." : "投稿"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   </div>
                 </div>
               )}
