@@ -254,7 +254,9 @@ export default function WritingPage() {
   const [profileEditing, setProfileEditing] = useState(false);
   const [customerProfile, setCustomerProfile] = useState<{ region: string | null; plan_type: string | null } | null>(null);
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
+  const [exitConfirmType, setExitConfirmType] = useState<"submit" | "student" | "feedback" | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+  const initialEditorContentRef = useRef<string>("");
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -271,9 +273,11 @@ export default function WritingPage() {
 
   useEffect(() => {
     if (viewingStudent && editorRef.current) {
-      editorRef.current.innerHTML =
+      const initial =
         viewingStudent.correctedContent ??
         (viewingStudent.content ? viewingStudent.content.replace(/\n/g, "<br>") : "<p><br></p>");
+      editorRef.current.innerHTML = initial;
+      initialEditorContentRef.current = initial;
     }
   }, [viewingStudent]);
 
@@ -457,6 +461,39 @@ export default function WritingPage() {
     setSelectedStudentId("");
     setSelectedAssignmentId("");
     setSubmitContent("");
+    setExitConfirmType(null);
+  };
+
+  const handleRequestCloseSubmit = () => {
+    if (submitContent.trim()) {
+      setExitConfirmType("submit");
+    } else {
+      handleCloseSubmitModal();
+    }
+  };
+
+  const handleRequestCloseStudent = () => {
+    if (!viewingStudent || !editorRef.current) {
+      setViewingStudent(null);
+      return;
+    }
+    const current = editorRef.current.innerHTML;
+    const initial = initialEditorContentRef.current;
+    if (current !== initial) {
+      setExitConfirmType("student");
+    } else {
+      setViewingStudent(null);
+    }
+  };
+
+  const handleRequestCloseFeedback = () => {
+    if (!feedbackModal) return;
+    if (teacherFeedback.trim() !== (feedbackModal.feedback || "").trim()) {
+      setExitConfirmType("feedback");
+    } else {
+      setFeedbackModal(null);
+      setTeacherFeedback("");
+    }
   };
 
   const handleConfirmSubmit = () => {
@@ -1236,7 +1273,7 @@ export default function WritingPage() {
                                               <div className="flex flex-col">
                                                 <div className="flex justify-between items-center mb-4">
                                                   <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                                  <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
                                                 </div>
                                                 <div className="space-y-4">
                                                   <div>
@@ -1259,7 +1296,7 @@ export default function WritingPage() {
                                                   </div>
                                                   <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                                                   </div>
                                                 </div>
                                                 <div className="mt-4 flex justify-end">
@@ -1273,7 +1310,7 @@ export default function WritingPage() {
                                               <div className="flex flex-col">
                                                 <div className="flex justify-between items-center mb-4">
                                                   <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
-                                                  <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                                  <button onClick={handleRequestCloseStudent} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                                                 </div>
                                                 <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
                                                   <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
@@ -1290,7 +1327,7 @@ export default function WritingPage() {
                                                   </div>
                                                 )}
                                                 <div className="mt-4 flex justify-end gap-2">
-                                                  <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
+                                                  <button onClick={handleRequestCloseStudent} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
                                                   <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
                                                 </div>
                                               </div>
@@ -1299,7 +1336,7 @@ export default function WritingPage() {
                                               <div className="flex flex-col">
                                                 <div className="flex justify-between items-center mb-4">
                                                   <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
-                                                  <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                                  <button onClick={handleRequestCloseFeedback} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                                                 </div>
                                                 <div className="space-y-4">
                                                   {feedbackModal.content && (
@@ -1358,7 +1395,7 @@ export default function WritingPage() {
                                       <div className="flex flex-col">
                                         <div className="flex justify-between items-center mb-4">
                                           <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                          <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
                                         </div>
                                         <div className="space-y-4">
                                           <div>
@@ -1381,7 +1418,7 @@ export default function WritingPage() {
                                           </div>
                                           <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                                           </div>
                                         </div>
                                         <div className="mt-4 flex justify-end">
@@ -1395,7 +1432,7 @@ export default function WritingPage() {
                                       <div className="flex flex-col">
                                         <div className="flex justify-between items-center mb-4">
                                           <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
-                                          <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                          <button onClick={handleRequestCloseStudent} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                                         </div>
                                         <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
                                           <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
@@ -1412,7 +1449,7 @@ export default function WritingPage() {
                                           </div>
                                         )}
                                         <div className="mt-4 flex justify-end gap-2">
-                                          <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
+                                          <button onClick={handleRequestCloseStudent} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
                                           <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
                                         </div>
                                       </div>
@@ -1421,7 +1458,7 @@ export default function WritingPage() {
                                       <div className="flex flex-col">
                                         <div className="flex justify-between items-center mb-4">
                                           <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
-                                          <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                                          <button onClick={handleRequestCloseFeedback} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                                         </div>
                                         <div className="space-y-4">
                                           {feedbackModal.content && (
@@ -1458,7 +1495,7 @@ export default function WritingPage() {
                       <div className="flex flex-col">
                         <div className="flex justify-between items-center mb-4">
                           <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                          <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
+                          <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
                         </div>
                         <div className="space-y-4">
                           <div>
@@ -1481,7 +1518,7 @@ export default function WritingPage() {
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end">
@@ -1555,6 +1592,48 @@ export default function WritingPage() {
                 className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl"
               >
                 提出する
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {exitConfirmType && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+            <h3 className="text-lg font-bold text-gray-800 mb-2">保存しますか？</h3>
+            <p className="text-gray-600 text-sm mb-6">変更内容を破棄すると元に戻せません。</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  if (exitConfirmType === "submit") {
+                    handleConfirmSubmit();
+                  } else if (exitConfirmType === "student") {
+                    handleSaveCorrectedContent();
+                  } else if (exitConfirmType === "feedback") {
+                    handleSaveFeedback();
+                  }
+                  setExitConfirmType(null);
+                }}
+                className="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl"
+              >
+                保存
+              </button>
+              <button
+                onClick={() => {
+                  if (exitConfirmType === "submit") {
+                    handleCloseSubmitModal();
+                  } else if (exitConfirmType === "student") {
+                    setViewingStudent(null);
+                  } else if (exitConfirmType === "feedback") {
+                    setFeedbackModal(null);
+                    setTeacherFeedback("");
+                  }
+                  setExitConfirmType(null);
+                }}
+                className="flex-1 py-2.5 bg-white hover:bg-gray-100 text-gray-700 font-medium rounded-xl border border-gray-300"
+              >
+                破棄
               </button>
             </div>
           </div>
