@@ -1336,7 +1336,7 @@ export default function WritingPage() {
                                   </div>
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} readOnly={selectedAssignment?.status === "제출완료"} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent disabled:bg-gray-50 read-only:bg-gray-50 read-only:cursor-default" autoFocus={selectedAssignment?.status !== "제출완료"} />
+                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} readOnly={selectedAssignment?.status === "제출완료"} placeholder="作文を書いてください" className="w-full min-h-[21rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent disabled:bg-gray-50 read-only:bg-gray-50 read-only:cursor-default" autoFocus={selectedAssignment?.status !== "제출완료"} />
                                   </div>
                                 </div>
                                 <div className="mt-4 flex justify-end">
@@ -1363,7 +1363,7 @@ export default function WritingPage() {
                                   <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
                                   <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
                                 </div>
-                                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
+                                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[300px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
                                 {viewingStudent.feedback && (
                                   <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
                                     <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
@@ -1437,7 +1437,7 @@ export default function WritingPage() {
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[14rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                            <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[21rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end">
@@ -1491,7 +1491,7 @@ export default function WritingPage() {
               <div className="border-t-2 border-dashed border-[#e5dfd4]" />
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">작문 내용</label>
-                <textarea value={exampleSubmitContent} onChange={(e) => setExampleSubmitContent(e.target.value)} placeholder="여기에 글을 입력해 주세요..." className="w-full min-h-[200px] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                <textarea value={exampleSubmitContent} onChange={(e) => setExampleSubmitContent(e.target.value)} placeholder="여기에 글을 입력해 주세요..." className="w-full min-h-[300px] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
               </div>
             </div>
             <div className="px-4 sm:px-6 py-4 flex justify-end shrink-0 border-t border-gray-200">
