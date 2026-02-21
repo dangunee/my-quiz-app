@@ -208,7 +208,7 @@ type TabId = "experience" | "writing" | "topik";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "experience", label: "作文トレーニング" },
-  { id: "writing", label: "提出する↓" },
+  { id: "writing", label: "課題提出" },
   { id: "topik", label: "TOPIK作文トレ" },
 ];
 
@@ -379,7 +379,7 @@ export default function WritingPage() {
     return acc;
   }, {});
 
-  const sortedDateRanges = Object.keys(groupedByDate);
+  const sortedDateRanges = Object.keys(groupedByDate).reverse();
 
   const KOREAN_LEVELS = ["選択してください", "入門", "初級", "初中級", "中級", "中上級", "上級"];
 
