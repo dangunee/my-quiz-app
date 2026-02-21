@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 
 const WRITING_HOST = "writing.mirinae.jp";
@@ -271,13 +271,14 @@ export default function WritingPage() {
     }
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (viewingStudent && editorRef.current) {
       const initial =
         viewingStudent.correctedContent ??
         (viewingStudent.content ? viewingStudent.content.replace(/\n/g, "<br>") : "<p><br></p>");
       editorRef.current.innerHTML = initial;
       initialEditorContentRef.current = initial;
+      editorRef.current.focus();
     }
   }, [viewingStudent]);
 
@@ -522,7 +523,12 @@ export default function WritingPage() {
     }, 600);
   };
 
-  const handleViewStudent = (a: Assignment) => setViewingStudent(a);
+  const handleViewStudent = (a: Assignment) => {
+    setViewingStudent(a);
+    setTimeout(() => {
+      document.querySelector("[data-student-panel]")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 100);
+  };
 
   const applyFormat = (command: string, value?: string) => {
     document.execCommand(command, false, value);
@@ -1264,11 +1270,11 @@ export default function WritingPage() {
                                         {a.status === "미제출" ? (
                                           <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
                                         ) : (
-                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>
+                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : (a.status === "제출완료" || a.status === "첨삭완료") ? "提出完了" : a.status}</button>
                                         )}
                                       </td>
                                       <td className="py-3 px-4">
-                                        {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">CHECK</button> : <span className="text-gray-400">-</span>}
+                                        {a.content ? <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleViewStudent(a); }} className="text-[#1a4d2e] hover:underline cursor-pointer">CHECK</button> : <span className="text-gray-400">-</span>}
                                       </td>
                                       <td className="py-3 px-4">
                                         {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
@@ -1292,11 +1298,11 @@ export default function WritingPage() {
                                     <span className="text-gray-500">·</span>
                                     <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
                                     <span className="text-gray-500">·</span>
-                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>}
+                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : (a.status === "제출완료" || a.status === "첨삭완료") ? "提出完了" : a.status}</button>}
                                     {a.content && (
                                       <>
                                         <span className="text-gray-500">·</span>
-                                        <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">CHECK</button>
+                                        <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleViewStudent(a); }} className="text-[#1a4d2e] hover:underline cursor-pointer">CHECK</button>
                                         <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
                                       </>
                                     )}
@@ -1347,7 +1353,7 @@ export default function WritingPage() {
                               </div>
                             )}
                             {viewingStudent && !showSubmitModal && !feedbackModal && (
-                              <div className="flex flex-col">
+                              <div className="flex flex-col" data-student-panel>
                                 <div className="flex justify-between items-center mb-4">
                                   <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
                                   <button onClick={handleRequestCloseStudent} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
@@ -1359,7 +1365,7 @@ export default function WritingPage() {
                                   <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
                                   <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
                                 </div>
-                                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[300px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
+                                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[300px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed bg-white" />
                                 {viewingStudent.feedback && (
                                   <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
                                     <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
