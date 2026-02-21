@@ -496,6 +496,17 @@ export default function WritingPage() {
     }
   };
 
+  const handleSaveDraft = () => {
+    if (!submitContent.trim()) return;
+    const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출")?.id;
+    const updated = assignments.map((a) =>
+      a.id === targetId ? { ...a, content: submitContent } : a
+    );
+    setAssignments(updated);
+    saveAssignments(updated);
+    handleCloseSubmitModal();
+  };
+
   const handleConfirmSubmit = () => {
     if (!submitContent.trim()) return;
     setSubmitLoading(true);
@@ -1607,7 +1618,7 @@ export default function WritingPage() {
               <button
                 onClick={() => {
                   if (exitConfirmType === "submit") {
-                    handleConfirmSubmit();
+                    handleSaveDraft();
                   } else if (exitConfirmType === "student") {
                     handleSaveCorrectedContent();
                   } else if (exitConfirmType === "feedback") {
