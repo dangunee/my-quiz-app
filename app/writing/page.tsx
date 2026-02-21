@@ -358,20 +358,22 @@ export default function WritingPage() {
     }
   };
 
-  const groupedByDate = assignments.reduce<Record<string, Assignment[]>>((acc, a) => {
+  const getAssignmentNumber = (a: Assignment) => {
+    const fromId = parseInt(a.id, 10);
+    if (!isNaN(fromId)) return fromId;
+    const m = a.title.match(/과제\s*(\d+)/);
+    return m ? parseInt(m[1], 10) : 0;
+  };
+
+  const sortedAssignments = [...assignments].sort((a, b) => getAssignmentNumber(a) - getAssignmentNumber(b));
+
+  const groupedByDate = sortedAssignments.reduce<Record<string, Assignment[]>>((acc, a) => {
     if (!acc[a.dateRange]) acc[a.dateRange] = [];
     acc[a.dateRange].push(a);
     return acc;
   }, {});
 
-  const sortedDateRanges = Object.keys(groupedByDate).sort((a, b) => {
-    const parseDate = (s: string) => {
-      const [start] = s.split(" ~ ");
-      const [m, d] = start.split("/").map(Number);
-      return m * 100 + d;
-    };
-    return parseDate(b) - parseDate(a);
-  });
+  const sortedDateRanges = Object.keys(groupedByDate);
 
   const KOREAN_LEVELS = ["選択してください", "入門", "初級", "初中級", "中級", "中上級", "上級"];
 
