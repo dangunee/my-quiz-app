@@ -119,6 +119,7 @@ export default function AdminPage() {
     interval: "",
     start_date: "",
     writing_approved: false,
+    registration_source: "",
   });
   const [userActionLoading, setUserActionLoading] = useState(false);
   const [userSearchKeyword, setUserSearchKeyword] = useState("");
@@ -348,6 +349,7 @@ export default function AdminPage() {
       interval: u.interval ?? "",
       start_date: u.start_date ? (String(u.start_date).split("T")[0] || u.start_date) : "",
       writing_approved: u.writing_approved ?? false,
+      registration_source: u.registration_source ?? "",
     });
   };
 
@@ -824,7 +826,17 @@ export default function AdminPage() {
                       <tr key={u.id} className="border-b">
                         {editingUserId === u.id ? (
                           <>
-                            <td className="py-2 px-3 text-gray-500 text-xs">{u.registration_source || "-"}</td>
+                            <td className="py-2 px-3">
+                              <select
+                                value={editUserForm.registration_source}
+                                onChange={(e) => setEditUserForm((f) => ({ ...f, registration_source: e.target.value }))}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              >
+                                <option value="">-</option>
+                                <option value="QUIZ">QUIZ</option>
+                                <option value="WRITING">WRITING</option>
+                              </select>
+                            </td>
                             <td className="py-2 px-3">
                               <input
                                 value={editUserForm.email}

@@ -45,6 +45,7 @@ export async function PUT(
     interval,
     start_date,
     writing_approved,
+    registration_source,
   } = body;
 
   if (!id) {
@@ -78,6 +79,10 @@ export async function PUT(
     if (interval !== undefined) profileFields.course_interval = interval === "" ? null : interval;
     if (start_date !== undefined) profileFields.start_date = start_date === "" ? null : start_date;
     if (writing_approved !== undefined) profileFields.writing_approved = !!writing_approved;
+    if (registration_source !== undefined) {
+      const rs = registration_source === "" ? null : (registration_source === "QUIZ" || registration_source === "WRITING" ? registration_source : null);
+      profileFields.registration_source = rs;
+    }
 
     if (Object.keys(authUpdates).length === 0 && Object.keys(profileFields).length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
