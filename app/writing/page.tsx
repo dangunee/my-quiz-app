@@ -465,10 +465,6 @@ export default function WritingPage() {
   };
 
   const handleRequestCloseSubmit = () => {
-    if (selectedAssignment?.status === "제출완료") {
-      handleCloseSubmitModal();
-      return;
-    }
     if (submitContent.trim()) {
       setExitConfirmType("submit");
     } else {
@@ -502,9 +498,9 @@ export default function WritingPage() {
 
   const handleSaveDraft = () => {
     if (!submitContent.trim()) return;
-    const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중")?.id;
+    const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중" || x.status === "제출완료")?.id;
     const updated = assignments.map((a) =>
-      a.id === targetId ? { ...a, content: submitContent, status: "수정중" as AssignmentStatus } : a
+      a.id === targetId ? { ...a, content: submitContent, status: a.status === "제출완료" ? ("제출완료" as AssignmentStatus) : ("수정중" as AssignmentStatus) } : a
     );
     setAssignments(updated);
     saveAssignments(updated);
@@ -515,7 +511,7 @@ export default function WritingPage() {
     if (!submitContent.trim()) return;
     setSubmitLoading(true);
     setTimeout(() => {
-      const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중")?.id;
+      const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중" || x.status === "제출완료")?.id;
       const updated = assignments.map((a) =>
         a.id === targetId ? { ...a, status: "제출완료" as AssignmentStatus, content: submitContent, submittedAt: new Date().toISOString() } : a
       );
@@ -1230,12 +1226,16 @@ export default function WritingPage() {
                           <table className="w-full">
                             <colgroup>
                               <col style={{ width: "5rem" }} />
+                              <col />
+                              <col style={{ width: "7rem" }} />
+                              <col />
+                              <col />
                             </colgroup>
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
                                 <th className="text-left py-3 px-2 font-medium" style={{ width: "5rem" }}>期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
-                                <th className="text-left py-3 px-4 font-medium">提出する↓</th>
+                                <th className="text-left py-3 px-4 font-medium" style={{ width: "7rem" }}>提出する↓</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
                                 <th className="text-left py-3 px-4 font-medium">添削結果</th>
                               </tr>
@@ -1260,7 +1260,7 @@ export default function WritingPage() {
                                         </td>
                                       ) : null}
                                       <td className="py-3 px-4"><span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span></td>
-                                      <td className="py-3 px-4">
+                                      <td className="py-3 px-4" style={{ width: "7rem" }}>
                                         {a.status === "미제출" ? (
                                           <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
                                         ) : (
@@ -1313,12 +1313,12 @@ export default function WritingPage() {
                               <div className="flex flex-col">
                                 <div className="flex justify-between items-center mb-4">
                                   <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
-                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">{selectedAssignment?.status === "제출완료" ? "閉じる" : "취소"}</button>
+                                  <button onClick={handleRequestCloseSubmit} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
                                 </div>
                                 <div className="space-y-4">
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} disabled={selectedAssignment?.status === "제출완료"} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
                                       <option value="">선택하세요</option>
                                       {MOCK_STUDENTS.map((s) => (
                                         <option key={s.id} value={s.id}>{s.name}</option>
@@ -1327,7 +1327,7 @@ export default function WritingPage() {
                                   </div>
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} disabled={selectedAssignment?.status === "제출완료"} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
                                       <option value="">선택하세요</option>
                                       {assignments.map((a2) => (
                                         <option key={a2.id} value={a2.id}>{getAssignmentDisplayTitle(a2)} ({a2.dateRange})</option>
@@ -1336,17 +1336,13 @@ export default function WritingPage() {
                                   </div>
                                   <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} readOnly={selectedAssignment?.status === "제출완료"} placeholder="作文を書いてください" className="w-full min-h-[21rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent disabled:bg-gray-50 read-only:bg-gray-50 read-only:cursor-default" autoFocus={selectedAssignment?.status !== "제출완료"} />
+                                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="作文を書いてください" className="w-full min-h-[21rem] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
                                   </div>
                                 </div>
                                 <div className="mt-4 flex justify-end">
-                                  {selectedAssignment?.status === "제출완료" ? (
-                                    <button onClick={handleCloseSubmitModal} className="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-xl">閉じる</button>
-                                  ) : (
-                                    <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                                      {submitLoading ? "提出中..." : "投稿"}
-                                    </button>
-                                  )}
+                                  <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                                    {submitLoading ? "提出中..." : selectedAssignment?.status === "제출완료" ? "再提出" : "投稿"}
+                                  </button>
                                 </div>
                               </div>
                             )}
@@ -1371,7 +1367,7 @@ export default function WritingPage() {
                                   </div>
                                 )}
                                 <div className="mt-4 flex justify-end gap-2">
-                                  <button onClick={handleRequestCloseStudent} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
+                                  <button onClick={handleRequestCloseStudent} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">閉じる</button>
                                   <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
                                 </div>
                               </div>
