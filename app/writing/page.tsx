@@ -429,6 +429,7 @@ export default function WritingPage() {
   };
 
   const handleSubmitClick = () => {
+    setShowExampleSubmitModal(false);
     setSelectedAssignment(null);
     setSelectedStudentId("");
     setSelectedAssignmentId("");
@@ -449,6 +450,7 @@ export default function WritingPage() {
   const selectedExample = expandedExampleId ? mergedAssignmentExamplesAll.find((ex) => ex.id === expandedExampleId) : null;
 
   const handleSubmitAssignment = (assignment: Assignment) => {
+    setShowExampleSubmitModal(false);
     setSelectedAssignment(assignment);
     setSelectedAssignmentId(assignment.id);
     setSelectedStudentId("");
