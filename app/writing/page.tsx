@@ -1165,8 +1165,8 @@ export default function WritingPage() {
                                 <th className="text-left py-3 px-4 font-medium">期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">課題提出</th>
-                                <th className="text-left py-3 px-4 font-medium">添削</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
+                                <th className="text-left py-3 px-4 font-medium">添削</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1184,14 +1184,14 @@ export default function WritingPage() {
                                     )}
                                   </td>
                                   <td className="py-3 px-4">
+                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button> : <span className="text-gray-400">-</span>}
+                                  </td>
+                                  <td className="py-3 px-4">
                                     {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
                                       <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline font-medium">確認</button>
                                     ) : (
                                       <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "완료" ? "完了" : a.correction === "확인" ? "確認" : a.correction}</button>
                                     )}
-                                  </td>
-                                  <td className="py-3 px-4">
-                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button> : <span className="text-gray-400">-</span>}
                                   </td>
                                 </tr>
                               ))}
@@ -1210,8 +1210,8 @@ export default function WritingPage() {
                                 {a.content && (
                                   <>
                                     <span className="text-gray-500">·</span>
-                                    <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
                                     <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button>
+                                    <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
                                   </>
                                 )}
                               </div>
