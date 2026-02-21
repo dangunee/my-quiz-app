@@ -1430,25 +1430,6 @@ export default function AdminPage() {
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-500 mb-1">실제 과제（実際の課題）</label>
-                              <textarea
-                                value={kadaiEditForm.topic}
-                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, topic: e.target.value }))}
-                                className="w-full border rounded px-3 py-2 text-sm"
-                                rows={2}
-                                placeholder="실제 과제"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium text-gray-500 mb-1">テーマ</label>
-                              <input
-                                value={kadaiEditForm.theme}
-                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, theme: e.target.value }))}
-                                className="w-full border rounded px-3 py-2 text-sm"
-                                placeholder="テーマ"
-                              />
-                            </div>
-                            <div>
                               <label className="block text-xs font-medium text-gray-500 mb-1">課題内容（韓国語）</label>
                               <textarea
                                 value={kadaiEditForm.question}
@@ -1516,7 +1497,7 @@ export default function AdminPage() {
                               setEditingKadai({ period: kadaiPeriodTab, item: itemIdx });
                               setKadaiEditForm({
                                 title,
-                                topic,
+                                topic: "",
                                 theme: ov?.theme ?? defModel?.theme ?? "",
                                 question: ov?.question ?? defModel?.question ?? "",
                                 grammarNote: ov?.grammarNote ?? defModel?.grammarNote ?? "",
