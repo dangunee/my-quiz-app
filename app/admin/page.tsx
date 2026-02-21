@@ -511,7 +511,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab("kadai")}
             className={`px-4 py-2 rounded font-medium ${activeTab === "kadai" ? "bg-red-600 text-white" : "bg-white"}`}
           >
-            課題例
+            作文課題
           </button>
           </div>
           <button
@@ -1221,8 +1221,8 @@ export default function AdminPage() {
 
         {activeTab === "kadai" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">課題例（1期～8期）編集</h1>
-            <p className="text-sm text-gray-600 mb-4">作文ページの課題例掲示板の「제목」と「실제 과제」を編集できます。</p>
+            <h1 className="text-2xl font-bold mb-4">作文課題（1期～8期）編集</h1>
+            <p className="text-sm text-gray-600 mb-4">作文ページの作文課題掲示板の「제목」と「실제 과제」を編集できます。</p>
             <Link href="/writing" className="text-sm text-gray-600 hover:underline mb-4 block">作文ページ</Link>
             {kadaiLoading ? (
               <p>読み込み中...</p>
