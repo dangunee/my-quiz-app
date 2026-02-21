@@ -5,6 +5,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const adminSecret = process.env.ADMIN_SECRET!;
 
+type KadaiOverride = { title: string; topic: string; courseInfo?: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
+
 function verifyAdmin(request: NextRequest): boolean {
   const auth = request.headers.get("authorization");
   const key = auth?.replace("Bearer ", "");
@@ -23,7 +25,7 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("assignment_example_overrides")
-      .select("period_index, item_index, title, topic")
+      .select("period_index, item_index, title, topic, course_info, theme, question, grammar_note, patterns")
       .order("period_index")
       .order("item_index");
 
@@ -31,12 +33,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const overrides: Record<number, Record<number, { title: string; topic: string }>> = {};
+    const overrides: Record<number, Record<number, KadaiOverride>> = {};
     for (const row of data || []) {
       if (!overrides[row.period_index]) overrides[row.period_index] = {};
       overrides[row.period_index][row.item_index] = {
         title: row.title || "",
         topic: row.topic || "",
+        courseInfo: row.course_info ?? undefined,
+        theme: row.theme ?? undefined,
+        question: row.question ?? undefined,
+        grammarNote: row.grammar_note ?? undefined,
+        patterns: Array.isArray(row.patterns) ? row.patterns : undefined,
       };
     }
     return NextResponse.json({ overrides });
@@ -55,7 +62,7 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { period_index, item_index, title, topic } = body;
+  const { period_index, item_index, title, topic, course_info, theme, question, grammar_note, patterns } = body;
 
   if (typeof period_index !== "number" || period_index < 0 || period_index > 7) {
     return NextResponse.json({ error: "period_index 0-7 required" }, { status: 400 });
@@ -63,6 +70,15 @@ export async function PUT(request: NextRequest) {
   if (typeof item_index !== "number" || item_index < 0 || item_index > 9) {
     return NextResponse.json({ error: "item_index 0-9 required" }, { status: 400 });
   }
+
+  const patternsVal = Array.isArray(patterns)
+    ? patterns
+        .filter((p: unknown) => p && typeof p === "object" && "pattern" in p && "example" in p)
+        .map((p: { pattern?: unknown; example?: unknown }) => ({
+          pattern: String(p.pattern ?? ""),
+          example: String(p.example ?? ""),
+        }))
+    : null;
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -74,6 +90,11 @@ export async function PUT(request: NextRequest) {
           item_index,
           title: typeof title === "string" ? title.trim() : "",
           topic: typeof topic === "string" ? topic.trim() : "",
+          course_info: typeof course_info === "string" ? course_info.trim() || null : null,
+          theme: typeof theme === "string" ? theme.trim() || null : null,
+          question: typeof question === "string" ? question.trim() || null : null,
+          grammar_note: typeof grammar_note === "string" ? grammar_note.trim() || null : null,
+          patterns: patternsVal,
         },
         { onConflict: "period_index,item_index" }
       );

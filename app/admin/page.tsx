@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { QUIZZES } from "../quiz-data";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
+import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 
 type Assignment = {
   id: string;
@@ -155,11 +156,12 @@ export default function AdminPage() {
   const formatDuration = (sec: number) =>
     sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, { title: string; topic: string }>>>({});
+  type KadaiOverrideItem = { title: string; topic: string; courseInfo?: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
+  const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, KadaiOverrideItem>>>({});
   const [kadaiLoading, setKadaiLoading] = useState(false);
   const [kadaiPeriodTab, setKadaiPeriodTab] = useState(0);
   const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
-  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "" });
+  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", courseInfo: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
   const [kadaiSaving, setKadaiSaving] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
   const filteredUsers = userSearchKeyword.trim()
@@ -554,6 +556,11 @@ export default function AdminPage() {
           item_index: editingKadai.item,
           title: kadaiEditForm.title,
           topic: kadaiEditForm.topic,
+          course_info: kadaiEditForm.courseInfo || null,
+          theme: kadaiEditForm.theme || null,
+          question: kadaiEditForm.question || null,
+          grammar_note: kadaiEditForm.grammarNote || null,
+          patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : null,
         }),
       });
       const data = await res.json();
@@ -561,7 +568,7 @@ export default function AdminPage() {
         setKadaiOverrides((prev) => {
           const next = { ...prev };
           if (!next[editingKadai.period]) next[editingKadai.period] = {};
-          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic } };
+          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic, courseInfo: kadaiEditForm.courseInfo || undefined, theme: kadaiEditForm.theme || undefined, question: kadaiEditForm.question || undefined, grammarNote: kadaiEditForm.grammarNote || undefined, patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : undefined } };
           return next;
         });
         setEditingKadai(null);
@@ -1433,6 +1440,72 @@ export default function AdminPage() {
                                 placeholder="실제 과제"
                               />
                             </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">課題回（例: 1期第1回課題）</label>
+                              <input
+                                value={kadaiEditForm.courseInfo}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, courseInfo: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                placeholder="1期第1回課題"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">テーマ</label>
+                              <input
+                                value={kadaiEditForm.theme}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, theme: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                placeholder="テーマ"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">課題内容（韓国語）</label>
+                              <textarea
+                                value={kadaiEditForm.question}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, question: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                rows={3}
+                                placeholder="課題内容"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">文型使用の注意（例: 下記に提示された文型を、必ず2つ以上使用すること。）</label>
+                              <input
+                                value={kadaiEditForm.grammarNote}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, grammarNote: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                placeholder="文型使用の注意"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">文型パターン（pattern / example）</label>
+                              {kadaiEditForm.patterns.map((p, i) => (
+                                <div key={i} className="flex gap-2 mb-2">
+                                  <input
+                                    value={p.pattern}
+                                    onChange={(e) => setKadaiEditForm((f) => {
+                                      const next = [...f.patterns];
+                                      next[i] = { ...next[i], pattern: e.target.value };
+                                      return { ...f, patterns: next };
+                                    })}
+                                    className="flex-1 border rounded px-3 py-2 text-sm"
+                                    placeholder="○-ㄹ/줄 몰랐다　～とは思わなかった"
+                                  />
+                                  <input
+                                    value={p.example}
+                                    onChange={(e) => setKadaiEditForm((f) => {
+                                      const next = [...f.patterns];
+                                      next[i] = { ...next[i], example: e.target.value };
+                                      return { ...f, patterns: next };
+                                    })}
+                                    className="flex-1 border rounded px-3 py-2 text-sm"
+                                    placeholder="예) 그런 좋은 방법이 있는 줄 몰랐다."
+                                  />
+                                  <button type="button" onClick={() => setKadaiEditForm((f) => ({ ...f, patterns: f.patterns.filter((_, j) => j !== i) }))} className="text-red-600 text-sm">削除</button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => setKadaiEditForm((f) => ({ ...f, patterns: [...f.patterns, { pattern: "", example: "" }] }))} className="text-sm text-red-600 hover:underline">+ 文型を追加</button>
+                            </div>
                             <div className="flex gap-2">
                               <button type="button" onClick={handleSaveKadai} disabled={kadaiSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
                                 保存
@@ -1448,7 +1521,19 @@ export default function AdminPage() {
                             <p className="text-sm text-gray-600 mt-1">{topic}</p>
                             <button
                               type="button"
-                              onClick={() => { setEditingKadai({ period: kadaiPeriodTab, item: itemIdx }); setKadaiEditForm({ title, topic }); }}
+                              onClick={() => {
+                              const defModel = PERIOD_EXAMPLES[kadaiPeriodTab]?.[itemIdx]?.modelContent;
+                              setEditingKadai({ period: kadaiPeriodTab, item: itemIdx });
+                              setKadaiEditForm({
+                                title,
+                                topic,
+                                courseInfo: ov?.courseInfo ?? defModel?.courseInfo ?? "",
+                                theme: ov?.theme ?? defModel?.theme ?? "",
+                                question: ov?.question ?? defModel?.question ?? "",
+                                grammarNote: ov?.grammarNote ?? defModel?.grammarNote ?? "",
+                                patterns: (ov?.patterns && ov.patterns.length > 0) ? ov.patterns : (defModel?.patterns ?? []),
+                              });
+                            }}
                               className="mt-2 text-sm text-red-600 hover:underline"
                             >
                               編集
