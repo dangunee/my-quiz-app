@@ -200,7 +200,7 @@ export default function WritingPage() {
       periodExamples.map((ex, itemIndex) => {
         const ov = exampleOverrides[periodIndex]?.[itemIndex];
         const title = ov?.title ?? ex.title;
-        const topic = ov?.topic ?? ex.topic;
+        const topic = ""; // 설명 비표시
         const baseModel = ex.modelContent;
         const modelContent = baseModel
           ? {

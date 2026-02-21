@@ -1414,7 +1414,7 @@ export default function AdminPage() {
                   {DEFAULT_ASSIGNMENT_EXAMPLES[kadaiPeriodTab]?.map((def, itemIdx) => {
                     const ov = kadaiOverrides[kadaiPeriodTab]?.[itemIdx];
                     const title = ov?.title ?? def.title;
-                    const topic = ov?.topic ?? def.topic;
+                    const topic = ""; // 설명 비표시
                     const isEditing = editingKadai?.period === kadaiPeriodTab && editingKadai?.item === itemIdx;
                     return (
                       <div key={itemIdx} className="p-4 border rounded-lg">
