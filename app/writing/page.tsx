@@ -1036,6 +1036,31 @@ export default function WritingPage() {
                     </div>
                   ) : myPageData ? (
                     <div className="space-y-4">
+                      {(() => {
+                        const total = 80;
+                        const subs = myPageData.submissions;
+                        const submitted = subs.length;
+                        const pending = subs.filter((s) => s.status === "pending").length;
+                        const inProgress = subs.filter((s) => s.status === "in_progress").length;
+                        const completed = subs.filter((s) => s.status === "completed").length;
+                        return (
+                          <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
+                            <h3 className="font-bold text-gray-800 mb-3">고객 첨삭 상황 진행표</h3>
+                            <div className="flex flex-wrap gap-4 mb-3">
+                              <span className="text-sm"><span className="text-gray-500">未提出:</span> <strong>{total - submitted}</strong></span>
+                              <span className="text-sm"><span className="text-gray-500">未添削:</span> <strong className="text-amber-600">{pending}</strong></span>
+                              <span className="text-sm"><span className="text-gray-500">添削中:</span> <strong className="text-blue-600">{inProgress}</strong></span>
+                              <span className="text-sm"><span className="text-gray-500">完了:</span> <strong className="text-green-600">{completed}</strong></span>
+                            </div>
+                            <div className="h-3 bg-gray-200 rounded-full overflow-hidden flex">
+                              <div className="bg-gray-400" style={{ width: `${((total - submitted) / total) * 100}%` }} title="未提出" />
+                              <div className="bg-amber-400" style={{ width: `${(pending / total) * 100}%` }} title="未添削" />
+                              <div className="bg-blue-400" style={{ width: `${(inProgress / total) * 100}%` }} title="添削中" />
+                              <div className="bg-green-500" style={{ width: `${(completed / total) * 100}%` }} title="完了" />
+                            </div>
+                          </div>
+                        );
+                      })()}
                       <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4]">
                         <div>
                           <span className="text-gray-500 text-sm">名前</span>

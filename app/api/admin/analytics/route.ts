@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const referrers = Object.values(refAgg).map((a) => ({
       domain: a.domain,
       count: a.count,
-      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : 0,
+      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
     })).sort((a, b) => b.count - a.count);
 
     // is_logged_in별 집계 (会員 / 外部)
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     const userTypes = Object.entries(userTypeAgg).map(([type, a]) => ({
       type,
       count: a.count,
-      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : 0,
+      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
     })).sort((a, b) => b.count - a.count);
 
     // source_type별 집계 (検索 / SNS / 直接 / その他) + 평균 체류시간
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     const sourceTypes = Object.entries(sourceTypeAgg).map(([type, a]) => ({
       type,
       count: a.count,
-      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : 0,
+      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
     })).sort((a, b) => b.count - a.count);
 
     // source_media별 집계 (SNS 미디어) + 평균 체류시간
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
     const sourceMedias = Object.entries(sourceMediaAgg).map(([media, a]) => ({
       media,
       count: a.count,
-      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : 0,
+      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
     })).sort((a, b) => b.count - a.count);
 
     // country별 집계 + 평균 체류시간
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
     const countries = Object.entries(countryAgg).map(([country, a]) => ({
       country,
       count: a.count,
-      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : 0,
+      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
     })).sort((a, b) => b.count - a.count);
 
     // country + region별 집계 (지역 상세) + 평균 체류시간
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
     const regions = Object.entries(regionAgg).map(([region, a]) => ({
       region,
       count: a.count,
-      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : 0,
+      avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
     })).sort((a, b) => b.count - a.count);
 
     // 퀴즈 앱: quiz_viewed=true인 세션, 평균 체류시간
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
           ? Math.round(
               quizWithDuration.reduce((s, r) => s + (r.duration_seconds ?? 0), 0) / quizWithDuration.length
             )
-          : 0,
+          : null,
     };
 
     // Q&A 앱: kotae_viewed=true인 세션, 평균 체류시간
@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
           ? Math.round(
               kotaeWithDuration.reduce((s, r) => s + (r.duration_seconds ?? 0), 0) / kotaeWithDuration.length
             )
-          : 0,
+          : null,
     };
 
     return NextResponse.json({

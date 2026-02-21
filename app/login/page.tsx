@@ -36,10 +36,11 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
+        const regSource = typeof window !== "undefined" && window.location.hostname === "writing.mirinae.jp" ? "WRITING" : "QUIZ";
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, email, password, name, region: region === "選択してください" ? "" : region }),
+          body: JSON.stringify({ id, email, password, name, region: region === "選択してください" ? "" : region, registration_source: regSource }),
         });
         const data = await res.json();
         if (res.ok) {

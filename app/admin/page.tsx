@@ -102,6 +102,7 @@ export default function AdminPage() {
   interval?: string | null;
   start_date?: string | null;
   writing_approved?: boolean;
+  registration_source?: string | null;
 };
   const [users, setUsers] = useState<UserRow[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
@@ -133,8 +134,8 @@ export default function AdminPage() {
     totalSessions: number;
   } | null>(null);
 
-  const formatDuration = (sec: number) =>
-    sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
+  const formatDuration = (sec: number | null | undefined) =>
+    sec == null ? "データなし" : sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   type KadaiOverrideItem = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
   const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, KadaiOverrideItem>>>({});
@@ -345,7 +346,7 @@ export default function AdminPage() {
       payment_status: u.payment_status ?? "",
       period: u.period != null ? String(u.period) : "",
       interval: u.interval ?? "",
-      start_date: u.start_date ?? "",
+      start_date: u.start_date ? (String(u.start_date).split("T")[0] || u.start_date) : "",
       writing_approved: u.writing_approved ?? false,
     });
   };
@@ -377,6 +378,34 @@ export default function AdminPage() {
       }
     } catch (e) {
       alert("保存中にエラーが発生しました");
+    } finally {
+      setUserActionLoading(false);
+    }
+  };
+
+  const handleToggleApproval = async (u: UserRow) => {
+    setUserActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users/${u.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authKey}`,
+        },
+        body: JSON.stringify({ writing_approved: !u.writing_approved }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.id === u.id ? { ...user, writing_approved: data.user?.writing_approved ?? !u.writing_approved } : user
+          )
+        );
+      } else {
+        alert(data.error || "更新に失敗しました");
+      }
+    } catch (e) {
+      alert("更新中にエラーが発生しました");
     } finally {
       setUserActionLoading(false);
     }
@@ -773,13 +802,14 @@ export default function AdminPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
+                      <th className="text-left py-2 px-3">登録元</th>
                       <th className="text-left py-2 px-3">メール</th>
                       <th className="text-left py-2 px-3">名前</th>
                       <th className="text-left py-2 px-3">ID</th>
                       <th className="text-left py-2 px-3">地域</th>
                       <th className="text-left py-2 px-3">無料/有料</th>
                       <th className="text-left py-2 px-3">作文/音読</th>
-                      <th className="text-left py-2 px-3">決済</th>
+                      <th className="text-left py-2 px-3">決済:有・無</th>
                       <th className="text-left py-2 px-3">期目</th>
                       <th className="text-left py-2 px-3">間隔</th>
                       <th className="text-left py-2 px-3">開始日</th>
@@ -794,6 +824,7 @@ export default function AdminPage() {
                       <tr key={u.id} className="border-b">
                         {editingUserId === u.id ? (
                           <>
+                            <td className="py-2 px-3 text-gray-500 text-xs">{u.registration_source || "-"}</td>
                             <td className="py-2 px-3">
                               <input
                                 value={editUserForm.email}
@@ -855,6 +886,8 @@ export default function AdminPage() {
                                 className="w-full border rounded px-2 py-1 text-sm"
                               >
                                 <option value="">-</option>
+                                <option value="有">有</option>
+                                <option value="無">無</option>
                                 <option value="未定">未定</option>
                                 <option value="完了">完了</option>
                               </select>
@@ -928,6 +961,7 @@ export default function AdminPage() {
                           </>
                         ) : (
                           <>
+                            <td className="py-2 px-3 font-medium">{u.registration_source || "-"}</td>
                             <td className="py-2 px-3">{u.email}</td>
                             <td className="py-2 px-3">{u.name || "-"}</td>
                             <td className="py-2 px-3">{u.username || "-"}</td>
@@ -938,7 +972,17 @@ export default function AdminPage() {
                             <td className="py-2 px-3">{u.period ?? "-"}</td>
                             <td className="py-2 px-3">{u.interval || "-"}</td>
                             <td className="py-2 px-3">{u.start_date ? new Date(u.start_date).toLocaleDateString("ja-JP") : "-"}</td>
-                            <td className="py-2 px-3">{u.writing_approved ? "✓" : "-"}</td>
+                            <td className="py-2 px-3">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleApproval(u)}
+                                disabled={userActionLoading}
+                                className={`px-2 py-1 rounded text-xs font-medium ${u.writing_approved ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"} disabled:opacity-50`}
+                                title={u.writing_approved ? "承認を取り消す" : "承認する"}
+                              >
+                                {u.writing_approved ? "✓ 承認" : "未承認"}
+                              </button>
+                            </td>
                             <td className="py-2 px-3">
                               {u.createdAt ? new Date(u.createdAt).toLocaleDateString("ja-JP") : "-"}
                             </td>
@@ -1026,7 +1070,7 @@ export default function AdminPage() {
                     <p className="text-2xl font-bold text-blue-600">{analytics.quizStats.sessions}</p>
                     <p className="text-sm text-gray-600">アクセス数</p>
                     <p className="text-sm text-gray-600 mt-1">
-                      平均滞在 {formatDuration(analytics.quizStats.avgDuration)}
+                      平均滞在 {formatDuration(analytics.quizStats.avgDuration ?? null)}
                     </p>
                   </div>
                   <div className="p-4 bg-green-50 rounded-lg">
@@ -1034,7 +1078,7 @@ export default function AdminPage() {
                     <p className="text-2xl font-bold text-green-600">{analytics.kotaeStats.sessions}</p>
                     <p className="text-sm text-gray-600">アクセス数</p>
                     <p className="text-sm text-gray-600 mt-1">
-                      平均滞在 {formatDuration(analytics.kotaeStats.avgDuration)}
+                      平均滞在 {formatDuration(analytics.kotaeStats.avgDuration ?? null)}
                     </p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-lg">
@@ -1061,7 +1105,7 @@ export default function AdminPage() {
                               {s.type === "member" ? "ログイン会員" : "外部アクセス"}
                             </td>
                             <td className="py-2 px-3 text-right">{s.count}</td>
-                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? 0)}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? null)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1086,7 +1130,7 @@ export default function AdminPage() {
                               {s.type === "search" ? "検索" : s.type === "sns" ? "SNS" : s.type === "direct" ? "直接" : s.type === "referral" ? "その他" : s.type}
                             </td>
                             <td className="py-2 px-3 text-right">{s.count}</td>
-                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? 0)}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? null)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1109,7 +1153,7 @@ export default function AdminPage() {
                           <tr key={s.media} className="border-b">
                             <td className="py-2 px-3">{s.media}</td>
                             <td className="py-2 px-3 text-right">{s.count}</td>
-                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? 0)}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(s.avgDuration ?? null)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1132,7 +1176,7 @@ export default function AdminPage() {
                           <tr key={c.country} className="border-b">
                             <td className="py-2 px-3">{c.country}</td>
                             <td className="py-2 px-3 text-right">{c.count}</td>
-                            <td className="py-2 px-3 text-right">{formatDuration(c.avgDuration ?? 0)}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(c.avgDuration ?? null)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1155,7 +1199,7 @@ export default function AdminPage() {
                           <tr key={r.region} className="border-b">
                             <td className="py-2 px-3">{r.region}</td>
                             <td className="py-2 px-3 text-right">{r.count}</td>
-                            <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? 0)}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? null)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1180,7 +1224,7 @@ export default function AdminPage() {
                           <tr key={r.domain} className="border-b">
                             <td className="py-2 px-3">{r.domain}</td>
                             <td className="py-2 px-3 text-right">{r.count}</td>
-                            <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? 0)}</td>
+                            <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? null)}</td>
                           </tr>
                         ))}
                       </tbody>

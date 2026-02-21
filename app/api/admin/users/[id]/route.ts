@@ -120,6 +120,7 @@ export async function PUT(
         interval: p?.course_interval ?? null,
         start_date: p?.start_date ?? null,
         writing_approved: p?.writing_approved ?? false,
+        registration_source: p?.registration_source ?? null,
       },
     });
   } catch (e) {
