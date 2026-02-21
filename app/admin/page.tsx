@@ -1508,7 +1508,7 @@ export default function AdminPage() {
                         ) : (
                           <>
                             <p className="font-medium text-gray-800">{title}</p>
-                            <p className="text-sm text-gray-600 mt-1">{topic}</p>
+                            {topic && <p className="text-sm text-gray-600 mt-1">{topic}</p>}
                             <button
                               type="button"
                               onClick={() => {
