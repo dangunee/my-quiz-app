@@ -22,12 +22,12 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
-      .from("writing_submissions")
-      .select("*, writing_assignments!assignment_id(title_ko, title_ja)")
+      .from("essay_submissions")
+      .select("*")
       .order("submitted_at", { ascending: false });
 
     if (error) {
-      console.error("Writing submissions error:", error);
+      console.error("Essay submissions error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 

@@ -9,12 +9,15 @@ import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 type Submission = {
   id: string;
   user_id: string;
-  assignment_id: string;
+  period_index: number;
+  item_index: number;
   content: string;
   feedback?: string;
+  corrected_content?: string;
+  status: "pending" | "in_progress" | "completed";
   submitted_at: string;
   feedback_at?: string;
-  writing_assignments?: { title_ko: string; title_ja?: string };
+  completed_at?: string;
   user?: { email: string; name?: string; username?: string };
 };
 
@@ -80,8 +83,9 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai">("quiz");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
-  const [feedbackId, setFeedbackId] = useState<string | null>(null);
+  const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
   const [feedbackText, setFeedbackText] = useState("");
+  const [correctedContent, setCorrectedContent] = useState("");
   const [writingSaving, setWritingSaving] = useState(false);
   type UserRow = {
   id: string;
@@ -397,24 +401,38 @@ export default function AdminPage() {
     }
   };
 
-  const handleSaveFeedback = async () => {
-    if (!feedbackId) return;
+  const handleSaveFeedback = async (markCompleted?: boolean) => {
+    if (!editingSubmissionId) return;
     setWritingSaving(true);
     try {
-      const res = await fetch(`/api/writing/admin/submissions/${feedbackId}`, {
+      const res = await fetch(`/api/writing/admin/submissions/${editingSubmissionId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-        body: JSON.stringify({ feedback: feedbackText }),
+        body: JSON.stringify({
+          feedback: feedbackText,
+          corrected_content: correctedContent,
+          status: markCompleted ? "completed" : "in_progress",
+        }),
       });
       const data = await res.json();
       if (res.ok) {
         setSubmissions((prev) =>
           prev.map((s) =>
-            s.id === feedbackId ? { ...s, feedback: feedbackText, feedback_at: new Date().toISOString() } : s
+            s.id === editingSubmissionId
+              ? {
+                  ...s,
+                  feedback: feedbackText,
+                  corrected_content: correctedContent,
+                  status: (markCompleted ? "completed" : "in_progress") as "pending" | "in_progress" | "completed",
+                  feedback_at: new Date().toISOString(),
+                  completed_at: markCompleted ? new Date().toISOString() : s.completed_at,
+                }
+              : s
           )
         );
-        setFeedbackId(null);
+        setEditingSubmissionId(null);
         setFeedbackText("");
+        setCorrectedContent("");
       } else {
         alert(data.error || "저장 실패");
       }
@@ -1170,52 +1188,93 @@ export default function AdminPage() {
               <p className="text-gray-500">提出された課題がありません。</p>
             ) : (
               <ul className="space-y-4">
-                {submissions.map((s) => (
-                  <li key={s.id} className="p-4 border rounded-lg">
-                    <p className="text-sm text-gray-500">
-                      {s.writing_assignments?.title_ko || "課題"} · {s.user?.email || "-"} · {s.user?.name || s.user?.username || ""}
-                    </p>
-                    <p className="mt-2 whitespace-pre-wrap">{s.content}</p>
-                    {feedbackId === s.id ? (
-                      <div className="mt-4">
+                {submissions.map((s) => {
+                  const title = DEFAULT_ASSIGNMENT_EXAMPLES[s.period_index]?.[s.item_index]?.title || `第${s.item_index + 1}回`;
+                  const periodLabel = PERIOD_LABELS[s.period_index] || `${s.period_index + 1}期`;
+                  const statusLabel = s.status === "completed" ? "完了" : s.status === "in_progress" ? "添削中" : "未添削";
+                  const statusColor = s.status === "completed" ? "bg-green-100 text-green-800" : s.status === "in_progress" ? "bg-amber-100 text-amber-800" : "bg-gray-100 text-gray-700";
+                  return (
+                    <li key={s.id} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium">{periodLabel} 第{s.item_index + 1}回</span> · {title} · {s.user?.name || s.user?.username || s.user?.email || "-"}
+                        </p>
+                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusColor}`}>{statusLabel}</span>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-500">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
+                      <p className="mt-2 whitespace-pre-wrap text-sm">{s.content}</p>
+                      {s.feedback && (
+                        <div className="mt-2 p-3 bg-amber-50 rounded border border-amber-200">
+                          <p className="text-xs font-medium text-amber-800">添削:</p>
+                          <p className="text-sm text-amber-900 whitespace-pre-wrap mt-1">{s.feedback}</p>
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingSubmissionId(s.id);
+                          setFeedbackText(s.feedback || "");
+                          setCorrectedContent(s.corrected_content || s.content);
+                        }}
+                        className="mt-2 text-sm text-red-600 hover:underline"
+                      >
+                        添削・編集
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+            {editingSubmissionId && (() => {
+              const s = submissions.find((x) => x.id === editingSubmissionId);
+              if (!s) return null;
+              return (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                  <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                    <div className="px-4 py-3 border-b flex justify-between items-center">
+                      <h3 className="font-bold">
+                        {PERIOD_LABELS[s.period_index]} 第{s.item_index + 1}回 · {DEFAULT_ASSIGNMENT_EXAMPLES[s.period_index]?.[s.item_index]?.title || "課題"} · {s.user?.name || s.user?.email || "-"}
+                      </h3>
+                      <button onClick={() => { setEditingSubmissionId(null); setFeedbackText(""); setCorrectedContent(""); }} className="text-gray-500 hover:text-gray-700">閉じる</button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">提出原文（読み取り専用）</label>
+                        <pre className="p-3 bg-gray-50 rounded text-sm whitespace-pre-wrap max-h-32 overflow-y-auto">{s.content}</pre>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">修正文（編集可）</label>
+                        <textarea
+                          value={correctedContent}
+                          onChange={(e) => setCorrectedContent(e.target.value)}
+                          rows={8}
+                          className="w-full border rounded px-3 py-2 text-sm"
+                          placeholder="修正した原文を入力..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">添削コメント</label>
                         <textarea
                           value={feedbackText}
                           onChange={(e) => setFeedbackText(e.target.value)}
-                          placeholder="添削内容を入力..."
                           rows={4}
-                          className="w-full border rounded px-3 py-2"
+                          className="w-full border rounded px-3 py-2 text-sm"
+                          placeholder="添削内容を入力..."
                         />
-                        <div className="mt-2 flex gap-2">
-                          <button type="button" onClick={handleSaveFeedback} disabled={writingSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
-                            保存
-                          </button>
-                          <button type="button" onClick={() => { setFeedbackId(null); setFeedbackText(""); }} className="px-3 py-1 bg-gray-300 rounded text-sm">
-                            キャンセル
-                          </button>
-                        </div>
                       </div>
-                    ) : (
-                      <div className="mt-3">
-                        {s.feedback && (
-                          <div className="p-3 bg-amber-50 rounded border border-amber-200 mb-2">
-                            <p className="text-sm font-medium text-amber-800">添削:</p>
-                            <p className="text-sm text-amber-900 whitespace-pre-wrap mt-1">{s.feedback}</p>
-                          </div>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => { setFeedbackId(s.id); setFeedbackText(s.feedback || ""); }}
-                          className="text-sm text-red-600 hover:underline"
-                        >
-                          {s.feedback ? "添削を編集" : "添削を記入"}
-                        </button>
-                      </div>
-                    )}
-                    <p className="mt-2 text-xs text-gray-400">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
+                    </div>
+                    <div className="px-4 py-3 border-t flex gap-2 justify-end">
+                      <button type="button" onClick={() => handleSaveFeedback(false)} disabled={writingSaving} className="px-4 py-2 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 disabled:opacity-50">
+                        保存
+                      </button>
+                      <button type="button" onClick={() => handleSaveFeedback(true)} disabled={writingSaving} className="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50">
+                        完了
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 

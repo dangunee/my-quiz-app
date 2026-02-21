@@ -24,20 +24,36 @@ export async function PUT(
 
   const { id } = await params;
   const body = await request.json();
-  const { feedback } = body;
+  const { feedback, corrected_content, status } = body;
 
   if (!id) {
     return NextResponse.json({ error: "id required" }, { status: 400 });
   }
 
+  const update: Record<string, unknown> = {};
+  if (typeof feedback === "string") {
+    update.feedback = feedback;
+    update.feedback_at = feedback.trim() ? new Date().toISOString() : null;
+  }
+  if (typeof corrected_content === "string") {
+    update.corrected_content = corrected_content;
+  }
+  if (status === "completed" || status === "in_progress" || status === "pending") {
+    update.status = status;
+    if (status === "completed") {
+      update.completed_at = new Date().toISOString();
+    }
+  }
+
+  if (Object.keys(update).length === 0) {
+    return NextResponse.json({ ok: true });
+  }
+
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { error } = await supabase
-      .from("writing_submissions")
-      .update({
-        feedback: typeof feedback === "string" ? feedback : null,
-        feedback_at: typeof feedback === "string" && feedback.trim() ? new Date().toISOString() : null,
-      })
+      .from("essay_submissions")
+      .update(update)
       .eq("id", id);
 
     if (error) {

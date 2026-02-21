@@ -11,38 +11,27 @@ create table if not exists explanation_overrides (
 -- alter table explanation_overrides add column if not exists japanese text;
 -- alter table explanation_overrides add column if not exists options jsonb;
 
--- ========== Writing (作文提出用)
-create table if not exists writing_assignments (
-  id uuid primary key default gen_random_uuid(),
-  title_ko text not null,
-  title_ja text,
-  description text,
-  sort_order int default 0,
-  created_at timestamptz default now()
-);
-
-create table if not exists writing_periods (
-  id uuid primary key default gen_random_uuid(),
-  assignment_id uuid references writing_assignments(id) on delete cascade,
-  period_start date not null,
-  period_end date not null,
-  created_at timestamptz default now()
-);
-
-create table if not exists writing_submissions (
+-- ========== Essay Submissions (作文提出: 期+第何回 기반)
+create table if not exists essay_submissions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  period_id uuid references writing_periods(id) on delete cascade,
-  assignment_id uuid references writing_assignments(id) on delete cascade,
+  period_index int not null check (period_index >= 0 and period_index <= 7),
+  item_index int not null check (item_index >= 0 and item_index <= 9),
   content text not null,
   feedback text,
-  submitted_at timestamptz default now(),
-  feedback_at timestamptz
+  corrected_content text,
+  status text not null default 'pending' check (status in ('pending', 'in_progress', 'completed')),
+  submitted_at timestamptz not null default now(),
+  feedback_at timestamptz,
+  completed_at timestamptz,
+  created_at timestamptz default now()
 );
 
-create index if not exists idx_writing_submissions_user on writing_submissions(user_id);
-create index if not exists idx_writing_submissions_period on writing_submissions(period_id);
-create index if not exists idx_writing_submissions_assignment on writing_submissions(assignment_id);
+create index if not exists idx_essay_submissions_user on essay_submissions(user_id);
+create index if not exists idx_essay_submissions_period_item on essay_submissions(period_index, item_index);
+create index if not exists idx_essay_submissions_status on essay_submissions(status);
+create index if not exists idx_essay_submissions_submitted on essay_submissions(submitted_at desc);
+create unique index if not exists idx_essay_submissions_user_period_item on essay_submissions(user_id, period_index, item_index);
 
 -- ========== App Analytics (퀴즈/Q&A 접속 분석) ==========
 create table if not exists app_analytics (
