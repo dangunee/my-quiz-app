@@ -1158,11 +1158,11 @@ export default function WritingPage() {
                   <div className="space-y-4 md:space-y-6">
                     {sortedDateRanges.map((dateRange) => (
                       <div key={dateRange} className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                        <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">{dateRange}</div>
                         <div className="hidden md:block overflow-x-auto">
                           <table className="w-full">
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
+                                <th className="text-left py-3 px-4 font-medium">期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">課題提出</th>
                                 <th className="text-left py-3 px-4 font-medium">添削</th>
@@ -1170,8 +1170,11 @@ export default function WritingPage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {groupedByDate[dateRange].map((a) => (
+                              {groupedByDate[dateRange].map((a, idx) => (
                                 <tr key={a.id} className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
+                                  {idx === 0 ? (
+                                    <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5]">{dateRange}</td>
+                                  ) : null}
                                   <td className="py-3 px-4"><span className="font-medium text-gray-800">{a.title}</span></td>
                                   <td className="py-3 px-4">
                                     {a.status === "미제출" ? (
@@ -1197,15 +1200,20 @@ export default function WritingPage() {
                         </div>
                         <div className="md:hidden divide-y divide-[#e5dfd4]">
                           {groupedByDate[dateRange].map((a) => (
-                            <div key={a.id} className="p-4 space-y-2">
-                              <div className="flex justify-between items-center">
+                            <div key={a.id} className="p-4">
+                              <div className="flex flex-wrap items-center gap-2 text-sm">
+                                <span className="font-semibold text-gray-800 shrink-0">{dateRange}</span>
+                                <span className="text-gray-500">·</span>
                                 <span className="font-medium text-gray-800">{a.title}</span>
-                                {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-sm text-[#c53030] font-medium underline">未提出</button> : <span className="text-sm text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
-                              </div>
-                              <div className="flex flex-wrap gap-3 text-sm">
-                                {a.content && <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>}
-                                {a.content && <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button>}
-                                {!a.content && <span className="text-gray-400">添削: -</span>}
+                                <span className="text-gray-500">·</span>
+                                {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
+                                {a.content && (
+                                  <>
+                                    <span className="text-gray-500">·</span>
+                                    <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
+                                    <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button>
+                                  </>
+                                )}
                               </div>
                             </div>
                           ))}
