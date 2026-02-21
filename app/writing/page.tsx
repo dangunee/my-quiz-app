@@ -208,7 +208,7 @@ type TabId = "experience" | "writing" | "topik";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "experience", label: "作文トレーニング" },
-  { id: "writing", label: "課題提出" },
+  { id: "writing", label: "提出する↓" },
   { id: "topik", label: "TOPIK作文トレ" },
 ];
 
@@ -363,6 +363,12 @@ export default function WritingPage() {
     if (!isNaN(fromId)) return fromId;
     const m = a.title.match(/과제\s*(\d+)/);
     return m ? parseInt(m[1], 10) : 0;
+  };
+
+  const getAssignmentDisplayTitle = (a: Assignment) => {
+    const n = getAssignmentNumber(a);
+    const ex = mergedAssignmentExamplesByPeriod[0]?.[n - 1];
+    return ex?.title ?? a.title;
   };
 
   const sortedAssignments = [...assignments].sort((a, b) => getAssignmentNumber(a) - getAssignmentNumber(b));
@@ -1169,7 +1175,7 @@ export default function WritingPage() {
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
                                 <th className="text-left py-3 px-4 font-medium whitespace-nowrap" style={{ width: "10rem" }}>期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
-                                <th className="text-left py-3 px-4 font-medium">課題提出</th>
+                                <th className="text-left py-3 px-4 font-medium">提出する↓</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
                                 <th className="text-left py-3 px-4 font-medium">添削結果</th>
                               </tr>
@@ -1180,7 +1186,7 @@ export default function WritingPage() {
                                   {idx === 0 ? (
                                     <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5] whitespace-nowrap" style={{ width: "10rem" }}>{dateRange}</td>
                                   ) : null}
-                                  <td className="py-3 px-4"><span className="font-medium text-gray-800">{a.title}</span></td>
+                                  <td className="py-3 px-4"><span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span></td>
                                   <td className="py-3 px-4">
                                     {a.status === "미제출" ? (
                                       <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
@@ -1209,7 +1215,7 @@ export default function WritingPage() {
                               <div className="flex flex-wrap items-center gap-2 text-sm">
                                 <span className="font-semibold text-gray-800 shrink-0">{dateRange}</span>
                                 <span className="text-gray-500">·</span>
-                                <span className="font-medium text-gray-800">{a.title}</span>
+                                <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
                                 <span className="text-gray-500">·</span>
                                 {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <span className="text-[#2d7d46] font-medium">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</span>}
                                 {a.content && (
@@ -1297,7 +1303,8 @@ export default function WritingPage() {
 
       {/* 課題提出・添削 プルダウンパネル */}
       {(showSubmitModal || viewingStudent || feedbackModal) && (
-        <div className="fixed inset-x-0 bottom-0 z-50 flex flex-col max-h-[90vh] bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out">
+        <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 md:px-6">
+          <div className="w-full max-w-2xl flex flex-col max-h-[90vh] bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out">
           <div className="flex-shrink-0 flex items-center justify-center py-2 border-b border-gray-200">
             <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
           </div>
@@ -1323,7 +1330,7 @@ export default function WritingPage() {
                     <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
                       <option value="">선택하세요</option>
                       {assignments.map((a) => (
-                        <option key={a.id} value={a.id}>{a.title} ({a.dateRange})</option>
+                        <option key={a.id} value={a.id}>{getAssignmentDisplayTitle(a)} ({a.dateRange})</option>
                       ))}
                     </select>
                   </div>
@@ -1342,7 +1349,7 @@ export default function WritingPage() {
             {viewingStudent && !showSubmitModal && !feedbackModal && (
               <div className="p-4 sm:p-6 flex flex-col">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold text-gray-800">学生提出文 - {viewingStudent.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-800">学生提出文 - {getAssignmentDisplayTitle(viewingStudent)}</h3>
                   <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                 </div>
                 <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
@@ -1368,7 +1375,7 @@ export default function WritingPage() {
             {feedbackModal && !showSubmitModal && !viewingStudent && (
               <div className="p-4 sm:p-6 flex flex-col">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold text-gray-800">添削 - {feedbackModal.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-800">添削 - {getAssignmentDisplayTitle(feedbackModal)}</h3>
                   <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
                 </div>
                 <div className="space-y-4">
@@ -1388,6 +1395,7 @@ export default function WritingPage() {
                 </div>
               </div>
             )}
+          </div>
           </div>
         </div>
       )}
