@@ -995,7 +995,7 @@ export default function WritingPage() {
                                         <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{submissionsByKey[`${examplePeriodTab}-${(ex.id - 1) % 10}`]?.content || ""}</pre>
                                       </div>
                                       <button type="button" onClick={() => document.getElementById("mypage-section")?.scrollIntoView({ behavior: "smooth" })} className="w-full py-3 px-6 bg-[#4ade80] hover:bg-[#22c55e] text-gray-800 font-medium rounded-xl shadow-md">
-                                        MY PAGEで確認
+                                        マイページで確認
                                       </button>
                                     </>
                                   ) : user ? (
@@ -1019,11 +1019,11 @@ export default function WritingPage() {
                     </div>
                   </div>
 
-                  <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">MY PAGE</h2>
+                  <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">マイページ</h2>
 
                   {!user ? (
                     <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
-                      <p className="text-gray-600 mb-4">MY PAGEはログイン後にご利用いただけます。</p>
+                      <p className="text-gray-600 mb-4">マイページはログイン後にご利用いただけます。</p>
                       <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-2.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">
                         ログイン
                       </Link>
