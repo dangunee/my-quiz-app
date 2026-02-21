@@ -156,12 +156,12 @@ export default function AdminPage() {
   const formatDuration = (sec: number) =>
     sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  type KadaiOverrideItem = { title: string; topic: string; courseInfo?: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
+  type KadaiOverrideItem = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
   const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, KadaiOverrideItem>>>({});
   const [kadaiLoading, setKadaiLoading] = useState(false);
   const [kadaiPeriodTab, setKadaiPeriodTab] = useState(0);
   const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
-  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", courseInfo: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
+  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
   const [kadaiSaving, setKadaiSaving] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
   const filteredUsers = userSearchKeyword.trim()
@@ -556,7 +556,6 @@ export default function AdminPage() {
           item_index: editingKadai.item,
           title: kadaiEditForm.title,
           topic: kadaiEditForm.topic,
-          course_info: kadaiEditForm.courseInfo || null,
           theme: kadaiEditForm.theme || null,
           question: kadaiEditForm.question || null,
           grammar_note: kadaiEditForm.grammarNote || null,
@@ -568,7 +567,7 @@ export default function AdminPage() {
         setKadaiOverrides((prev) => {
           const next = { ...prev };
           if (!next[editingKadai.period]) next[editingKadai.period] = {};
-          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic, courseInfo: kadaiEditForm.courseInfo || undefined, theme: kadaiEditForm.theme || undefined, question: kadaiEditForm.question || undefined, grammarNote: kadaiEditForm.grammarNote || undefined, patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : undefined } };
+          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic, theme: kadaiEditForm.theme || undefined, question: kadaiEditForm.question || undefined, grammarNote: kadaiEditForm.grammarNote || undefined, patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : undefined } };
           return next;
         });
         setEditingKadai(null);
@@ -1441,15 +1440,6 @@ export default function AdminPage() {
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium text-gray-500 mb-1">課題回（例: 1期第1回課題）</label>
-                              <input
-                                value={kadaiEditForm.courseInfo}
-                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, courseInfo: e.target.value }))}
-                                className="w-full border rounded px-3 py-2 text-sm"
-                                placeholder="1期第1回課題"
-                              />
-                            </div>
-                            <div>
                               <label className="block text-xs font-medium text-gray-500 mb-1">テーマ</label>
                               <input
                                 value={kadaiEditForm.theme}
@@ -1527,7 +1517,6 @@ export default function AdminPage() {
                               setKadaiEditForm({
                                 title,
                                 topic,
-                                courseInfo: ov?.courseInfo ?? defModel?.courseInfo ?? "",
                                 theme: ov?.theme ?? defModel?.theme ?? "",
                                 question: ov?.question ?? defModel?.question ?? "",
                                 grammarNote: ov?.grammarNote ?? defModel?.grammarNote ?? "",

@@ -5,7 +5,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const adminSecret = process.env.ADMIN_SECRET!;
 
-type KadaiOverride = { title: string; topic: string; courseInfo?: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
+type KadaiOverride = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
 
 function verifyAdmin(request: NextRequest): boolean {
   const auth = request.headers.get("authorization");
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("assignment_example_overrides")
-      .select("period_index, item_index, title, topic, course_info, theme, question, grammar_note, patterns")
+      .select("period_index, item_index, title, topic, theme, question, grammar_note, patterns")
       .order("period_index")
       .order("item_index");
 
@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
       overrides[row.period_index][row.item_index] = {
         title: row.title || "",
         topic: row.topic || "",
-        courseInfo: row.course_info ?? undefined,
         theme: row.theme ?? undefined,
         question: row.question ?? undefined,
         grammarNote: row.grammar_note ?? undefined,
@@ -62,7 +61,7 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { period_index, item_index, title, topic, course_info, theme, question, grammar_note, patterns } = body;
+  const { period_index, item_index, title, topic, theme, question, grammar_note, patterns } = body;
 
   if (typeof period_index !== "number" || period_index < 0 || period_index > 7) {
     return NextResponse.json({ error: "period_index 0-7 required" }, { status: 400 });
@@ -90,7 +89,6 @@ export async function PUT(request: NextRequest) {
           item_index,
           title: typeof title === "string" ? title.trim() : "",
           topic: typeof topic === "string" ? topic.trim() : "",
-          course_info: typeof course_info === "string" ? course_info.trim() || null : null,
           theme: typeof theme === "string" ? theme.trim() || null : null,
           question: typeof question === "string" ? question.trim() || null : null,
           grammar_note: typeof grammar_note === "string" ? grammar_note.trim() || null : null,

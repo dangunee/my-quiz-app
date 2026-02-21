@@ -70,7 +70,6 @@ interface AssignmentExample {
   title: string;
   topic: string;
   modelContent?: {
-    courseInfo?: string;
     theme: string;
     question: string;
     grammarNote?: string;
@@ -132,7 +131,7 @@ export default function WritingPage() {
   const [teacherFeedback, setTeacherFeedback] = useState("");
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
   const [examplePeriodTab, setExamplePeriodTab] = useState<number>(0);
-  const [exampleOverrides, setExampleOverrides] = useState<Record<number, Record<number, { title: string; topic: string; courseInfo?: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] }>>>({});
+  const [exampleOverrides, setExampleOverrides] = useState<Record<number, Record<number, { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] }>>>({});
   const [expandedExperience, setExpandedExperience] = useState(false);
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -206,7 +205,6 @@ export default function WritingPage() {
         const modelContent = baseModel
           ? {
               ...baseModel,
-              courseInfo: ov?.courseInfo ?? baseModel.courseInfo,
               theme: ov?.theme ?? baseModel.theme,
               question: ov?.question ?? baseModel.question,
               grammarNote: ov?.grammarNote ?? baseModel.grammarNote,
@@ -1103,14 +1101,13 @@ export default function WritingPage() {
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedExampleId === ex.id ? "▼" : "▶"}</span>
                                 <span className="font-medium text-gray-800">{ex.title}</span>
                               </div>
-                              <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">{ex.topic}</p>
+                              {ex.topic && <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">{ex.topic}</p>}
                             </button>
                             {expandedExampleId === ex.id && ex.modelContent && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
                                 <div className="mt-3 flex flex-col gap-3">
                                   <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
-                                    {ex.modelContent.courseInfo && <p className="text-gray-600 font-medium">{ex.modelContent.courseInfo}：　テーマ： {ex.modelContent.theme}</p>}
-                                    {!ex.modelContent.courseInfo && <p className="text-gray-600 font-medium">テーマ：{ex.modelContent.theme}</p>}
+                                    <p className="text-gray-600 font-medium">テーマ：{ex.modelContent.theme}</p>
                                     <p className="text-gray-800 leading-relaxed">{ex.modelContent.question}</p>
                                     {ex.modelContent.grammarNote && <p className="text-gray-600 font-medium">{ex.modelContent.grammarNote}</p>}
                                     <div className="space-y-2 pt-2">
@@ -1390,8 +1387,7 @@ export default function WritingPage() {
             </div>
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
               <div className="p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4] text-sm space-y-3">
-                {selectedExample.modelContent.courseInfo && <p className="text-gray-600 font-medium">{selectedExample.modelContent.courseInfo}：　テーマ： {selectedExample.modelContent.theme}</p>}
-                {!selectedExample.modelContent.courseInfo && <p className="text-gray-600 font-medium">テーマ：{selectedExample.modelContent.theme}</p>}
+                <p className="text-gray-600 font-medium">テーマ：{selectedExample.modelContent.theme}</p>
                 <p className="text-gray-800 leading-relaxed">{selectedExample.modelContent.question}</p>
                 {selectedExample.modelContent.grammarNote && <p className="text-gray-600 font-medium">{selectedExample.modelContent.grammarNote}</p>}
                 <div className="space-y-2 pt-2">
