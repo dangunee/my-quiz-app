@@ -31,7 +31,7 @@ function useWritingBase() {
   return base;
 }
 
-type AssignmentStatus = "미제출" | "제출완료" | "첨삭완료";
+type AssignmentStatus = "미제출" | "수정중" | "제출완료" | "첨삭완료";
 type CorrectionStatus = "-" | "확인" | "완료";
 
 interface Assignment {
@@ -502,9 +502,9 @@ export default function WritingPage() {
 
   const handleSaveDraft = () => {
     if (!submitContent.trim()) return;
-    const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출")?.id;
+    const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중")?.id;
     const updated = assignments.map((a) =>
-      a.id === targetId ? { ...a, content: submitContent } : a
+      a.id === targetId ? { ...a, content: submitContent, status: "수정중" as AssignmentStatus } : a
     );
     setAssignments(updated);
     saveAssignments(updated);
@@ -515,7 +515,7 @@ export default function WritingPage() {
     if (!submitContent.trim()) return;
     setSubmitLoading(true);
     setTimeout(() => {
-      const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출")?.id;
+      const targetId = selectedAssignmentId || selectedAssignment?.id || assignments.find((x) => x.status === "미제출" || x.status === "수정중")?.id;
       const updated = assignments.map((a) =>
         a.id === targetId ? { ...a, status: "제출완료" as AssignmentStatus, content: submitContent, submittedAt: new Date().toISOString() } : a
       );
@@ -1264,7 +1264,7 @@ export default function WritingPage() {
                                         {a.status === "미제출" ? (
                                           <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] hover:text-[#9b2c2c] font-medium underline">未提出</button>
                                         ) : (
-                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>
+                                          <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>
                                         )}
                                       </td>
                                       <td className="py-3 px-4">
@@ -1292,7 +1292,7 @@ export default function WritingPage() {
                                     <span className="text-gray-500">·</span>
                                     <span className="font-medium text-gray-800">{getAssignmentDisplayTitle(a)}</span>
                                     <span className="text-gray-500">·</span>
-                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>}
+                                    {a.status === "미제출" ? <button onClick={() => handleSubmitAssignment(a)} className="text-[#c53030] font-medium underline">未提出</button> : <button onClick={() => handleSubmitAssignment(a)} className="text-[#2d7d46] font-medium hover:underline">{a.status === "수정중" ? "修正中" : a.status === "제출완료" ? "提出完了" : a.status === "첨삭완료" ? "添削完了" : a.status}</button>}
                                     {a.content && (
                                       <>
                                         <span className="text-gray-500">·</span>
