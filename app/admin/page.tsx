@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { QUIZZES } from "../quiz-data";
+import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 
 type Assignment = {
   id: string;
@@ -96,7 +97,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "assignments" | "submissions">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "assignments" | "submissions" | "kadai">("quiz");
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
@@ -154,6 +155,12 @@ export default function AdminPage() {
   const formatDuration = (sec: number) =>
     sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, { title: string; topic: string }>>>({});
+  const [kadaiLoading, setKadaiLoading] = useState(false);
+  const [kadaiPeriodTab, setKadaiPeriodTab] = useState(0);
+  const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
+  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "" });
+  const [kadaiSaving, setKadaiSaving] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
   const filteredUsers = userSearchKeyword.trim()
     ? users.filter((u) => {
@@ -265,6 +272,14 @@ export default function AdminPage() {
     if (!isAuthenticated || !authKey) return;
     if (activeTab === "assignments") loadAssignments();
     else if (activeTab === "submissions") loadSubmissions();
+    else if (activeTab === "kadai") {
+      setKadaiLoading(true);
+      fetch("/api/admin/writing/assignment-examples", { headers: { Authorization: `Bearer ${authKey}` } })
+        .then((r) => r.json())
+        .then((data) => setKadaiOverrides(data.overrides || {}))
+        .catch(() => setKadaiOverrides({}))
+        .finally(() => setKadaiLoading(false));
+    }
   }, [isAuthenticated, authKey, activeTab]);
 
   const handleSave = async (
@@ -527,6 +542,39 @@ export default function AdminPage() {
     }
   };
 
+  const handleSaveKadai = async () => {
+    if (!editingKadai) return;
+    setKadaiSaving(true);
+    try {
+      const res = await fetch("/api/admin/writing/assignment-examples", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+        body: JSON.stringify({
+          period_index: editingKadai.period,
+          item_index: editingKadai.item,
+          title: kadaiEditForm.title,
+          topic: kadaiEditForm.topic,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setKadaiOverrides((prev) => {
+          const next = { ...prev };
+          if (!next[editingKadai.period]) next[editingKadai.period] = {};
+          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic } };
+          return next;
+        });
+        setEditingKadai(null);
+      } else {
+        alert(data.error || "保存に失敗しました");
+      }
+    } catch {
+      alert("保存中にエラーが発生しました");
+    } finally {
+      setKadaiSaving(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="w-full md:max-w-[80vw] mx-auto">
@@ -577,6 +625,12 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "submissions" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             作文提出
+          </button>
+          <button
+            onClick={() => setActiveTab("kadai")}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "kadai" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            課題例
           </button>
           </div>
           <button
@@ -1326,6 +1380,86 @@ export default function AdminPage() {
                   </li>
                 ))}
               </ul>
+            )}
+          </div>
+        )}
+
+        {activeTab === "kadai" && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">課題例（1期～8期）編集</h1>
+            <p className="text-sm text-gray-600 mb-4">作文ページの課題例掲示板の「제목」と「실제 과제」を編集できます。</p>
+            <Link href="/writing" className="text-sm text-gray-600 hover:underline mb-4 block">作文ページ</Link>
+            {kadaiLoading ? (
+              <p>読み込み中...</p>
+            ) : (
+              <>
+                <div className="flex gap-2 mb-4 flex-wrap">
+                  {PERIOD_LABELS.map((label, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setKadaiPeriodTab(i); setEditingKadai(null); }}
+                      className={`px-3 py-1.5 rounded text-sm font-medium ${kadaiPeriodTab === i ? "bg-red-600 text-white" : "bg-gray-200 text-gray-700"}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {DEFAULT_ASSIGNMENT_EXAMPLES[kadaiPeriodTab]?.map((def, itemIdx) => {
+                    const ov = kadaiOverrides[kadaiPeriodTab]?.[itemIdx];
+                    const title = ov?.title ?? def.title;
+                    const topic = ov?.topic ?? def.topic;
+                    const isEditing = editingKadai?.period === kadaiPeriodTab && editingKadai?.item === itemIdx;
+                    return (
+                      <div key={itemIdx} className="p-4 border rounded-lg">
+                        {isEditing ? (
+                          <div className="space-y-2">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">제목（タイトル）</label>
+                              <input
+                                value={kadaiEditForm.title}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, title: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                placeholder="제목"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">실제 과제（実際の課題）</label>
+                              <textarea
+                                value={kadaiEditForm.topic}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, topic: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                rows={2}
+                                placeholder="실제 과제"
+                              />
+                            </div>
+                            <div className="flex gap-2">
+                              <button type="button" onClick={handleSaveKadai} disabled={kadaiSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
+                                保存
+                              </button>
+                              <button type="button" onClick={() => setEditingKadai(null)} className="px-3 py-1 bg-gray-300 rounded text-sm">
+                                キャンセル
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="font-medium text-gray-800">{title}</p>
+                            <p className="text-sm text-gray-600 mt-1">{topic}</p>
+                            <button
+                              type="button"
+                              onClick={() => { setEditingKadai({ period: kadaiPeriodTab, item: itemIdx }); setKadaiEditForm({ title, topic }); }}
+                              className="mt-2 text-sm text-red-600 hover:underline"
+                            >
+                              編集
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         )}

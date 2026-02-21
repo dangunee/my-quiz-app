@@ -77,6 +77,15 @@ create index if not exists idx_app_analytics_logged_in on app_analytics(is_logge
 -- alter table app_analytics add column if not exists region text;
 -- alter table app_analytics add column if not exists is_logged_in boolean;
 
+-- ========== Assignment Example Overrides (課題例 1期~8期) ==========
+create table if not exists assignment_example_overrides (
+  period_index int not null check (period_index >= 0 and period_index <= 7),
+  item_index int not null check (item_index >= 0 and item_index <= 9),
+  title text,
+  topic text,
+  primary key (period_index, item_index)
+);
+
 -- ========== Customer Profiles (고객 데이터) ==========
 create table if not exists customer_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,

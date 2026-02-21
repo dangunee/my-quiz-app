@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 
 const WRITING_HOST = "writing.mirinae.jp";
@@ -229,6 +229,7 @@ export default function WritingPage() {
   const [teacherFeedback, setTeacherFeedback] = useState("");
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
   const [examplePeriodTab, setExamplePeriodTab] = useState<number>(0);
+  const [exampleOverrides, setExampleOverrides] = useState<Record<number, Record<number, { title: string; topic: string }>>>({});
   const [expandedExperience, setExpandedExperience] = useState(false);
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -279,6 +280,32 @@ export default function WritingPage() {
   useEffect(() => {
     setAssignments(getStoredAssignments());
   }, []);
+
+  useEffect(() => {
+    fetch("/api/writing/assignment-examples")
+      .then((r) => r.json())
+      .then((data) => setExampleOverrides(data.overrides || {}))
+      .catch(() => setExampleOverrides({}));
+  }, []);
+
+  const mergedAssignmentExamplesByPeriod = useMemo(() => {
+    return ASSIGNMENT_EXAMPLES_BY_PERIOD.map((periodExamples, periodIndex) =>
+      periodExamples.map((ex, itemIndex) => {
+        const ov = exampleOverrides[periodIndex]?.[itemIndex];
+        const title = ov?.title ?? ex.title;
+        const topic = ov?.topic ?? ex.topic;
+        const modelContent = ex.modelContent
+          ? { ...ex.modelContent, theme: title, question: topic }
+          : undefined;
+        return { ...ex, title, topic, modelContent };
+      })
+    );
+  }, [exampleOverrides]);
+
+  const mergedAssignmentExamplesAll = useMemo(
+    () => mergedAssignmentExamplesByPeriod.flat(),
+    [mergedAssignmentExamplesByPeriod]
+  );
 
   useEffect(() => {
     if (showProfileModal && user) {
@@ -400,7 +427,7 @@ export default function WritingPage() {
     setExampleSubmitContent("");
   };
 
-  const selectedExample = expandedExampleId ? ASSIGNMENT_EXAMPLES_ALL.find((ex) => ex.id === expandedExampleId) : null;
+  const selectedExample = expandedExampleId ? mergedAssignmentExamplesAll.find((ex) => ex.id === expandedExampleId) : null;
 
   const handleSubmitAssignment = (assignment: Assignment) => {
     setSelectedAssignment(assignment);
@@ -1088,7 +1115,7 @@ export default function WritingPage() {
                       </div>
                       <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">課題例（10件）</div>
                       <div className="divide-y divide-[#e5dfd4]">
-                        {ASSIGNMENT_EXAMPLES_BY_PERIOD[examplePeriodTab].map((ex) => (
+                        {mergedAssignmentExamplesByPeriod[examplePeriodTab].map((ex) => (
                           <div key={ex.id}>
                             <button type="button" onClick={() => setExpandedExampleId(expandedExampleId === ex.id ? null : ex.id)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
                               <div className="flex items-center gap-3">
