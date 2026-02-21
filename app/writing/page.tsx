@@ -1163,11 +1163,11 @@ export default function WritingPage() {
                         <div className="hidden md:block overflow-x-auto">
                           <table className="w-full">
                             <colgroup>
-                              <col style={{ width: "8rem" }} />
+                              <col style={{ width: "10rem" }} />
                             </colgroup>
                             <thead>
                               <tr className="bg-[#f5f0e6] text-gray-700 text-sm">
-                                <th className="text-left py-3 px-4 font-medium" style={{ width: "8rem" }}>期間</th>
+                                <th className="text-left py-3 px-4 font-medium whitespace-nowrap" style={{ width: "10rem" }}>期間</th>
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">課題提出</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
@@ -1178,7 +1178,7 @@ export default function WritingPage() {
                               {groupedByDate[dateRange].map((a, idx) => (
                                 <tr key={a.id} className="border-t border-[#e5dfd4] hover:bg-[#faf8f5]">
                                   {idx === 0 ? (
-                                    <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5]" style={{ width: "8rem" }}>{dateRange}</td>
+                                    <td rowSpan={groupedByDate[dateRange].length} className="py-3 px-4 font-semibold text-gray-800 align-top bg-[#faf8f5] whitespace-nowrap" style={{ width: "10rem" }}>{dateRange}</td>
                                   ) : null}
                                   <td className="py-3 px-4"><span className="font-medium text-gray-800">{a.title}</span></td>
                                   <td className="py-3 px-4">
@@ -1299,7 +1299,7 @@ export default function WritingPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="relative px-4 sm:px-6 py-4 shrink-0">
-              <h3 className="text-lg font-bold text-gray-800 text-center pr-14">새로운 스레드</h3>
+              <h3 className="text-lg font-bold text-gray-800 text-center pr-14">作文を提出する</h3>
               <button onClick={handleCloseSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">취소</button>
             </div>
             <div className="px-4 sm:px-6 pb-6 flex-1 overflow-y-auto space-y-4">
