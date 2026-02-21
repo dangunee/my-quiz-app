@@ -1108,9 +1108,9 @@ export default function WritingPage() {
                   <div className="mb-6 md:mb-8">
                     <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                      <div className="flex border-b border-[#e5dfd4] overflow-x-auto">
+                      <div className="flex border-b border-[#e5dfd4]">
                         {PERIOD_LABELS.map((label, i) => (
-                          <button key={label} type="button" onClick={() => { setExamplePeriodTab(i); setExpandedExampleId(null); }} className={`shrink-0 px-4 py-3 font-medium text-sm ${examplePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
+                          <button key={label} type="button" onClick={() => { setExamplePeriodTab(i); setExpandedExampleId(null); }} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${examplePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
                             {label}
                           </button>
                         ))}
@@ -1171,7 +1171,7 @@ export default function WritingPage() {
                                 <th className="text-left py-3 px-4 font-medium">課題</th>
                                 <th className="text-left py-3 px-4 font-medium">課題提出</th>
                                 <th className="text-left py-3 px-4 font-medium">学生提出文</th>
-                                <th className="text-left py-3 px-4 font-medium">添削</th>
+                                <th className="text-left py-3 px-4 font-medium">添削結果</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1189,7 +1189,7 @@ export default function WritingPage() {
                                     )}
                                   </td>
                                   <td className="py-3 px-4">
-                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button> : <span className="text-gray-400">-</span>}
+                                    {a.content ? <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button> : <span className="text-gray-400">-</span>}
                                   </td>
                                   <td className="py-3 px-4">
                                     {a.correction === "-" ? <span className="text-gray-400">-</span> : a.status === "첨삭완료" ? (
@@ -1215,7 +1215,7 @@ export default function WritingPage() {
                                 {a.content && (
                                   <>
                                     <span className="text-gray-500">·</span>
-                                    <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">学生提出文</button>
+                                    <button onClick={() => handleViewStudent(a)} className="text-[#1a4d2e] hover:underline">提出文CHECK</button>
                                     <button onClick={() => handleOpenFeedback(a)} className="text-[#1a4d2e] hover:underline">{a.correction === "-" ? "添削する" : "添削確認"}</button>
                                   </>
                                 )}
@@ -1295,99 +1295,99 @@ export default function WritingPage() {
         </div>
       )}
 
-      {showSubmitModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="relative px-4 sm:px-6 py-4 shrink-0">
-              <h3 className="text-lg font-bold text-gray-800 text-center pr-14">作文を提出する</h3>
-              <button onClick={handleCloseSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">취소</button>
-            </div>
-            <div className="px-4 sm:px-6 pb-6 flex-1 overflow-y-auto space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
-                <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                  <option value="">선택하세요</option>
-                  {MOCK_STUDENTS.map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
-                <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
-                  <option value="">선택하세요</option>
-                  {assignments.map((a) => (
-                    <option key={a.id} value={a.id}>{a.title} ({a.dateRange})</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
-                <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
-              </div>
-            </div>
-            <div className="px-4 sm:px-6 py-4 flex justify-end shrink-0">
-              <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
-                {submitLoading ? "提出中..." : "投稿"}
-              </button>
-            </div>
+      {/* 課題提出・添削 プルダウンパネル */}
+      {(showSubmitModal || viewingStudent || feedbackModal) && (
+        <div className="fixed inset-x-0 bottom-0 z-50 flex flex-col max-h-[90vh] bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out">
+          <div className="flex-shrink-0 flex items-center justify-center py-2 border-b border-gray-200">
+            <div className="w-12 h-1 rounded-full bg-gray-300" aria-hidden />
           </div>
-        </div>
-      )}
-
-      {viewingStudent && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
-              <h3 className="text-lg font-bold text-gray-800">学生提出文 - {viewingStudent.title}</h3>
-              <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
-            </div>
-            <div className="px-4 py-2 border-b border-gray-200 flex flex-wrap gap-2 shrink-0 bg-gray-50">
-              <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
-              <button type="button" onClick={() => applyFormat("foreColor", "#dc2626")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-red-600" title="빨간색">A</button>
-              <button type="button" onClick={() => applyFormat("foreColor", "#2563eb")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-blue-600" title="파란색">A</button>
-              <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
-              <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
-            </div>
-            <div className="p-6 flex-1 overflow-y-auto">
-              <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
-              {viewingStudent.feedback && (
-                <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
-                  <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
-                  <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {showSubmitModal && (
+              <div className="p-4 sm:p-6 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-gray-800">作文を提出する</h3>
+                  <button onClick={handleCloseSubmitModal} className="text-gray-500 hover:text-gray-700 font-medium">취소</button>
                 </div>
-              )}
-            </div>
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2 shrink-0">
-              <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
-              <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {feedbackModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-800">添削 - {feedbackModal.title}</h3>
-              <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
-            </div>
-            <div className="p-6 flex-1 overflow-y-auto space-y-4">
-              {feedbackModal.content && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
-                  <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
+                    <select value={selectedStudentId} onChange={(e) => setSelectedStudentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                      <option value="">선택하세요</option>
+                      {MOCK_STUDENTS.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">課題選択</label>
+                    <select value={selectedAssignmentId} onChange={(e) => setSelectedAssignmentId(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent bg-white">
+                      <option value="">선택하세요</option>
+                      {assignments.map((a) => (
+                        <option key={a.id} value={a.id}>{a.title} ({a.dateRange})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">課題内容</label>
+                    <textarea value={submitContent} onChange={(e) => setSubmitContent(e.target.value)} placeholder="새로운 소식이 있나요?" className="w-full h-40 p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                  </div>
                 </div>
-              )}
-              <div>
-                <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
-                <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
+                <div className="mt-4 flex justify-end">
+                  <button onClick={handleConfirmSubmit} disabled={!submitContent.trim() || submitLoading} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl transition-colors">
+                    {submitLoading ? "提出中..." : "投稿"}
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
-              <button onClick={handleSaveFeedback} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">저장</button>
-            </div>
+            )}
+            {viewingStudent && !showSubmitModal && !feedbackModal && (
+              <div className="p-4 sm:p-6 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-gray-800">学生提出文 - {viewingStudent.title}</h3>
+                  <button onClick={() => setViewingStudent(null)} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                </div>
+                <div className="px-4 py-2 border border-gray-200 rounded-xl flex flex-wrap gap-2 mb-4 bg-gray-50">
+                  <button type="button" onClick={() => applyFormat("strikeThrough")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200" title="가운데 선">S̶</button>
+                  <button type="button" onClick={() => applyFormat("foreColor", "#dc2626")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-red-600" title="빨간색">A</button>
+                  <button type="button" onClick={() => applyFormat("foreColor", "#2563eb")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-blue-600" title="파란색">A</button>
+                  <button type="button" onClick={() => applyFormat("underline")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 underline" title="밑줄">U</button>
+                  <button type="button" onClick={() => applyFormat("removeFormat")} className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-200 text-gray-500" title="포맷 제거">✕</button>
+                </div>
+                <div ref={editorRef} contentEditable suppressContentEditableWarning className="min-h-[200px] p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent outline-none text-gray-800 leading-relaxed" />
+                {viewingStudent.feedback && (
+                  <div className="mt-4 p-4 bg-[#f0fdf4] rounded-xl border border-[#86efac]">
+                    <h4 className="font-semibold text-[#166534] mb-2">添削フィードバック</h4>
+                    <p className="whitespace-pre-wrap text-gray-700">{viewingStudent.feedback}</p>
+                  </div>
+                )}
+                <div className="mt-4 flex justify-end gap-2">
+                  <button onClick={() => setViewingStudent(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">취소</button>
+                  <button onClick={handleSaveCorrectedContent} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">添削保存</button>
+                </div>
+              </div>
+            )}
+            {feedbackModal && !showSubmitModal && !viewingStudent && (
+              <div className="p-4 sm:p-6 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-gray-800">添削 - {feedbackModal.title}</h3>
+                  <button onClick={() => { setFeedbackModal(null); setTeacherFeedback(""); }} className="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+                </div>
+                <div className="space-y-4">
+                  {feedbackModal.content && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700 mb-2">学生提出内容</h4>
+                      <p className="whitespace-pre-wrap text-gray-600 bg-gray-50 p-4 rounded-lg">{feedbackModal.content}</p>
+                    </div>
+                  )}
+                  <div>
+                    <label className="block font-semibold text-gray-700 mb-2">添削フィードバック</label>
+                    <textarea value={teacherFeedback} onChange={(e) => setTeacherFeedback(e.target.value)} placeholder="添削内容を入力してください..." className="w-full h-32 p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" />
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button onClick={handleSaveFeedback} className="px-5 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg">저장</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
