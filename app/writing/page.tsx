@@ -1302,7 +1302,6 @@ export default function WritingPage() {
                                     )}
                                   </div>
                                 </div>
-                              </div>
                             ))}
                         </div>
                         {hasSelectedInCard && (
