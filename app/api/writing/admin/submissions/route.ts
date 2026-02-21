@@ -16,51 +16,38 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!supabaseUrl || !supabaseKey) {
-    return NextResponse.json(
-      { error: "Supabase not configured" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
   }
-
-  const { searchParams } = new URL(request.url);
-  const assignmentId = searchParams.get("assignment_id");
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
-    let query = supabase
+    const { data, error } = await supabase
       .from("writing_submissions")
-      .select(`
-        *,
-        writing_assignments!assignment_id(title_ko, title_ja)
-      `)
+      .select("*, writing_assignments!assignment_id(title_ko, title_ja)")
       .order("submitted_at", { ascending: false });
 
-    if (assignmentId) {
-      query = query.eq("assignment_id", assignmentId);
-    }
-
-    const { data, error } = await query;
-
     if (error) {
+      console.error("Writing submissions error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const submissions = data || [];
-    const userIds = [...new Set(submissions.map((s: { user_id: string }) => s.user_id))];
-    const { data: usersData } = await supabase.auth.admin.listUsers();
-    const usersMap = new Map(
-      (usersData?.users || []).map((u) => [
-        u.id,
-        { email: u.email, name: u.user_metadata?.name, username: u.user_metadata?.username },
-      ])
-    );
-
-    const enriched = submissions.map((s: Record<string, unknown>) => ({
+    const submissions = (data || []).map((s) => ({
       ...s,
-      user: usersMap.get(s.user_id as string) || { email: "-", name: "-", username: "-" },
+      user: null,
     }));
 
-    return NextResponse.json({ submissions: enriched });
+    for (let i = 0; i < submissions.length; i++) {
+      const { data: userData } = await supabase.auth.admin.getUserById(submissions[i].user_id);
+      if (userData?.user) {
+        submissions[i].user = {
+          email: userData.user.email,
+          name: userData.user.user_metadata?.name,
+          username: userData.user.user_metadata?.username,
+        };
+      }
+    }
+
+    return NextResponse.json({ submissions });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

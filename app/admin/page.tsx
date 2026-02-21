@@ -6,14 +6,6 @@ import { QUIZZES } from "../quiz-data";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 
-type Assignment = {
-  id: string;
-  title_ko: string;
-  title_ja?: string;
-  description?: string;
-  sort_order: number;
-};
-
 type Submission = {
   id: string;
   user_id: string;
@@ -25,19 +17,6 @@ type Submission = {
   writing_assignments?: { title_ko: string; title_ja?: string };
   user?: { email: string; name?: string; username?: string };
 };
-
-const DEFAULT_ASSIGNMENTS = [
-  { title_ko: "오늘 하루 일과", title_ja: "今日の一日の流れ", description: "오늘 하루 동안 한 일을 3문장 이상으로 써 보세요.", sort_order: 1 },
-  { title_ko: "스트레스 푸는 법", title_ja: "ストレス解消法", description: "스트레스를 느낄 때와 푸는 방법에 대해 써 보세요.", sort_order: 2 },
-  { title_ko: "내가 좋아하는 음식", title_ja: "好きな食べ物", description: "가장 좋아하는 음식과 그 이유를 써 보세요.", sort_order: 3 },
-  { title_ko: "주말 계획", title_ja: "週末の計画", description: "이번 주말에 할 계획을 한국어로 써 보세요.", sort_order: 4 },
-  { title_ko: "가족 소개", title_ja: "家族紹介", description: "가족 구성원을 소개하는 글을 써 보세요.", sort_order: 5 },
-  { title_ko: "한국 여행", title_ja: "韓国旅行", description: "한국에서 가고 싶은 곳과 그 이유를 써 보세요.", sort_order: 6 },
-  { title_ko: "나의 취미", title_ja: "私の趣味", description: "취미 생활에 대해 5문장 이상으로 써 보세요.", sort_order: 7 },
-  { title_ko: "기억에 남는 날", title_ja: "思い出に残る日", description: "특별히 기억에 남는 하루를 써 보세요.", sort_order: 8 },
-  { title_ko: "한국어 공부 방법", title_ja: "韓国語の勉強法", description: "한국어를 어떻게 공부하고 있는지 써 보세요.", sort_order: 9 },
-  { title_ko: "내 꿈", title_ja: "私の夢", description: "미래의 꿈이나 목표에 대해 써 보세요.", sort_order: 10 },
-];
 
 type OverrideRow = {
   explanation?: string;
@@ -98,17 +77,12 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "assignments" | "submissions" | "kadai">("quiz");
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai">("quiz");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ title_ko: "", title_ja: "", description: "", sort_order: 0 });
-  const [newForm, setNewForm] = useState({ title_ko: "", title_ja: "", description: "", sort_order: 0 });
   const [feedbackId, setFeedbackId] = useState<string | null>(null);
   const [feedbackText, setFeedbackText] = useState("");
   const [writingSaving, setWritingSaving] = useState(false);
-  const [seedLoading, setSeedLoading] = useState(false);
   type UserRow = {
   id: string;
   email: string;
@@ -252,15 +226,6 @@ export default function AdminPage() {
     setAuthKey("");
   };
 
-  const loadAssignments = () => {
-    setWritingLoading(true);
-    fetch("/api/writing/admin/assignments", { headers: { Authorization: `Bearer ${authKey}` } })
-      .then((r) => r.json())
-      .then((data) => setAssignments(data.assignments || []))
-      .catch(() => setAssignments([]))
-      .finally(() => setWritingLoading(false));
-  };
-
   const loadSubmissions = () => {
     setWritingLoading(true);
     fetch("/api/writing/admin/submissions", { headers: { Authorization: `Bearer ${authKey}` } })
@@ -272,8 +237,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!isAuthenticated || !authKey) return;
-    if (activeTab === "assignments") loadAssignments();
-    else if (activeTab === "submissions") loadSubmissions();
+    if (activeTab === "submissions") loadSubmissions();
     else if (activeTab === "kadai") {
       setKadaiLoading(true);
       fetch("/api/admin/writing/assignment-examples", { headers: { Authorization: `Bearer ${authKey}` } })
@@ -433,89 +397,6 @@ export default function AdminPage() {
     }
   };
 
-  const handleSeedAssignments = async () => {
-    setSeedLoading(true);
-    try {
-      for (const a of DEFAULT_ASSIGNMENTS) {
-        await fetch("/api/writing/admin/assignments", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-          body: JSON.stringify(a),
-        });
-      }
-      loadAssignments();
-    } catch {
-      alert("시드 추가 실패");
-    } finally {
-      setSeedLoading(false);
-    }
-  };
-
-  const handleAddAssignment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newForm.title_ko.trim()) return;
-    setWritingSaving(true);
-    try {
-      const res = await fetch("/api/writing/admin/assignments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-        body: JSON.stringify(newForm),
-      });
-      const data = await res.json();
-      if (res.ok && data?.assignment) {
-        setAssignments((prev) => [...prev, data.assignment]);
-        setNewForm({ title_ko: "", title_ja: "", description: "", sort_order: 0 });
-      } else {
-        alert(data.error || "추가 실패");
-      }
-    } catch {
-      alert("오류 발생");
-    } finally {
-      setWritingSaving(false);
-    }
-  };
-
-  const handleUpdateAssignment = async () => {
-    if (!editingId) return;
-    setWritingSaving(true);
-    try {
-      const res = await fetch(`/api/writing/admin/assignments/${editingId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-        body: JSON.stringify(editForm),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setAssignments((prev) => prev.map((a) => (a.id === editingId ? data.assignment : a)));
-        setEditingId(null);
-      } else {
-        alert(data.error || "수정 실패");
-      }
-    } catch {
-      alert("오류 발생");
-    } finally {
-      setWritingSaving(false);
-    }
-  };
-
-  const handleDeleteAssignment = async (id: string) => {
-    if (!confirm("이 과제를 삭제하시겠습니까?")) return;
-    try {
-      const res = await fetch(`/api/writing/admin/assignments/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${authKey}` },
-      });
-      if (res.ok) {
-        setAssignments((prev) => prev.filter((a) => a.id !== id));
-      } else {
-        const data = await res.json();
-        alert(data.error || "삭제 실패");
-      }
-    } catch {
-      alert("오류 발생");
-    }
-  };
-
   const handleSaveFeedback = async () => {
     if (!feedbackId) return;
     setWritingSaving(true);
@@ -619,12 +500,6 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "analytics" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             アクセス解析
-          </button>
-          <button
-            onClick={() => setActiveTab("assignments")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "assignments" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            作文課題
           </button>
           <button
             onClick={() => setActiveTab("submissions")}
@@ -1285,104 +1160,58 @@ export default function AdminPage() {
           </div>
         )}
 
-        {activeTab === "assignments" && (
+        {activeTab === "submissions" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">作文課題管理</h1>
-            <div className="flex justify-between items-center mb-4">
-              <Link href="/writing" className="text-sm text-gray-600 hover:underline">作文ページ</Link>
-              <button
-                type="button"
-                onClick={handleSeedAssignments}
-                disabled={seedLoading || assignments.length > 0}
-                className="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-              >
-                {seedLoading ? "追加中..." : "基本課題10件追加"}
-              </button>
-            </div>
-            <form onSubmit={handleAddAssignment} className="mb-6 p-4 bg-gray-50 rounded-lg space-y-3">
-              <h3 className="font-medium">新規課題追加</h3>
-              <input
-                type="text"
-                value={newForm.title_ko}
-                onChange={(e) => setNewForm((f) => ({ ...f, title_ko: e.target.value }))}
-                placeholder="タイトル（韓国語）"
-                className="w-full border rounded px-3 py-2"
-                required
-              />
-              <input
-                type="text"
-                value={newForm.title_ja}
-                onChange={(e) => setNewForm((f) => ({ ...f, title_ja: e.target.value }))}
-                placeholder="タイトル（日本語）"
-                className="w-full border rounded px-3 py-2"
-              />
-              <textarea
-                value={newForm.description}
-                onChange={(e) => setNewForm((f) => ({ ...f, description: e.target.value }))}
-                placeholder="説明"
-                rows={2}
-                className="w-full border rounded px-3 py-2"
-              />
-              <button type="submit" disabled={writingSaving} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
-                追加
-              </button>
-            </form>
+            <h1 className="text-2xl font-bold mb-4">作文提出一覧・添削</h1>
+            <Link href="/writing" className="text-sm text-gray-600 hover:underline mb-4 block">作文ページ</Link>
             {writingLoading ? (
               <p>読み込み中...</p>
-            ) : assignments.length === 0 ? (
-              <p className="text-gray-500">登録された課題がありません。上で追加するか、基本課題を読み込んでください。</p>
+            ) : submissions.length === 0 ? (
+              <p className="text-gray-500">提出された課題がありません。</p>
             ) : (
-              <ul className="space-y-3">
-                {assignments.map((a) => (
-                  <li key={a.id} className="p-4 border rounded-lg">
-                    {editingId === a.id ? (
-                      <div className="space-y-2">
-                        <input
-                          value={editForm.title_ko}
-                          onChange={(e) => setEditForm((f) => ({ ...f, title_ko: e.target.value }))}
-                          className="w-full border rounded px-3 py-2"
-                          placeholder="タイトル（韓国語）"
-                        />
-                        <input
-                          value={editForm.title_ja}
-                          onChange={(e) => setEditForm((f) => ({ ...f, title_ja: e.target.value }))}
-                          className="w-full border rounded px-3 py-2"
-                          placeholder="タイトル（日本語）"
-                        />
+              <ul className="space-y-4">
+                {submissions.map((s) => (
+                  <li key={s.id} className="p-4 border rounded-lg">
+                    <p className="text-sm text-gray-500">
+                      {s.writing_assignments?.title_ko || "課題"} · {s.user?.email || "-"} · {s.user?.name || s.user?.username || ""}
+                    </p>
+                    <p className="mt-2 whitespace-pre-wrap">{s.content}</p>
+                    {feedbackId === s.id ? (
+                      <div className="mt-4">
                         <textarea
-                          value={editForm.description}
-                          onChange={(e) => setEditForm((f) => ({ ...f, description: e.target.value }))}
-                          rows={2}
+                          value={feedbackText}
+                          onChange={(e) => setFeedbackText(e.target.value)}
+                          placeholder="添削内容を入力..."
+                          rows={4}
                           className="w-full border rounded px-3 py-2"
                         />
-                        <div className="flex gap-2">
-                          <button type="button" onClick={handleUpdateAssignment} disabled={writingSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
+                        <div className="mt-2 flex gap-2">
+                          <button type="button" onClick={handleSaveFeedback} disabled={writingSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
                             保存
                           </button>
-                          <button type="button" onClick={() => setEditingId(null)} className="px-3 py-1 bg-gray-300 rounded text-sm">
+                          <button type="button" onClick={() => { setFeedbackId(null); setFeedbackText(""); }} className="px-3 py-1 bg-gray-300 rounded text-sm">
                             キャンセル
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <>
-                        <p className="font-medium">{a.title_ko}</p>
-                        {a.title_ja && <p className="text-sm text-gray-500">{a.title_ja}</p>}
-                        {a.description && <p className="text-sm text-gray-600 mt-1">{a.description}</p>}
-                        <div className="mt-2 flex gap-2">
-                          <button
-                            type="button"
-                            onClick={() => { setEditingId(a.id); setEditForm({ title_ko: a.title_ko, title_ja: a.title_ja || "", description: a.description || "", sort_order: a.sort_order }); }}
-                            className="text-sm text-red-600 hover:underline"
-                          >
-                            編集
-                          </button>
-                          <button type="button" onClick={() => handleDeleteAssignment(a.id)} className="text-sm text-red-600 hover:underline">
-                            削除
-                          </button>
-                        </div>
-                      </>
+                      <div className="mt-3">
+                        {s.feedback && (
+                          <div className="p-3 bg-amber-50 rounded border border-amber-200 mb-2">
+                            <p className="text-sm font-medium text-amber-800">添削:</p>
+                            <p className="text-sm text-amber-900 whitespace-pre-wrap mt-1">{s.feedback}</p>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => { setFeedbackId(s.id); setFeedbackText(s.feedback || ""); }}
+                          className="text-sm text-red-600 hover:underline"
+                        >
+                          {s.feedback ? "添削を編集" : "添削を記入"}
+                        </button>
+                      </div>
                     )}
+                    <p className="mt-2 text-xs text-gray-400">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
                   </li>
                 ))}
               </ul>
@@ -1519,64 +1348,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {activeTab === "submissions" && (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">作文提出一覧・添削</h1>
-            <Link href="/writing" className="text-sm text-gray-600 hover:underline mb-4 block">作文ページ</Link>
-            {writingLoading ? (
-              <p>読み込み中...</p>
-            ) : submissions.length === 0 ? (
-              <p className="text-gray-500">提出された課題がありません。</p>
-            ) : (
-              <ul className="space-y-4">
-                {submissions.map((s) => (
-                  <li key={s.id} className="p-4 border rounded-lg">
-                    <p className="text-sm text-gray-500">
-                      {s.writing_assignments?.title_ko || "課題"} · {s.user?.email || "-"} · {s.user?.name || s.user?.username || ""}
-                    </p>
-                    <p className="mt-2 whitespace-pre-wrap">{s.content}</p>
-                    {feedbackId === s.id ? (
-                      <div className="mt-4">
-                        <textarea
-                          value={feedbackText}
-                          onChange={(e) => setFeedbackText(e.target.value)}
-                          placeholder="添削内容を入力..."
-                          rows={4}
-                          className="w-full border rounded px-3 py-2"
-                        />
-                        <div className="mt-2 flex gap-2">
-                          <button type="button" onClick={handleSaveFeedback} disabled={writingSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
-                            保存
-                          </button>
-                          <button type="button" onClick={() => { setFeedbackId(null); setFeedbackText(""); }} className="px-3 py-1 bg-gray-300 rounded text-sm">
-                            キャンセル
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mt-3">
-                        {s.feedback && (
-                          <div className="p-3 bg-amber-50 rounded border border-amber-200 mb-2">
-                            <p className="text-sm font-medium text-amber-800">添削:</p>
-                            <p className="text-sm text-amber-900 whitespace-pre-wrap mt-1">{s.feedback}</p>
-                          </div>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => { setFeedbackId(s.id); setFeedbackText(s.feedback || ""); }}
-                          className="text-sm text-red-600 hover:underline"
-                        >
-                          {s.feedback ? "添削を編集" : "添削を記入"}
-                        </button>
-                      </div>
-                    )}
-                    <p className="mt-2 text-xs text-gray-400">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ create table if not exists explanation_overrides (
 -- alter table explanation_overrides add column if not exists japanese text;
 -- alter table explanation_overrides add column if not exists options jsonb;
 
--- ========== Writing (作文トレーニング) ==========
+-- ========== Writing (作文提出用)
 create table if not exists writing_assignments (
   id uuid primary key default gen_random_uuid(),
   title_ko text not null,

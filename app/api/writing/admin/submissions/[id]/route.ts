@@ -19,10 +19,7 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!supabaseUrl || !supabaseKey) {
-    return NextResponse.json(
-      { error: "Supabase not configured" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
   }
 
   const { id } = await params;
@@ -30,25 +27,24 @@ export async function PUT(
   const { feedback } = body;
 
   if (!id) {
-    return NextResponse.json({ error: "id가 필요합니다" }, { status: 400 });
+    return NextResponse.json({ error: "id required" }, { status: 400 });
   }
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("writing_submissions")
       .update({
-        feedback: feedback != null ? String(feedback) : null,
-        feedback_at: feedback ? new Date().toISOString() : null,
+        feedback: typeof feedback === "string" ? feedback : null,
+        feedback_at: typeof feedback === "string" && feedback.trim() ? new Date().toISOString() : null,
       })
-      .eq("id", id)
-      .select()
-      .single();
+      .eq("id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json({ submission: data });
+
+    return NextResponse.json({ ok: true });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
