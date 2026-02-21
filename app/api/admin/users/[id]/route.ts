@@ -66,7 +66,14 @@ export async function PUT(
     if (region !== undefined) profileFields.region = region === "" ? null : region;
     if (plan_type !== undefined) profileFields.plan_type = plan_type === "" ? null : plan_type;
     if (course_type !== undefined) profileFields.course_type = course_type === "" ? null : course_type;
-    if (payment_status !== undefined) profileFields.payment_status = payment_status === "" ? null : payment_status;
+    if (payment_status !== undefined) {
+      let ps = payment_status === "" ? null : payment_status;
+      // 無料/有料가 잘못 전달된 경우 無/有로 변환
+      if (ps === "無料") ps = "無";
+      if (ps === "有料") ps = "有";
+      if (ps && ps !== "有" && ps !== "無") ps = null; // 허용값만 저장
+      profileFields.payment_status = ps;
+    }
     if (period !== undefined) profileFields.period = period === "" || period == null ? null : Number(period);
     if (interval !== undefined) profileFields.course_interval = interval === "" ? null : interval;
     if (start_date !== undefined) profileFields.start_date = start_date === "" ? null : start_date;

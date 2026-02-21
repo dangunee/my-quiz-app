@@ -81,7 +81,7 @@ create table if not exists customer_profiles (
   region text,
   plan_type text check (plan_type in ('無料', '有料')),
   course_type text check (course_type in ('作文', '音読')),
-  payment_status text check (payment_status in ('未定', '完了')),
+  payment_status text check (payment_status is null or payment_status in ('有', '無')),
   period int check (period >= 1 and period <= 8),
   course_interval text check (course_interval in ('1週', '2週')),
   start_date date,

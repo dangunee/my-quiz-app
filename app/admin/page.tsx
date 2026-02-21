@@ -514,7 +514,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="w-full md:max-w-[80vw] mx-auto">
+      <div className="w-full max-w-full px-4">
         <div className="flex justify-between items-center mb-6">
           <div className="flex gap-4">
           <button
@@ -809,7 +809,7 @@ export default function AdminPage() {
                       <th className="text-left py-2 px-3">地域</th>
                       <th className="text-left py-2 px-3">無料/有料</th>
                       <th className="text-left py-2 px-3">作文/音読</th>
-                      <th className="text-left py-2 px-3">決済:有・無</th>
+                      <th className="text-left py-2 px-3">決済</th>
                       <th className="text-left py-2 px-3">期目</th>
                       <th className="text-left py-2 px-3">間隔</th>
                       <th className="text-left py-2 px-3">開始日</th>
@@ -888,8 +888,6 @@ export default function AdminPage() {
                                 <option value="">-</option>
                                 <option value="有">有</option>
                                 <option value="無">無</option>
-                                <option value="未定">未定</option>
-                                <option value="完了">完了</option>
                               </select>
                             </td>
                             <td className="py-2 px-3">
