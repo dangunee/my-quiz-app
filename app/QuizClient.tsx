@@ -45,6 +45,8 @@ export default function QuizClient() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [rightMenuOpen, setRightMenuOpen] = useState(false);
+  const [rightSidebarExpanded, setRightSidebarExpanded] = useState(false);
+  const [expandedMenuType, setExpandedMenuType] = useState<"qa" | "dailykorean" | null>(null);
   const [desktopMenuCollapsed, setDesktopMenuCollapsed] = useState(true);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
@@ -142,6 +144,12 @@ export default function QuizClient() {
     kotaePage * KOTAE_PAGE_SIZE,
     (kotaePage + 1) * KOTAE_PAGE_SIZE
   );
+
+  const closeRightMenu = () => {
+    setRightMenuOpen(false);
+    setRightSidebarExpanded(false);
+    setExpandedMenuType(null);
+  };
 
   useEffect(() => {
     setKotaePage(0);
@@ -423,8 +431,29 @@ export default function QuizClient() {
     </>
   );
 
+  const SEIKATSU_SAMPLE = [
+    "生活韓国語300［交通違反］", "生活韓国語299.［物価］", "生活韓国語298.［歯がしみる］",
+    "生活韓国語297.［パワハラ］", "生活韓国語296.［更年期］", "生活韓国語295.［告白］",
+    "生活韓国語294.［姿勢］", "生活韓国語293.［お腹の肉］", "生活韓国語292.［お年玉］",
+    "生活韓国語291.［新年目標］", "生活韓国語290.［プレゼント］",
+  ];
+
+  const handleExpandMenu = (type: "qa" | "dailykorean") => {
+    if (rightSidebarExpanded && expandedMenuType === type) {
+      setRightSidebarExpanded(false);
+      setExpandedMenuType(null);
+    } else {
+      setRightSidebarExpanded(true);
+      setExpandedMenuType(type);
+    }
+  };
+
   const rightSidebar = (
-    <aside className="hidden md:flex md:flex-col md:w-64 md:shrink-0 md:gap-4">
+    <aside
+      className={`hidden md:flex md:flex-col md:shrink-0 md:gap-4 transition-all duration-300 ease-out ${
+        rightSidebarExpanded ? "md:w-[420px]" : "md:w-64"
+      }`}
+    >
       {/* ログイン・マイページ カード */}
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
         <div className="p-4">
@@ -473,36 +502,133 @@ export default function QuizClient() {
         </div>
       </div>
 
-      {/* Q&A カード */}
+      {/* Q&A カード - クリックで展開・プルダウンメニュー */}
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-        <div className="p-4">
+        <button
+          type="button"
+          onClick={() => handleExpandMenu("qa")}
+          className="w-full p-4 text-left hover:bg-gray-50/50 transition"
+        >
           <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
           <p className="text-xs text-gray-600 mb-3">韓国語の微妙なニュアンス</p>
-          <button
-            type="button"
-            onClick={() => setActiveTab("kotae")}
-            className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white hover:opacity-90 transition"
-          >
+          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white hover:opacity-90 transition">
             Q&Aを見る
-          </button>
+          </span>
           {filteredKotae.length > 0 && (
             <p className="text-xs text-gray-500 mt-2">{filteredKotae.length}件の質問と答え</p>
           )}
-        </div>
+        </button>
+        {rightSidebarExpanded && expandedMenuType === "qa" && (
+          <div className="border-t border-gray-200 max-h-[320px] overflow-y-auto">
+            <div className="flex justify-end px-2 pt-1">
+              <button
+                type="button"
+                onClick={() => { setRightSidebarExpanded(false); setExpandedMenuType(null); }}
+                className="text-gray-400 hover:text-gray-600 text-sm px-1"
+                aria-label="閉じる"
+              >
+                × 閉じる
+              </button>
+            </div>
+            <div className="p-2">
+              {kotaeListLoading ? (
+                <p className="py-4 text-center text-gray-500 text-xs">読み込み中...</p>
+              ) : filteredKotae.length === 0 ? (
+                <p className="py-4 text-center text-gray-500 text-xs">該当なし</p>
+              ) : (
+                kotaePaginated.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("kotae");
+                      setExpandedKotaeId((prev) => (prev === item.id ? null : item.id));
+                    }}
+                    className="w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#2d5a4a]/10 rounded-lg transition"
+                  >
+                    {item.title}
+                  </button>
+                ))
+              )}
+              {filteredKotae.length > KOTAE_PAGE_SIZE && (
+                <div className="flex justify-center gap-1 py-2">
+                  <button
+                    type="button"
+                    onClick={() => setKotaePage((p) => Math.max(0, p - 1))}
+                    disabled={kotaePage === 0}
+                    className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40"
+                  >
+                    前へ
+                  </button>
+                  <span className="px-2 py-1 text-xs text-gray-600">
+                    {kotaePage + 1}/{kotaeTotalPages}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setKotaePage((p) => Math.min(kotaeTotalPages - 1, p + 1))}
+                    disabled={kotaePage >= kotaeTotalPages - 1}
+                    className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40"
+                  >
+                    次へ
+                  </button>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setActiveTab("kotae")}
+                className="w-full mt-2 py-2 text-center text-xs font-medium text-[#2d5a4a] hover:underline"
+              >
+                一覧で見る →
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* 生活韓国語 カード */}
+      {/* 生活韓国語 カード - クリックで展開・プルダウンメニュー */}
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-        <div className="p-4">
+        <button
+          type="button"
+          onClick={() => handleExpandMenu("dailykorean")}
+          className="w-full p-4 text-left hover:bg-gray-50/50 transition"
+        >
           <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
           <p className="text-xs text-gray-600 mb-3">日常で使える韓国語表現</p>
-          <a
-            href="/dailykorean"
-            className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition"
-          >
+          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition">
             生活韓国語を見る
-          </a>
-        </div>
+          </span>
+        </button>
+        {rightSidebarExpanded && expandedMenuType === "dailykorean" && (
+          <div className="border-t border-gray-200 max-h-[320px] overflow-y-auto">
+            <div className="flex justify-end px-2 pt-1">
+              <button
+                type="button"
+                onClick={() => { setRightSidebarExpanded(false); setExpandedMenuType(null); }}
+                className="text-gray-400 hover:text-gray-600 text-sm px-1"
+                aria-label="閉じる"
+              >
+                × 閉じる
+              </button>
+            </div>
+            <div className="p-2">
+              {SEIKATSU_SAMPLE.map((title, i) => (
+                <a
+                  key={i}
+                  href={`/dailykorean?title=${encodeURIComponent(title)}`}
+                  className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg transition"
+                >
+                  {title}
+                </a>
+              ))}
+              <a
+                href="/dailykorean"
+                className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9] hover:underline"
+              >
+                一覧で見る →
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </aside>
   );
@@ -526,18 +652,20 @@ export default function QuizClient() {
         <>
           <div
             className="fixed inset-0 z-40 bg-black/30 md:hidden"
-            onClick={() => setRightMenuOpen(false)}
+            onClick={() => closeRightMenu()}
             aria-hidden
           />
           <aside
-            className="fixed right-0 top-0 z-50 h-full w-72 max-w-[85vw] bg-gray-100 overflow-y-auto md:hidden"
+            className={`fixed right-0 top-0 z-50 h-full bg-gray-100 overflow-y-auto md:hidden transition-all duration-300 ${
+              rightSidebarExpanded ? "w-[90vw] max-w-[400px]" : "w-72 max-w-[85vw]"
+            }`}
             style={{ animation: "slideInRight 0.2s ease" }}
           >
             <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
               <span className="font-semibold text-gray-800">メニュー</span>
               <button
                 type="button"
-                onClick={() => setRightMenuOpen(false)}
+                onClick={() => closeRightMenu()}
                 className="rounded p-2 text-gray-500 hover:bg-gray-100"
                 aria-label="メニューを閉じる"
               >
@@ -551,32 +679,62 @@ export default function QuizClient() {
                 <h3 className="font-bold text-gray-800 text-sm mb-3">ログイン・マイページ</h3>
                 {isLoggedIn ? (
                   <>
-                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#0ea5e9] text-white mb-2" onClick={() => setRightMenuOpen(false)}>マイページ</a>
-                    <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setIsLoggedIn(false); setRightMenuOpen(false); }} className="block w-full py-2 text-sm text-gray-600">ログアウト</button>
+                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#0ea5e9] text-white mb-2" onClick={() => closeRightMenu()}>マイページ</a>
+                    <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setIsLoggedIn(false); closeRightMenu(); }} className="block w-full py-2 text-sm text-gray-600">ログアウト</button>
                   </>
                 ) : (
                   <>
-                    <a href="/login" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#fae100] text-gray-800 mb-2" onClick={() => setRightMenuOpen(false)}>ログイン</a>
+                    <a href="/login" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#fae100] text-gray-800 mb-2" onClick={() => closeRightMenu()}>ログイン</a>
                     <div className="flex justify-center gap-2 text-xs text-gray-500">
-                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => setRightMenuOpen(false)}>アカウントをお探し</a>
+                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>アカウントをお探し</a>
                       <span>|</span>
-                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => setRightMenuOpen(false)}>新規登録</a>
+                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>新規登録</a>
                     </div>
                   </>
                 )}
               </div>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
-                <button type="button" onClick={() => { setActiveTab("kotae"); setRightMenuOpen(false); }} className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white">Q&Aを見る</button>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <button type="button" onClick={() => handleExpandMenu("qa")} className="w-full p-4 text-left">
+                  <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
+                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white">Q&Aを見る</span>
+                </button>
+                {rightSidebarExpanded && expandedMenuType === "qa" && (
+                  <div className="border-t border-gray-200 max-h-[240px] overflow-y-auto p-2">
+                    {kotaeListLoading ? (
+                      <p className="py-4 text-center text-gray-500 text-xs">読み込み中...</p>
+                    ) : filteredKotae.length === 0 ? (
+                      <p className="py-4 text-center text-gray-500 text-xs">該当なし</p>
+                    ) : (
+                      kotaePaginated.map((item) => (
+                        <button key={item.id} type="button" onClick={() => { setActiveTab("kotae"); setExpandedKotaeId((p) => (p === item.id ? null : item.id)); closeRightMenu(); }} className="w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#2d5a4a]/10 rounded-lg">
+                          {item.title}
+                        </button>
+                      ))
+                    )}
+                    <button type="button" onClick={() => { setActiveTab("kotae"); closeRightMenu(); }} className="w-full mt-2 py-2 text-center text-xs font-medium text-[#2d5a4a]">一覧で見る →</button>
+                  </div>
+                )}
               </div>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
-                <a href="/dailykorean" className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white" onClick={() => setRightMenuOpen(false)}>生活韓国語を見る</a>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <button type="button" onClick={() => handleExpandMenu("dailykorean")} className="w-full p-4 text-left">
+                  <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
+                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white">生活韓国語を見る</span>
+                </button>
+                {rightSidebarExpanded && expandedMenuType === "dailykorean" && (
+                  <div className="border-t border-gray-200 max-h-[240px] overflow-y-auto p-2">
+                    {SEIKATSU_SAMPLE.map((title, i) => (
+                      <a key={i} href={`/dailykorean?title=${encodeURIComponent(title)}`} onClick={() => closeRightMenu()} className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg">
+                        {title}
+                      </a>
+                    ))}
+                    <a href="/dailykorean" onClick={() => closeRightMenu()} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9]">一覧で見る →</a>
+                  </div>
+                )}
               </div>
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-xs font-semibold text-gray-500 mb-2">その他</p>
                 {rightMenuLinks.filter((l) => !["生活韓国語"].includes(l.label)).map((item) => (
-                  <a key={item.label} href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-sm text-gray-700 hover:text-[#0ea5e9]" onClick={() => setRightMenuOpen(false)}>{item.label}</a>
+                  <a key={item.label} href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-sm text-gray-700 hover:text-[#0ea5e9]" onClick={() => closeRightMenu()}>{item.label}</a>
                 ))}
               </div>
             </div>

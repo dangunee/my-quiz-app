@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
 
 const SEIKATSU_LIST = [
   "生活韓国語300［交通違反］",
@@ -39,12 +40,21 @@ const SEIKATSU_LIST = [
 const BLOG_URL = "https://mirinae.jp/blog/?cat=2";
 const ITEMS_PER_PAGE = 10;
 
-export default function DailyKoreanPage() {
+function DailyKoreanContent() {
+  const searchParams = useSearchParams();
   const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
   const [content, setContent] = useState<{ html: string; url: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const t = searchParams.get("title") || searchParams.get("q") || null;
+    if (t && SEIKATSU_LIST.includes(t)) {
+      setExpandedTitle(t);
+      setCurrentPage(Math.floor(SEIKATSU_LIST.indexOf(t) / ITEMS_PER_PAGE) + 1);
+    }
+  }, [searchParams]);
 
   const totalPages = Math.ceil(SEIKATSU_LIST.length / ITEMS_PER_PAGE);
   const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -221,5 +231,13 @@ export default function DailyKoreanPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DailyKoreanPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f5f5f5] p-4 flex items-center justify-center">読み込み中...</div>}>
+      <DailyKoreanContent />
+    </Suspense>
   );
 }
