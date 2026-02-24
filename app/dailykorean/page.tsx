@@ -38,7 +38,7 @@ const SEIKATSU_LIST = [
 ];
 
 const BLOG_URL = "https://mirinae.jp/blog/?cat=2";
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 20;
 
 function DailyKoreanContent() {
   const searchParams = useSearchParams();
