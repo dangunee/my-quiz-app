@@ -258,7 +258,7 @@ export default function KojinPage() {
 
           {/* 授業形式〜進め方：新デザイン */}
           <div className="rounded-xl bg-white shadow-md overflow-hidden">
-            <div className="p-4">
+            <div className="p-5 sm:p-6">
               <p className="text-gray-400 text-xs mb-1">※対面・オンラインどちらでも受講可能</p>
               <h3 className="text-lg font-bold text-gray-800">授業形式</h3>
               <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
@@ -328,22 +328,26 @@ export default function KojinPage() {
                 </ol>
               </div>
 
-              <h3 className="text-lg font-bold text-gray-800 mt-6">内容</h3>
-              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
-              <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-700">
-                <li>主に音読(声に出して読む)を中心とした指導をしています。音読で大切なのは、その場で先生から、きちんと発音と抑揚の指摘を受け、直してもらうことです。スポーツ選手のトレーナーのように、発音と抑揚の技術を教え、練習をそばで支えてくれる人が必要なのです。練習問題も声に出して解いていただきます。</li>
-                <li>そのため授業は予習を前提として進められます。予習課題をしていただくことで週1回や2~3回の授業を無駄なく消化できるようになります。</li>
-                <li>韓国語のテキスト本文や文法の和訳も事前にしてきていただきます。当教室では受講生の和訳に正確なチェックを入れ、より効果的に覚えられるよう指導します。もちろん和訳していく中で出てくる似ている文型や微妙なニュアンスの違いも漏れなく解説いたします。</li>
-                <li>「オバーラッピング」と「シャドーイング」を使って、ネイティブの話すスピードについて行けるようなトレーニングを行います。<br /><span className="text-gray-500 text-xs">※オバーラッピング:音声と同時に読むこと　シャドーイング:テキストを見ないで音声だけを聞きながら重ねて言うこと</span></li>
-                <li>韓国語訳の復習を通して学んだ内容の定着を図る：１つの課が終わったら、学習した「文型や表現」は次の課を始める前に韓国語訳を行い、どのくらい頭の中に定着したか確認します。講師が日本語で例文を話します。<br /><span className="text-gray-500 text-xs">※ミリネのレッスンは主に受講生の方が約7割話すことで、聞き取り力・会話力の両方を引きあげます。</span></li>
+              <h3 className="text-xl font-bold text-gray-800 mt-8 mb-2">内容</h3>
+              <div className="h-px w-full mb-6 bg-gray-200" />
+              <ol className="list-decimal pl-6 space-y-5 text-gray-700 leading-relaxed">
+                <li className="pl-1">主に音読(声に出して読む)を中心とした指導をしています。音読で大切なのは、その場で先生から、きちんと発音と抑揚の指摘を受け、直してもらうことです。スポーツ選手のトレーナーのように、発音と抑揚の技術を教え、練習をそばで支えてくれる人が必要なのです。練習問題も声に出して解いていただきます。</li>
+                <li className="pl-1">そのため授業は予習を前提として進められます。予習課題をしていただくことで週1回や2~3回の授業を無駄なく消化できるようになります。</li>
+                <li className="pl-1">韓国語のテキスト本文や文法の和訳も事前にしてきていただきます。当教室では受講生の和訳に正確なチェックを入れ、より効果的に覚えられるよう指導します。もちろん和訳していく中で出てくる似ている文型や微妙なニュアンスの違いも漏れなく解説いたします。</li>
+                <li className="pl-1">「オーバーラッピング」と「シャドーイング」を使って、ネイティブの話すスピードについて行けるようなトレーニングを行います。
+                  <p className="mt-2 ml-4 text-gray-500 text-sm">※オーバーラッピング:音声と同時に読むこと　シャドーイング:テキストを見ないで音声だけを聞きながら重ねて言うこと</p>
+                </li>
+                <li className="pl-1">韓国語訳の復習を通して学んだ内容の定着を図る：１つの課が終わったら、学習した「文型や表現」は次の課を始める前に韓国語訳を行い、どのくらい頭の中に定着したか確認します。講師が日本語で例文を話します。
+                  <p className="mt-2 ml-4 text-gray-500 text-sm">※ミリネのレッスンは主に受講生の方が約7割話すことで、聞き取り力・会話力の両方を引きあげます。</p>
+                </li>
               </ol>
 
-              <h3 className="text-lg font-bold text-gray-800 mt-6">入学金</h3>
-              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
-              <p className="font-semibold text-gray-800">9,800円</p>
+              <h3 className="text-xl font-bold text-gray-800 mt-10 mb-2">入学金</h3>
+              <div className="h-px w-full mb-4 bg-gray-200" />
+              <p className="text-3xl font-bold text-gray-800">9,800円</p>
 
-              <h3 className="text-lg font-bold text-gray-800 mt-6">授業料</h3>
-              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <h3 className="text-xl font-bold text-gray-800 mt-10 mb-2">授業料</h3>
+              <div className="h-px w-full mb-4 bg-gray-200" />
               <div className="overflow-x-auto">
               <table className="w-full border-collapse text-sm min-w-[320px]">
                 <thead>
@@ -364,8 +368,8 @@ export default function KojinPage() {
               </table>
               </div>
 
-              <h3 className="text-lg font-bold text-gray-800 mt-6">『生徒の声』</h3>
-              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <h3 className="text-xl font-bold text-gray-800 mt-10 mb-2">『生徒の声』</h3>
+              <div className="h-px w-full mb-6 bg-gray-200" />
               <div className="space-y-4">
               <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
                 <p className="font-semibold text-gray-800">NS様｜6級｜2023.08</p>
