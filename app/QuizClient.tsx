@@ -46,7 +46,6 @@ export default function QuizClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [rightMenuOpen, setRightMenuOpen] = useState(false);
   const [desktopMenuCollapsed, setDesktopMenuCollapsed] = useState(true);
-  const [rightDesktopMenuCollapsed, setRightDesktopMenuCollapsed] = useState(true);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -424,45 +423,88 @@ export default function QuizClient() {
     </>
   );
 
-  const rightDesktopMenu = (
-    <>
-      {!rightDesktopMenuCollapsed && (
-        <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 md:bg-white md:rounded-2xl md:shadow-lg md:border md:border-gray-200 md:overflow-hidden">
-          <div className="px-4 py-4 border-b border-gray-200">
-            <span className="font-semibold text-gray-800">コンテンツ</span>
-          </div>
-          <nav className="flex-1 overflow-y-auto p-4">
-            <div className="space-y-0">
-              {rightMenuLinks.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
-                >
-                  {item.label}
-                </a>
-              ))}
+  const rightSidebar = (
+    <aside className="hidden md:flex md:flex-col md:w-64 md:shrink-0 md:gap-4">
+      {/* ログイン・マイページ カード */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+        <div className="p-4">
+          <h3 className="font-bold text-gray-800 text-sm mb-3">ログイン・マイページ</h3>
+          {isLoggedIn ? (
+            <div className="space-y-2">
+              <a
+                href="/profile"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-3 px-4 text-center font-semibold rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition"
+              >
+                マイページ
+              </a>
+              <p className="text-xs text-gray-500 text-center">ログイン中</p>
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem("quiz_token");
+                  localStorage.removeItem("quiz_refresh_token");
+                  localStorage.removeItem("quiz_user");
+                  setIsLoggedIn(false);
+                }}
+                className="block w-full py-2 text-sm text-gray-600 hover:text-red-600"
+              >
+                ログアウト
+              </button>
             </div>
-          </nav>
-        </aside>
-      )}
-    </>
-  );
+          ) : (
+            <div className="space-y-2">
+              <a
+                href="/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-3 px-4 text-center font-semibold rounded-xl bg-[#fae100] text-gray-800 hover:opacity-90 transition"
+              >
+                ログイン
+              </a>
+              <div className="flex justify-center gap-2 text-xs text-gray-500">
+                <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">アカウントをお探し</a>
+                <span>|</span>
+                <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">新規登録</a>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
-  const rightDesktopMenuToggle = (
-    <button
-      type="button"
-      onClick={() => setRightDesktopMenuCollapsed((c) => !c)}
-      className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/90 text-gray-600 hover:bg-white border border-gray-200/80 ml-auto"
-      aria-label={rightDesktopMenuCollapsed ? "コンテンツメニューを開く" : "コンテンツメニューを閉じる"}
-    >
-      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-        <circle cx="12" cy="6" r="1.5" />
-        <circle cx="12" cy="12" r="1.5" />
-        <circle cx="12" cy="18" r="1.5" />
-      </svg>
-    </button>
+      {/* Q&A カード */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+        <div className="p-4">
+          <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
+          <p className="text-xs text-gray-600 mb-3">韓国語の微妙なニュアンス</p>
+          <button
+            type="button"
+            onClick={() => setActiveTab("kotae")}
+            className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white hover:opacity-90 transition"
+          >
+            Q&Aを見る
+          </button>
+          {filteredKotae.length > 0 && (
+            <p className="text-xs text-gray-500 mt-2">{filteredKotae.length}件の質問と答え</p>
+          )}
+        </div>
+      </div>
+
+      {/* 生活韓国語 カード */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+        <div className="p-4">
+          <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
+          <p className="text-xs text-gray-600 mb-3">日常で使える韓国語表現</p>
+          <a
+            href="/dailykorean"
+            className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition"
+          >
+            生活韓国語を見る
+          </a>
+        </div>
+      </div>
+    </aside>
   );
 
   const desktopMenuToggle = (
@@ -488,11 +530,11 @@ export default function QuizClient() {
             aria-hidden
           />
           <aside
-            className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden"
+            className="fixed right-0 top-0 z-50 h-full w-72 max-w-[85vw] bg-gray-100 overflow-y-auto md:hidden"
             style={{ animation: "slideInRight 0.2s ease" }}
           >
-            <div className="flex items-center justify-between border-b px-4 py-3">
-              <span className="font-semibold text-gray-800">コンテンツ</span>
+            <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
+              <span className="font-semibold text-gray-800">メニュー</span>
               <button
                 type="button"
                 onClick={() => setRightMenuOpen(false)}
@@ -504,19 +546,40 @@ export default function QuizClient() {
                 </svg>
               </button>
             </div>
-            <nav className="p-4">
-              {rightMenuLinks.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
-                  onClick={() => setRightMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
+            <div className="p-4 space-y-4">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <h3 className="font-bold text-gray-800 text-sm mb-3">ログイン・マイページ</h3>
+                {isLoggedIn ? (
+                  <>
+                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#0ea5e9] text-white mb-2" onClick={() => setRightMenuOpen(false)}>マイページ</a>
+                    <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setIsLoggedIn(false); setRightMenuOpen(false); }} className="block w-full py-2 text-sm text-gray-600">ログアウト</button>
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#fae100] text-gray-800 mb-2" onClick={() => setRightMenuOpen(false)}>ログイン</a>
+                    <div className="flex justify-center gap-2 text-xs text-gray-500">
+                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => setRightMenuOpen(false)}>アカウントをお探し</a>
+                      <span>|</span>
+                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => setRightMenuOpen(false)}>新規登録</a>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
+                <button type="button" onClick={() => { setActiveTab("kotae"); setRightMenuOpen(false); }} className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white">Q&Aを見る</button>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
+                <a href="/dailykorean" className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white" onClick={() => setRightMenuOpen(false)}>生活韓国語を見る</a>
+              </div>
+              <div className="border-t border-gray-200 pt-4">
+                <p className="text-xs font-semibold text-gray-500 mb-2">その他</p>
+                {rightMenuLinks.filter((l) => !["生活韓国語"].includes(l.label)).map((item) => (
+                  <a key={item.label} href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-sm text-gray-700 hover:text-[#0ea5e9]" onClick={() => setRightMenuOpen(false)}>{item.label}</a>
+                ))}
+              </div>
+            </div>
           </aside>
         </>
       )}
@@ -549,7 +612,7 @@ export default function QuizClient() {
         </>
       )}
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl mx-auto md:px-4">
-      <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full">
+      <div className="flex-1 flex flex-col md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
         <div className="quiz-container w-full md:shrink-0">
         <div className="px-4 pt-4 pb-2 rounded-t-[20px] bg-white">
@@ -618,7 +681,6 @@ export default function QuizClient() {
               <circle cx="12" cy="18" r="1.5" />
             </svg>
           </button>
-          {rightDesktopMenuToggle}
         </div>
         {activeTab === "kotae" ? (
           <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
@@ -898,7 +960,7 @@ export default function QuizClient() {
         </>
         )}
         </div>
-        {rightDesktopMenu}
+        {rightSidebar}
       </div>
       </div>
     </div>
