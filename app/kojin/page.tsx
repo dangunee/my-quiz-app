@@ -4,6 +4,8 @@ import Link from "next/link";
 
 const KOJIN_URL = "https://mirinae.jp/kojin.html?tab=tab01";
 
+const GOLD = "#c9a227"; // 은은한 금색
+
 function SectionCard({
   title,
   children,
@@ -12,8 +14,8 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-      <div className="bg-[#0ea5e9] px-4 py-2.5">
+    <div className="rounded-xl border border-amber-100 bg-white shadow-sm overflow-hidden">
+      <div className="px-4 py-2.5" style={{ backgroundColor: GOLD }}>
         <h3 className="text-white font-semibold text-sm">{title}</h3>
       </div>
       <div className="p-4 text-gray-800 text-sm leading-relaxed">{children}</div>
@@ -29,7 +31,8 @@ export default function KojinPage() {
           <div className="p-6 border-b border-gray-200">
             <Link
               href="/"
-              className="text-[#0ea5e9] hover:underline text-sm mb-4 inline-block"
+              className="hover:underline text-sm mb-4 inline-block"
+              style={{ color: GOLD }}
             >
               ← クイズに戻る
             </Link>
@@ -130,19 +133,19 @@ export default function KojinPage() {
 
           <SectionCard title="『生徒の声』">
             <div className="space-y-4">
-              <div className="border-l-2 border-[#0ea5e9] pl-3">
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
                 <p className="font-semibold text-gray-800">NS様｜6級｜2023.08</p>
                 <p className="mt-1 text-gray-700">この教室で初級1から習い始めて１年１０カ月でTOPIK6級に合格しました。素直に、とても嬉しいです。半年でTOPIK5級に合格されたミリネ受講生の記事を拝見し、直感でここだなと思いました。自分の生活リズムに合わせて勉強が出来て本当に良かったです。</p>
               </div>
-              <div className="border-l-2 border-[#0ea5e9] pl-3">
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
                 <p className="font-semibold text-gray-800">WY様｜4級｜2019.07</p>
                 <p className="mt-1 text-gray-700">ソウル大学教科書を通じて文法を学びながらも各課のテーマに沿った単語や表現、良く使う言い回しも教わりました。ネイティブの先生からの発音チェックでは、自分では気づかないクセや、発音のポイントを教わりました。ありがとうございました。</p>
               </div>
-              <div className="border-l-2 border-[#0ea5e9] pl-3">
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
                 <p className="font-semibold text-gray-800">IT様｜中級(TOPIK5級）｜2018.5</p>
                 <p className="mt-1 text-gray-700">私の興味にあわせて教えてくださること、質問に納得いくまでとことん説明してくださるところ、安心感があるところが良かったです。授業がほぼ韓国語になると、上達したんだなという実感も湧き嬉しくなります。</p>
               </div>
-              <div className="border-l-2 border-[#0ea5e9] pl-3">
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
                 <p className="font-semibold text-gray-800">TM様｜3級｜2016.8～2017.10</p>
                 <p className="mt-1 text-gray-700">テキストCDの音声とオーバーラッピングしながら読み、本文全てを暗記する等、他の教室ではあまりやらないような方法で学びました。ある一定の緊張感を保ちつつ授業を受ける事が出来るので、とても良いと感じました。</p>
               </div>
@@ -155,7 +158,8 @@ export default function KojinPage() {
             href="https://mirinae.jp/trial.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full py-3 px-4 bg-[#0ea5e9] text-white text-center font-semibold rounded-xl hover:bg-[#0284c7] transition-colors"
+            className="block w-full py-3 px-4 text-white text-center font-semibold rounded-xl transition-colors hover:opacity-90"
+            style={{ backgroundColor: GOLD }}
           >
             お申込みはこちら
           </a>
@@ -163,7 +167,8 @@ export default function KojinPage() {
             href={KOJIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full py-2 px-4 text-center text-sm text-[#0ea5e9] hover:underline mt-2"
+            className="block w-full py-2 px-4 text-center text-sm hover:underline mt-2"
+            style={{ color: GOLD }}
           >
             ミリネHPで詳しく見る →
           </a>
