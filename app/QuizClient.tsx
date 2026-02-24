@@ -282,16 +282,6 @@ export default function QuizClient() {
     }
   };
 
-  const rightMenuLinks = [
-    { label: "作文トレ", href: "https://writing.mirinae.jp", external: true },
-    { label: "音読トレ", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
-    { label: "初級クイズ", href: "https://quiz.mirinae.jp", external: true },
-    { label: "変則活用", href: "https://mirinae.jp", external: true },
-    { label: "初級文法", href: "https://mirinae.jp", external: true },
-    { label: "中級文法", href: "https://mirinae.jp", external: true },
-    { label: "上級文法", href: "https://mirinae.jp", external: true },
-  ];
-
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
     { label: "作文トレーニング", href: "https://writing.mirinae.jp", external: true },
@@ -413,6 +403,40 @@ export default function QuizClient() {
           </aside>
         </>
       )}
+      <div className="fixed bottom-6 right-4 z-[100]">
+        <button
+          type="button"
+          onClick={() => setRightMenuOpen((o) => !o)}
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0ea5e9] text-white shadow-lg hover:bg-[#0284c7] transition-colors"
+          aria-label="メニューを開く"
+          aria-expanded={rightMenuOpen}
+        >
+          <svg className="h-6 w-6 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="6" r="1.5" />
+            <circle cx="12" cy="12" r="1.5" />
+            <circle cx="12" cy="18" r="1.5" />
+          </svg>
+        </button>
+        {rightMenuOpen && (
+          <>
+            <div className="fixed inset-0 z-[99]" onClick={() => setRightMenuOpen(false)} aria-hidden />
+            <div className="absolute right-0 bottom-full mb-2 z-[101] w-48 py-2 bg-white rounded-xl shadow-xl border border-gray-200" role="menu">
+              {rightMenuLinks.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="block px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-100 first:rounded-t-xl last:rounded-b-xl"
+                  onClick={() => setRightMenuOpen(false)}
+                  role="menuitem"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl mx-auto md:px-4">
       <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
