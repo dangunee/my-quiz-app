@@ -675,11 +675,9 @@ export default function QuizClient() {
         ) : (
         <>
         <header className="quiz-header">
-          <div className="flex justify-between items-start gap-4">
-            <div className="flex items-center gap-2 min-w-0">
-              <h1 className="min-w-0 break-words">ミリネのクイズで学ぶ韓国語</h1>
-            </div>
-            <div className="hidden sm:block md:hidden shrink-0">
+          <div className="relative">
+            <h1 className="min-w-0 break-words text-center">ミリネのクイズで学ぶ韓国語</h1>
+            <div className="hidden sm:block md:hidden shrink-0 absolute right-0 top-0">
               {isLoggedIn ? (
                 <div className="flex flex-col items-end gap-1.5">
                   <div className="flex items-center gap-2">
