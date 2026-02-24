@@ -1,0 +1,164 @@
+"use client";
+
+import Link from "next/link";
+
+const TANKI_URL = "https://mirinae.jp/kojin.html?tab=tab02";
+
+const GOLD = "#c5a572";
+
+function SectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-amber-100 bg-white shadow-sm overflow-hidden">
+      <div className="px-4 py-2.5" style={{ backgroundColor: GOLD }}>
+        <h3 className="text-white font-semibold text-sm">{title}</h3>
+      </div>
+      <div className="p-4 text-gray-800 text-sm leading-relaxed">{children}</div>
+    </div>
+  );
+}
+
+export default function TankiKojinPage() {
+  return (
+    <div className="min-h-screen bg-[#f5f5f5] p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
+          <div className="p-6 border-b border-gray-200">
+            <Link
+              href="/"
+              className="hover:underline text-sm mb-4 inline-block"
+              style={{ color: GOLD }}
+            >
+              ← クイズに戻る
+            </Link>
+            <h1 className="text-2xl font-bold text-gray-800">短期個人レッスン</h1>
+            <p className="text-gray-600 text-sm mt-2">
+              集中的に学んでこそ上達。韓国語を本気でマスターしたい方にオススメ
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+          <SectionCard title="『短期個人レッスン』">
+            <p className="mb-3">
+              <strong>こんな悩みはありませんか？</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-1 mb-3">
+              <li>色んな勉強法を試してみたが、伸びない。</li>
+              <li>文法はある程度マスターしたつもりだけど、会話に自信が持てない</li>
+              <li>グループレッスンを受けているが、話す順番がなかなか回ってこない</li>
+              <li>基礎から学びたいけど、何をどうしたらいいかわからない</li>
+              <li>仕事で韓国語が必要で自分に合わせた指導が必要</li>
+            </ul>
+            <p className="mb-2">語学は集中的に学んでこそ上達します。韓国語を本気でマスターしたい方にオススメの短期集中個人レッスン！</p>
+            <p className="mb-2">自由予約制だから好きな曜日程間にレッスンが可能！週に複数回、もちろん毎日だってＯＫ！</p>
+            <p className="text-gray-600 text-xs">
+              ※短期集中個人レッスンとは：通常の個人レッスンチケットよりも短期間で集中的に勉強するチケット（12コマ、24コマ、48コマ、72コマ）を購入いただくことで１コマあたりのお値段が割安になるレッスンです。
+            </p>
+            <p className="mt-2 font-semibold">語学は毎日続けないと上達できません。ミリネで韓国語留学！</p>
+            <p>信頼できる韓国語講師が責任を持ってあなたをサポートします。自宅が遠くて通えない方にはスカイプでマンツーマンレッスンが可能です。毎日来られないという方もまとめて一日で４~５時間一気に勉強するなど、韓国語漬けにできます！</p>
+          </SectionCard>
+
+          <SectionCard title="対象">
+            <ul className="list-disc pl-5 space-y-1">
+              <li>入門・初級・中級・上級、全レベル対象</li>
+              <li>韓国留学、韓国滞在前に、短期間でレベルアップしたい方</li>
+            </ul>
+          </SectionCard>
+
+          <SectionCard title="日程">
+            <ul className="list-disc pl-5 space-y-1">
+              <li>火～金 10:00-17:00</li>
+              <li>予約制（50分）</li>
+            </ul>
+          </SectionCard>
+
+          <SectionCard title="テキスト">
+            <p>ミリネ韓国語テキスト１，２，３，４</p>
+          </SectionCard>
+
+          <SectionCard title="進め方">
+            <ol className="list-decimal pl-5 space-y-1">
+              <li>テキスト本文の理解（音読、和訳、発音指導、オバーラッピング、シャドーイング）</li>
+              <li>文法、語彙、表現の学習（音読、和訳、発音指導）</li>
+              <li>練習問題（作文、音読、聞き取り、聞き逃した箇所の和訳）</li>
+              <li>学んだことは次回に復習（講師：日本語→生徒さん：韓国語に訳して声に出す）</li>
+            </ol>
+          </SectionCard>
+
+          <SectionCard title="入学金">
+            <p className="font-semibold">9,800円</p>
+          </SectionCard>
+
+          <SectionCard title="授業料">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-sm min-w-[320px]">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-200 p-2 text-left">コース</th>
+                    <th className="border border-gray-200 p-2 text-left">1コマ</th>
+                    <th className="border border-gray-200 p-2 text-left">授業料（税込）</th>
+                    <th className="border border-gray-200 p-2 text-left">使用期限</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td className="border border-gray-200 p-2">12回</td><td className="border border-gray-200 p-2">4,280円</td><td className="border border-gray-200 p-2">56,496円</td><td className="border border-gray-200 p-2">1ヶ月</td></tr>
+                  <tr className="bg-gray-50"><td className="border border-gray-200 p-2">24回</td><td className="border border-gray-200 p-2">3,880円</td><td className="border border-gray-200 p-2">102,432円</td><td className="border border-gray-200 p-2">2ヶ月</td></tr>
+                  <tr><td className="border border-gray-200 p-2">48回</td><td className="border border-gray-200 p-2">3,580円</td><td className="border border-gray-200 p-2">189,024円</td><td className="border border-gray-200 p-2">3ヶ月</td></tr>
+                  <tr className="bg-gray-50"><td className="border border-gray-200 p-2">72回</td><td className="border border-gray-200 p-2">3,380円</td><td className="border border-gray-200 p-2">267,696円</td><td className="border border-gray-200 p-2">5ヶ月</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </SectionCard>
+
+          <SectionCard title="『生徒の声』">
+            <div className="space-y-4">
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
+                <p className="font-semibold text-gray-800">A様｜48コマコース｜2020.1</p>
+                <p className="mt-1 text-gray-700">約2か月間という短い期間でしたが、すごく充実した時間になりました。毎日2，3コマずつでも続けられました。教科書の内容に合わせながら、韓国の文化について教えてくださるのも魅力の１つでした。</p>
+              </div>
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
+                <p className="font-semibold text-gray-800">Y様｜24コマコース｜2020.2</p>
+                <p className="mt-1 text-gray-700">約1か月間通って、頭の中に自然と韓国語が浮かぶ瞬間が増えてきたと思います。少しずつ語彙力がついて表現できるようになってきました。毎週通って、ますます韓国語が好きになりました。</p>
+              </div>
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
+                <p className="font-semibold text-gray-800">K様｜48コマコース｜2020.3</p>
+                <p className="mt-1 text-gray-700">48時間大変お世話になりました。自分で言いたい事を韓国語で話せるようになることがとても楽しく思えました。毎日、前回の復習をして、習った語彙と文法を使いながらお話をする時間があったことはとてもためになりました。</p>
+              </div>
+              <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
+                <p className="font-semibold text-gray-800">H様｜24コマコース｜2018.11</p>
+                <p className="mt-1 text-gray-700">留学前に24回コースに通いました。スピーキングに自信がなかったので、マンツーマンで発音を教えてくださってとても勉強になりました。集中して勉強が出来て自信になりました。</p>
+              </div>
+            </div>
+          </SectionCard>
+        </div>
+
+        <div className="mt-4 p-4 bg-white rounded-2xl shadow-lg border-t border-gray-200">
+          <a
+            href="https://mirinae.jp/trial.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full py-3 px-4 text-white text-center font-semibold rounded-xl transition-colors hover:opacity-90"
+            style={{ backgroundColor: GOLD }}
+          >
+            お申込みはこちら
+          </a>
+          <a
+            href={TANKI_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full py-2 px-4 text-center text-sm hover:underline mt-2"
+            style={{ color: GOLD }}
+          >
+            ミリネHPで詳しく見る →
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
