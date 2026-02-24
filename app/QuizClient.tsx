@@ -46,6 +46,7 @@ export default function QuizClient() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [rightMenuOpen, setRightMenuOpen] = useState(false);
   const [desktopMenuCollapsed, setDesktopMenuCollapsed] = useState(true);
+  const [rightDesktopMenuCollapsed, setRightDesktopMenuCollapsed] = useState(true);
   const [blankWidth, setBlankWidth] = useState<number | null>(null);
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -371,25 +372,44 @@ export default function QuizClient() {
   );
 
   const rightDesktopMenu = (
-    <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 md:bg-white md:rounded-2xl md:shadow-lg md:border md:border-gray-200 md:overflow-hidden">
-      <div className="px-4 py-4 border-b border-gray-200">
-        <span className="font-semibold text-gray-800">コンテンツ</span>
-      </div>
-      <nav className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-0">
-          {rightMenuLinks.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-      </nav>
-    </aside>
+    <>
+      {!rightDesktopMenuCollapsed && (
+        <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 md:bg-white md:rounded-2xl md:shadow-lg md:border md:border-gray-200 md:overflow-hidden">
+          <div className="px-4 py-4 border-b border-gray-200">
+            <span className="font-semibold text-gray-800">コンテンツ</span>
+          </div>
+          <nav className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-0">
+              {rightMenuLinks.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+        </aside>
+      )}
+    </>
+  );
+
+  const rightDesktopMenuToggle = (
+    <button
+      type="button"
+      onClick={() => setRightDesktopMenuCollapsed((c) => !c)}
+      className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white/90 text-gray-600 hover:bg-white border border-gray-200/80 ml-auto"
+      aria-label={rightDesktopMenuCollapsed ? "コンテンツメニューを開く" : "コンテンツメニューを閉じる"}
+    >
+      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+        <circle cx="12" cy="6" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="12" cy="18" r="1.5" />
+      </svg>
+    </button>
   );
 
   const desktopMenuToggle = (
@@ -525,6 +545,7 @@ export default function QuizClient() {
               <circle cx="12" cy="18" r="1.5" />
             </svg>
           </button>
+          {rightDesktopMenuToggle}
         </div>
         {activeTab === "kotae" ? (
           <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
