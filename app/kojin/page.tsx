@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const KOJIN_URL = "https://mirinae.jp/kojin.html?tab=tab01";
 
-const GOLD = "#c9a227"; // 은은한 금색
+const GOLD = "#c5a572"; // 더 부드러운 금색
 
 function SectionCard({
   title,
