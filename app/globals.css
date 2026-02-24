@@ -339,3 +339,22 @@ body {
 .kotae-blog-content strong {
   font-weight: 600;
 }
+
+.kotae-blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+
+.kotae-blog-content th,
+.kotae-blog-content td {
+  border: 1px solid #e5e7eb;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+.kotae-blog-content th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
