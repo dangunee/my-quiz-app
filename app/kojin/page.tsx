@@ -4,7 +4,87 @@ import Link from "next/link";
 
 const KOJIN_URL = "https://mirinae.jp/kojin.html?tab=tab01";
 
-const GOLD = "#c5a572"; // 더 부드러운 금색
+const GOLD = "#c5a572";
+
+// Simple inline SVG icons
+const LeafIcon = () => (
+  <svg className="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.75S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+  </svg>
+);
+
+const ListenIcon = () => (
+  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <path d="M12 19v4" />
+    <path d="M8 23h8" />
+  </svg>
+);
+
+const ReadIcon = () => (
+  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    <path d="M8 7h8" />
+    <path d="M8 11h8" />
+  </svg>
+);
+
+const WriteIcon = () => (
+  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 19l7-7 3 3-7 7-3-3z" />
+    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+    <path d="M2 2l7.586 7.586" />
+  </svg>
+);
+
+const LevelIcon = () => (
+  <span className="text-2xl font-bold text-gray-600">A+</span>
+);
+
+const HeadphoneIcon = () => (
+  <svg className="w-8 h-8 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+  </svg>
+);
+
+const ChatIcon = () => (
+  <svg className="w-8 h-8 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
+const MicIcon = () => (
+  <svg className="w-8 h-8 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <path d="M12 19v4" />
+    <path d="M8 23h8" />
+  </svg>
+);
+
+const BuildingIcon = () => (
+  <svg className="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M3 21h18" />
+    <path d="M9 8h1" />
+    <path d="M9 12h1" />
+    <path d="M9 16h1" />
+    <path d="M14 8h1" />
+    <path d="M14 12h1" />
+    <path d="M14 16h1" />
+    <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" />
+  </svg>
+);
+
+const LaptopIcon = () => (
+  <svg className="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="2" y="4" width="20" height="14" rx="2" />
+    <path d="M22 18h-4" />
+    <path d="M6 18H2" />
+  </svg>
+);
 
 function SectionCard({
   title,
@@ -14,7 +94,7 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-amber-100 bg-white shadow-sm overflow-hidden">
+    <div className="rounded-xl bg-white shadow-md overflow-hidden">
       <div className="px-4 py-2.5" style={{ backgroundColor: GOLD }}>
         <h3 className="text-white font-semibold text-sm">{title}</h3>
       </div>
@@ -23,18 +103,69 @@ function SectionCard({
   );
 }
 
+function ProgressCircle({ percent }: { percent: number }) {
+  const r = 45;
+  const circumference = 2 * Math.PI * r;
+  const offset = circumference - (percent / 100) * circumference;
+  return (
+    <div className="relative w-24 h-24 flex-shrink-0">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        <circle
+          cx="50"
+          cy="50"
+          r={r}
+          fill="none"
+          stroke="#e5e7eb"
+          strokeWidth="8"
+        />
+        <circle
+          cx="50"
+          cy="50"
+          r={r}
+          fill="none"
+          stroke="#93c5fd"
+          strokeWidth="8"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="transition-all duration-500"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg font-bold text-gray-700">{percent}%</span>
+      </div>
+    </div>
+  );
+}
+
 export default function KojinPage() {
   return (
-    <div className="min-h-screen bg-[#f5f5f5] p-4">
+    <div className="min-h-screen bg-[#f0f0f0]">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
-          <div className="p-6 border-b border-gray-200">
+        {/* Header with blurred background */}
+        <div
+          className="relative rounded-t-2xl overflow-hidden shadow-lg mb-4"
+          style={{
+            backgroundImage: "url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              backdropFilter: "blur(8px)",
+              backgroundColor: "rgba(255,255,255,0.75)",
+            }}
+          />
+          <div className="relative p-6 pt-8">
             <Link
               href="/"
-              className="hover:underline text-sm mb-4 inline-block"
-              style={{ color: GOLD }}
+              className="inline-flex items-center text-sm mb-4 hover:underline"
+              style={{ color: "#2d7d46" }}
             >
-              ← クイズに戻る
+              <LeafIcon />
+              クイズに戻る
             </Link>
             <h1 className="text-2xl font-bold text-gray-800">個人レッスン</h1>
             <p className="text-gray-600 text-sm mt-2">
@@ -43,21 +174,80 @@ export default function KojinPage() {
           </div>
         </div>
 
-        <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-          <SectionCard title="『個人レッスン』">
-            <p>
-              個人レッスンではテキストを使用し、聞く・話す・読む・書くを総合的に学習します。文法、語彙、表現については講師から説明いたしますが、レッスンの7割は音読や会話となり、生徒さんにどんどん声を出していただくことをモットーとしております。丁寧な解説で文法のポイントを学んだ後は、練習問題で反復練習をし、「書くチカラ」も身につけます。授業中に学習した本文や例文は暗記していたただき、次のレッスン時に、韓国語で声に出していただきます。レッスンはこのように丁寧に行われるため、1コマで１つの課の50％~80％ほどの目安で進められます。
-            </p>
-          </SectionCard>
+        <div className="px-4 pb-8 space-y-4 max-h-[65vh] overflow-y-auto">
+          {/* Main 個人レッスン card with progress & skill icons */}
+          <div className="rounded-xl bg-white shadow-md overflow-hidden">
+            <div className="px-4 py-2.5" style={{ backgroundColor: GOLD }}>
+              <h3 className="text-white font-semibold text-sm">『個人レッスン』</h3>
+            </div>
+            <div className="p-4">
+              <div className="flex flex-wrap items-start gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <ProgressCircle percent={70} />
+                  <span className="text-sm text-gray-600">発話参加率</span>
+                </div>
+                <div className="flex gap-6 flex-1 min-w-[180px]">
+                  <div className="flex flex-col items-center gap-1">
+                    <div style={{ color: GOLD }}>
+                      <ListenIcon />
+                    </div>
+                    <span className="text-xs text-gray-600">聞く</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <div style={{ color: GOLD }}>
+                      <ReadIcon />
+                    </div>
+                    <span className="text-xs text-gray-600">読む</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <div style={{ color: GOLD }}>
+                      <WriteIcon />
+                    </div>
+                    <span className="text-xs text-gray-600">書く</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-800 text-sm leading-relaxed">
+                個人レッスンではテキストを使用し、聞く・話す・読む・書くを総合的に学習します。文法、語彙、表現については講師から説明いたしますが、レッスンの7割は音読や会話となり、生徒さんにどんどん声を出していただくことをモットーとしております。丁寧な解説で文法のポイントを学んだ後は、練習問題で反復練習をし、「書くチカラ」も身につけます。授業中に学習した本文や例文は暗記していたただき、次のレッスン時に、韓国語で声に出していただきます。レッスンはこのように丁寧に行われるため、1コマで１つの課の50％~80％ほどの目安で進められます。
+              </p>
+            </div>
+          </div>
 
-          <SectionCard title="対象">
-            <ul className="list-disc pl-5 space-y-1">
-              <li>入門・初級・中級、上級 全レベル対象</li>
-              <li>韓国語で上手に話せるようになりたい方</li>
-              <li>韓国ドラマやK-POPを聞き取れるようになりたい方</li>
-              <li>韓国語の正確な発音を身につけたい方</li>
-            </ul>
-          </SectionCard>
+          {/* 対象 section - icon cards grid */}
+          <div className="rounded-xl bg-[#f8f8f8] shadow-md overflow-hidden">
+            <div className="p-4">
+              <h3 className="font-semibold text-gray-800 mb-4">対象</h3>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-white rounded-lg p-3 shadow-sm flex items-start gap-2">
+                  <LevelIcon />
+                  <span className="text-xs text-gray-700">入門・初級・中級、上級 全レベル対象</span>
+                </div>
+                <div className="bg-white rounded-lg p-3 shadow-sm flex items-start gap-2">
+                  <HeadphoneIcon />
+                  <span className="text-xs text-gray-700">韓国ドラマやK-POPを聞き取れるようになりたい方</span>
+                </div>
+                <div className="bg-white rounded-lg p-3 shadow-sm flex items-start gap-2">
+                  <ChatIcon />
+                  <span className="text-xs text-gray-700">韓国語で上手に話せるようになりたい方</span>
+                </div>
+                <div className="bg-white rounded-lg p-3 shadow-sm flex items-start gap-2">
+                  <MicIcon />
+                  <span className="text-xs text-gray-700">韓国語の正確な発音を身につけたい方</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3 items-center">
+                <div className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 shadow-sm">
+                  <BuildingIcon />
+                  <span className="text-xs text-gray-700">新宿教室での対面授業</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 shadow-sm">
+                  <LaptopIcon />
+                  <span className="text-xs text-gray-700">オンライン授業（Skype又はZoom）</span>
+                </div>
+                <span className="text-xs" style={{ color: GOLD }}>どちらでも受講可能 →</span>
+              </div>
+            </div>
+          </div>
 
           <SectionCard title="授業形式">
             <ul className="list-disc pl-5 space-y-1">
@@ -153,7 +343,7 @@ export default function KojinPage() {
           </SectionCard>
         </div>
 
-        <div className="mt-4 p-4 bg-white rounded-2xl shadow-lg border-t border-gray-200">
+        <div className="p-4 bg-white rounded-2xl shadow-lg mx-4 mb-6">
           <a
             href="https://mirinae.jp/trial.html"
             target="_blank"
