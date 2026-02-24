@@ -370,6 +370,28 @@ export default function QuizClient() {
     </>
   );
 
+  const rightDesktopMenu = (
+    <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 md:bg-white md:rounded-2xl md:shadow-lg md:border md:border-gray-200 md:overflow-hidden">
+      <div className="px-4 py-4 border-b border-gray-200">
+        <span className="font-semibold text-gray-800">コンテンツ</span>
+      </div>
+      <nav className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-0">
+          {rightMenuLinks.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </aside>
+  );
+
   const desktopMenuToggle = (
     <button
       type="button"
@@ -385,6 +407,46 @@ export default function QuizClient() {
 
   return (
     <div className="app-wrapper">
+      {rightMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/30 md:hidden"
+            onClick={() => setRightMenuOpen(false)}
+            aria-hidden
+          />
+          <aside
+            className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden"
+            style={{ animation: "slideInRight 0.2s ease" }}
+          >
+            <div className="flex items-center justify-between border-b px-4 py-3">
+              <span className="font-semibold text-gray-800">コンテンツ</span>
+              <button
+                type="button"
+                onClick={() => setRightMenuOpen(false)}
+                className="rounded p-2 text-gray-500 hover:bg-gray-100"
+                aria-label="メニューを閉じる"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <nav className="p-4">
+              {rightMenuLinks.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="block py-3 text-gray-800 hover:text-red-600 border-b last:border-b-0"
+                  onClick={() => setRightMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        </>
+      )}
       {menuOpen && (
         <>
           <div
@@ -413,40 +475,6 @@ export default function QuizClient() {
           </aside>
         </>
       )}
-      <div className="fixed bottom-6 right-4 z-[100]">
-        <button
-          type="button"
-          onClick={() => setRightMenuOpen((o) => !o)}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0ea5e9] text-white shadow-lg hover:bg-[#0284c7] transition-colors"
-          aria-label="メニューを開く"
-          aria-expanded={rightMenuOpen}
-        >
-          <svg className="h-6 w-6 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="6" r="1.5" />
-            <circle cx="12" cy="12" r="1.5" />
-            <circle cx="12" cy="18" r="1.5" />
-          </svg>
-        </button>
-        {rightMenuOpen && (
-          <>
-            <div className="fixed inset-0 z-[99]" onClick={() => setRightMenuOpen(false)} aria-hidden />
-            <div className="absolute right-0 bottom-full mb-2 z-[101] w-48 py-2 bg-white rounded-xl shadow-xl border border-gray-200" role="menu">
-              {rightMenuLinks.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="block px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-100 first:rounded-t-xl last:rounded-b-xl"
-                  onClick={() => setRightMenuOpen(false)}
-                  role="menuitem"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl mx-auto md:px-4">
       <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
@@ -484,6 +512,18 @@ export default function QuizClient() {
             }`}
           >
             Q&A
+          </button>
+          <button
+            type="button"
+            onClick={() => setRightMenuOpen(true)}
+            className="md:hidden shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+            aria-label="コンテンツメニューを開く"
+          >
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="6" r="1.5" />
+              <circle cx="12" cy="12" r="1.5" />
+              <circle cx="12" cy="18" r="1.5" />
+            </svg>
           </button>
         </div>
         {activeTab === "kotae" ? (
@@ -776,6 +816,7 @@ export default function QuizClient() {
         </>
         )}
         </div>
+        {rightDesktopMenu}
       </div>
       </div>
     </div>
