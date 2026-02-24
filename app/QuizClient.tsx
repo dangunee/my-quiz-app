@@ -645,7 +645,7 @@ export default function QuizClient() {
         ) : showPaywall ? (
           <>
             <header className="quiz-header">
-              <h1 className="min-w-0 break-words">ミリネの クイズで学ぶ韓国語</h1>
+              <h1 className="min-w-0 break-words">ミリネのクイズで学ぶ韓国語</h1>
               <div className="quiz-meta">
                 <span className="quiz-counter">{FREE_QUIZ_LIMIT} / {total}</span>
               </div>
@@ -677,7 +677,7 @@ export default function QuizClient() {
         <header className="quiz-header">
           <div className="flex justify-between items-start gap-4">
             <div className="flex items-center gap-2 min-w-0">
-              <h1 className="min-w-0 break-words">ミリネの クイズで学ぶ韓国語</h1>
+              <h1 className="min-w-0 break-words">ミリネのクイズで学ぶ韓国語</h1>
             </div>
             <div className="hidden sm:block md:hidden shrink-0">
               {isLoggedIn ? (
