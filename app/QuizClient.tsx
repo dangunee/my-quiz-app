@@ -305,6 +305,59 @@ export default function QuizClient() {
     { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab01", external: true },
   ];
 
+  const roundMenuItems = menuLinks.slice(1);
+
+  const menuIcons: Record<string, React.ReactNode> = {
+    "個人レッスン": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    "短期個人": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    ),
+    "発音講座": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+        <path d="M12 19v4" />
+        <path d="M8 23h8" />
+      </svg>
+    ),
+    "会話クラス": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+    "音読クラス": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        <path d="M8 7h8" />
+        <path d="M8 11h8" />
+      </svg>
+    ),
+    "集中講座": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="6" />
+        <circle cx="12" cy="12" r="2" />
+      </svg>
+    ),
+    "申し込み": (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+    ),
+  };
+
+  const menuColors = ["#f59e0b", "#f97316", "#3b82f6", "#06b6d4", "#8b5cf6", "#ec4899", "#10b981"];
+
   const navLinks = (
     <div className="space-y-0">
       {isLoggedIn ? (
@@ -499,7 +552,27 @@ export default function QuizClient() {
       <div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
         <div className="quiz-container w-full md:shrink-0">
-        <div className="flex items-center gap-2 p-3 border-b border-gray-200 bg-gray-50 rounded-t-[20px]">
+        <div className="px-4 pt-4 pb-2 rounded-t-[20px] bg-white">
+          <div className="grid grid-cols-4 gap-2">
+            {roundMenuItems.map((item, i) => (
+              <a
+                key={item.label}
+                href={item.href}
+                {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-full bg-white border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
+              >
+                <span
+                  className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: `${menuColors[i % menuColors.length]}20`, color: menuColors[i % menuColors.length] }}
+                >
+                  {menuIcons[item.label]}
+                </span>
+                <span className="text-sm font-medium text-gray-800 truncate">{item.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 p-3 border-b border-gray-200 bg-gray-50">
           {desktopMenuToggle}
           <button
             type="button"
