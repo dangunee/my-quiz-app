@@ -45,6 +45,7 @@ export default function QuizClient() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [rightMenuOpen, setRightMenuOpen] = useState(false);
+  const [desktopRightSidebarVisible, setDesktopRightSidebarVisible] = useState(true);
   const [rightSidebarExpanded, setRightSidebarExpanded] = useState(false);
   const [expandedMenuType, setExpandedMenuType] = useState<"qa" | "dailykorean" | null>(null);
   const [desktopMenuCollapsed, setDesktopMenuCollapsed] = useState(true);
@@ -450,9 +451,9 @@ export default function QuizClient() {
 
   const rightSidebar = (
     <aside
-      className={`hidden md:flex md:flex-col md:shrink-0 md:gap-4 transition-all duration-300 ease-out ${
-        rightSidebarExpanded ? "md:w-[420px]" : "md:w-64"
-      }`}
+      className={`hidden md:shrink-0 md:gap-4 transition-all duration-300 ease-out ${
+        desktopRightSidebarVisible ? "md:flex md:flex-col" : "md:hidden"
+      } ${rightSidebarExpanded ? "md:w-[420px]" : "md:w-64"}`}
     >
       {/* ログイン・マイページ カード */}
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
@@ -832,6 +833,18 @@ export default function QuizClient() {
             onClick={() => setRightMenuOpen(true)}
             className="md:hidden shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
             aria-label="コンテンツメニューを開く"
+          >
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="6" r="1.5" />
+              <circle cx="12" cy="12" r="1.5" />
+              <circle cx="12" cy="18" r="1.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => setDesktopRightSidebarVisible((v) => !v)}
+            className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+            aria-label="コンテンツメニューを開閉"
           >
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <circle cx="12" cy="6" r="1.5" />
