@@ -37,12 +37,33 @@ const SEIKATSU_LIST = [
 ];
 
 const BLOG_URL = "https://mirinae.jp/blog/?cat=2";
+const ITEMS_PER_PAGE = 10;
 
 export default function DailyKoreanPage() {
   const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
   const [content, setContent] = useState<{ html: string; url: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(SEIKATSU_LIST.length / ITEMS_PER_PAGE);
+  const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = SEIKATSU_LIST.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+  const goToPage = (page: number) => {
+    const p = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(p);
+    setExpandedTitle(null);
+  };
+
+  const getPageNumbers = () => {
+    const delta = 2;
+    const range: number[] = [];
+    const rangeStart = Math.max(1, currentPage - delta);
+    const rangeEnd = Math.min(totalPages, currentPage + delta);
+    for (let i = rangeStart; i <= rangeEnd; i++) range.push(i);
+    return range;
+  };
 
   useEffect(() => {
     if (!expandedTitle) {
@@ -87,7 +108,7 @@ export default function DailyKoreanPage() {
         </div>
 
         <ul className="divide-y divide-gray-200">
-          {SEIKATSU_LIST.map((title, i) => (
+          {pageItems.map((title, i) => (
             <li key={i} className="border-b border-gray-200 last:border-b-0">
               <button
                 type="button"
@@ -134,6 +155,59 @@ export default function DailyKoreanPage() {
             </li>
           ))}
         </ul>
+
+        {totalPages > 1 && (
+          <div className="flex flex-wrap items-center justify-center gap-0 py-4 px-4 border-t border-gray-200 bg-white">
+            <nav className="inline-flex rounded-lg overflow-hidden border border-gray-300">
+              <button
+                type="button"
+                onClick={() => goToPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 text-sm text-[#0ea5e9] bg-white border-r border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                &laquo;
+              </button>
+              <button
+                type="button"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 text-sm text-[#0ea5e9] bg-white border-r border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                &lt; Prev
+              </button>
+              {getPageNumbers().map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => goToPage(p)}
+                  className={`px-3 py-1.5 text-sm border-r border-gray-300 ${
+                    currentPage === p
+                      ? "bg-[#0ea5e9] text-white"
+                      : "text-[#0ea5e9] bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 text-sm text-[#0ea5e9] bg-white border-r border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next &gt;
+              </button>
+              <button
+                type="button"
+                onClick={() => goToPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 text-sm text-[#0ea5e9] bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed border-r-0"
+              >
+                &raquo;
+              </button>
+            </nav>
+          </div>
+        )}
 
         <div className="p-4 border-t border-gray-200 bg-gray-50">
           <a
