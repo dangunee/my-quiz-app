@@ -645,7 +645,7 @@ export default function QuizClient() {
         ) : showPaywall ? (
           <>
             <header className="quiz-header">
-              <h1 className="min-w-0 break-words">ミリネ韓国語教室 クイズで学ぶ韓国語</h1>
+              <h1 className="min-w-0 break-words">ミリネの クイズで学ぶ韓国語</h1>
               <div className="quiz-meta">
                 <span className="quiz-counter">{FREE_QUIZ_LIMIT} / {total}</span>
               </div>
@@ -677,17 +677,7 @@ export default function QuizClient() {
         <header className="quiz-header">
           <div className="flex justify-between items-start gap-4">
             <div className="flex items-center gap-2 min-w-0">
-              <button
-                type="button"
-                onClick={() => setMenuOpen(true)}
-                className="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 text-white md:hidden"
-                aria-label="メニューを開く"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <h1 className="min-w-0 break-words">ミリネ韓国語教室 クイズで学ぶ韓国語</h1>
+              <h1 className="min-w-0 break-words">ミリネの クイズで学ぶ韓国語</h1>
             </div>
             <div className="hidden sm:block md:hidden shrink-0">
               {isLoggedIn ? (
