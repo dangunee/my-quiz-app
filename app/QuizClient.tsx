@@ -282,6 +282,16 @@ export default function QuizClient() {
     }
   };
 
+  const rightMenuLinks = [
+    { label: "作文トレ", href: "https://writing.mirinae.jp", external: true },
+    { label: "音読トレ", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
+    { label: "初級クイズ", href: "https://quiz.mirinae.jp", external: true },
+    { label: "変則活用", href: "https://mirinae.jp", external: true },
+    { label: "初級文法", href: "https://mirinae.jp", external: true },
+    { label: "中級文法", href: "https://mirinae.jp", external: true },
+    { label: "上級文法", href: "https://mirinae.jp", external: true },
+  ];
+
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
     { label: "作文トレーニング", href: "https://writing.mirinae.jp", external: true },
