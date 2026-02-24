@@ -86,6 +86,13 @@ const LaptopIcon = () => (
   </svg>
 );
 
+const ClockIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: GOLD }}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v6l4 2" />
+  </svg>
+);
+
 function SectionCard({
   title,
   children,
@@ -249,58 +256,95 @@ export default function KojinPage() {
             </div>
           </div>
 
-          <SectionCard title="授業形式">
-            <ul className="list-disc pl-5 space-y-1">
-              <li>新宿教室での対面授業</li>
-              <li>オンライン授業（Skype又はZoom）</li>
-              <li>どちらでも受講可</li>
-            </ul>
-          </SectionCard>
+          {/* 授業形式〜進め方：新デザイン */}
+          <div className="rounded-xl bg-white shadow-md overflow-hidden">
+            <div className="p-4">
+              <p className="text-gray-400 text-xs mb-1">※対面・オンラインどちらでも受講可能</p>
+              <h3 className="text-lg font-bold text-gray-800">授業形式</h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                <li>新宿教室での対面授業</li>
+                <li>オンライン授業（Skype又はZoom）</li>
+                <li>どちらでも受講可</li>
+              </ul>
 
-          <SectionCard title="日程">
-            <ul className="list-disc pl-5 space-y-1">
-              <li>火～金 10:00-21:00</li>
-              <li>土 10:00-18:00</li>
-              <li>日 10:00-17:00</li>
-              <li>予約制（50分）</li>
-            </ul>
-          </SectionCard>
+              <h3 className="text-lg font-bold text-gray-800 mt-6 flex items-center gap-2">
+                日程
+                <ClockIcon className="w-4 h-4" />
+              </h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <div className="flex items-center gap-3">
+                <ClockIcon className="w-6 h-6 flex-shrink-0" />
+                <div className="text-sm text-gray-700 space-y-0.5">
+                  <p>火～金 10:00-21:00</p>
+                  <p>土 10:00-18:00 / 日 10:00-17:00</p>
+                  <p>予約制（50分）</p>
+                </div>
+              </div>
 
-          <SectionCard title="テキスト">
-            <p>
-              ミリネ独自の教材（ミリネ1-4）（ミリネのオリジナルストーリーも入っているので、楽しく韓国語を学ぶことができます）
-              <br />
-              ソウル大韓国語（1A-6B）
-              <br />
-              その他、学習ニーズに合わせて教材を選定させていただきます。
-            </p>
-          </SectionCard>
+              <h3 className="text-lg font-bold text-gray-800 mt-6 flex items-center gap-2">
+                テキスト
+                <ClockIcon className="w-4 h-4" />
+              </h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div
+                  className="rounded-lg p-4 border"
+                  style={{ backgroundColor: "#faf8f5", borderColor: GOLD }}
+                >
+                  <p className="font-semibold text-gray-800 text-sm">ミリネ韓国語テキスト</p>
+                  <p className="text-gray-500 text-xs mt-1">ミリネのオリジナルストーリーも入っているので、楽しく韓国語を学べます</p>
+                </div>
+                <div
+                  className="rounded-lg p-4 border"
+                  style={{ backgroundColor: "#faf8f5", borderColor: GOLD }}
+                >
+                  <p className="font-semibold text-gray-800 text-sm">ソウル大韓国語</p>
+                  <p className="text-gray-500 text-xs mt-1">ソウル大学の教科書で体系的に韓国語を学べます（1A-6B）</p>
+                </div>
+              </div>
+              <p className="text-gray-500 text-xs mt-2">その他、学習ニーズに合わせて教材を選定いたします。</p>
 
-          <SectionCard title="進め方">
-            <ol className="list-decimal pl-5 space-y-1">
-              <li>テキスト本文の理解（音読、和訳、発音指導、オバーラッピング、シャドーイング）</li>
-              <li>文法、語彙、表現の学習（音読、和訳、発音指導）</li>
-              <li>練習問題（作文、音読、聞き取り、聞き逃した箇所の和訳）</li>
-              <li>学んだことは次回に復習（講師：日本語→生徒さん：韓国語に訳して声に出す）</li>
-            </ol>
-          </SectionCard>
+              <h3 className="text-lg font-bold text-gray-800 mt-6">進め方</h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <div className="mt-4">
+                <div className="flex w-full h-2 rounded-full overflow-hidden bg-gray-200">
+                  <div className="h-full rounded-l-full" style={{ width: "25%", backgroundColor: GOLD }} />
+                  <div className="h-full" style={{ width: "25%", backgroundColor: GOLD }} />
+                  <div className="h-full" style={{ width: "25%", backgroundColor: GOLD }} />
+                  <div className="h-full rounded-r-full" style={{ width: "25%", backgroundColor: GOLD }} />
+                </div>
+                <div className="flex justify-between mt-2 text-xs text-gray-600">
+                  <span className="w-[22%] text-center">①本文理解</span>
+                  <span className="w-[22%] text-center">②文法・語彙</span>
+                  <span className="w-[22%] text-center">③練習問題</span>
+                  <span className="w-[22%] text-center">④復習</span>
+                </div>
+                <ol className="mt-4 space-y-2 text-sm text-gray-700 list-decimal list-inside">
+                  <li>テキスト本文の理解（音読、和訳、発音指導、オバーラッピング、シャドーイング）</li>
+                  <li>文法、語彙、表現の学習（音読、和訳、発音指導）</li>
+                  <li>練習問題（作文、音読、聞き取り、聞き逃した箇所の和訳）</li>
+                  <li>学んだことは次回に復習（講師：日本語→生徒さん：韓国語に訳して声に出す）</li>
+                </ol>
+              </div>
 
-          <SectionCard title="内容">
-            <ol className="list-decimal pl-5 space-y-2">
-              <li>主に音読(声に出して読む)を中心とした指導をしています。音読で大切なのは、その場で先生から、きちんと発音と抑揚の指摘を受け、直してもらうことです。スポーツ選手のトレーナーのように、発音と抑揚の技術を教え、練習をそばで支えてくれる人が必要なのです。練習問題も声に出して解いていただきます。</li>
-              <li>そのため授業は予習を前提として進められます。予習課題をしていただくことで週1回や2~3回の授業を無駄なく消化できるようになります。</li>
-              <li>韓国語のテキスト本文や文法の和訳も事前にしてきていただきます。当教室では受講生の和訳に正確なチェックを入れ、より効果的に覚えられるよう指導します。もちろん和訳していく中で出てくる似ている文型や微妙なニュアンスの違いも漏れなく解説いたします。</li>
-              <li>「オバーラッピング」と「シャドーイング」を使って、ネイティブの話すスピードについて行けるようなトレーニングを行います。<br /><span className="text-gray-600 text-xs">※オバーラッピング:音声と同時に読むこと　シャドーイング:テキストを見ないで音声だけを聞きながら重ねて言うこと</span></li>
-              <li>韓国語訳の復習を通して学んだ内容の定着を図る：１つの課が終わったら、学習した「文型や表現」は次の課を始める前に韓国語訳を行い、どのくらい頭の中に定着したか確認します。講師が日本語で例文を話します。<br /><span className="text-gray-600 text-xs">※ミリネのレッスンは主に受講生の方が約7割話すことで、聞き取り力・会話力の両方を引きあげます。</span></li>
-            </ol>
-          </SectionCard>
+              <h3 className="text-lg font-bold text-gray-800 mt-6">内容</h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-700">
+                <li>主に音読(声に出して読む)を中心とした指導をしています。音読で大切なのは、その場で先生から、きちんと発音と抑揚の指摘を受け、直してもらうことです。スポーツ選手のトレーナーのように、発音と抑揚の技術を教え、練習をそばで支えてくれる人が必要なのです。練習問題も声に出して解いていただきます。</li>
+                <li>そのため授業は予習を前提として進められます。予習課題をしていただくことで週1回や2~3回の授業を無駄なく消化できるようになります。</li>
+                <li>韓国語のテキスト本文や文法の和訳も事前にしてきていただきます。当教室では受講生の和訳に正確なチェックを入れ、より効果的に覚えられるよう指導します。もちろん和訳していく中で出てくる似ている文型や微妙なニュアンスの違いも漏れなく解説いたします。</li>
+                <li>「オバーラッピング」と「シャドーイング」を使って、ネイティブの話すスピードについて行けるようなトレーニングを行います。<br /><span className="text-gray-500 text-xs">※オバーラッピング:音声と同時に読むこと　シャドーイング:テキストを見ないで音声だけを聞きながら重ねて言うこと</span></li>
+                <li>韓国語訳の復習を通して学んだ内容の定着を図る：１つの課が終わったら、学習した「文型や表現」は次の課を始める前に韓国語訳を行い、どのくらい頭の中に定着したか確認します。講師が日本語で例文を話します。<br /><span className="text-gray-500 text-xs">※ミリネのレッスンは主に受講生の方が約7割話すことで、聞き取り力・会話力の両方を引きあげます。</span></li>
+              </ol>
 
-          <SectionCard title="入学金">
-            <p className="font-semibold">9,800円</p>
-          </SectionCard>
+              <h3 className="text-lg font-bold text-gray-800 mt-6">入学金</h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <p className="font-semibold text-gray-800">9,800円</p>
 
-          <SectionCard title="授業料">
-            <div className="overflow-x-auto">
+              <h3 className="text-lg font-bold text-gray-800 mt-6">授業料</h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <div className="overflow-x-auto">
               <table className="w-full border-collapse text-sm min-w-[320px]">
                 <thead>
                   <tr className="bg-gray-100">
@@ -318,11 +362,11 @@ export default function KojinPage() {
                   <tr><td className="border border-gray-200 p-2">※月謝制(月8コマ)</td><td className="border border-gray-200 p-2">5,100円</td><td className="border border-gray-200 p-2">40,800円（税込44,880円）</td><td className="border border-gray-200 p-2">1ヶ月</td></tr>
                 </tbody>
               </table>
-            </div>
-          </SectionCard>
+              </div>
 
-          <SectionCard title="『生徒の声』">
-            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-800 mt-6">『生徒の声』</h3>
+              <div className="h-px my-3" style={{ backgroundColor: GOLD }} />
+              <div className="space-y-4">
               <div className="border-l-2 pl-3" style={{ borderColor: GOLD }}>
                 <p className="font-semibold text-gray-800">NS様｜6級｜2023.08</p>
                 <p className="mt-1 text-gray-700">この教室で初級1から習い始めて１年１０カ月でTOPIK6級に合格しました。素直に、とても嬉しいです。半年でTOPIK5級に合格されたミリネ受講生の記事を拝見し、直感でここだなと思いました。自分の生活リズムに合わせて勉強が出来て本当に良かったです。</p>
@@ -340,7 +384,8 @@ export default function KojinPage() {
                 <p className="mt-1 text-gray-700">テキストCDの音声とオーバーラッピングしながら読み、本文全てを暗記する等、他の教室ではあまりやらないような方法で学びました。ある一定の緊張感を保ちつつ授業を受ける事が出来るので、とても良いと感じました。</p>
               </div>
             </div>
-          </SectionCard>
+            </div>
+          </div>
         </div>
 
         <div className="p-4 bg-white rounded-2xl shadow-lg mx-4 mb-6">
