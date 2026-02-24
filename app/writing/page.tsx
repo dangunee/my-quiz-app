@@ -609,9 +609,9 @@ export default function WritingPage() {
                             { label: "対象", content: "初、中、上級(レベルの区別はありません)" },
                             { label: "目標", content: "語彙・文型を増やし、自然な韓国語の表現を身につける" },
                             { label: "授業の流れ", content: <>金曜にテーマ送付 → 月曜夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出</> },
-                            { label: "日程", content: "1月9日(金)から10週間" },
+                            { label: "日程", content: "4月4日(金)から10週間" },
                             { label: "教室", content: "オンライン" },
-                            { label: "募集期間", content: "～2026年1月7日(水)" },
+                            { label: "募集期間", content: "～2026年4月3日(木)" },
                             { label: "テキスト", content: "ミリネ独自テキスト(PDF)※事前にメールでお送りします" },
                           ].map((row, i) => (
                             <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
