@@ -296,8 +296,6 @@ export default function QuizClient() {
 
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
-    { label: "作文トレーニング", href: "https://writing.mirinae.jp", external: true },
-    { label: "ホームページ", href: "https://mirinae.jp", external: true },
     { label: "個人レッスン", href: "https://mirinae.jp/kojin.html?tab=tab01", external: true },
     { label: "発音講座", href: "https://mirinae.jp/kaiwa.html?tab=tab03", external: true },
     { label: "会話クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab01", external: true },

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 const SEIKATSU_LIST = [
   "生活韓国語300［交通違反］",
@@ -35,11 +38,42 @@ const SEIKATSU_LIST = [
 
 const BLOG_URL = "https://mirinae.jp/blog/?cat=2";
 
-export default function SeikatsuPage() {
+export default function DailyKoreanPage() {
+  const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
+  const [content, setContent] = useState<{ html: string; url: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!expandedTitle) {
+      setContent(null);
+      setError(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    fetch(`/api/dailykorean-blog?title=${encodeURIComponent(expandedTitle)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error && !data.html) {
+          setError(data.error);
+          setContent(null);
+        } else {
+          setContent({ html: data.html || "", url: data.url || "" });
+          setError(null);
+        }
+      })
+      .catch((err) => {
+        setError(err.message || "読み込みに失敗しました");
+        setContent(null);
+      })
+      .finally(() => setLoading(false));
+  }, [expandedTitle]);
+
   return (
     <div className="min-h-screen bg-[#f5f5f5] p-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <div className="mb-6">
+      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="p-6 border-b border-gray-200">
           <Link
             href="/"
             className="text-[#0ea5e9] hover:underline text-sm mb-4 inline-block"
@@ -52,29 +86,65 @@ export default function SeikatsuPage() {
           </p>
         </div>
 
-        <a
-          href={BLOG_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full py-3 px-4 mb-6 bg-[#0ea5e9] text-white text-center font-semibold rounded-xl hover:bg-[#0284c7] transition-colors"
-        >
-          すべての記事を見る（ミリネブログ）
-        </a>
-
-        <ul className="space-y-0 border-t border-gray-200">
+        <ul className="divide-y divide-gray-200">
           {SEIKATSU_LIST.map((title, i) => (
-            <li key={i} className="border-b border-gray-100 last:border-b-0">
-              <a
-                href={BLOG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block py-3 px-2 text-gray-800 hover:text-[#0ea5e9] hover:bg-gray-50 transition-colors"
+            <li key={i} className="border-b border-gray-200 last:border-b-0">
+              <button
+                type="button"
+                onClick={() =>
+                  setExpandedTitle((prev) => (prev === title ? null : title))
+                }
+                className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2 hover:bg-gray-50"
               >
-                {title}
-              </a>
+                <span>{title}</span>
+                <span
+                  className={`shrink-0 text-gray-400 transition-transform ${
+                    expandedTitle === title ? "rotate-180" : ""
+                  }`}
+                >
+                  ▼
+                </span>
+              </button>
+              {expandedTitle === title && (
+                <div className="border-t border-gray-200 bg-gray-50 overflow-hidden">
+                  <div className="max-h-[500px] overflow-y-auto p-4">
+                    {loading ? (
+                      <p className="text-center text-gray-500 py-8">読み込み中...</p>
+                    ) : error ? (
+                      <p className="text-center text-red-500 py-4">{error}</p>
+                    ) : content?.html ? (
+                      <div
+                        className="kotae-blog-content text-gray-800"
+                        dangerouslySetInnerHTML={{ __html: content.html }}
+                      />
+                    ) : null}
+                  </div>
+                  {content?.url && (
+                    <a
+                      href={content.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block py-2 px-4 text-center text-xs text-[#0ea5e9] hover:underline border-t border-gray-200"
+                    >
+                      ブログで続きを読む →
+                    </a>
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ul>
+
+        <div className="p-4 border-t border-gray-200 bg-gray-50">
+          <a
+            href={BLOG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full py-3 px-4 bg-[#0ea5e9] text-white text-center font-semibold rounded-xl hover:bg-[#0284c7] transition-colors"
+          >
+            すべての記事を見る（ミリネブログ）
+          </a>
+        </div>
       </div>
     </div>
   );
