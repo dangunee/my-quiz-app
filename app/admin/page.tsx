@@ -44,12 +44,13 @@ type OndokuSubmission = {
   user?: { email?: string; name?: string; username?: string };
 };
 
-type OndokuFeedbackSegment = { kadai: string; correct: string; learner: string };
+type OndokuFeedbackSegment = { kadai: string; correct: string; learner: string; [key: string]: string };
 type OndokuFeedbackForm = {
   bunkei: string;
   wayaku: string;
   point: string;
   segments: OndokuFeedbackSegment[];
+  extraColumns: { key: string; label: string }[];
   kaisetsu: string;
 };
 
@@ -201,12 +202,21 @@ export default function AdminPage() {
     })();
     try {
       const parsed = JSON.parse(sub.feedback || "{}");
+      const extraCols = Array.isArray(parsed.extraColumns) ? parsed.extraColumns : [];
       if (parsed.bunkei != null || parsed.wayaku != null || parsed.point != null || parsed.kaisetsu != null) {
+        const segs = (parsed.segments ?? segments) as OndokuFeedbackSegment[];
+        extraCols.forEach((c: { key?: string; label?: string }) => {
+          const k = c?.key;
+          if (k && k !== "kadai" && k !== "correct" && k !== "learner") {
+            segs.forEach((s) => { if (!(k in s)) (s as Record<string, string>)[k] = ""; });
+          }
+        });
         return {
           bunkei: parsed.bunkei ?? ex?.modelContent?.theme ?? "",
           wayaku: parsed.wayaku ?? ex?.topic ?? "",
           point: parsed.point ?? ex?.modelContent?.pronunciationNote ?? "",
-          segments: parsed.segments ?? segments,
+          segments: segs,
+          extraColumns: extraCols,
           kaisetsu: parsed.kaisetsu ?? "",
         };
       }
@@ -216,6 +226,7 @@ export default function AdminPage() {
       wayaku: ex?.topic ?? "",
       point: ex?.modelContent?.pronunciationNote ?? "",
       segments,
+      extraColumns: [],
       kaisetsu: sub.feedback && !sub.feedback.startsWith("{") ? sub.feedback : "",
     };
   }
@@ -1773,6 +1784,20 @@ export default function AdminPage() {
                                           <td className="py-1 px-2 font-medium">課題</td>
                                           <td className="py-1 px-2 font-medium">正しい発音</td>
                                           <td className="py-1 px-2 font-medium">学習者の発音</td>
+                                          {ondokuFeedbackForm.extraColumns.map((col) => (
+                                            <td key={col.key} className="py-1 px-2 font-medium border-l border-gray-200">
+                                              <span className="mr-1">{col.label}</span>
+                                              <button type="button" onClick={() => setOndokuFeedbackForm((f) => {
+                                                if (!f) return f;
+                                                const newCols = f.extraColumns.filter((c) => c.key !== col.key);
+                                                const segs = f.segments.map((s) => {
+                                                  const { [col.key]: _, ...rest } = s;
+                                                  return rest as OndokuFeedbackSegment;
+                                                });
+                                                return { ...f, extraColumns: newCols, segments: segs };
+                                              })} className="text-red-500 text-xs hover:underline">×</button>
+                                            </td>
+                                          ))}
                                           <td className="py-1 px-2 w-12" />
                                         </tr>
                                         {ondokuFeedbackForm.segments.map((seg, i) => (
@@ -1802,14 +1827,34 @@ export default function AdminPage() {
                                                 return { ...f, segments: segs };
                                               })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
                                             </td>
+                                            {ondokuFeedbackForm.extraColumns.map((col) => (
+                                              <td key={col.key} className="py-1 px-2 border border-gray-200">
+                                                <input value={(seg as Record<string, string>)[col.key] ?? ""} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                                  if (!f) return f;
+                                                  const segs = [...f.segments];
+                                                  segs[i] = { ...segs[i], [col.key]: e.target.value };
+                                                  return { ...f, segments: segs };
+                                                })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                              </td>
+                                            ))}
                                             <td className="py-1 px-2">
                                               <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: f.segments.filter((_, j) => j !== i) })} className="text-red-600 text-xs hover:underline">削除</button>
                                             </td>
                                           </tr>
                                         ))}
                                         <tr>
-                                          <td colSpan={5} className="py-1">
-                                            <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: [...f.segments, { kadai: "", correct: "", learner: "" }] })} className="text-red-600 text-sm hover:underline">+ 行を追加</button>
+                                          <td colSpan={4 + ondokuFeedbackForm.extraColumns.length + 1} className="py-1">
+                                            <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: [...f.segments, { kadai: "", correct: "", learner: "", ...Object.fromEntries(f.extraColumns.map((c) => [c.key, ""])) }] })} className="text-red-600 text-sm hover:underline mr-3">+ 行を追加</button>
+                                            <button type="button" onClick={() => {
+                                              const label = window.prompt("列の名前を入力してください");
+                                              if (!label?.trim()) return;
+                                              const key = "ext_" + Date.now();
+                                              setOndokuFeedbackForm((f) => f ? {
+                                                ...f,
+                                                extraColumns: [...f.extraColumns, { key, label: label.trim() }],
+                                                segments: f.segments.map((s) => ({ ...s, [key]: "" })),
+                                              } : f);
+                                            }} className="text-blue-600 text-sm hover:underline">+ 列を追加</button>
                                           </td>
                                         </tr>
                                         <tr>
