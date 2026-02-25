@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { QUIZZES } from "./quiz-data";
 
 const BLANK = "_________________________";
@@ -649,19 +650,21 @@ export default function QuizClient() {
 
   return (
     <div className="app-wrapper">
-      {rightMenuOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40 bg-black/30 md:hidden"
-            onClick={() => closeRightMenu()}
-            aria-hidden
-          />
-          <aside
-            className={`fixed right-0 top-0 z-50 h-full bg-gray-100 overflow-y-auto md:hidden transition-all duration-300 ${
-              rightSidebarExpanded ? "w-[90vw] max-w-[400px]" : "w-72 max-w-[85vw]"
-            }`}
-            style={{ animation: "slideInRight 0.2s ease" }}
-          >
+      {rightMenuOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <>
+            <div
+              className="fixed inset-0 z-[9998] bg-black/40 md:hidden"
+              onClick={() => closeRightMenu()}
+              aria-hidden
+            />
+            <aside
+              className={`fixed right-0 top-0 z-[9999] h-full bg-white shadow-2xl overflow-y-auto md:hidden transition-all duration-300 ${
+                rightSidebarExpanded ? "w-[90vw] max-w-[400px]" : "w-72 max-w-[85vw]"
+              }`}
+              style={{ animation: "slideInRight 0.2s ease" }}
+            >
             <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
               <span className="font-semibold text-gray-800">メニュー</span>
               <button
@@ -740,19 +743,22 @@ export default function QuizClient() {
               </div>
             </div>
           </aside>
-        </>
-      )}
-      {menuOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40 bg-black/30 md:hidden"
-            onClick={() => setMenuOpen(false)}
-            aria-hidden
-          />
-          <aside
-            className="fixed left-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden"
-            style={{ animation: "slideIn 0.2s ease" }}
-          >
+          </>,
+          document.body
+        )}
+      {menuOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <>
+            <div
+              className="fixed inset-0 z-[9998] bg-black/40 md:hidden"
+              onClick={() => setMenuOpen(false)}
+              aria-hidden
+            />
+            <aside
+              className="fixed left-0 top-0 z-[9999] h-full w-64 max-w-[85vw] bg-white shadow-2xl md:hidden"
+              style={{ animation: "slideIn 0.2s ease" }}
+            >
             <div className="flex items-center justify-between border-b px-4 py-3">
               <span className="font-semibold text-gray-800">メニュー</span>
               <button
@@ -768,8 +774,9 @@ export default function QuizClient() {
             </div>
             <nav className="p-4">{navLinks}</nav>
           </aside>
-        </>
-      )}
+          </>,
+          document.body
+        )}
       <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl mx-auto md:px-4">
       <div className="flex-1 flex flex-col md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
