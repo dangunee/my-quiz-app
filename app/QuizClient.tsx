@@ -632,6 +632,25 @@ export default function QuizClient() {
           </div>
         )}
       </div>
+
+      {/* その他 - デスクトップでも表示 */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+        <div className="p-4">
+          <h3 className="font-bold text-gray-800 text-sm mb-3">その他</h3>
+          <div className="space-y-2">
+            {rightMenuLinks.filter((l) => !["生活韓国語"].includes(l.label)).map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="block py-2 text-sm text-gray-700 hover:text-[#0ea5e9] hover:underline"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
     </aside>
   );
 
