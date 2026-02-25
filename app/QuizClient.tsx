@@ -158,7 +158,7 @@ export default function QuizClient() {
     (kotaePage + 1) * KOTAE_PAGE_SIZE
   );
 
-  const SEIKATSU_PAGE_SIZE = 20;
+  const SEIKATSU_PAGE_SIZE = 10;
   const seikatsuTotalPages = Math.ceil(seikatsuList.length / SEIKATSU_PAGE_SIZE) || 1;
   const seikatsuPaginated = seikatsuList.slice(
     seikatsuPage * SEIKATSU_PAGE_SIZE,
