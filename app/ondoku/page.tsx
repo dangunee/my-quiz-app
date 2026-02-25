@@ -42,16 +42,7 @@ const TABS: { id: TabId; label: string }[] = [
 const PERIOD_LABELS = ["1期", "2期", "3期", "4期"] as const;
 const ALL_PERIODS = [0, 1, 2, 3] as const; // 1期, 2期, 3期, 4期 (both levels)
 
-const ONDOKU_1KAI_INSTRUCTION = `初中級通信音読の第1回課題をお送りいたします。
-模範録音を先にお送りしますので、参考にして練習なさってください。
-よろしくお願いします。
-
-※十分に練習していただけるように2回目の課題からは締め切りの１週間前に送信する予定です。1月12日（月）に第2回目の課題（1月19日締め切り）送信がありますので、ご確認いただけると幸いです。
-
-締切：1/12(月）21時までに録音ファイルをこのメールの返信に送ってください。
-締切を過ぎるとチェックが難しくなるので、締切厳守お願い致します。
-
-【音読トレーニングの方法】
+const ONDOKU_COMMON_INSTRUCTION = `【音読トレーニングの方法】
 
 1．例文の把握：まず、課題を日本語訳して意味を把握します。
 
@@ -73,7 +64,16 @@ const ONDOKU_1KAI_INSTRUCTION = `初中級通信音読の第1回課題をお送�
 2．例文はまとめて1つのファイルにお願いします。番号を言ってからハングルの例文を録音してください。
 たくさん練習して間違いのないように録音できればいいですが、
 途中で間違った場合もそのまま続けて番号を言って録音してください。
-例)　1．겨울이 가까워지면.... (間違い、少し間を取って）1. 겨울이 가까워지면서 해가 짧아졌어요.
+例)　1．겨울이 가까워지면.... (間違い、少し間を取って）1. 겨울이 가까워지면서 해가 짧아졌어요.`;
+
+const ONDOKU_1KAI_INSTRUCTION = `初中級通信音読の第1回課題をお送りいたします。
+模範録音を先にお送りしますので、参考にして練習なさってください。
+よろしくお願いします。
+
+※十分に練習していただけるように2回目の課題からは締め切りの１週間前に送信する予定です。1月12日（月）に第2回目の課題（1月19日締め切り）送信がありますので、ご確認いただけると幸いです。
+
+締切：1/12(月）21時までに録音ファイルをこのメールの返信に送ってください。
+締切を過ぎるとチェックが難しくなるので、締切厳守お願い致します。
 
 ご不明な点等ございましたら、このメールの返信でお問い合せ下さい。
 
@@ -96,6 +96,7 @@ export default function OndokuPage() {
       period_index: number;
       item_index: number;
       content: string;
+      audio_url?: string;
       feedback?: string;
       corrected_content?: string;
       submitted_at: string;
@@ -113,12 +114,15 @@ export default function OndokuPage() {
     periodIndex: number;
     itemIndex: number;
     content: string;
+    audio_url?: string;
     title?: string;
   } | null>(null);
   const [submittedKeys, setSubmittedKeys] = useState<Set<string>>(new Set());
-  const [submissionsByKey, setSubmissionsByKey] = useState<Record<string, { content: string; submitted_at: string }>>({});
+  const [submissionsByKey, setSubmissionsByKey] = useState<Record<string, { content: string; audio_url?: string; submitted_at: string }>>({});
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
+  const [exampleSubmitAudioFile, setExampleSubmitAudioFile] = useState<File | null>(null);
+  const [exampleSubmitUploading, setExampleSubmitUploading] = useState(false);
   const [selectedExample, setSelectedExample] = useState<{ id: number; title: string; periodIndex: number; itemIndex: number } | null>(null);
   const [showTrialModal, setShowTrialModal] = useState(false);
   const [trialActiveTab, setTrialActiveTab] = useState<"trial" | "course">("trial");
@@ -249,6 +253,7 @@ export default function OndokuPage() {
   const handleCloseExampleSubmitModal = () => {
     setShowExampleSubmitModal(false);
     setExampleSubmitContent("");
+    setExampleSubmitAudioFile(null);
     setSelectedExample(null);
   };
 
@@ -293,31 +298,58 @@ export default function OndokuPage() {
       alert("ログインが必要です。");
       return;
     }
+    if (!exampleSubmitAudioFile && !exampleSubmitContent.trim()) {
+      alert("音声ファイルを選択するか、メモを入力してください。");
+      return;
+    }
+    setExampleSubmitUploading(true);
     try {
+      let audioUrl: string | undefined;
+      if (exampleSubmitAudioFile) {
+        const formData = new FormData();
+        formData.append("file", exampleSubmitAudioFile);
+        formData.append("period_index", String(selectedExample.periodIndex));
+        formData.append("item_index", String(selectedExample.itemIndex));
+        const uploadRes = await fetchWithAuth("/api/ondoku/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (!uploadRes.ok) {
+          const err = await uploadRes.json().catch(() => ({}));
+          throw new Error(err.error || "音声ファイルのアップロードに失敗しました");
+        }
+        const uploadData = await uploadRes.json();
+        audioUrl = uploadData.url;
+      }
       const res = await fetchWithAuth("/api/ondoku/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           period_index: selectedExample.periodIndex,
           item_index: selectedExample.itemIndex,
-          content: exampleSubmitContent.trim() || "（録音ファイルをondoku@kaonnuri.comに送付済み）",
+          content: exampleSubmitContent.trim() || (audioUrl ? "（音声ファイル提出済み）" : "（録音ファイル送付済み）"),
+          audio_url: audioUrl,
         }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `提出に失敗しました (${res.status})`);
       }
-      setSubmittedKeys((prev) => new Set([...prev, `${selectedExample.periodIndex}-${selectedExample.itemIndex}`]));
+      const key = `${selectedExample.periodIndex}-${selectedExample.itemIndex}`;
+      setSubmittedKeys((prev) => new Set([...prev, key]));
       setSubmissionsByKey((prev) => ({
         ...prev,
-        [`${selectedExample.periodIndex}-${selectedExample.itemIndex}`]: {
-          content: exampleSubmitContent.trim() || "（録音ファイル送付済み）",
+        [key]: {
+          content: exampleSubmitContent.trim() || (audioUrl ? "（音声ファイル提出済み）" : "（録音ファイル送付済み）"),
+          audio_url: audioUrl,
           submitted_at: new Date().toISOString(),
         },
       }));
       handleCloseExampleSubmitModal();
     } catch (e) {
       alert(e instanceof Error ? e.message : "提出に失敗しました。");
+    } finally {
+      setExampleSubmitUploading(false);
     }
   };
 
@@ -686,6 +718,12 @@ export default function OndokuPage() {
                           </div>
                         ) : (
                           <>
+                        <div className="p-4 border-b border-[#e5dfd4] bg-white">
+                          <p className="text-sm font-medium text-gray-700 mb-2">音読トレーニングの方法・録音のご案内</p>
+                          <div className="text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+                            {ONDOKU_COMMON_INSTRUCTION}
+                          </div>
+                        </div>
                         <div className="divide-y divide-[#e5dfd4]">
                           {mergedExamples.map((ex, idx) => {
                             const exId = examplePeriodTab * 10 + idx + 1;
@@ -739,6 +777,12 @@ export default function OndokuPage() {
                                         <>
                                           <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
                                             <p className="text-sm font-medium text-[#166534] mb-2">提出済み</p>
+                                            {submissionsByKey[key]?.audio_url && (
+                                              <div className="mb-3">
+                                                <audio controls src={submissionsByKey[key].audio_url} className="w-full max-w-md" />
+                                                <a href={submissionsByKey[key].audio_url} download className="inline-block mt-2 text-sm text-[#1a4d2e] hover:underline">ダウンロード</a>
+                                              </div>
+                                            )}
                                             <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{submissionsByKey[key]?.content || ""}</pre>
                                           </div>
                                           <button type="button" onClick={() => document.getElementById("mypage-section")?.scrollIntoView({ behavior: "smooth" })} className="w-full py-3 px-6 bg-[#4ade80] hover:bg-[#22c55e] text-gray-800 font-medium rounded-xl shadow-md">マイページで確認</button>
@@ -849,7 +893,7 @@ export default function OndokuPage() {
                                       {dateStr ? (
                                         <button
                                           type="button"
-                                          onClick={() => setMyPageContentModal({ type: "submit", periodIndex: myPagePeriodTab, itemIndex: itemIdx, content: row!.content, title: ONDOKU_PERIOD_EXAMPLES[myPagePeriodTab]?.[itemIdx]?.title })}
+                                          onClick={() => setMyPageContentModal({ type: "submit", periodIndex: myPagePeriodTab, itemIndex: itemIdx, content: row!.content, audio_url: row!.audio_url, title: ONDOKU_PERIOD_EXAMPLES[myPagePeriodTab]?.[itemIdx]?.title })}
                                           className="text-[#1a4d2e] hover:underline font-medium"
                                         >
                                           {dateStr}
@@ -911,7 +955,14 @@ export default function OndokuPage() {
               </h3>
               <button onClick={() => setMyPageContentModal(null)} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">閉じる</button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              {myPageContentModal.type === "submit" && myPageContentModal.audio_url && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">音声ファイル</p>
+                  <audio controls src={myPageContentModal.audio_url} className="w-full max-w-md" />
+                  <a href={myPageContentModal.audio_url} download className="inline-block mt-2 text-sm text-[#1a4d2e] hover:underline">ダウンロード</a>
+                </div>
+              )}
               <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{myPageContentModal.content || "（内容なし）"}</pre>
             </div>
           </div>
@@ -947,22 +998,32 @@ export default function OndokuPage() {
                 </div>
               ) : null}
               <div className="p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4] text-sm">
-                <p className="text-gray-600 mb-2">録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1a4d2e] hover:underline">ondoku@kaonnuri.com</a>に送付してください。</p>
-                <p className="text-gray-600 mb-4">送付後、下記に送付日時やメモを記入して「提出する」をクリックしてください。</p>
+                <p className="text-gray-600 mb-2">音声ファイル（mp3, wav, webm, ogg, m4a）をアップロードして提出できます。50MB以下。</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">音声ファイル</label>
+                <input
+                  type="file"
+                  accept="audio/mpeg,audio/mp3,audio/wav,audio/webm,audio/ogg,audio/m4a,.mp3,.wav,.webm,.ogg,.m4a"
+                  onChange={(e) => setExampleSubmitAudioFile(e.target.files?.[0] || null)}
+                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#1a4d2e] file:text-white file:cursor-pointer hover:file:bg-[#2d6a4a]"
+                />
+                {exampleSubmitAudioFile && <p className="text-gray-500 text-xs mt-1">{exampleSubmitAudioFile.name}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">送付メモ（任意）</label>
                 <textarea
                   value={exampleSubmitContent}
                   onChange={(e) => setExampleSubmitContent(e.target.value)}
-                  placeholder="例：2024年1月15日 送付、または録音ファイルのURLなど"
-                  className="w-full min-h-[120px] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent"
-                  autoFocus
+                  placeholder="例：2024年1月15日 録音、補足メモなど"
+                  className="w-full min-h-[80px] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent"
                 />
               </div>
             </div>
             <div className="px-4 sm:px-6 py-4 flex justify-end shrink-0 border-t border-gray-200">
-              <button onClick={handleOndokuSubmit} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] text-gray-800 font-medium rounded-xl">提出する</button>
+              <button onClick={handleOndokuSubmit} disabled={exampleSubmitUploading || (!exampleSubmitAudioFile && !exampleSubmitContent.trim())} className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl">
+                {exampleSubmitUploading ? "アップロード中..." : "提出する"}
+              </button>
             </div>
           </div>
         </div>

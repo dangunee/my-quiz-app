@@ -70,7 +70,18 @@ git remote -v
 
 ---
 
-## 5. 환경 변수 (Vercel)
+## 5. Supabase 설정 (音読 音声 파일)
+
+音読 과제 음성 제출을 사용하려면:
+
+1. **SQL 실행**: `supabase-migration-ondoku-audio.sql` 실행 (audio_url 컬럼 추가)
+2. **Storage 버킷 생성**: Supabase Dashboard → Storage → New bucket
+   - Name: `ondoku-audio`
+   - Public bucket: ON
+
+---
+
+## 6. 환경 변수 (Vercel)
 
 Vercel 프로젝트 → **Settings** → **Environment Variables**:
 
@@ -83,7 +94,7 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**:
 
 ---
 
-## 6. 커스텀 도메인
+## 7. 커스텀 도메인
 
 Vercel → **Settings** → **Domains**에서 추가:
 
@@ -93,14 +104,14 @@ Vercel → **Settings** → **Domains**에서 추가:
 
 ---
 
-## 7. 배포 확인
+## 8. 배포 확인
 
 - GitHub: https://github.com/dangunee/my-quiz-app/commits/main
 - Vercel: 프로젝트 대시보드 → **Deployments** 탭
 
 ---
 
-## 8. 로컬 빌드 테스트
+## 9. 로컬 빌드 테스트
 
 ```bash
 npm run build
