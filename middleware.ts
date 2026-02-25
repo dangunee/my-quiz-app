@@ -12,6 +12,10 @@ export function middleware(request: NextRequest) {
   const host = rawHost.split(",")[0].trim().replace(/:\d+$/, "").toLowerCase();
   const urlHost = (request.nextUrl.hostname || "").toLowerCase();
   const pathname = request.nextUrl.pathname;
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+
   const isWritingHost =
     host === WRITING_HOST ||
     host === `www.${WRITING_HOST}` ||
@@ -31,7 +35,7 @@ export function middleware(request: NextRequest) {
     if (pathname === "/writing/admin") {
       return NextResponse.redirect(new URL("/admin", request.url), 302);
     }
-    return NextResponse.next();
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // ondoku.mirinae.jp: root → /ondoku (rewrite)
@@ -39,7 +43,7 @@ export function middleware(request: NextRequest) {
     if (pathname === "/" || pathname === "") {
       return NextResponse.rewrite(new URL("/ondoku", request.url));
     }
-    return NextResponse.next();
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // quiz.mirinae.jp: /writing, /writing/* → redirect to writing.mirinae.jp
@@ -57,16 +61,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(target, 302);
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {
   matcher: [
-    "/",
-    "/admin",
-    "/writing",
-    "/writing/:path*",
-    "/ondoku",
-    "/ondoku/:path*",
+    "/((?!_next/static|_next/image|.*\\.(?:svg|png|ico|jpg|jpeg|gif|webp)$).*)",
   ],
 };

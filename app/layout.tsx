@@ -80,6 +80,9 @@ const WRITING_METADATA: Metadata = {
 };
 
 const ONDOKU_METADATA: Metadata = {
+  icons: {
+    icon: "/favicon-ondoku.png?v=2",
+  },
   title: {
     default: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
     template: "%s｜ミリネ韓国語",
@@ -119,12 +122,15 @@ export async function generateMetadata(): Promise<Metadata> {
     headersList.get("x-forwarded-host") ||
     headersList.get("host") ||
     "";
+  const pathname = headersList.get("x-pathname") || "";
   const isWriting =
     host.includes("writing.mirinae.jp") ||
-    host.includes("www.writing.mirinae.jp");
+    host.includes("www.writing.mirinae.jp") ||
+    (host.includes("localhost") && pathname.startsWith("/writing"));
   const isOndoku =
     host.includes("ondoku.mirinae.jp") ||
-    host.includes("www.ondoku.mirinae.jp");
+    host.includes("www.ondoku.mirinae.jp") ||
+    (host.includes("localhost") && pathname.startsWith("/ondoku"));
   if (isWriting) return WRITING_METADATA;
   if (isOndoku) return ONDOKU_METADATA;
   return QUIZ_METADATA;
