@@ -1,71 +1,106 @@
-# 배포 가이드
+# GitHub 배포 가이드
 
-## Vercel 배포 (권장)
+이 프로젝트는 **GitHub**에 푸시하면 **Vercel**이 자동으로 배포합니다.
 
-Next.js 앱은 Vercel에 배포하는 것이 가장 간단합니다.
+---
 
-### 1. GitHub 연동
+## 1. 배포 흐름
+
+```
+로컬 변경 → git commit → git push origin main → GitHub → Vercel 자동 배포
+```
+
+---
+
+## 2. 배포 실행 방법
+
+### 터미널에서 실행
+
+```bash
+# 1. 프로젝트 디렉터리로 이동
+cd /Users/dangunee/Desktop/my-quiz-app
+
+# 2. 변경 사항 확인
+git status
+
+# 3. 변경 파일 스테이징
+git add .
+
+# 4. 커밋
+git commit -m "커밋 메시지"
+
+# 5. GitHub에 푸시 (이 시점에서 Vercel 자동 배포 시작)
+git push origin main
+```
+
+### 한 줄로 실행
+
+```bash
+cd /Users/dangunee/Desktop/my-quiz-app && git add . && git status
+# 확인 후
+git commit -m "변경 내용" && git push origin main
+```
+
+---
+
+## 3. GitHub 저장소 설정
+
+- **저장소**: https://github.com/dangunee/my-quiz-app
+- **기본 브랜치**: `main`
+- **원격 이름**: `origin`
+
+### 원격 확인
+
+```bash
+git remote -v
+# origin  https://github.com/dangunee/my-quiz-app.git (fetch)
+# origin  https://github.com/dangunee/my-quiz-app.git (push)
+```
+
+---
+
+## 4. Vercel 연동 (최초 1회)
 
 1. [vercel.com](https://vercel.com) 로그인
 2. **Add New** → **Project**
-3. GitHub 저장소 연결 후 `my-quiz-app` 선택
+3. **Import Git Repository** → GitHub에서 `dangunee/my-quiz-app` 선택
 4. **Deploy** 클릭
 
-### 2. 환경 변수 설정
+이후 `main` 브랜치에 푸시할 때마다 자동 배포됩니다.
 
-Vercel 프로젝트 → **Settings** → **Environment Variables**에서 추가:
+---
+
+## 5. 환경 변수 (Vercel)
+
+Vercel 프로젝트 → **Settings** → **Environment Variables**:
 
 | 변수명 | 설명 | 필수 |
 |--------|------|------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL | ✅ |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Service Role Key (비공개) | ✅ |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Anon Key (클라이언트용) | 권장 |
-| `ADMIN_SECRET` | 관리자/作文 관리자 로그인 비밀키 | ✅ |
-| `STRIPE_SECRET_KEY` | Stripe 결제용 (checkout 사용 시) | 선택 |
-| `NEXT_PUBLIC_APP_URL` | 배포 URL (예: `https://quiz.mirinae.jp`) | 선택 |
-| `NEXT_PUBLIC_SITE_URL` | 이메일 인증 리다이렉트용 | 선택 |
-
-### 3. Supabase 설정
-
-1. [supabase.com](https://supabase.com) 대시보드
-2. **SQL Editor**에서 `supabase-schema.sql` 전체 실행
-3. **Authentication** → **URL Configuration**에 배포 URL 추가:
-   - `https://quiz.mirinae.jp`
-   - `https://writing.mirinae.jp`
-   - `https://ondoku.mirinae.jp`
-
-### 4. 生活韓国語 데이터 초기화
-
-`seikatsu_items` 테이블에 블로그 목록을 넣으려면:
-
-```bash
-curl -X POST "https://your-domain.vercel.app/api/admin/sync-seikatsu" \
-  -H "Authorization: Bearer YOUR_ADMIN_SECRET"
-```
-
-또는 기존 DB만 사용 중이면 `supabase-migration-seikatsu.sql` 실행 후 위 sync 호출
-
-### 5. 커스텀 도메인
-
-- Vercel 프로젝트 → **Settings** → **Domains**
-- `quiz.mirinae.jp`, `writing.mirinae.jp`, `ondoku.mirinae.jp` 추가
-- DNS에 Vercel 레코드 설정 (CNAME 또는 A 레코드)
-
-**도메인별 동작:**
-- `quiz.mirinae.jp` – 퀴즈 메인, `/writing` 접근 시 `writing.mirinae.jp`로 리다이렉트, `/ondoku` 접근 시 `ondoku.mirinae.jp`로 리다이렉트
-- `writing.mirinae.jp` – 作文 전용 (루트 = 作文 페이지, `/admin` = 作文 관리자)
-- `ondoku.mirinae.jp` – 音読 전용 (루트 = 音読 페이지)
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Service Role Key | ✅ |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Anon Key | 권장 |
+| `ADMIN_SECRET` | 관리자 로그인 비밀키 | ✅ |
 
 ---
 
-## 배포 후 확인
+## 6. 커스텀 도메인
 
-- **퀴즈**: `https://your-domain.vercel.app/`
-- **作文**: `https://your-domain.vercel.app/writing`
-- **관리자**: `https://your-domain.vercel.app/admin`
+Vercel → **Settings** → **Domains**에서 추가:
+
+- `quiz.mirinae.jp`
+- `writing.mirinae.jp`
+- `ondoku.mirinae.jp`
+
 ---
 
-## 로컬 배포 테스트
+## 7. 배포 확인
+
+- GitHub: https://github.com/dangunee/my-quiz-app/commits/main
+- Vercel: 프로젝트 대시보드 → **Deployments** 탭
+
+---
+
+## 8. 로컬 빌드 테스트
 
 ```bash
 npm run build
