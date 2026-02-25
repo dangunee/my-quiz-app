@@ -477,7 +477,8 @@ export default function OndokuPage() {
                       </div>
                       <div id="trial-form-section" className="mt-6 pt-6 border-t-2 border-[#8b6914]">
                         <div className="mb-6 py-5 px-6 bg-[#faf6eb] border-b-2 border-[#8b6914] rounded-lg">
-                          <p className="text-center text-2xl md:text-3xl font-bold text-[#5c4a1a]">
+                          <p className="text-center text-sm md:text-base text-[#5c4a1a] mb-1">お試し１回料金</p>
+                          <p className="text-center text-lg md:text-xl font-bold text-[#5c4a1a]">
                             初中級: 1,800円 / 中上級: 2,300円
                           </p>
                         </div>
@@ -496,10 +497,10 @@ export default function OndokuPage() {
                                   setTrialError(null);
                                 }
                               }}
-                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#faf6eb] text-[#5c4a1a] border-b-2 border-[#8b6914]" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                             >
                               <span>体験申込</span>
-                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                              {trialActiveTab === "trial" && <span className="text-[#5c4a1a]/70">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
                             <button
                               type="button"
@@ -514,10 +515,10 @@ export default function OndokuPage() {
                                   setTrialError(null);
                                 }
                               }}
-                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#faf6eb] text-[#5c4a1a] border-b-2 border-[#8b6914]" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                             >
                               <span>講座申込</span>
-                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                              {trialActiveTab === "course" && <span className="text-[#5c4a1a]/70">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
                           </div>
                           {showTrialModal && (
