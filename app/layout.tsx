@@ -81,7 +81,7 @@ const WRITING_METADATA: Metadata = {
 
 const ONDOKU_METADATA: Metadata = {
   icons: {
-    icon: "/favicon-ondoku.png?v=2",
+    icon: [{ url: "/favicon-ondoku.png?v=3", sizes: "32x32", type: "image/png" }],
   },
   title: {
     default: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
