@@ -41,6 +41,9 @@ const QUIZ_METADATA: Metadata = {
 };
 
 const WRITING_METADATA: Metadata = {
+  icons: {
+    icon: "/favicon-writing.png",
+  },
   title: {
     default: "韓国語作文トレーニング｜東京・新宿の韓国語教室ミリネ",
     template: "%s｜ミリネ韓国語",
