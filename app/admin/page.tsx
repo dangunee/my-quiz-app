@@ -1978,11 +1978,50 @@ export default function AdminPage() {
                                       setWritingVisSaving(null);
                                     }
                                   }}
-                                  disabled={writingVisSaving === key}
+                                  disabled={writingVisSaving === key || writingVisSaving === `cancel-${key}`}
                                   className="px-1 py-0.5 bg-amber-600 text-white rounded text-xs hover:bg-amber-700 disabled:opacity-50 shrink-0"
                                 >
                                   {writingVisSaving === key ? "..." : "保存"}
                                 </button>
+                                {val && (
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      setWritingVisSaving(`cancel-${key}`);
+                                      try {
+                                        const res = await fetch("/api/admin/writing/visibility/student", {
+                                          method: "PUT",
+                                          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                          body: JSON.stringify({
+                                            user_id: student.id,
+                                            period_index: writingVisPeriodTab,
+                                            item_index: itemIdx,
+                                            visible_from: null,
+                                          }),
+                                        });
+                                        if (res.ok) {
+                                          setWritingVisData((prev) => {
+                                            const next = { ...prev };
+                                            if (!next[student.id]) next[student.id] = {};
+                                            next[student.id][itemIdx] = null;
+                                            return next;
+                                          });
+                                        } else {
+                                          const err = await res.json();
+                                          alert(err.error || "保存に失敗しました");
+                                        }
+                                      } catch {
+                                        alert("保存中にエラーが発生しました");
+                                      } finally {
+                                        setWritingVisSaving(null);
+                                      }
+                                    }}
+                                    disabled={writingVisSaving === key || writingVisSaving === `cancel-${key}`}
+                                    className="px-1 py-0.5 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 disabled:opacity-50 shrink-0"
+                                  >
+                                    {writingVisSaving === `cancel-${key}` ? "..." : "취소"}
+                                  </button>
+                                )}
                               </div>
                             </td>
                           );
