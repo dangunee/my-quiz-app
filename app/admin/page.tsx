@@ -191,6 +191,8 @@ export default function AdminPage() {
   const [ondokuSelectedCell, setOndokuSelectedCell] = useState<{ row: number; col: string } | null>(null);
   const [ondokuPdfMailBody, setOndokuPdfMailBody] = useState("");
   const [ondokuPdfSending, setOndokuPdfSending] = useState(false);
+  const [ondokuPdfConfirmFor, setOndokuPdfConfirmFor] = useState<string | null>(null);
+  const [ondokuPdfScheduledAt, setOndokuPdfScheduledAt] = useState<string>("");
   const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
 
   const DEFAULT_SEGMENT_ROWS = 40;
@@ -1666,11 +1668,15 @@ export default function AdminPage() {
                                     setOndokuFeedbackForm(null);
                                     setOndokuSelectedCell(null);
                                     setOndokuPdfMailBody("");
+                                    setOndokuPdfConfirmFor(null);
+                                    setOndokuPdfScheduledAt("");
                                   } else {
                                     setExpandedOndokuId(s.id);
                                     setOndokuFeedbackForm(initOndokuFeedbackForm(s, ex));
                                     setOndokuSelectedCell(null);
                                     setOndokuPdfMailBody("");
+                                    setOndokuPdfConfirmFor(null);
+                                    setOndokuPdfScheduledAt("");
                                   }
                                 }}
                                 className="w-full flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 text-left text-sm"
@@ -1731,7 +1737,7 @@ export default function AdminPage() {
                                     </div>
                                   )}
                                   <div className="overflow-auto max-h-[60vh] max-w-full border border-gray-200 rounded">
-                                    <table className="w-full min-w-[500px] border-collapse text-sm">
+                                    <table className="border-collapse text-sm" style={{ minWidth: `${Math.max(600, (5 + (ondokuFeedbackForm?.extraColumns?.length ?? 0)) * 90)}px` }}>
                                       <tbody>
                                         <tr>
                                           <td className="py-1 px-2 bg-gray-100 font-medium w-20 align-top">文型</td>
@@ -1906,34 +1912,16 @@ export default function AdminPage() {
                                       <button
                                         type="button"
                                         disabled={ondokuPdfSending || !ondokuFeedbackForm}
-                                        onClick={async () => {
+                                        onClick={() => {
                                           if (!ondokuFeedbackForm || !s.user?.email) {
                                             alert("生徒のメールアドレスがありません");
                                             return;
                                           }
-                                          setOndokuPdfSending(true);
-                                          try {
-                                            const res = await fetch("/api/admin/ondoku/send-pdf-email", {
-                                              method: "POST",
-                                              headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-                                              body: JSON.stringify({
-                                                feedback: ondokuFeedbackForm,
-                                                to: s.user.email,
-                                                body: ondokuPdfMailBody.trim() || undefined,
-                                              }),
-                                            });
-                                            const data = await res.json();
-                                            if (!res.ok) throw new Error(data.error || "送信に失敗しました");
-                                            alert("メールを送信しました");
-                                          } catch (e) {
-                                            alert(e instanceof Error ? e.message : "PDF生成・送信に失敗しました");
-                                          } finally {
-                                            setOndokuPdfSending(false);
-                                          }
+                                          setOndokuPdfConfirmFor(s.id);
                                         }}
                                         className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
                                       >
-                                        {ondokuPdfSending ? "送信中..." : "PDF保存してメール送信"}
+                                        PDF保存してメール送信
                                       </button>
                                     </div>
                                   </div>
@@ -1949,6 +1937,73 @@ export default function AdminPage() {
                 {ondokuSubmissions.filter((s) => s.period_index === ondokuPeriodTab).length === 0 && (
                   <p className="text-gray-500 py-4">この期の提出はありません。</p>
                 )}
+                {ondokuPdfConfirmFor && ondokuFeedbackForm && (() => {
+                  const sub = ondokuSubmissions.find((x) => x.id === ondokuPdfConfirmFor);
+                  if (!sub?.user?.email) return null;
+                  return (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setOndokuPdfConfirmFor(null)}>
+                      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4" onClick={(e) => e.stopPropagation()}>
+                        <h4 className="font-medium text-gray-800 mb-3">メール送信の確認</h4>
+                        <div className="space-y-3 text-sm">
+                          <div>
+                            <span className="text-gray-600">宛先:</span>
+                            <p className="font-medium text-gray-800 mt-0.5">{sub.user.email}</p>
+                            <p className="text-xs text-gray-500">（提出した生徒のメールアドレス）</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">件名:</span>
+                            <p className="font-medium text-gray-800 mt-0.5">音読課題 添削結果</p>
+                          </div>
+                          <div>
+                            <label className="text-gray-600 block mb-1">本文:</label>
+                            <textarea value={ondokuPdfMailBody} onChange={(e) => setOndokuPdfMailBody(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded text-sm" placeholder="メール本文" />
+                          </div>
+                          <div>
+                            <label className="text-gray-600 block mb-1">発送予定日:</label>
+                            <input type="datetime-local" value={ondokuPdfScheduledAt} onChange={(e) => setOndokuPdfScheduledAt(e.target.value)} min={new Date().toISOString().slice(0, 16)} max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16)} className="w-full px-3 py-2 border border-gray-300 rounded text-sm" />
+                            <p className="text-xs text-gray-500 mt-0.5">空欄の場合は即時送信。最大30日後まで予約可能。</p>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">PDF（添削結果）が添付されます。</p>
+                        <div className="flex gap-2 mt-4">
+                          <button type="button" onClick={() => setOndokuPdfConfirmFor(null)} className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50">キャンセル</button>
+                          <button
+                            type="button"
+                            disabled={ondokuPdfSending}
+                            onClick={async () => {
+                              setOndokuPdfSending(true);
+                              try {
+                                const res = await fetch("/api/admin/ondoku/send-pdf-email", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                  body: JSON.stringify({
+                                    feedback: ondokuFeedbackForm,
+                                    to: sub.user!.email,
+                                    body: ondokuPdfMailBody.trim() || undefined,
+                                    scheduledAt: ondokuPdfScheduledAt.trim() || undefined,
+                                  }),
+                                });
+                                const data = await res.json();
+                                if (!res.ok) throw new Error(data.error || "送信に失敗しました");
+                                setOndokuPdfConfirmFor(null);
+                                setOndokuPdfScheduledAt("");
+                                alert(ondokuPdfScheduledAt.trim() ? "メールを予約しました" : "メールを送信しました");
+                              } catch (e) {
+                                const msg = e instanceof Error ? e.message : "PDF生成・送信に失敗しました";
+                                alert(msg === "RESEND_API_KEY not configured" ? "RESEND_API_KEY が設定されていません。Vercel の環境変数に RESEND_API_KEY を追加してください。" : msg);
+                              } finally {
+                                setOndokuPdfSending(false);
+                              }
+                            }}
+                            className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            {ondokuPdfSending ? "送信中..." : "送信する"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
               </>
             )}
           </div>
