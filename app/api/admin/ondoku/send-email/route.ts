@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   let subject = "";
   let text = "";
   let audioUrl: string | null = null;
-  let attachmentFile: File | null = null;
+  const attachmentFiles: File[] = [];
 
   if (contentType.includes("multipart/form-data")) {
     const formData = await request.formData();
@@ -26,8 +26,10 @@ export async function POST(request: NextRequest) {
     subject = (formData.get("subject") as string) || "";
     text = (formData.get("body") as string) || "";
     audioUrl = (formData.get("audio_url") as string) || null;
-    const file = formData.get("file") as File | null;
-    if (file && file.size > 0) attachmentFile = file;
+    const files = formData.getAll("files") as File[];
+    for (const f of files) {
+      if (f && typeof f === "object" && "size" in f && f.size > 0) attachmentFiles.push(f);
+    }
   } else {
     const body = await request.json();
     to = body.to || "";
@@ -41,10 +43,11 @@ export async function POST(request: NextRequest) {
   }
 
   const attachments: Array<{ filename: string; content?: Buffer; path?: string }> = [];
-  if (attachmentFile) {
-    const buf = Buffer.from(await attachmentFile.arrayBuffer());
-    attachments.push({ filename: attachmentFile.name || "audio.mp3", content: buf });
-  } else if (audioUrl) {
+  for (const f of attachmentFiles) {
+    const buf = Buffer.from(await f.arrayBuffer());
+    attachments.push({ filename: f.name || "audio.mp3", content: buf });
+  }
+  if (attachments.length === 0 && audioUrl) {
     attachments.push({ filename: `ondoku_${Date.now()}.mp3`, path: audioUrl });
   }
 

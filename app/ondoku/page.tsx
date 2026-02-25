@@ -146,7 +146,7 @@ export default function OndokuPage() {
     itemLabel: string;
   } | null>(null);
   const [emailForm, setEmailForm] = useState({ to: "", subject: "", body: "" });
-  const [emailAttachment, setEmailAttachment] = useState<File | null>(null);
+  const [emailAttachments, setEmailAttachments] = useState<File[]>([]);
   const [emailModalSending, setEmailModalSending] = useState(false);
 
   useEffect(() => {
@@ -867,7 +867,7 @@ export default function OndokuPage() {
                                                         subject: `音読課題: ${PERIOD_LABELS[examplePeriodTab]} ${ex.title} - ${s.user?.name || s.user?.username || s.user?.email || "生徒"}`,
                                                         body: `音読課題の録音ファイルです。\n\n生徒名: ${s.user?.name || s.user?.username || s.user?.email || "-"}\n課題: ${PERIOD_LABELS[examplePeriodTab]} ${ex.title}\n\n音声ファイルは添付をご確認ください。`,
                                                       });
-                                                      setEmailAttachment(null);
+                                                      setEmailAttachments([]);
                                                     }}
                                                     disabled={sendEmailLoading === s.id}
                                                     className="shrink-0 px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] disabled:opacity-50 text-white text-sm font-medium rounded-lg"
@@ -1174,15 +1174,15 @@ export default function OndokuPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">添付ファイル（ドラッグ＆ドロップまたはクリック）</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">添付ファイル（複数可・ドラッグ＆ドロップまたはクリック）</label>
                 <div
                   onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("ring-2", "ring-[#1a4d2e]"); }}
                   onDragLeave={(e) => { e.currentTarget.classList.remove("ring-2", "ring-[#1a4d2e]"); }}
                   onDrop={(e) => {
                     e.preventDefault();
                     e.currentTarget.classList.remove("ring-2", "ring-[#1a4d2e]");
-                    const f = e.dataTransfer.files?.[0];
-                    if (f && f.type.startsWith("audio/")) setEmailAttachment(f);
+                    const files = Array.from(e.dataTransfer.files || []).filter((f) => f.type.startsWith("audio/") || /\.(mp3|wav|webm|ogg|m4a)$/i.test(f.name));
+                    if (files.length) setEmailAttachments((prev) => [...prev, ...files]);
                   }}
                   className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-[#1a4d2e] transition-colors"
                 >
@@ -1191,17 +1191,28 @@ export default function OndokuPage() {
                     accept="audio/*,.mp3,.wav,.webm,.ogg,.m4a"
                     className="hidden"
                     id="email-attach"
-                    onChange={(e) => setEmailAttachment(e.target.files?.[0] || null)}
+                    multiple
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      if (files.length) setEmailAttachments((prev) => [...prev, ...files]);
+                      e.target.value = "";
+                    }}
                   />
                   <label htmlFor="email-attach" className="cursor-pointer block">
-                    {emailAttachment ? (
-                      <span className="text-[#1a4d2e] font-medium">{emailAttachment.name}</span>
-                    ) : (
-                      <span className="text-gray-500">ファイルをドラッグまたはクリックして選択</span>
-                    )}
+                    <span className="text-gray-500">ファイルをドラッグまたはクリックして追加</span>
                   </label>
                 </div>
-                {!emailAttachment && emailModal.sub.audio_url && (
+                {emailAttachments.length > 0 && (
+                  <ul className="mt-2 space-y-1">
+                    {emailAttachments.map((f, i) => (
+                      <li key={i} className="flex items-center justify-between text-sm py-1 px-2 bg-gray-50 rounded">
+                        <span className="text-[#1a4d2e] font-medium truncate">{f.name}</span>
+                        <button type="button" onClick={() => setEmailAttachments((prev) => prev.filter((_, j) => j !== i))} className="text-red-600 hover:underline shrink-0">削除</button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {emailAttachments.length === 0 && emailModal.sub.audio_url && (
                   <p className="text-xs text-gray-500 mt-1">※添付しない場合は提出済みファイルを自動で添付します</p>
                 )}
               </div>
@@ -1209,7 +1220,7 @@ export default function OndokuPage() {
             <div className="px-4 py-3 border-t border-gray-200 flex gap-2 justify-end">
               <button
                 type="button"
-                onClick={() => { setEmailModal(null); setEmailForm({ to: "", subject: "", body: "" }); setEmailAttachment(null); }}
+                onClick={() => { setEmailModal(null); setEmailForm({ to: "", subject: "", body: "" }); setEmailAttachments([]); }}
                 className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
               >
                 キャンセル
@@ -1227,8 +1238,8 @@ export default function OndokuPage() {
                     formData.append("to", emailForm.to.trim());
                     formData.append("subject", emailForm.subject.trim());
                     formData.append("body", emailForm.body.trim());
-                    if (emailAttachment) {
-                      formData.append("file", emailAttachment);
+                    if (emailAttachments.length > 0) {
+                      emailAttachments.forEach((f) => formData.append("files", f));
                     } else if (emailModal.sub.audio_url) {
                       formData.append("audio_url", emailModal.sub.audio_url);
                     }
@@ -1244,11 +1255,22 @@ export default function OndokuPage() {
                     const res = await fetch("/api/admin/ondoku/send-email", opts);
                     if (!res.ok) {
                       const err = await res.json().catch(() => ({}));
-                      throw new Error(err.error || "送信に失敗しました");
+                      const msg = err.error || "送信に失敗しました";
+                      if (msg.includes("RESEND_API_KEY")) {
+                        const mailto = `mailto:${encodeURIComponent(emailForm.to)}?subject=${encodeURIComponent(emailForm.subject)}&body=${encodeURIComponent(emailForm.body)}`;
+                        if (confirm("RESEND_API_KEYが設定されていません。Vercelの環境変数にRESEND_API_KEYを追加してください。\n\nメールクライアントで送信しますか？（宛先・件名・本文は入力済み、添付は手動でお願いします）")) {
+                          window.location.href = mailto;
+                          setEmailModal(null);
+                          setEmailForm({ to: "", subject: "", body: "" });
+                          setEmailAttachments([]);
+                        }
+                        return;
+                      }
+                      throw new Error(msg);
                     }
                     setEmailModal(null);
                     setEmailForm({ to: "", subject: "", body: "" });
-                    setEmailAttachment(null);
+                    setEmailAttachments([]);
                     alert("送信しました");
                   } catch (e) {
                     alert(e instanceof Error ? e.message : "送信に失敗しました");
@@ -1256,7 +1278,7 @@ export default function OndokuPage() {
                     setEmailModalSending(false);
                   }
                 }}
-                disabled={emailModalSending || (!emailAttachment && !emailModal.sub.audio_url)}
+                disabled={emailModalSending || (emailAttachments.length === 0 && !emailModal.sub.audio_url)}
                 className="px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] disabled:opacity-50 text-white font-medium rounded-lg"
               >
                 {emailModalSending ? "送信中..." : "送信"}
