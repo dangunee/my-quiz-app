@@ -175,6 +175,8 @@ export default function AdminPage() {
   const [writingVisData, setWritingVisData] = useState<Record<string, Record<number, string | null>>>({});
   const [writingVisLoading, setWritingVisLoading] = useState(false);
   const [writingVisSaving, setWritingVisSaving] = useState<string | null>(null);
+  const [writingVisScheduleStudent, setWritingVisScheduleStudent] = useState<{ id: string; name: string; email: string } | null>(null);
+  const [writingVisScheduleData, setWritingVisScheduleData] = useState<Record<number, Record<number, { visible: boolean; date: string | null }>> | null>(null);
   const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
   const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
   const [kadaiSaving, setKadaiSaving] = useState(false);
@@ -1925,8 +1927,28 @@ export default function AdminPage() {
                     {writingVisStudents.map((student) => (
                       <tr key={student.id}>
                         <td className="border px-2 py-1 sticky left-0 bg-white z-10">
-                          <div className="font-medium text-gray-800">{student.name}</div>
-                          <div className="text-xs text-gray-500 truncate max-w-[120px]">{student.email}</div>
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <div className="font-medium text-gray-800">{student.name}</div>
+                              <div className="text-xs text-gray-500 truncate max-w-[120px]">{student.email}</div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setWritingVisScheduleStudent(student);
+                                setWritingVisScheduleData(null);
+                                fetch(`/api/admin/writing/visibility/student-preview?user_id=${encodeURIComponent(student.id)}`, {
+                                  headers: { Authorization: `Bearer ${authKey}` },
+                                })
+                                  .then((r) => r.json())
+                                  .then((data) => setWritingVisScheduleData(data.status || {}))
+                                  .catch(() => setWritingVisScheduleData({}));
+                              }}
+                              className="shrink-0 px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
+                            >
+                              일정 보기
+                            </button>
+                          </div>
                         </td>
                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
                           const key = `${student.id}-${itemIdx}`;
@@ -1989,6 +2011,60 @@ export default function AdminPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+
+            {writingVisScheduleStudent && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setWritingVisScheduleStudent(null)}>
+                <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+                  <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                    <h3 className="font-bold text-gray-800">
+                      과제 제출 프론트 페이지 상태 - {writingVisScheduleStudent.name}
+                    </h3>
+                    <button type="button" onClick={() => setWritingVisScheduleStudent(null)} className="text-gray-500 hover:text-gray-700 font-medium">닫기</button>
+                  </div>
+                  <div className="flex-1 overflow-auto p-4">
+                    {writingVisScheduleData === null ? (
+                      <p className="text-gray-500">読み込み中...</p>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm border-collapse">
+                          <thead>
+                            <tr className="bg-gray-100">
+                              <th className="border px-2 py-2 text-left">期</th>
+                              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+                                <th key={i} className="border px-2 py-2 text-center">第{i + 1}回</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[0, 1, 2, 3, 4, 5, 6, 7].map((p) => (
+                              <tr key={p}>
+                                <td className="border px-2 py-1 font-medium">{PERIOD_LABELS[p]}</td>
+                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
+                                  const s = writingVisScheduleData?.[p]?.[i];
+                                  const visible = s?.visible ?? false;
+                                  const dateStr = s?.date ? new Date(s.date).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
+                                  return (
+                                    <td key={i} className="border px-2 py-1 text-center">
+                                      {visible ? (
+                                        <span className="text-green-600 font-medium">공개</span>
+                                      ) : dateStr ? (
+                                        <span className="text-amber-600" title={s?.date || ""}>예정 {dateStr}</span>
+                                      ) : (
+                                        <span className="text-gray-400">비공개</span>
+                                      )}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
           </div>
