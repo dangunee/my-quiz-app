@@ -188,19 +188,27 @@ export default function AdminPage() {
   const [ondokuFeedbackSaving, setOndokuFeedbackSaving] = useState(false);
   const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
 
+  const DEFAULT_SEGMENT_ROWS = 40;
+  const DEFAULT_SEGMENT_COLS = 10; // 課題, 正しい発音, 学習者の発音(3) + 追加列7
+  const defaultExtraColumns = () => Array.from({ length: DEFAULT_SEGMENT_COLS - 3 }, (_, i) => ({ key: `ext_${i + 1}`, label: `列${i + 1}` }));
+  const emptySegment = (extraCols: { key: string; label: string }[]) => ({ kadai: "", correct: "", learner: "", ...Object.fromEntries(extraCols.map((c) => [c.key, ""])) });
+
   function initOndokuFeedbackForm(sub: OndokuSubmission, ex: { modelContent?: { theme?: string; sentence?: string; pronunciationNote?: string; patterns?: { pattern: string; example: string }[] }; topic?: string } | undefined): OndokuFeedbackForm {
     const sentence = ex?.modelContent?.sentence || "";
+    const defaultCols = defaultExtraColumns();
     const segments = (() => {
       try {
         const parsed = JSON.parse(sub.feedback || "{}");
         if (parsed.segments && Array.isArray(parsed.segments) && parsed.segments.length > 0) return parsed.segments;
       } catch {}
-      const segs = sentence.split(/\s+/).filter(Boolean).map((k) => ({ kadai: k, correct: k, learner: "" }));
-        return segs.length > 0 ? segs : [{ kadai: "", correct: "", learner: "" }];
+      const fromSentence = sentence.split(/\s+/).filter(Boolean).map((k) => ({ kadai: k, correct: k, learner: "", ...Object.fromEntries(defaultCols.map((c) => [c.key, ""])) }));
+      const base = fromSentence.length > 0 ? fromSentence : [];
+      while (base.length < DEFAULT_SEGMENT_ROWS) base.push(emptySegment(defaultCols));
+      return base;
     })();
     try {
       const parsed = JSON.parse(sub.feedback || "{}");
-      const extraCols = Array.isArray(parsed.extraColumns) ? parsed.extraColumns : [];
+      const extraCols = Array.isArray(parsed.extraColumns) && parsed.extraColumns.length > 0 ? parsed.extraColumns : defaultCols;
       if (parsed.bunkei != null || parsed.wayaku != null || parsed.point != null || parsed.kaisetsu != null) {
         const segs = (parsed.segments ?? segments) as OndokuFeedbackSegment[];
         extraCols.forEach((c: { key?: string; label?: string }) => {
@@ -224,7 +232,7 @@ export default function AdminPage() {
       wayaku: ex?.topic ?? "",
       point: ex?.modelContent?.pronunciationNote ?? "",
       segments,
-      extraColumns: [],
+      extraColumns: defaultCols,
       kaisetsu: sub.feedback && !sub.feedback.startsWith("{") ? sub.feedback : "",
     };
   }
