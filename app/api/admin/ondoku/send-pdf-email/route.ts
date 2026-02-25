@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { verifyAdmin } from "@/lib/admin-auth";
 import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 
