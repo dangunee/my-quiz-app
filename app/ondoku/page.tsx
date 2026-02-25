@@ -107,7 +107,6 @@ export default function OndokuPage() {
   } | null>(null);
   const [myPageLoading, setMyPageLoading] = useState(false);
   const [myPageError, setMyPageError] = useState<string | null>(null);
-  const [myPageLevelTab, setMyPageLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [myPagePeriodTab, setMyPagePeriodTab] = useState(0);
   const [myPageContentModal, setMyPageContentModal] = useState<{
     type: "submit" | "correction";
@@ -834,17 +833,20 @@ export default function OndokuPage() {
                             const submitted = periodSubs.length;
                             const unsubmitted = total - submitted;
                             const pending = periodSubs.filter((s) => s.status === "pending").length;
+                            const inProgress = periodSubs.filter((s) => s.status === "in_progress").length;
                             const completed = periodSubs.filter((s) => s.status === "completed").length;
                             return (
                               <>
                                 <div className="flex flex-wrap gap-4 mb-3">
                                   <span className="text-sm"><span className="text-gray-500">未提出:</span> <strong>{unsubmitted}</strong></span>
                                   <span className="text-sm"><span className="text-gray-500">未添削:</span> <strong className="text-amber-600">{pending}</strong></span>
+                                  <span className="text-sm"><span className="text-gray-500">添削中:</span> <strong className="text-blue-600">{inProgress}</strong></span>
                                   <span className="text-sm"><span className="text-gray-500">完了:</span> <strong className="text-green-600">{completed}</strong></span>
                                 </div>
                                 <div className="h-3 bg-gray-200 rounded-full overflow-hidden flex">
                                   <div className="bg-gray-400" style={{ width: `${(unsubmitted / total) * 100}%` }} title="未提出" />
                                   <div className="bg-amber-400" style={{ width: `${(pending / total) * 100}%` }} title="未添削" />
+                                  <div className="bg-blue-400" style={{ width: `${(inProgress / total) * 100}%` }} title="添削中" />
                                   <div className="bg-green-500" style={{ width: `${(completed / total) * 100}%` }} title="完了" />
                                 </div>
                               </>
@@ -862,14 +864,6 @@ export default function OndokuPage() {
                           </div>
                         </div>
                         <div className="overflow-x-auto rounded-xl border border-[#e5dfd4] bg-white">
-                          <div className="flex border-b border-[#e5dfd4]">
-                            <button type="button" onClick={() => setMyPageLevelTab("chujokyu")} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${myPageLevelTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
-                              初中級
-                            </button>
-                            <button type="button" onClick={() => setMyPageLevelTab("chuujokyu")} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${myPageLevelTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
-                              中上級
-                            </button>
-                          </div>
                           <div className="flex border-b border-[#e5dfd4]">
                             {ALL_PERIODS.map((periodIdx) => (
                               <button key={periodIdx} type="button" onClick={() => setMyPagePeriodTab(periodIdx)} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${myPagePeriodTab === periodIdx ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
@@ -913,7 +907,7 @@ export default function OndokuPage() {
                                 <td className="py-2 px-3 bg-[#faf8f5] font-medium text-gray-700 text-sm">添削日</td>
                                 {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
                                   const row = myPageData.submissions.find((s) => s.period_index === myPagePeriodTab && s.item_index === itemIdx);
-                                  const hasCorrection = row && (row.corrected_content || row.feedback) && (row.status === "completed");
+                                  const hasCorrection = row && (row.corrected_content || row.feedback) && (row.status === "completed" || row.status === "in_progress");
                                   const dateStr = hasCorrection && (row?.completed_at || row?.feedback_at) ? new Date(row.completed_at || row.feedback_at!).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
                                   const ex = ONDOKU_PERIOD_EXAMPLES[myPagePeriodTab]?.[itemIdx];
                                   if (dateStr && hasCorrection) {
