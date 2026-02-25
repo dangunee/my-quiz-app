@@ -670,11 +670,53 @@ export default function OndokuPage() {
                                   <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
                                     <div className="mt-3 flex flex-col gap-3">
                                       {examplePeriodTab === 0 && exampleLevelTab === "chujokyu" && idx === 0 && (
+                                        <>
                                         <div className="p-4 rounded-xl bg-white border border-[#e5dfd4]">
                                           <img src="/ondoku-1st-assignment.png" alt="1회 과제 - 文型と課題一覧" className="w-full max-w-2xl mx-auto rounded-lg border border-gray-200 shadow-sm" />
                                         </div>
+                                        <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+{`お世話になっております。
+ミリネ韓国語教室です。
+初中級通信音読の第1回課題をお送りいたします。
+模範録音を先にお送りしますので、参考にして練習なさってください。
+よろしくお願いします。
+
+※十分に練習していただけるように2回目の課題からは締め切りの１週間前に送信する予定です。1月12日（月）に第2回目の課題（1月19日締め切り）送信がありますので、ご確認いただけると幸いです。
+
+締切：1/12(月）21時までに録音ファイルをこのメールの返信に送ってください。
+締切を過ぎるとチェックが難しくなるので、締切厳守お願い致します。
+
+【音読トレーニングの方法】
+
+1．例文の把握：まず、課題を日本語訳して意味を把握します。
+
+2．例文を見ながら模範音声を聞いて繰り返し音読10回、スムーズになるまで増やしてもいいです。記録シートの作成をお勧めします。
+
+3．模範音声を聞いて例文を見ないで音読10回⇒録音して送ります。
+
+4．次週添削が来たら模範抑揚シートを参考し、発音と抑揚がができていないところを集中的に練習します。シャドーイングの練習15回で終わりです。
+
+「お願い」
+録音の際に冒頭にお名前、何回目の課題かをおっしゃってください。
+例)　第4回　田中直美　１．～
+また、可能な方は添付ファイル名に「4田中」などお名前を明記していただくと大変助かります。
+ご協力お願いいたします。
+
+【録音注意事項】
+1．録音ファイルはパソコンで再生可能なファイルでお願いします。（.mp3など）ご自分で再生可能か確認後、送るようにお願いします。
+
+2．例文はまとめて1つのファイルにお願いします。番号を言ってからハングルの例文を録音してください。
+たくさん練習して間違いのないように録音できればいいですが、
+途中で間違った場合もそのまま続けて番号を言って録音してください。
+例)　1．겨울이 가까워지면.... (間違い、少し間を取って）1. 겨울이 가까워지면서 해가 짧아졌어요.
+
+ご不明な点等ございましたら、このメールの返信でお問い合せ下さい。
+
+よろしくお願いいたします。`}
+                                        </div>
+                                        </>
                                       )}
-                                      {ex.modelContent && (
+                                      {(examplePeriodTab !== 0 || exampleLevelTab !== "chujokyu" || idx !== 0) && ex.modelContent && (
                                       <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
                                         <p className="text-gray-600 font-medium">テーマ：{ex.modelContent.theme}</p>
                                         <p className="text-gray-800 leading-relaxed text-lg font-medium">{ex.modelContent.sentence}</p>
