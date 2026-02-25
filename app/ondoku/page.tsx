@@ -42,6 +42,43 @@ const TABS: { id: TabId; label: string }[] = [
 const PERIOD_LABELS = ["1期", "2期", "3期", "4期"] as const;
 const ALL_PERIODS = [0, 1, 2, 3] as const; // 1期, 2期, 3期, 4期 (both levels)
 
+const ONDOKU_1KAI_INSTRUCTION = `初中級通信音読の第1回課題をお送りいたします。
+模範録音を先にお送りしますので、参考にして練習なさってください。
+よろしくお願いします。
+
+※十分に練習していただけるように2回目の課題からは締め切りの１週間前に送信する予定です。1月12日（月）に第2回目の課題（1月19日締め切り）送信がありますので、ご確認いただけると幸いです。
+
+締切：1/12(月）21時までに録音ファイルをこのメールの返信に送ってください。
+締切を過ぎるとチェックが難しくなるので、締切厳守お願い致します。
+
+【音読トレーニングの方法】
+
+1．例文の把握：まず、課題を日本語訳して意味を把握します。
+
+2．例文を見ながら模範音声を聞いて繰り返し音読10回、スムーズになるまで増やしてもいいです。記録シートの作成をお勧めします。
+
+3．模範音声を聞いて例文を見ないで音読10回⇒録音して送ります。
+
+4．次週添削が来たら模範抑揚シートを参考し、発音と抑揚がができていないところを集中的に練習します。シャドーイングの練習15回で終わりです。
+
+「お願い」
+録音の際に冒頭にお名前、何回目の課題かをおっしゃってください。
+例)　第4回　田中直美　１．～
+また、可能な方は添付ファイル名に「4田中」などお名前を明記していただくと大変助かります。
+ご協力お願いいたします。
+
+【録音注意事項】
+1．録音ファイルはパソコンで再生可能なファイルでお願いします。（.mp3など）ご自分で再生可能か確認後、送るようにお願いします。
+
+2．例文はまとめて1つのファイルにお願いします。番号を言ってからハングルの例文を録音してください。
+たくさん練習して間違いのないように録音できればいいですが、
+途中で間違った場合もそのまま続けて番号を言って録音してください。
+例)　1．겨울이 가까워지면.... (間違い、少し間を取って）1. 겨울이 가까워지면서 해가 짧아졌어요.
+
+ご不明な点等ございましたら、このメールの返信でお問い合せ下さい。
+
+よろしくお願いいたします。`;
+
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
 
 export default function OndokuPage() {
@@ -675,44 +712,7 @@ export default function OndokuPage() {
                                           <img src="/ondoku-1st-assignment.png" alt="1회 과제 - 文型と課題一覧" className="w-full max-w-2xl mx-auto rounded-lg border border-gray-200 shadow-sm" />
                                         </div>
                                         <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm text-gray-800 leading-relaxed whitespace-pre-line">
-{`お世話になっております。
-ミリネ韓国語教室です。
-初中級通信音読の第1回課題をお送りいたします。
-模範録音を先にお送りしますので、参考にして練習なさってください。
-よろしくお願いします。
-
-※十分に練習していただけるように2回目の課題からは締め切りの１週間前に送信する予定です。1月12日（月）に第2回目の課題（1月19日締め切り）送信がありますので、ご確認いただけると幸いです。
-
-締切：1/12(月）21時までに録音ファイルをこのメールの返信に送ってください。
-締切を過ぎるとチェックが難しくなるので、締切厳守お願い致します。
-
-【音読トレーニングの方法】
-
-1．例文の把握：まず、課題を日本語訳して意味を把握します。
-
-2．例文を見ながら模範音声を聞いて繰り返し音読10回、スムーズになるまで増やしてもいいです。記録シートの作成をお勧めします。
-
-3．模範音声を聞いて例文を見ないで音読10回⇒録音して送ります。
-
-4．次週添削が来たら模範抑揚シートを参考し、発音と抑揚がができていないところを集中的に練習します。シャドーイングの練習15回で終わりです。
-
-「お願い」
-録音の際に冒頭にお名前、何回目の課題かをおっしゃってください。
-例)　第4回　田中直美　１．～
-また、可能な方は添付ファイル名に「4田中」などお名前を明記していただくと大変助かります。
-ご協力お願いいたします。
-
-【録音注意事項】
-1．録音ファイルはパソコンで再生可能なファイルでお願いします。（.mp3など）ご自分で再生可能か確認後、送るようにお願いします。
-
-2．例文はまとめて1つのファイルにお願いします。番号を言ってからハングルの例文を録音してください。
-たくさん練習して間違いのないように録音できればいいですが、
-途中で間違った場合もそのまま続けて番号を言って録音してください。
-例)　1．겨울이 가까워지면.... (間違い、少し間を取って）1. 겨울이 가까워지면서 해가 짧아졌어요.
-
-ご不明な点等ございましたら、このメールの返信でお問い合せ下さい。
-
-よろしくお願いいたします。`}
+                                          {ONDOKU_1KAI_INSTRUCTION}
                                         </div>
                                         </>
                                       )}
@@ -929,7 +929,11 @@ export default function OndokuPage() {
               <button onClick={handleCloseExampleSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">閉じる</button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              {mc && (
+              {selectedExample.periodIndex === 0 && selectedExample.itemIndex === 0 ? (
+                <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+                  {ONDOKU_1KAI_INSTRUCTION}
+                </div>
+              ) : mc ? (
                 <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-3">
                   <p className="text-gray-700 font-medium">テーマ: {mc.theme}</p>
                   <p className="text-gray-800 text-lg font-medium leading-relaxed">{mc.sentence}</p>
@@ -941,7 +945,7 @@ export default function OndokuPage() {
                   ))}
                   {mc.pronunciationNote && <p className="text-gray-600 font-medium">※{mc.pronunciationNote}</p>}
                 </div>
-              )}
+              ) : null}
               <div className="p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4] text-sm">
                 <p className="text-gray-600 mb-2">録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1a4d2e] hover:underline">ondoku@kaonnuri.com</a>に送付してください。</p>
                 <p className="text-gray-600 mb-4">送付後、下記に送付日時やメモを記入して「提出する」をクリックしてください。</p>
