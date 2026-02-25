@@ -39,7 +39,9 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "writing", label: "課題提出" },
 ];
 
-const PERIOD_LABELS = ["1期", "2期", "3期", "4期", "5期", "6期", "7期", "8期"] as const;
+const PERIOD_LABELS = ["1期", "2期", "3期", "4期"] as const;
+const CHUJOKYU_PERIODS = [0, 1] as const; // 初中級: 1期, 2期
+const CHUUJOKYU_PERIODS = [2, 3] as const; // 中上級: 3期, 4期
 
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
 
@@ -48,6 +50,7 @@ export default function OndokuPage() {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("experience");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [exampleLevelTab, setExampleLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [examplePeriodTab, setExamplePeriodTab] = useState(0);
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
   const [myPageData, setMyPageData] = useState<{
@@ -67,6 +70,7 @@ export default function OndokuPage() {
   } | null>(null);
   const [myPageLoading, setMyPageLoading] = useState(false);
   const [myPageError, setMyPageError] = useState<string | null>(null);
+  const [myPageLevelTab, setMyPageLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [myPagePeriodTab, setMyPagePeriodTab] = useState(0);
   const [myPageContentModal, setMyPageContentModal] = useState<{
     type: "submit" | "correction";
@@ -601,17 +605,40 @@ export default function OndokuPage() {
                           </div>
                         )}
                         <div className="flex border-b border-[#e5dfd4]">
-                          {PERIOD_LABELS.map((label, i) => (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setExampleLevelTab("chujokyu");
+                              setExpandedExampleId(null);
+                            }}
+                            className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${exampleLevelTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                          >
+                            初中級
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setExampleLevelTab("chuujokyu");
+                              setExamplePeriodTab(2);
+                              setExpandedExampleId(null);
+                            }}
+                            className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${exampleLevelTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                          >
+                            中上級
+                          </button>
+                        </div>
+                        <div className="flex border-b border-[#e5dfd4]">
+                          {ALL_PERIODS.map((periodIdx) => (
                             <button
-                              key={label}
+                              key={periodIdx}
                               type="button"
                               onClick={() => {
-                                setExamplePeriodTab(i);
+                                setExamplePeriodTab(periodIdx);
                                 setExpandedExampleId(null);
                               }}
-                              className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${examplePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                              className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${examplePeriodTab === periodIdx ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
                             >
-                              {label}
+                              {PERIOD_LABELS[periodIdx]}
                             </button>
                           ))}
                         </div>
@@ -732,9 +759,17 @@ export default function OndokuPage() {
                         </div>
                         <div className="overflow-x-auto rounded-xl border border-[#e5dfd4] bg-white">
                           <div className="flex border-b border-[#e5dfd4]">
-                            {PERIOD_LABELS.map((label, i) => (
-                              <button key={label} type="button" onClick={() => setMyPagePeriodTab(i)} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${myPagePeriodTab === i ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
-                                {label}
+                            <button type="button" onClick={() => setMyPageLevelTab("chujokyu")} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${myPageLevelTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
+                              初中級
+                            </button>
+                            <button type="button" onClick={() => setMyPageLevelTab("chuujokyu")} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${myPageLevelTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
+                              中上級
+                            </button>
+                          </div>
+                          <div className="flex border-b border-[#e5dfd4]">
+                            {ALL_PERIODS.map((periodIdx) => (
+                              <button key={periodIdx} type="button" onClick={() => setMyPagePeriodTab(periodIdx)} className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${myPagePeriodTab === periodIdx ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}>
+                                {PERIOD_LABELS[periodIdx]}
                               </button>
                             ))}
                           </div>
