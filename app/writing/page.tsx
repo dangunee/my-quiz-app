@@ -155,6 +155,7 @@ export default function WritingPage() {
   const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const [visibility, setVisibility] = useState<Record<number, Record<number, string | null>>>({});
+  const [studentVisibility, setStudentVisibility] = useState<Record<number, Record<number, string | null>>>({});
   const [emailModal, setEmailModal] = useState<{
     sub: { id: string; content: string; user?: { email?: string; name?: string; username?: string } };
     periodLabel: string;
@@ -192,6 +193,14 @@ export default function WritingPage() {
       .then((data) => setVisibility(data.visibility || {}))
       .catch(() => setVisibility({}));
   }, []);
+
+  useEffect(() => {
+    if (!user || !getStoredToken()) return;
+    fetchWithAuth("/api/writing/visibility/me")
+      .then((r) => r.json())
+      .then((data) => setStudentVisibility(data.visibility || {}))
+      .catch(() => setStudentVisibility({}));
+  }, [user]);
 
   useEffect(() => {
     if (isAdmin && activeTab === "writing") {
@@ -1085,8 +1094,10 @@ export default function WritingPage() {
                       <div className="divide-y divide-[#e5dfd4]">
                         {mergedAssignmentExamplesByPeriod[examplePeriodTab].map((ex) => {
                           const itemIdx = (ex.id - 1) % 10;
-                          const visibleFrom = visibility[examplePeriodTab]?.[itemIdx];
-                          const isContentVisible = isAdmin || !visibleFrom || new Date(visibleFrom) <= new Date();
+                          const contentVis = visibility[examplePeriodTab]?.[itemIdx];
+                          const studentVis = studentVisibility[examplePeriodTab]?.[itemIdx];
+                          const visibleFrom = studentVis ?? contentVis;
+                          const isContentVisible = isAdmin || (!!visibleFrom && new Date(visibleFrom) <= new Date());
                           const visibleFromDateStr = visibleFrom ? new Date(visibleFrom).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" }) : null;
                           const visKey = `${examplePeriodTab}-${itemIdx}`;
                           const visDateStr = visibleFrom ? new Date(visibleFrom).toISOString().slice(0, 10) : "";
@@ -1160,9 +1171,18 @@ export default function WritingPage() {
                                 <div className="mt-3 flex flex-col gap-3">
                                   {!isContentVisible ? (
                                     <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
-                                      <p className="text-amber-800 font-medium">해당 컨텐츠는 관리자가 설정한 날짜에 공개 예정입니다.</p>
-                                      <p className="text-amber-700 text-sm mt-1">該当コンテンツは管理者が設定した日付に公開予定です。</p>
-                                      {visibleFromDateStr && <p className="text-amber-600 text-sm mt-2">公開予定日：{visibleFromDateStr}</p>}
+                                      {visibleFrom ? (
+                                        <>
+                                          <p className="text-amber-800 font-medium">해당 컨텐츠는 관리자가 설정한 날짜에 공개 예정입니다.</p>
+                                          <p className="text-amber-700 text-sm mt-1">該当コンテンツは管理者が設定した日付に公開予定です。</p>
+                                          <p className="text-amber-600 text-sm mt-2">公開予定日：{visibleFromDateStr}</p>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <p className="text-amber-800 font-medium">관리자가 공개 날짜를 설정하지 않았습니다.</p>
+                                          <p className="text-amber-700 text-sm mt-1">管理者が公開日を設定していません。設定後にご利用いただけます。</p>
+                                        </>
+                                      )}
                                     </div>
                                   ) : ex.modelContent && (
                                   <>

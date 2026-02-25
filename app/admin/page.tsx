@@ -106,7 +106,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondoku">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondoku" | "writingVisibility">("quiz");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
   const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
@@ -170,6 +170,11 @@ export default function AdminPage() {
   const [kadaiPeriodTab, setKadaiPeriodTab] = useState(0);
   const [visibilityData, setVisibilityData] = useState<Record<number, Record<number, string | null>>>({});
   const [visibilitySaving, setVisibilitySaving] = useState<string | null>(null);
+  const [writingVisPeriodTab, setWritingVisPeriodTab] = useState(0);
+  const [writingVisStudents, setWritingVisStudents] = useState<{ id: string; email: string; name: string }[]>([]);
+  const [writingVisData, setWritingVisData] = useState<Record<string, Record<number, string | null>>>({});
+  const [writingVisLoading, setWritingVisLoading] = useState(false);
+  const [writingVisSaving, setWritingVisSaving] = useState<string | null>(null);
   const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
   const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
   const [kadaiSaving, setKadaiSaving] = useState(false);
@@ -336,6 +341,25 @@ export default function AdminPage() {
         .finally(() => setKadaiLoading(false));
     }
   }, [isAuthenticated, authKey, activeTab]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !authKey || activeTab !== "writingVisibility") return;
+    setWritingVisLoading(true);
+    fetch(`/api/admin/writing/visibility/students?period_index=${writingVisPeriodTab}`, {
+      headers: { Authorization: `Bearer ${authKey}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setWritingVisStudents(data.students || []);
+        setWritingVisData(data.visibility || {});
+      })
+      .catch(() => {
+        setWritingVisStudents([]);
+        setWritingVisData({});
+      })
+      .finally(() => setWritingVisLoading(false));
+  }, [writingVisPeriodTab, activeTab, isAuthenticated, authKey]);
+
 
   const handleSave = async (
     quizId: number,
@@ -654,6 +678,12 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "ondoku" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             音読提出
+          </button>
+          <button
+            onClick={() => setActiveTab("writingVisibility")}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "writingVisibility" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            作文公開日
           </button>
           </div>
           <button
@@ -1446,7 +1476,7 @@ export default function AdminPage() {
 
             <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <h2 className="font-bold text-gray-800 mb-3">公開日設定（기수/회차 공개일）</h2>
-              <p className="text-sm text-gray-600 mb-3">各課題の公開日を設定できます。設定した日付以降にのみ、生徒に課題内容が表示されます。空欄の場合は常に公開です。</p>
+              <p className="text-sm text-gray-600 mb-3">各課題の公開日を設定できます。設定した日付以降にのみ、生徒に課題内容が表示されます。空欄の場合は非公開です。</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
@@ -1854,6 +1884,112 @@ export default function AdminPage() {
                   <p className="text-gray-500 py-4">この期の提出はありません。</p>
                 )}
               </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "writingVisibility" && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">作文公開日設定（기수/회차 生徒별 공개일）</h1>
+            <p className="text-sm text-gray-600 mb-4">各生徒ごとに、期・回別の公開日を設定できます。設定した日付以降にのみ、該当生徒に課題内容が表示されます。空欄の場合は非公開です。</p>
+            <Link href="/writing" className="text-sm text-gray-600 hover:underline mb-4 block">作文ページ</Link>
+
+            <div className="flex gap-2 mb-4 flex-wrap">
+              {PERIOD_LABELS.map((label, i) => (
+                <button
+                  key={i}
+                  onClick={() => setWritingVisPeriodTab(i)}
+                  className={`px-4 py-2 rounded text-sm font-medium ${writingVisPeriodTab === i ? "bg-red-600 text-white" : "bg-gray-200 text-gray-700"}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {writingVisLoading ? (
+              <p>読み込み中...</p>
+            ) : writingVisStudents.length === 0 ? (
+              <p className="text-gray-500 py-4">writing_approved の生徒がいません。</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border px-2 py-2 text-left sticky left-0 bg-gray-100 z-10">生徒</th>
+                      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+                        <th key={i} className="border px-2 py-2 text-center">第{i + 1}回</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {writingVisStudents.map((student) => (
+                      <tr key={student.id}>
+                        <td className="border px-2 py-1 sticky left-0 bg-white z-10">
+                          <div className="font-medium text-gray-800">{student.name}</div>
+                          <div className="text-xs text-gray-500 truncate max-w-[120px]">{student.email}</div>
+                        </td>
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
+                          const key = `${student.id}-${itemIdx}`;
+                          const val = writingVisData[student.id]?.[itemIdx];
+                          const dateStr = val ? new Date(val).toISOString().slice(0, 10) : "";
+                          return (
+                            <td key={itemIdx} className="border px-1 py-1">
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="date"
+                                  key={`sv-${key}-${dateStr}`}
+                                  defaultValue={dateStr}
+                                  id={`sv-${key}`}
+                                  className="border rounded px-1 py-0.5 text-xs w-28"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    const input = document.getElementById(`sv-${key}`) as HTMLInputElement;
+                                    const v = input?.value?.trim() || null;
+                                    setWritingVisSaving(key);
+                                    try {
+                                      const res = await fetch("/api/admin/writing/visibility/student", {
+                                        method: "PUT",
+                                        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                        body: JSON.stringify({
+                                          user_id: student.id,
+                                          period_index: writingVisPeriodTab,
+                                          item_index: itemIdx,
+                                          visible_from: v ? `${v}T00:00:00Z` : null,
+                                        }),
+                                      });
+                                      if (res.ok) {
+                                        setWritingVisData((prev) => {
+                                          const next = { ...prev };
+                                          if (!next[student.id]) next[student.id] = {};
+                                          next[student.id][itemIdx] = v ? `${v}T00:00:00Z` : null;
+                                          return next;
+                                        });
+                                      } else {
+                                        const err = await res.json();
+                                        alert(err.error || "保存に失敗しました");
+                                      }
+                                    } catch {
+                                      alert("保存中にエラーが発生しました");
+                                    } finally {
+                                      setWritingVisSaving(null);
+                                    }
+                                  }}
+                                  disabled={writingVisSaving === key}
+                                  className="px-1 py-0.5 bg-amber-600 text-white rounded text-xs hover:bg-amber-700 disabled:opacity-50 shrink-0"
+                                >
+                                  {writingVisSaving === key ? "..." : "保存"}
+                                </button>
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
