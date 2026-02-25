@@ -641,7 +641,7 @@ export default function OndokuPage() {
                             </button>
                           ))}
                         </div>
-                        <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">音読課題例（10件）</div>
+                        <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">音読課題例（{mergedExamples.length}件）</div>
                         <div className="divide-y divide-[#e5dfd4]">
                           {mergedExamples.map((ex, idx) => {
                             const exId = examplePeriodTab * 10 + idx + 1;
@@ -679,7 +679,6 @@ export default function OndokuPage() {
                                           </div>
                                         )}
                                       </div>
-                                      <p className="text-sm text-gray-600">録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1a4d2e] hover:underline">ondoku@kaonnuri.com</a>に送付後、下記で提出完了としてください。</p>
                                       {isSubmitted ? (
                                         <>
                                           <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">

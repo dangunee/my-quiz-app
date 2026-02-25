@@ -12,16 +12,14 @@ export type OndokuExampleItem = {
 
 export const ONDOKU_PERIOD_EXAMPLES: OndokuExampleItem[][] = [
   [
-    { title: "-아/어지다", topic: "形容詞の自然な変化", modelContent: { theme: "-아/어지다", sentence: "겨울이 가까워지면서 해가 짧아지고 추워졌어요.", pronunciationNote: "発音ポイント：複合母音、二重バッチム、濃音、激音", patterns: [{ pattern: "-아/어지다", example: "날씨가 좋아졌어요, 얼굴이 예뻐졌어요" }] } },
-    { title: "-(으)ㄹ 줄 알다", topic: "(習って)することができる", modelContent: { theme: "-(으)ㄹ 줄 알다", sentence: "한국 사람들은 모두 김치를 담글 줄 알아요?", pronunciationNote: "発音ポイント：ㄹの発音、連音", patterns: [{ pattern: "-(으)ㄹ 줄 알다", example: "수영할 줄 알아요?" }] } },
-    { title: "-(으)ㄹ 줄 모르다", topic: "(習って)できない", modelContent: { theme: "-(으)ㄹ 줄 모르다", sentence: "저는 면허가 없어요. 운전할 줄 모릅니다.", pronunciationNote: "発音ポイント：ㅎの発音、二重バッチム、鼻音化", patterns: [{ pattern: "-(으)ㄹ 줄 모르다", example: "저는 영어를 할 줄 몰라요." }] } },
-    { title: "-게 되다", topic: "～ようになる", modelContent: { theme: "-게 되다", sentence: "한국 드라마가 좋아서 한국어를 공부하게 되었어요.", pronunciationNote: "発音ポイント：連音、濃音化", patterns: [{ pattern: "-게 되다", example: "말하게 되었어요" }] } },
-    { title: "-아/어 보이다", topic: "～く見える", modelContent: { theme: "-아/어 보이다", sentence: "나이보다 어려 보여요.", pronunciationNote: "発音ポイント：이の縮約", patterns: [{ pattern: "-아/어 보이다", example: "맛있어 보여요" }] } },
-    { title: "-를 닮다/비슷하다", topic: "～に似ている", modelContent: { theme: "-를 닮다/비슷하다", sentence: "어머니를 많이 닮았어요.", pronunciationNote: "発音ポイント：ㄹパッチム", patterns: [{ pattern: "-를 닮다", example: "누구를 닮았는가?" }] } },
-    { title: "-라고 하다", topic: "～という", modelContent: { theme: "-라고 하다", sentence: "나는 신림동에 사는 홍길동이라고 해요.", pronunciationNote: "発音ポイント：ㄹの発音", patterns: [{ pattern: "-라고 하다", example: "~라고 합니다" }] } },
-    { title: "-라고 생각하다", topic: "～だと思う", modelContent: { theme: "-라고 생각하다", sentence: "저는 소극적인 성격이라고 생각해요.", pronunciationNote: "発音ポイント：激音", patterns: [{ pattern: "-라고 생각하다", example: "~라고 생각합니다" }] } },
-    { title: "初対面の挨拶", topic: "첫인사", modelContent: { theme: "初対面の挨拶", sentence: "처음 뵙겠습니다. 저는 사토 리에라고 합니다.", pronunciationNote: "発音ポイント：ㅂパッチム、連音", patterns: [{ pattern: "自己紹介", example: "저는 ~라고 합니다" }] } },
-    { title: "日常会話", topic: "일상회화", modelContent: { theme: "日常会話", sentence: "오늘 날씨가 좋네요. 주말에 뭐 하실 거예요?", pronunciationNote: "発音ポイント：抑揚、リズム", patterns: [{ pattern: "会話表現", example: "~네요, ~실 거예요" }] } },
+    { title: "-겠-", topic: "推測でしょう、だろう", modelContent: { theme: "-겠-", sentence: "지금 열 한 시니까 벌써 집을 떠났겠군요.", patterns: [{ pattern: "-겠-", example: "推測でしょう、だろう" }] } },
+    { title: "-은 지 -가 되다", topic: "～してから (~ぐらい) 経つ", modelContent: { theme: "-은 지 -가 되다", sentence: "한국어를 시작한 지 3년이 됐는데 아직 잘 못해요.", patterns: [{ pattern: "-은 지 -가 되다", example: "～してから (~ぐらい) 経つ" }] } },
+    { title: "-만", topic: "～ばかり", modelContent: { theme: "-만", sentence: "주말 내내 침대에 누워 있기만 했어요.", patterns: [{ pattern: "-만", example: "～ばかり" }] } },
+    { title: "-을 테니까", topic: "(私が) ～するから", modelContent: { theme: "-을 테니까", sentence: "음료수는 제가 가져 올 테니까 걱정하지 마세요.", patterns: [{ pattern: "-을 테니까", example: "(私が) ～するから" }] } },
+    { title: "-다가", topic: "～していて", modelContent: { theme: "-다가", sentence: "어렸을 때는 해외에서 살다가 중학교 때 돌아왔어요.", patterns: [{ pattern: "-다가", example: "～していて" }] } },
+    { title: "-았/었군요", topic: "～たったのですね。", modelContent: { theme: "-았/었군요", sentence: "머리를 짧게 잘랐군요. 잘 어울리네요.", patterns: [{ pattern: "-았/었군요", example: "～たったのですね。" }] } },
+    { title: "-도록 하다", topic: "～するようにする", modelContent: { theme: "-도록 하다", sentence: "이 약을 하루에 세 번 식후에 드시도록 하세요.", patterns: [{ pattern: "-도록 하다", example: "～するようにする" }] } },
+    { title: "-(으)ㄹ래요?", topic: "～しませんか。", modelContent: { theme: "-(으)ㄹ래요?", sentence: "제가 회의 준비하는 동안 여기 정리 좀 해 줄래요?", patterns: [{ pattern: "-(으)ㄹ래요?", example: "～しませんか。" }] } },
   ],
   [
     { title: "-면서", topic: "～ながら", modelContent: { theme: "-면서", sentence: "음악을 들으면서 공부해요.", pronunciationNote: "発音ポイント：連音", patterns: [{ pattern: "-(으)면서", example: "먹으면서 이야기해요" }] } },
