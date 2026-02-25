@@ -642,6 +642,12 @@ export default function OndokuPage() {
                           ))}
                         </div>
                         <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">音読課題例（{mergedExamples.length}件）</div>
+                        {examplePeriodTab === 0 && exampleLevelTab === "chujokyu" && (
+                          <div className="p-4 border-b border-[#e5dfd4] bg-white">
+                            <p className="text-sm font-medium text-gray-700 mb-3">1期 第1回 課題提示</p>
+                            <img src="/ondoku-1st-assignment.png" alt="1회 과제 - 文型と課題一覧" className="w-full max-w-2xl mx-auto rounded-lg border border-gray-200 shadow-sm" />
+                          </div>
+                        )}
                         <div className="divide-y divide-[#e5dfd4]">
                           {mergedExamples.map((ex, idx) => {
                             const exId = examplePeriodTab * 10 + idx + 1;
