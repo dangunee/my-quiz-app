@@ -244,9 +244,9 @@ export default function OndokuPage() {
     </nav>
   );
 
-  const handleExampleSubmitClick = (ex: { id: number; title: string }, periodIndex: number, itemIndex: number) => {
+  const handleExampleSubmitClick = (ex: { id: number; title: string }, periodIndex: number, itemIndex: number, existingContent?: string) => {
     setSelectedExample({ ...ex, periodIndex, itemIndex });
-    setExampleSubmitContent("");
+    setExampleSubmitContent(existingContent ?? "");
     setShowExampleSubmitModal(true);
   };
 
@@ -321,27 +321,28 @@ export default function OndokuPage() {
         const uploadData = await uploadRes.json();
         audioUrl = uploadData.url;
       }
+      const key = `${selectedExample.periodIndex}-${selectedExample.itemIndex}`;
+      const audioUrlToSend = audioUrl ?? submissionsByKey[key]?.audio_url;
       const res = await fetchWithAuth("/api/ondoku/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           period_index: selectedExample.periodIndex,
           item_index: selectedExample.itemIndex,
-          content: exampleSubmitContent.trim() || (audioUrl ? "（音声ファイル提出済み）" : "（録音ファイル送付済み）"),
-          audio_url: audioUrl,
+          content: exampleSubmitContent.trim() || (audioUrlToSend ? "（音声ファイル提出済み）" : "（録音ファイル送付済み）"),
+          audio_url: audioUrlToSend,
         }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `提出に失敗しました (${res.status})`);
       }
-      const key = `${selectedExample.periodIndex}-${selectedExample.itemIndex}`;
       setSubmittedKeys((prev) => new Set([...prev, key]));
       setSubmissionsByKey((prev) => ({
         ...prev,
         [key]: {
-          content: exampleSubmitContent.trim() || (audioUrl ? "（音声ファイル提出済み）" : "（録音ファイル送付済み）"),
-          audio_url: audioUrl,
+          content: exampleSubmitContent.trim() || (audioUrlToSend ? "（音声ファイル提出済み）" : "（録音ファイル送付済み）"),
+          audio_url: audioUrlToSend,
           submitted_at: new Date().toISOString(),
         },
       }));
@@ -785,7 +786,10 @@ export default function OndokuPage() {
                                             )}
                                             <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{submissionsByKey[key]?.content || ""}</pre>
                                           </div>
-                                          <button type="button" onClick={() => document.getElementById("mypage-section")?.scrollIntoView({ behavior: "smooth" })} className="w-full py-3 px-6 bg-[#4ade80] hover:bg-[#22c55e] text-gray-800 font-medium rounded-xl shadow-md">マイページで確認</button>
+                                          <div className="flex gap-2">
+                                            <button type="button" onClick={() => handleExampleSubmitClick({ id: exId, title: ex.title }, examplePeriodTab, idx, submissionsByKey[key]?.content)} className="flex-1 py-3 px-6 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-xl shadow-md">修正・再提出</button>
+                                            <button type="button" onClick={() => document.getElementById("mypage-section")?.scrollIntoView({ behavior: "smooth" })} className="flex-1 py-3 px-6 bg-[#4ade80] hover:bg-[#22c55e] text-gray-800 font-medium rounded-xl shadow-md">マイページで確認</button>
+                                          </div>
                                         </>
                                       ) : user ? (
                                         <button onClick={() => handleExampleSubmitClick({ id: exId, title: ex.title }, examplePeriodTab, idx)} className="w-full py-3 px-6 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl shadow-md">課題提出</button>

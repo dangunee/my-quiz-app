@@ -5,6 +5,7 @@ import Link from "next/link";
 import { QUIZZES } from "../quiz-data";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
+import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
 
 type Submission = {
   id: string;
@@ -25,6 +26,17 @@ type OverrideRow = {
   explanation?: string;
   japanese?: string;
   options?: { id: number; text: string }[];
+};
+
+type OndokuSubmission = {
+  id: string;
+  user_id: string;
+  period_index: number;
+  item_index: number;
+  content: string;
+  audio_url?: string;
+  submitted_at: string;
+  user?: { email?: string; name?: string; username?: string };
 };
 
 function formatJapanese(s: string) {
@@ -80,7 +92,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondoku">("quiz");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
   const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
@@ -146,6 +158,10 @@ export default function AdminPage() {
   const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
   const [kadaiSaving, setKadaiSaving] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
+  const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
+  const [ondokuLoading, setOndokuLoading] = useState(false);
+  const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
+  const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
   const filteredUsers = userSearchKeyword.trim()
     ? users.filter((u) => {
         const kw = userSearchKeyword.trim().toLowerCase();
@@ -243,9 +259,19 @@ export default function AdminPage() {
       .finally(() => setWritingLoading(false));
   };
 
+  const loadOndokuSubmissions = () => {
+    setOndokuLoading(true);
+    fetch("/api/admin/ondoku/submissions", { headers: { Authorization: `Bearer ${authKey}` } })
+      .then((r) => r.json())
+      .then((data) => setOndokuSubmissions(data.submissions || []))
+      .catch(() => setOndokuSubmissions([]))
+      .finally(() => setOndokuLoading(false));
+  };
+
   useEffect(() => {
     if (!isAuthenticated || !authKey) return;
     if (activeTab === "submissions") loadSubmissions();
+    else if (activeTab === "ondoku") loadOndokuSubmissions();
     else if (activeTab === "kadai") {
       setKadaiLoading(true);
       fetch("/api/admin/writing/assignment-examples", { headers: { Authorization: `Bearer ${authKey}` } })
@@ -564,6 +590,15 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "kadai" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             作文課題
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("ondoku");
+              loadOndokuSubmissions();
+            }}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "ondoku" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            音読提出
           </button>
           </div>
           <button
@@ -1472,6 +1507,71 @@ export default function AdminPage() {
                     );
                   })}
                 </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "ondoku" && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">音読提出一覧</h1>
+            <p className="text-sm text-gray-600 mb-4">全生徒の音読録音ファイルを確認・再生できます。1期～4期、1회～10회別に表示。</p>
+            <Link href="/ondoku" className="text-sm text-gray-600 hover:underline mb-4 block">音読ページ</Link>
+            {ondokuLoading ? (
+              <p>読み込み中...</p>
+            ) : (
+              <>
+                <div className="flex gap-2 mb-4 flex-wrap">
+                  {ONDOKU_PERIOD_LABELS.map((label, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setOndokuPeriodTab(i)}
+                      className={`px-3 py-1.5 rounded text-sm font-medium ${ondokuPeriodTab === i ? "bg-red-600 text-white" : "bg-gray-200 text-gray-700"}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-4">
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((itemIdx) => {
+                    const periodSubmissions = ondokuSubmissions.filter(
+                      (s) => s.period_index === ondokuPeriodTab && s.item_index === itemIdx
+                    );
+                    const ex = ONDOKU_PERIOD_EXAMPLES[ondokuPeriodTab]?.[itemIdx];
+                    const title = ex?.title || `${itemIdx + 1}회`;
+                    if (periodSubmissions.length === 0) return null;
+                    return (
+                      <div key={itemIdx} className="p-4 border rounded-lg">
+                        <h3 className="font-medium text-gray-800 mb-3">
+                          {ONDOKU_PERIOD_LABELS[ondokuPeriodTab]} {title}
+                          {ex?.topic && <span className="text-sm font-normal text-gray-600 ml-2">({ex.topic})</span>}
+                        </h3>
+                        <ul className="space-y-3">
+                          {periodSubmissions.map((s) => (
+                            <li key={s.id} className="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-gray-50 rounded text-sm">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-gray-800">{(s.user?.name || s.user?.username || s.user?.email) || "-"}</p>
+                                <p className="text-xs text-gray-500">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
+                                {s.content && <p className="mt-1 text-gray-700 whitespace-pre-wrap">{s.content}</p>}
+                              </div>
+                              {s.audio_url ? (
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <audio controls src={s.audio_url} className="max-w-[200px] h-8" />
+                                  <a href={s.audio_url} download className="text-red-600 hover:underline text-xs">ダウンロード</a>
+                                </div>
+                              ) : (
+                                <span className="text-gray-500 text-xs">音声なし</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+                {ondokuSubmissions.filter((s) => s.period_index === ondokuPeriodTab).length === 0 && (
+                  <p className="text-gray-500 py-4">この期の提出はありません。</p>
+                )}
               </>
             )}
           </div>
