@@ -96,3 +96,15 @@ create index if not exists idx_customer_profiles_plan_type on customer_profiles(
 alter table customer_profiles enable row level security;
 create policy "Users can read own profile" on customer_profiles for select using (auth.uid() = user_id);
 create policy "Service role full access" on customer_profiles for all using (auth.role() = 'service_role');
+
+-- ========== 生活韓国語 (Seikatsu Korean) ==========
+create table if not exists seikatsu_items (
+  id uuid primary key default gen_random_uuid(),
+  title text not null unique,
+  sort_order int not null default 0,
+  created_at timestamptz default now()
+);
+create index if not exists idx_seikatsu_items_sort on seikatsu_items(sort_order desc);
+alter table seikatsu_items enable row level security;
+create policy "Public read seikatsu" on seikatsu_items for select using (true);
+create policy "Service role full seikatsu" on seikatsu_items for all using (auth.role() = 'service_role');

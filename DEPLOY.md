@@ -31,7 +31,18 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**에서 추가:
 2. **SQL Editor**에서 `supabase-schema.sql` 전체 실행
 3. **Authentication** → **URL Configuration**에 배포 URL 추가 (예: `https://quiz.mirinae.jp`)
 
-### 4. 커스텀 도메인
+### 4. 生活韓国語 데이터 초기화
+
+`seikatsu_items` 테이블에 블로그 목록을 넣으려면:
+
+```bash
+curl -X POST "https://your-domain.vercel.app/api/admin/sync-seikatsu" \
+  -H "Authorization: Bearer YOUR_ADMIN_SECRET"
+```
+
+또는 기존 DB만 사용 중이면 `supabase-migration-seikatsu.sql` 실행 후 위 sync 호출
+
+### 5. 커스텀 도메인
 
 - Vercel 프로젝트 → **Settings** → **Domains**
 - `quiz.mirinae.jp`, `writing.mirinae.jp` 추가

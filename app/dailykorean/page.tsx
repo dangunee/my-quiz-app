@@ -4,44 +4,13 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
 
-const SEIKATSU_LIST = [
-  "生活韓国語300［交通違反］",
-  "生活韓国語299.［物価］",
-  "生活韓国語298.［歯がしみる］",
-  "生活韓国語297.［パワハラ］",
-  "生活韓国語296.［更年期］",
-  "生活韓国語295.［告白］",
-  "生活韓国語294.［姿勢］",
-  "生活韓国語293.［お腹の肉］",
-  "生活韓国語292.［お年玉］",
-  "生活韓国語291.［新年目標］",
-  "生活韓国語290.［プレゼント］",
-  "生活韓国語289.【初恋】",
-  "生活韓国語288.【バイト】",
-  "生活韓国語287.［内視鏡］",
-  "生活韓国語286.［W杯］",
-  "生活韓国語285.［受験］",
-  "生活韓国語284.【紅葉】",
-  "生活韓国語283.［ニュース］",
-  "生活韓国語282.［登山］",
-  "生活韓国語281.［円安］",
-  "生活韓国語280.［アル中］",
-  "生活韓国語279.［食堂の予約］",
-  "生活韓国語278.［上京］",
-  "生活韓国語277.［水害］",
-  "生活韓国語276.［膳立て］",
-  "生活韓国語275.［桃］",
-  "生活韓国語274.［不眠症］",
-  "生活韓国語273.［墓］",
-  "生活韓国語272.［換気］",
-  "生活韓国語271.［臭い］",
-];
-
 const BLOG_URL = "https://mirinae.jp/blog/?cat=2";
 const ITEMS_PER_PAGE = 20;
 
 function DailyKoreanContent() {
   const searchParams = useSearchParams();
+  const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
+  const [listLoading, setListLoading] = useState(true);
   const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
   const [content, setContent] = useState<{ html: string; url: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,16 +18,26 @@ function DailyKoreanContent() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const t = searchParams.get("title") || searchParams.get("q") || null;
-    if (t && SEIKATSU_LIST.includes(t)) {
-      setExpandedTitle(t);
-      setCurrentPage(Math.floor(SEIKATSU_LIST.indexOf(t) / ITEMS_PER_PAGE) + 1);
-    }
-  }, [searchParams]);
+    fetch("/api/dailykorean-list")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setSeikatsuList(data);
+      })
+      .catch(() => setSeikatsuList([]))
+      .finally(() => setListLoading(false));
+  }, []);
 
-  const totalPages = Math.ceil(SEIKATSU_LIST.length / ITEMS_PER_PAGE);
+  useEffect(() => {
+    const t = searchParams.get("title") || searchParams.get("q") || null;
+    if (t && seikatsuList.includes(t)) {
+      setExpandedTitle(t);
+      setCurrentPage(Math.floor(seikatsuList.indexOf(t) / ITEMS_PER_PAGE) + 1);
+    }
+  }, [searchParams, seikatsuList]);
+
+  const totalPages = Math.ceil(seikatsuList.length / ITEMS_PER_PAGE) || 1;
   const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-  const pageItems = SEIKATSU_LIST.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  const pageItems = seikatsuList.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
   const goToPage = (page: number) => {
     const p = Math.max(1, Math.min(page, totalPages));
@@ -118,8 +97,13 @@ function DailyKoreanContent() {
         </div>
 
         <ul className="divide-y divide-gray-200">
-          {pageItems.map((title, i) => (
-            <li key={i} className="border-b border-gray-200 last:border-b-0">
+          {listLoading ? (
+            <li className="py-12 text-center text-gray-500">読み込み中...</li>
+          ) : pageItems.length === 0 ? (
+            <li className="py-12 text-center text-gray-500">該当する記事がありません</li>
+          ) : (
+            pageItems.map((title, i) => (
+              <li key={i} className="border-b border-gray-200 last:border-b-0">
               <button
                 type="button"
                 onClick={() =>
@@ -162,8 +146,9 @@ function DailyKoreanContent() {
                   )}
                 </div>
               )}
-            </li>
-          ))}
+              </li>
+            ))
+          )}
         </ul>
 
         {totalPages > 1 && (

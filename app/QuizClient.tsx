@@ -59,6 +59,7 @@ export default function QuizClient() {
   const [kotaePage, setKotaePage] = useState(0);
   const [kotaeList, setKotaeList] = useState<KotaeItem[]>([]);
   const [kotaeListLoading, setKotaeListLoading] = useState(true);
+  const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
   const [expandedKotaeId, setExpandedKotaeId] = useState<number | null>(null);
   const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
   const [kotaeLoading, setKotaeLoading] = useState(false);
@@ -132,6 +133,15 @@ export default function QuizClient() {
       })
       .catch(() => setKotaeList([]))
       .finally(() => setKotaeListLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/dailykorean-list")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setSeikatsuList(data);
+      })
+      .catch(() => setSeikatsuList([]));
   }, []);
 
   const filteredKotae = kotaeSearch.trim()
@@ -433,12 +443,7 @@ export default function QuizClient() {
     </>
   );
 
-  const SEIKATSU_SAMPLE = [
-    "生活韓国語300［交通違反］", "生活韓国語299.［物価］", "生活韓国語298.［歯がしみる］",
-    "生活韓国語297.［パワハラ］", "生活韓国語296.［更年期］", "生活韓国語295.［告白］",
-    "生活韓国語294.［姿勢］", "生活韓国語293.［お腹の肉］", "生活韓国語292.［お年玉］",
-    "生活韓国語291.［新年目標］", "生活韓国語290.［プレゼント］",
-  ];
+  const SEIKATSU_SAMPLE = seikatsuList.slice(0, 12);
 
   const handleExpandMenu = (type: "qa" | "dailykorean") => {
     if (rightSidebarExpanded && expandedMenuType === type) {
@@ -456,46 +461,48 @@ export default function QuizClient() {
         desktopRightSidebarVisible ? "md:flex md:flex-col" : "md:hidden"
       } ${rightSidebarExpanded ? "md:w-[420px]" : "md:w-64"}`}
     >
-      {/* ログイン・マイページ カード */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-        <div className="p-4">
-          <h3 className="font-bold text-gray-800 text-sm mb-3">ログイン・マイページ</h3>
+      {/* ログイン・マイページ カード - コンパクト */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="p-3">
+          <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
           {isLoggedIn ? (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <a
                 href="/profile"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full py-3 px-4 text-center font-semibold rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition"
+                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition"
               >
                 マイページ
               </a>
-              <p className="text-xs text-gray-500 text-center">ログイン中</p>
-              <button
-                type="button"
-                onClick={() => {
-                  localStorage.removeItem("quiz_token");
-                  localStorage.removeItem("quiz_refresh_token");
-                  localStorage.removeItem("quiz_user");
-                  setIsLoggedIn(false);
-                }}
-                className="block w-full py-2 text-sm text-gray-600 hover:text-red-600"
-              >
-                ログアウト
-              </button>
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>ログイン中</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem("quiz_token");
+                    localStorage.removeItem("quiz_refresh_token");
+                    localStorage.removeItem("quiz_user");
+                    setIsLoggedIn(false);
+                  }}
+                  className="text-gray-500 hover:text-red-600"
+                >
+                  ログアウト
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <a
                 href="/login"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full py-3 px-4 text-center font-semibold rounded-xl bg-[#fae100] text-gray-800 hover:opacity-90 transition"
+                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition"
               >
                 ログイン
               </a>
-              <div className="flex justify-center gap-2 text-xs text-gray-500">
-                <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">アカウントをお探し</a>
+              <div className="flex justify-center gap-1.5 text-xs text-gray-500">
+                <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">アカウント</a>
                 <span>|</span>
                 <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">新規登録</a>
               </div>
@@ -698,18 +705,21 @@ export default function QuizClient() {
               </button>
             </div>
             <div className="p-4 space-y-4">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 className="font-bold text-gray-800 text-sm mb-3">ログイン・マイページ</h3>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+                <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
                 {isLoggedIn ? (
                   <>
-                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#0ea5e9] text-white mb-2" onClick={() => closeRightMenu()}>マイページ</a>
-                    <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setIsLoggedIn(false); closeRightMenu(); }} className="block w-full py-2 text-sm text-gray-600">ログアウト</button>
+                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white mb-1.5" onClick={() => closeRightMenu()}>マイページ</a>
+                    <div className="flex justify-between items-center text-xs text-gray-500">
+                      <span>ログイン中</span>
+                      <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setIsLoggedIn(false); closeRightMenu(); }} className="hover:text-red-600">ログアウト</button>
+                    </div>
                   </>
                 ) : (
                   <>
-                    <a href="/login" target="_blank" rel="noopener noreferrer" className="block w-full py-3 text-center font-semibold rounded-xl bg-[#fae100] text-gray-800 mb-2" onClick={() => closeRightMenu()}>ログイン</a>
-                    <div className="flex justify-center gap-2 text-xs text-gray-500">
-                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>アカウントをお探し</a>
+                    <a href="/login" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 mb-1.5" onClick={() => closeRightMenu()}>ログイン</a>
+                    <div className="flex justify-center gap-1.5 text-xs text-gray-500">
+                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>アカウント</a>
                       <span>|</span>
                       <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>新規登録</a>
                     </div>
