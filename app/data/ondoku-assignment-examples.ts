@@ -12,14 +12,16 @@ export type OndokuExampleItem = {
 
 export const ONDOKU_PERIOD_EXAMPLES: OndokuExampleItem[][] = [
   [
-    { title: "-겠-", topic: "推測でしょう、だろう", modelContent: { theme: "-겠-", sentence: "지금 열 한 시니까 벌써 집을 떠났겠군요.", patterns: [{ pattern: "-겠-", example: "推測でしょう、だろう" }] } },
-    { title: "-은 지 -가 되다", topic: "～してから (~ぐらい) 経つ", modelContent: { theme: "-은 지 -가 되다", sentence: "한국어를 시작한 지 3년이 됐는데 아직 잘 못해요.", patterns: [{ pattern: "-은 지 -가 되다", example: "～してから (~ぐらい) 経つ" }] } },
-    { title: "-만", topic: "～ばかり", modelContent: { theme: "-만", sentence: "주말 내내 침대에 누워 있기만 했어요.", patterns: [{ pattern: "-만", example: "～ばかり" }] } },
-    { title: "-을 테니까", topic: "(私が) ～するから", modelContent: { theme: "-을 테니까", sentence: "음료수는 제가 가져 올 테니까 걱정하지 마세요.", patterns: [{ pattern: "-을 테니까", example: "(私が) ～するから" }] } },
-    { title: "-다가", topic: "～していて", modelContent: { theme: "-다가", sentence: "어렸을 때는 해외에서 살다가 중학교 때 돌아왔어요.", patterns: [{ pattern: "-다가", example: "～していて" }] } },
-    { title: "-았/었군요", topic: "～たったのですね。", modelContent: { theme: "-았/었군요", sentence: "머리를 짧게 잘랐군요. 잘 어울리네요.", patterns: [{ pattern: "-았/었군요", example: "～たったのですね。" }] } },
-    { title: "-도록 하다", topic: "～するようにする", modelContent: { theme: "-도록 하다", sentence: "이 약을 하루에 세 번 식후에 드시도록 하세요.", patterns: [{ pattern: "-도록 하다", example: "～するようにする" }] } },
-    { title: "-(으)ㄹ래요?", topic: "～しませんか。", modelContent: { theme: "-(으)ㄹ래요?", sentence: "제가 회의 준비하는 동안 여기 정리 좀 해 줄래요?", patterns: [{ pattern: "-(으)ㄹ래요?", example: "～しませんか。" }] } },
+    { title: "1회 -겠-", topic: "推測でしょう、だろう", modelContent: { theme: "-겠-", sentence: "지금 열 한 시니까 벌써 집을 떠났겠군요.", patterns: [{ pattern: "-겠-", example: "推測でしょう、だろう" }] } },
+    { title: "2회 -은 지 -가 되다", topic: "～してから (~ぐらい) 経つ", modelContent: { theme: "-은 지 -가 되다", sentence: "한국어를 시작한 지 3년이 됐는데 아직 잘 못해요.", patterns: [{ pattern: "-은 지 -가 되다", example: "～してから (~ぐらい) 経つ" }] } },
+    { title: "3회 -만", topic: "～ばかり", modelContent: { theme: "-만", sentence: "주말 내내 침대에 누워 있기만 했어요.", patterns: [{ pattern: "-만", example: "～ばかり" }] } },
+    { title: "4회 -을 테니까", topic: "(私が) ～するから", modelContent: { theme: "-을 테니까", sentence: "음료수는 제가 가져 올 테니까 걱정하지 마세요.", patterns: [{ pattern: "-을 테니까", example: "(私が) ～するから" }] } },
+    { title: "5회 -다가", topic: "～していて", modelContent: { theme: "-다가", sentence: "어렸을 때는 해외에서 살다가 중학교 때 돌아왔어요.", patterns: [{ pattern: "-다가", example: "～していて" }] } },
+    { title: "6회 -았/었군요", topic: "～たったのですね。", modelContent: { theme: "-았/었군요", sentence: "머리를 짧게 잘랐군요. 잘 어울리네요.", patterns: [{ pattern: "-았/었군요", example: "～たったのですね。" }] } },
+    { title: "7회 -도록 하다", topic: "～するようにする", modelContent: { theme: "-도록 하다", sentence: "이 약을 하루에 세 번 식후에 드시도록 하세요.", patterns: [{ pattern: "-도록 하다", example: "～するようにする" }] } },
+    { title: "8회 -(으)ㄹ래요?", topic: "～しませんか。", modelContent: { theme: "-(으)ㄹ래요?", sentence: "제가 회의 준비하는 동안 여기 정리 좀 해 줄래요?", patterns: [{ pattern: "-(으)ㄹ래요?", example: "～しませんか。" }] } },
+    { title: "9회 -아/어 보다", topic: "～してみる", modelContent: { theme: "-아/어 보다", sentence: "한국 음식을 먹어 봤어요?", patterns: [{ pattern: "-아/어 보다", example: "～してみる" }] } },
+    { title: "10회 -(으)ㄹ까요?", topic: "～しましょうか", modelContent: { theme: "-(으)ㄹ까요?", sentence: "같이 점심 먹을까요?", patterns: [{ pattern: "-(으)ㄹ까요?", example: "～しましょうか" }] } },
   ],
   [
     { title: "-면서", topic: "～ながら", modelContent: { theme: "-면서", sentence: "음악을 들으면서 공부해요.", pronunciationNote: "発音ポイント：連音", patterns: [{ pattern: "-(으)면서", example: "먹으면서 이야기해요" }] } },

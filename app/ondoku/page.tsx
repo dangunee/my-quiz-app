@@ -642,6 +642,13 @@ export default function OndokuPage() {
                           ))}
                         </div>
                         <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">音読課題例（{mergedExamples.length}件）</div>
+                        {!user ? (
+                          <div className="p-8 text-center bg-[#faf8f5] border-b border-[#e5dfd4]">
+                            <p className="text-gray-700 mb-4">1期～4期の課題内容はログイン後にご覧いただけます。</p>
+                            <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</Link>
+                          </div>
+                        ) : (
+                          <>
                         {examplePeriodTab === 0 && exampleLevelTab === "chujokyu" && (
                           <div className="p-4 border-b border-[#e5dfd4] bg-white">
                             <p className="text-sm font-medium text-gray-700 mb-3">1期 第1回 課題提示</p>
@@ -708,6 +715,8 @@ export default function OndokuPage() {
                             );
                           })}
                         </div>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -866,7 +875,10 @@ export default function OndokuPage() {
         </div>
       )}
 
-      {showExampleSubmitModal && selectedExample && (
+      {showExampleSubmitModal && selectedExample && (() => {
+        const ex = ONDOKU_PERIOD_EXAMPLES[selectedExample.periodIndex]?.[selectedExample.itemIndex];
+        const mc = ex?.modelContent;
+        return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="relative px-4 sm:px-6 py-4 shrink-0 border-b border-gray-200">
@@ -874,6 +886,19 @@ export default function OndokuPage() {
               <button onClick={handleCloseExampleSubmitModal} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">閉じる</button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              {mc && (
+                <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-3">
+                  <p className="text-gray-700 font-medium">テーマ: {mc.theme}</p>
+                  <p className="text-gray-800 text-lg font-medium leading-relaxed">{mc.sentence}</p>
+                  {mc.patterns?.map((p, i) => (
+                    <div key={i} className="text-gray-700">
+                      <p className="font-medium text-gray-800">○ {p.pattern}</p>
+                      <p className="text-gray-600 pl-2">{p.example}</p>
+                    </div>
+                  ))}
+                  {mc.pronunciationNote && <p className="text-gray-600 font-medium">※{mc.pronunciationNote}</p>}
+                </div>
+              )}
               <div className="p-4 rounded-xl bg-[#faf8f5] border border-[#e5dfd4] text-sm">
                 <p className="text-gray-600 mb-2">録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1a4d2e] hover:underline">ondoku@kaonnuri.com</a>に送付してください。</p>
                 <p className="text-gray-600 mb-4">送付後、下記に送付日時やメモを記入して「提出する」をクリックしてください。</p>
@@ -894,7 +919,8 @@ export default function OndokuPage() {
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
