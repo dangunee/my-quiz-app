@@ -3,41 +3,60 @@ import { Resend } from "resend";
 import { verifyAdmin } from "@/lib/admin-auth";
 
 const resendApiKey = process.env.RESEND_API_KEY;
-const ONDOKU_EMAIL = "ondoku@kaonnuri.com";
 
 export async function POST(request: NextRequest) {
   if (!verifyAdmin(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await request.json();
-  const { audio_url, student_name, period_label, item_label } = body;
-
-  if (typeof audio_url !== "string" || !audio_url) {
-    return NextResponse.json({ error: "audio_url required" }, { status: 400 });
-  }
-
   if (!resendApiKey) {
     return NextResponse.json({ error: "RESEND_API_KEY not configured" }, { status: 500 });
   }
 
+  const contentType = request.headers.get("content-type") || "";
+  let to = "";
+  let subject = "";
+  let text = "";
+  let audioUrl: string | null = null;
+  let attachmentFile: File | null = null;
+
+  if (contentType.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    to = (formData.get("to") as string) || "";
+    subject = (formData.get("subject") as string) || "";
+    text = (formData.get("body") as string) || "";
+    audioUrl = (formData.get("audio_url") as string) || null;
+    const file = formData.get("file") as File | null;
+    if (file && file.size > 0) attachmentFile = file;
+  } else {
+    const body = await request.json();
+    to = body.to || "";
+    subject = body.subject || "";
+    text = body.body || "";
+    audioUrl = body.audio_url || null;
+  }
+
+  if (!to || !to.includes("@")) {
+    return NextResponse.json({ error: "받는 사람(To) 이메일을 입력해 주세요" }, { status: 400 });
+  }
+
+  const attachments: Array<{ filename: string; content?: Buffer; path?: string }> = [];
+  if (attachmentFile) {
+    const buf = Buffer.from(await attachmentFile.arrayBuffer());
+    attachments.push({ filename: attachmentFile.name || "audio.mp3", content: buf });
+  } else if (audioUrl) {
+    attachments.push({ filename: `ondoku_${Date.now()}.mp3`, path: audioUrl });
+  }
+
   try {
     const resend = new Resend(resendApiKey);
-    const subject = `音読提出: ${period_label || ""} ${item_label || ""} - ${student_name || "生徒"}`;
-    const text = `音読課題の録音ファイルです。\n\n生徒名: ${student_name || "-"}\n課題: ${period_label || ""} ${item_label || ""}\n\n音声ファイルは添付をご確認ください。`;
-
     const fromEmail = process.env.RESEND_FROM || "onboarding@resend.dev";
     const { data, error } = await resend.emails.send({
       from: `音読アプリ <${fromEmail}>`,
-      to: ONDOKU_EMAIL,
-      subject,
-      text,
-      attachments: [
-        {
-          filename: `ondoku_${student_name || "student"}_${Date.now()}.mp3`,
-          path: audio_url,
-        },
-      ],
+      to: to.trim(),
+      subject: subject.trim() || "音読課題",
+      text: text.trim() || "音読課題の録音ファイルです。",
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
 
     if (error) {

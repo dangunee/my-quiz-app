@@ -140,6 +140,14 @@ export default function OndokuPage() {
   const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const [sendEmailLoading, setSendEmailLoading] = useState<string | null>(null);
+  const [emailModal, setEmailModal] = useState<{
+    sub: { id: string; audio_url?: string; user?: { email?: string; name?: string; username?: string } };
+    periodLabel: string;
+    itemLabel: string;
+  } | null>(null);
+  const [emailForm, setEmailForm] = useState({ to: "", subject: "", body: "" });
+  const [emailAttachment, setEmailAttachment] = useState<File | null>(null);
+  const [emailModalSending, setEmailModalSending] = useState(false);
 
   useEffect(() => {
     const checkAdmin = (authKey: string | null) => {
@@ -848,41 +856,23 @@ export default function OndokuPage() {
                                                   </div>
                                                   <button
                                                     type="button"
-                                                    onClick={async () => {
-                                                      if (!s.audio_url) return;
-                                                      setSendEmailLoading(s.id);
-                                                      try {
-                                                        const sendOpts: RequestInit = {
-                                                          method: "POST",
-                                                          headers: { "Content-Type": "application/json" },
-                                                          body: JSON.stringify({
-                                                            audio_url: s.audio_url,
-                                                            student_name: s.user?.name || s.user?.username || s.user?.email || "-",
-                                                            period_label: PERIOD_LABELS[examplePeriodTab],
-                                                            item_label: ex.title,
-                                                          }),
-                                                        };
-                                                        if (adminAuthKey) {
-                                                          (sendOpts.headers as Record<string, string>).Authorization = `Bearer ${adminAuthKey}`;
-                                                        } else {
-                                                          sendOpts.credentials = "include";
-                                                        }
-                                                        const res = await fetch("/api/admin/ondoku/send-email", sendOpts);
-                                                        if (!res.ok) {
-                                                          const err = await res.json().catch(() => ({}));
-                                                          throw new Error(err.error || "送信に失敗しました");
-                                                        }
-                                                        alert("ondoku@kaonnuri.com に送信しました");
-                                                      } catch (e) {
-                                                        alert(e instanceof Error ? e.message : "送信に失敗しました");
-                                                      } finally {
-                                                        setSendEmailLoading(null);
-                                                      }
+                                                    onClick={() => {
+                                                      setEmailModal({
+                                                        sub: s,
+                                                        periodLabel: PERIOD_LABELS[examplePeriodTab],
+                                                        itemLabel: ex.title,
+                                                      });
+                                                      setEmailForm({
+                                                        to: s.user?.email || "",
+                                                        subject: `音読課題: ${PERIOD_LABELS[examplePeriodTab]} ${ex.title} - ${s.user?.name || s.user?.username || s.user?.email || "生徒"}`,
+                                                        body: `音読課題の録音ファイルです。\n\n生徒名: ${s.user?.name || s.user?.username || s.user?.email || "-"}\n課題: ${PERIOD_LABELS[examplePeriodTab]} ${ex.title}\n\n音声ファイルは添付をご確認ください。`,
+                                                      });
+                                                      setEmailAttachment(null);
                                                     }}
-                                                    disabled={!s.audio_url || sendEmailLoading === s.id}
+                                                    disabled={sendEmailLoading === s.id}
                                                     className="shrink-0 px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] disabled:opacity-50 text-white text-sm font-medium rounded-lg"
                                                   >
-                                                    {sendEmailLoading === s.id ? "送信中..." : "メールで送る"}
+                                                    メールで送る
                                                   </button>
                                                 </div>
                                               ))
@@ -1147,6 +1137,134 @@ export default function OndokuPage() {
         </div>
         );
       })()}
+
+      {emailModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="px-4 py-3 border-b border-gray-200">
+              <h3 className="text-lg font-bold text-gray-800">メール送信</h3>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">宛先（To）</label>
+                <input
+                  type="email"
+                  value={emailForm.to}
+                  onChange={(e) => setEmailForm((f) => ({ ...f, to: e.target.value }))}
+                  placeholder="student@example.com"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">件名</label>
+                <input
+                  type="text"
+                  value={emailForm.subject}
+                  onChange={(e) => setEmailForm((f) => ({ ...f, subject: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">本文</label>
+                <textarea
+                  value={emailForm.body}
+                  onChange={(e) => setEmailForm((f) => ({ ...f, body: e.target.value }))}
+                  rows={6}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent resize-y"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">添付ファイル（ドラッグ＆ドロップまたはクリック）</label>
+                <div
+                  onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("ring-2", "ring-[#1a4d2e]"); }}
+                  onDragLeave={(e) => { e.currentTarget.classList.remove("ring-2", "ring-[#1a4d2e]"); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove("ring-2", "ring-[#1a4d2e]");
+                    const f = e.dataTransfer.files?.[0];
+                    if (f && f.type.startsWith("audio/")) setEmailAttachment(f);
+                  }}
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-[#1a4d2e] transition-colors"
+                >
+                  <input
+                    type="file"
+                    accept="audio/*,.mp3,.wav,.webm,.ogg,.m4a"
+                    className="hidden"
+                    id="email-attach"
+                    onChange={(e) => setEmailAttachment(e.target.files?.[0] || null)}
+                  />
+                  <label htmlFor="email-attach" className="cursor-pointer block">
+                    {emailAttachment ? (
+                      <span className="text-[#1a4d2e] font-medium">{emailAttachment.name}</span>
+                    ) : (
+                      <span className="text-gray-500">ファイルをドラッグまたはクリックして選択</span>
+                    )}
+                  </label>
+                </div>
+                {!emailAttachment && emailModal.sub.audio_url && (
+                  <p className="text-xs text-gray-500 mt-1">※添付しない場合は提出済みファイルを自動で添付します</p>
+                )}
+              </div>
+            </div>
+            <div className="px-4 py-3 border-t border-gray-200 flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => { setEmailModal(null); setEmailForm({ to: "", subject: "", body: "" }); setEmailAttachment(null); }}
+                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              >
+                キャンセル
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!emailForm.to.trim()) {
+                    alert("宛先を入力してください");
+                    return;
+                  }
+                  setEmailModalSending(true);
+                  try {
+                    const formData = new FormData();
+                    formData.append("to", emailForm.to.trim());
+                    formData.append("subject", emailForm.subject.trim());
+                    formData.append("body", emailForm.body.trim());
+                    if (emailAttachment) {
+                      formData.append("file", emailAttachment);
+                    } else if (emailModal.sub.audio_url) {
+                      formData.append("audio_url", emailModal.sub.audio_url);
+                    }
+                    const opts: RequestInit = {
+                      method: "POST",
+                      body: formData,
+                    };
+                    if (adminAuthKey) {
+                      opts.headers = { Authorization: `Bearer ${adminAuthKey}` };
+                    } else {
+                      opts.credentials = "include";
+                    }
+                    const res = await fetch("/api/admin/ondoku/send-email", opts);
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({}));
+                      throw new Error(err.error || "送信に失敗しました");
+                    }
+                    setEmailModal(null);
+                    setEmailForm({ to: "", subject: "", body: "" });
+                    setEmailAttachment(null);
+                    alert("送信しました");
+                  } catch (e) {
+                    alert(e instanceof Error ? e.message : "送信に失敗しました");
+                  } finally {
+                    setEmailModalSending(false);
+                  }
+                }}
+                disabled={emailModalSending || (!emailAttachment && !emailModal.sub.audio_url)}
+                className="px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] disabled:opacity-50 text-white font-medium rounded-lg"
+              >
+                {emailModalSending ? "送信中..." : "送信"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
