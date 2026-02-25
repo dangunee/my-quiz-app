@@ -163,7 +163,6 @@ export default function WritingPage() {
   } | null>(null);
   const [emailForm, setEmailForm] = useState({ to: "", subject: "", body: "" });
   const [emailModalSending, setEmailModalSending] = useState(false);
-  const [visibilitySaving, setVisibilitySaving] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAdmin = (authKey: string | null) => {
@@ -1033,57 +1032,6 @@ export default function WritingPage() {
                           </button>
                         ))}
                       </div>
-                      {isAdmin && (
-                        <div className="px-4 md:px-5 py-3 bg-amber-50 border-b border-amber-200 flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-medium text-gray-700">{PERIOD_LABELS[examplePeriodTab]} 公開日一括設定:</span>
-                          <input
-                            type="date"
-                            id="vis-bulk-date"
-                            className="border border-gray-300 rounded px-2 py-1 text-sm"
-                          />
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              const input = document.getElementById("vis-bulk-date") as HTMLInputElement;
-                              const v = input?.value?.trim();
-                              if (!v) {
-                                alert("日付を入力してください");
-                                return;
-                              }
-                              setVisibilitySaving("bulk");
-                              try {
-                                const headers: Record<string, string> = { "Content-Type": "application/json" };
-                                if (adminAuthKey) headers.Authorization = `Bearer ${adminAuthKey}`;
-                                const opts: RequestInit = {
-                                  method: "PUT",
-                                  headers,
-                                  body: "",
-                                  ...(adminAuthKey ? {} : { credentials: "include" as const }),
-                                };
-                                for (let i = 0; i < 10; i++) {
-                                  opts.body = JSON.stringify({ period_index: examplePeriodTab, item_index: i, visible_from: `${v}T00:00:00Z` });
-                                  const res = await fetch("/api/admin/writing/visibility", opts);
-                                  if (!res.ok) throw new Error("保存に失敗しました");
-                                }
-                                setVisibility((prev) => {
-                                  const next = { ...prev };
-                                  if (!next[examplePeriodTab]) next[examplePeriodTab] = {};
-                                  for (let i = 0; i < 10; i++) next[examplePeriodTab][i] = `${v}T00:00:00Z`;
-                                  return next;
-                                });
-                              } catch {
-                                alert("保存中にエラーが発生しました");
-                              } finally {
-                                setVisibilitySaving(null);
-                              }
-                            }}
-                            disabled={visibilitySaving === "bulk"}
-                            className="px-3 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 disabled:opacity-50"
-                          >
-                            {visibilitySaving === "bulk" ? "保存中..." : "一括保存"}
-                          </button>
-                        </div>
-                      )}
                       <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">課題例（10件）</div>
                       {!user && !isAdmin ? (
                         <div className="p-8 text-center bg-[#faf8f5] border-b border-[#e5dfd4]">
@@ -1099,73 +1047,20 @@ export default function WritingPage() {
                           const visibleFrom = studentVis ?? contentVis;
                           const isContentVisible = isAdmin || (!!visibleFrom && new Date(visibleFrom) <= new Date());
                           const visibleFromDateStr = visibleFrom ? new Date(visibleFrom).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" }) : null;
-                          const visKey = `${examplePeriodTab}-${itemIdx}`;
-                          const visDateStr = visibleFrom ? new Date(visibleFrom).toISOString().slice(0, 10) : "";
                           return (
                           <div key={ex.id}>
-                            <div className="flex items-center gap-2 px-4 md:px-5 py-3 hover:bg-[#faf8f5]">
-                              <button type="button" onClick={() => setExpandedExampleId(expandedExampleId === ex.id ? null : ex.id)} className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
-                                <div className="flex items-center gap-3">
-                                  <span className="text-gray-500 text-xs w-4 inline-block">{expandedExampleId === ex.id ? "▼" : "▶"}</span>
-                                  <span className={`font-medium text-gray-800 ${submittedKeys.has(`${examplePeriodTab}-${itemIdx}`) || (isAdmin && adminSubmissions.some((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx)) ? "underline" : ""}`}>{ex.title}</span>
-                                  {isAdmin && (
-                                    <span className="text-xs text-gray-500">
-                                      ({adminSubmissions.filter((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx).length}件)
-                                    </span>
-                                  )}
-                                </div>
-                                {ex.topic && <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">{ex.topic}</p>}
-                              </button>
-                              {isAdmin && (
-                                <div className="shrink-0 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                                  <label className="text-xs text-gray-500 whitespace-nowrap">公開日</label>
-                                  <input
-                                    type="date"
-                                    key={`vis-${visKey}-${visDateStr}`}
-                                    defaultValue={visDateStr}
-                                    id={`vis-input-${visKey}`}
-                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={async () => {
-                                      const input = document.getElementById(`vis-input-${visKey}`) as HTMLInputElement;
-                                      const v = input?.value?.trim() || null;
-                                      setVisibilitySaving(visKey);
-                                      try {
-                                        const opts: RequestInit = {
-                                          method: "PUT",
-                                          headers: { "Content-Type": "application/json" },
-                                          body: JSON.stringify({ period_index: examplePeriodTab, item_index: itemIdx, visible_from: v ? `${v}T00:00:00Z` : null }),
-                                        };
-                                        if (adminAuthKey) opts.headers = { ...(opts.headers as Record<string, string>), Authorization: `Bearer ${adminAuthKey}` };
-                                        else opts.credentials = "include";
-                                        const res = await fetch("/api/admin/writing/visibility", opts);
-                                        if (res.ok) {
-                                          setVisibility((prev) => {
-                                            const next = { ...prev };
-                                            if (!next[examplePeriodTab]) next[examplePeriodTab] = {};
-                                            next[examplePeriodTab][itemIdx] = v ? `${v}T00:00:00Z` : null;
-                                            return next;
-                                          });
-                                        } else {
-                                          const err = await res.json();
-                                          alert(err.error || "保存に失敗しました");
-                                        }
-                                      } catch {
-                                        alert("保存中にエラーが発生しました");
-                                      } finally {
-                                        setVisibilitySaving(null);
-                                      }
-                                    }}
-                                    disabled={visibilitySaving === visKey}
-                                    className="px-2 py-1 bg-amber-600 text-white rounded text-xs hover:bg-amber-700 disabled:opacity-50"
-                                  >
-                                    {visibilitySaving === visKey ? "..." : "保存"}
-                                  </button>
-                                </div>
-                              )}
-                            </div>
+                            <button type="button" onClick={() => setExpandedExampleId(expandedExampleId === ex.id ? null : ex.id)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
+                              <div className="flex items-center gap-3">
+                                <span className="text-gray-500 text-xs w-4 inline-block">{expandedExampleId === ex.id ? "▼" : "▶"}</span>
+                                <span className={`font-medium text-gray-800 ${submittedKeys.has(`${examplePeriodTab}-${itemIdx}`) || (isAdmin && adminSubmissions.some((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx)) ? "underline" : ""}`}>{ex.title}</span>
+                                {isAdmin && (
+                                  <span className="text-xs text-gray-500">
+                                    ({adminSubmissions.filter((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx).length}件)
+                                  </span>
+                                )}
+                              </div>
+                              {ex.topic && <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">{ex.topic}</p>}
+                            </button>
                             {expandedExampleId === ex.id && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
                                 <div className="mt-3 flex flex-col gap-3">
