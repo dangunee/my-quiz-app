@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminKey } from "../../lib/admin-auth";
+import { getAdminKey } from "@/lib/admin-auth";
 
 const adminSecret = process.env.ADMIN_SECRET!;
 

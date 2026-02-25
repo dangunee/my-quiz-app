@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { verifyAdmin } from "../../../../lib/admin-auth";
+import { verifyAdmin } from "@/lib/admin-auth";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const ONDOKU_EMAIL = "ondoku@kaonnuri.com";
