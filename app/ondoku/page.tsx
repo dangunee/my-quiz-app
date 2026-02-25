@@ -40,8 +40,7 @@ const TABS: { id: TabId; label: string }[] = [
 ];
 
 const PERIOD_LABELS = ["1期", "2期", "3期", "4期"] as const;
-const CHUJOKYU_PERIODS = [0, 1] as const; // 初中級: 1期, 2期
-const CHUUJOKYU_PERIODS = [2, 3] as const; // 中上級: 3期, 4期
+const ALL_PERIODS = [0, 1, 2, 3] as const; // 1期, 2期, 3期, 4期 (both levels)
 
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
 
@@ -385,7 +384,7 @@ export default function OndokuPage() {
                           <p>音読とは、文字を声に出して読むことです。日々、語彙・文法・表現・発音など多くの知識をインプットしているのに、会話の場面ではなかなかアウトプットできない…そんな経験はありませんか？音読は、アウトプットの練習に最適。実際の会話で話せない・聞き取れないといった悩みを解消する近道です。</p>
                         </div>
                         <div>
-                          <p className="font-medium text-[#1e3a5f] mb-1">3ヶ月で上達! ご自宅で発音矯正&音読レッスン!</p>
+                          <p className="font-bold text-[#1e3a5f] mb-1">3ヶ月で上達! ご自宅で発音矯正&音読レッスン!</p>
                           <p>通学が難しくても、韓国語で会話がしたい方へ。会話には語彙・文法の基礎が不可欠。そして、覚えた表現は正しい発音・抑揚で練習してこそ、相手に伝わります。</p>
                         </div>
                         <div>
