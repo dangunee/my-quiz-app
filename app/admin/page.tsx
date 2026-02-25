@@ -1954,15 +1954,22 @@ export default function AdminPage() {
                           const key = `${student.id}-${itemIdx}`;
                           const val = writingVisData[student.id]?.[itemIdx];
                           const dateStr = val ? new Date(val).toISOString().slice(0, 10) : "";
+                          const displayDateStr = val ? new Date(val).toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, ".") : "";
                           return (
                             <td key={itemIdx} className="border px-1 py-1">
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-1 flex-wrap">
+                                {val ? (
+                                  <span className="text-green-600 font-medium text-xs shrink-0">확정 {displayDateStr}</span>
+                                ) : (
+                                  <span className="text-gray-500 text-xs shrink-0">미정</span>
+                                )}
                                 <input
                                   type="date"
                                   key={`sv-${key}-${dateStr}`}
                                   defaultValue={dateStr}
                                   id={`sv-${key}`}
-                                  className="border rounded px-1 py-0.5 text-xs w-28"
+                                  className="border rounded px-1 py-0.5 text-xs w-24"
+                                  title="캘린더에서 날짜 선택"
                                 />
                                 <button
                                   type="button"
@@ -2045,14 +2052,15 @@ export default function AdminPage() {
                                   const s = writingVisScheduleData?.[p]?.[i];
                                   const visible = s?.visible ?? false;
                                   const dateStr = s?.date ? new Date(s.date).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" }) : null;
+                                  const hasDate = !!s?.date;
                                   return (
                                     <td key={i} className="border px-2 py-1 text-center">
                                       {visible ? (
-                                        <span className="text-green-600 font-medium">공개</span>
-                                      ) : dateStr ? (
-                                        <span className="text-amber-600" title={s?.date || ""}>예정 {dateStr}</span>
+                                        <span className="text-green-600 font-medium">확정 공개</span>
+                                      ) : hasDate ? (
+                                        <span className="text-amber-600" title={s?.date || ""}>확정 예정 {dateStr}</span>
                                       ) : (
-                                        <span className="text-gray-400">비공개</span>
+                                        <span className="text-gray-500">미정 (비공개)</span>
                                       )}
                                     </td>
                                   );
