@@ -45,12 +45,14 @@ type OndokuSubmission = {
 };
 
 type OndokuFeedbackSegment = { kadai: string; correct: string; learner: string; [key: string]: string };
+type CellStyle = { fontSize?: number; bgColor?: string; textAlign?: "left" | "center" | "right" };
 type OndokuFeedbackForm = {
   bunkei: string;
   wayaku: string;
   point: string;
   segments: OndokuFeedbackSegment[];
   extraColumns: { key: string; label: string }[];
+  cellStyles?: Record<string, CellStyle>;
   kaisetsu: string;
 };
 
@@ -186,6 +188,7 @@ export default function AdminPage() {
   const [expandedOndokuId, setExpandedOndokuId] = useState<string | null>(null);
   const [ondokuFeedbackForm, setOndokuFeedbackForm] = useState<OndokuFeedbackForm | null>(null);
   const [ondokuFeedbackSaving, setOndokuFeedbackSaving] = useState(false);
+  const [ondokuSelectedCell, setOndokuSelectedCell] = useState<{ row: number; col: string } | null>(null);
   const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
 
   const DEFAULT_SEGMENT_ROWS = 40;
@@ -223,6 +226,7 @@ export default function AdminPage() {
           point: parsed.point ?? ex?.modelContent?.pronunciationNote ?? "",
           segments: segs,
           extraColumns: extraCols,
+          cellStyles: parsed.cellStyles && typeof parsed.cellStyles === "object" ? parsed.cellStyles : {},
           kaisetsu: parsed.kaisetsu ?? "",
         };
       }
@@ -233,6 +237,7 @@ export default function AdminPage() {
       point: ex?.modelContent?.pronunciationNote ?? "",
       segments,
       extraColumns: defaultCols,
+      cellStyles: {},
       kaisetsu: sub.feedback && !sub.feedback.startsWith("{") ? sub.feedback : "",
     };
   }
@@ -1657,9 +1662,11 @@ export default function AdminPage() {
                                   if (expandedOndokuId === s.id) {
                                     setExpandedOndokuId(null);
                                     setOndokuFeedbackForm(null);
+                                    setOndokuSelectedCell(null);
                                   } else {
                                     setExpandedOndokuId(s.id);
                                     setOndokuFeedbackForm(initOndokuFeedbackForm(s, ex));
+                                    setOndokuSelectedCell(null);
                                   }
                                 }}
                                 className="w-full flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 text-left text-sm"
@@ -1682,6 +1689,43 @@ export default function AdminPage() {
                               {expandedOndokuId === s.id && ondokuFeedbackForm && (
                                 <div className="p-4 bg-white border-t border-gray-200">
                                   <h4 className="font-medium text-gray-800 mb-3">添削エディタ（スプレッドシート形式）</h4>
+                                  {ondokuSelectedCell && (
+                                    <div className="flex flex-wrap items-center gap-2 mb-3 p-2 bg-gray-100 rounded border border-gray-200">
+                                      <span className="text-xs text-gray-600">文字サイズ:</span>
+                                      {[8, 10, 12, 14, 16, 18].map((sz) => (
+                                        <button key={sz} type="button" onClick={() => setOndokuFeedbackForm((f) => {
+                                          if (!f) return f;
+                                          const key = `${ondokuSelectedCell.row}_${ondokuSelectedCell.col}`;
+                                          const styles = { ...(f.cellStyles || {}), [key]: { ...(f.cellStyles?.[key] || {}), fontSize: sz } };
+                                          return { ...f, cellStyles: styles };
+                                        })} className="px-2 py-0.5 text-xs rounded border border-gray-300 hover:bg-white">{sz}</button>
+                                      ))}
+                                      <span className="text-xs text-gray-600 ml-2">背景色:</span>
+                                      {["#ffffff", "#fef08a", "#bbf7d0", "#bfdbfe", "#fecaca"].map((c) => (
+                                        <button key={c} type="button" onClick={() => setOndokuFeedbackForm((f) => {
+                                          if (!f) return f;
+                                          const key = `${ondokuSelectedCell.row}_${ondokuSelectedCell.col}`;
+                                          const styles = { ...(f.cellStyles || {}), [key]: { ...(f.cellStyles?.[key] || {}), bgColor: c } };
+                                          return { ...f, cellStyles: styles };
+                                        })} className="w-6 h-6 rounded border border-gray-300" style={{ backgroundColor: c }} title={c} />
+                                      ))}
+                                      <input type="color" value={ondokuFeedbackForm.cellStyles?.[`${ondokuSelectedCell.row}_${ondokuSelectedCell.col}`]?.bgColor || "#ffffff"} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                        if (!f) return f;
+                                        const key = `${ondokuSelectedCell.row}_${ondokuSelectedCell.col}`;
+                                        const styles = { ...(f.cellStyles || {}), [key]: { ...(f.cellStyles?.[key] || {}), bgColor: e.target.value } };
+                                        return { ...f, cellStyles: styles };
+                                      })} className="w-8 h-6 cursor-pointer" />
+                                      <span className="text-xs text-gray-600 ml-2">配置:</span>
+                                      {(["left", "center", "right"] as const).map((align) => (
+                                        <button key={align} type="button" onClick={() => setOndokuFeedbackForm((f) => {
+                                          if (!f) return f;
+                                          const key = `${ondokuSelectedCell.row}_${ondokuSelectedCell.col}`;
+                                          const styles = { ...(f.cellStyles || {}), [key]: { ...(f.cellStyles?.[key] || {}), textAlign: align } };
+                                          return { ...f, cellStyles: styles };
+                                        })} className="px-2 py-0.5 text-xs rounded border border-gray-300 hover:bg-white">{align === "left" ? "左" : align === "center" ? "中央" : "右"}</button>
+                                      ))}
+                                    </div>
+                                  )}
                                   <div className="overflow-x-auto">
                                     <table className="w-full min-w-[500px] border-collapse text-sm">
                                       <tbody>
@@ -1728,48 +1772,54 @@ export default function AdminPage() {
                                           ))}
                                           <td className="py-1 px-2 w-12" />
                                         </tr>
-                                        {ondokuFeedbackForm.segments.map((seg, i) => (
+                                        {ondokuFeedbackForm.segments.map((seg, i) => {
+                                          const getCellStyle = (colKey: string) => ondokuFeedbackForm.cellStyles?.[`${i}_${colKey}`] || {};
+                                          const isSelected = (colKey: string) => ondokuSelectedCell?.row === i && ondokuSelectedCell?.col === colKey;
+                                          const cellCls = (colKey: string) => "py-1 px-2 border border-gray-200" + (isSelected(colKey) ? " ring-2 ring-red-500 ring-inset" : "");
+                                          const inputCls = "w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]";
+                                          return (
                                           <tr key={i}>
                                             <td className="py-1 px-2">{i + 1}</td>
-                                            <td className="py-1 px-2 border border-gray-200">
-                                              <input value={seg.kadai} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                            <td className={cellCls("kadai")} style={{ backgroundColor: getCellStyle("kadai").bgColor, textAlign: getCellStyle("kadai").textAlign }}>
+                                              <input value={seg.kadai} onFocus={() => setOndokuSelectedCell({ row: i, col: "kadai" })} onChange={(e) => setOndokuFeedbackForm((f) => {
                                                 if (!f) return f;
                                                 const segs = [...f.segments];
                                                 segs[i] = { ...segs[i], kadai: e.target.value };
                                                 return { ...f, segments: segs };
-                                              })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                              })} className={inputCls} style={{ fontSize: getCellStyle("kadai").fontSize }} />
                                             </td>
-                                            <td className="py-1 px-2 border border-gray-200">
-                                              <input value={seg.correct} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                            <td className={cellCls("correct")} style={{ backgroundColor: getCellStyle("correct").bgColor, textAlign: getCellStyle("correct").textAlign }}>
+                                              <input value={seg.correct} onFocus={() => setOndokuSelectedCell({ row: i, col: "correct" })} onChange={(e) => setOndokuFeedbackForm((f) => {
                                                 if (!f) return f;
                                                 const segs = [...f.segments];
                                                 segs[i] = { ...segs[i], correct: e.target.value };
                                                 return { ...f, segments: segs };
-                                              })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                              })} className={inputCls} style={{ fontSize: getCellStyle("correct").fontSize }} />
                                             </td>
-                                            <td className="py-1 px-2 border border-gray-200">
-                                              <input value={seg.learner} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                            <td className={cellCls("learner")} style={{ backgroundColor: getCellStyle("learner").bgColor, textAlign: getCellStyle("learner").textAlign }}>
+                                              <input value={seg.learner} onFocus={() => setOndokuSelectedCell({ row: i, col: "learner" })} onChange={(e) => setOndokuFeedbackForm((f) => {
                                                 if (!f) return f;
                                                 const segs = [...f.segments];
                                                 segs[i] = { ...segs[i], learner: e.target.value };
                                                 return { ...f, segments: segs };
-                                              })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                              })} className={inputCls} style={{ fontSize: getCellStyle("learner").fontSize }} />
                                             </td>
                                             {ondokuFeedbackForm.extraColumns.map((col) => (
-                                              <td key={col.key} className="py-1 px-2 border border-gray-200">
-                                                <input value={(seg as Record<string, string>)[col.key] ?? ""} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                              <td key={col.key} className={cellCls(col.key)} style={{ backgroundColor: getCellStyle(col.key).bgColor, textAlign: getCellStyle(col.key).textAlign }}>
+                                                <input value={(seg as Record<string, string>)[col.key] ?? ""} onFocus={() => setOndokuSelectedCell({ row: i, col: col.key })} onChange={(e) => setOndokuFeedbackForm((f) => {
                                                   if (!f) return f;
                                                   const segs = [...f.segments];
                                                   segs[i] = { ...segs[i], [col.key]: e.target.value };
                                                   return { ...f, segments: segs };
-                                                })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                                })} className={inputCls} style={{ fontSize: getCellStyle(col.key).fontSize }} />
                                               </td>
                                             ))}
                                             <td className="py-1 px-2">
                                               <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: f.segments.filter((_, j) => j !== i) })} className="text-red-600 text-xs hover:underline">削除</button>
                                             </td>
                                           </tr>
-                                        ))}
+                                          );
+                                        })}
                                         <tr>
                                           <td colSpan={4 + ondokuFeedbackForm.extraColumns.length + 1} className="py-1">
                                             <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: [...f.segments, { kadai: "", correct: "", learner: "", ...Object.fromEntries(f.extraColumns.map((c) => [c.key, ""])) }] })} className="text-red-600 text-sm hover:underline mr-3">+ 行を追加</button>
