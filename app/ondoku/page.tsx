@@ -80,6 +80,17 @@ export default function OndokuPage() {
   const [showExampleSubmitModal, setShowExampleSubmitModal] = useState(false);
   const [exampleSubmitContent, setExampleSubmitContent] = useState("");
   const [selectedExample, setSelectedExample] = useState<{ id: number; title: string; periodIndex: number; itemIndex: number } | null>(null);
+  const [showTrialModal, setShowTrialModal] = useState(false);
+  const [trialActiveTab, setTrialActiveTab] = useState<"trial" | "course">("trial");
+  const [trialForm, setTrialForm] = useState({
+    name: "",
+    furigana: "",
+    koreanLevel: "選択してください",
+    email: "",
+  });
+  const [trialSubmitting, setTrialSubmitting] = useState(false);
+  const [trialSuccess, setTrialSuccess] = useState(false);
+  const [trialError, setTrialError] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -200,6 +211,42 @@ export default function OndokuPage() {
     setSelectedExample(null);
   };
 
+  const KOREAN_LEVELS = ["選択してください", "入門", "初級", "初中級", "中級", "中上級", "上級"];
+
+  const handleTrialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTrialSubmitting(true);
+    setTrialError(null);
+    try {
+      const subjectPrefix = trialActiveTab === "course" ? "講座申込" : "体験申込";
+      const title = trialActiveTab === "trial" ? "体験レッスン" : "講座の申し込み";
+      const payload = {
+        _subject: `${subjectPrefix}（音読アプリ）: ${title}`,
+        _replyto: trialForm.email,
+        タイトル: title,
+        お名前: trialForm.name,
+        ふりがな: trialForm.furigana,
+        韓国語レベル: trialForm.koreanLevel === "選択してください" ? "" : trialForm.koreanLevel,
+        メールアドレス: trialForm.email,
+      };
+      const res = await fetch("https://formsubmit.co/ajax/mirinae@kaonnuri.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (res.ok && data.success !== false && data.success !== "false") {
+        setTrialSuccess(true);
+      } else {
+        setTrialError(data.message || data.error || "送信に失敗しました");
+      }
+    } catch {
+      setTrialError("送信に失敗しました");
+    } finally {
+      setTrialSubmitting(false);
+    }
+  };
+
   const handleOndokuSubmit = async () => {
     if (!selectedExample || !getStoredToken()) {
       alert("ログインが必要です。");
@@ -236,7 +283,20 @@ export default function OndokuPage() {
   const mergedExamples = ONDOKU_PERIOD_EXAMPLES[examplePeriodTab] || [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f6f1]">
+    <div className="min-h-screen flex flex-col bg-[#e8f0f5]">
+      {/* 배경 패턴 */}
+      <div className="fixed inset-0 bg-[#e8f0f5] opacity-100 pointer-events-none" aria-hidden>
+        <svg className="absolute inset-0 w-full h-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="0.5" fill="#1e3a5f" />
+              <circle cx="13" cy="13" r="0.5" fill="#1e3a5f" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </div>
+
       {menuOpen && (
         <>
           <div className="fixed inset-0 z-40 bg-black/30 md:hidden" onClick={() => setMenuOpen(false)} aria-hidden />
@@ -252,32 +312,32 @@ export default function OndokuPage() {
         </>
       )}
 
-      <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
+      <header className="relative bg-white border-b border-gray-200 py-4 md:py-5 px-4 md:px-6 shadow-sm">
         <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem]">
-          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
+          <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">メールで音読トレーニング</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">メールで音読トレーニング</h1>
         </div>
       </header>
 
-      <div className="flex flex-1 justify-center">
+      <div className="relative flex flex-1 justify-center">
         <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
-          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-r border-[#e5dfd4]">
-            <div className="px-4 py-4 border-b border-[#e5dfd4]">
+          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-white/80 border-r border-gray-200">
+            <div className="px-4 py-4 border-b border-gray-200">
               <span className="font-semibold text-gray-800">メニュー</span>
             </div>
             <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
           </aside>
 
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
-              <nav className="flex overflow-x-auto px-4 md:px-6 py-2">
+            <div className="bg-white border-b border-gray-200 shadow-sm shrink-0">
+              <nav className="flex overflow-x-auto px-4 md:px-6 py-0">
                 {TABS.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-[#1a4d2e] text-[#1a4d2e]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                    className={`flex-1 min-w-0 py-3 px-4 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-[#1e3a5f] text-[#1e3a5f] bg-gray-100" : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
                   >
                     {tab.label}
                   </button>
@@ -288,79 +348,139 @@ export default function OndokuPage() {
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
                 <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
-                  <div className="bg-white rounded-none md:rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                    <div className="bg-[#1a4d2e] px-6 py-4">
+                  <div className="bg-white rounded-lg border-t-4 border-t-[#1e3a5f] border border-gray-200 shadow-md overflow-hidden">
+                    <div className="bg-[#1a4d2e] px-6 py-5">
                       <h2 className="text-lg md:text-xl font-bold text-white">メールで音読トレーニング</h2>
-                      <p className="text-white/90 text-sm mt-1">音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！会話力アップを図ります</p>
+                      <p className="text-white/95 text-sm mt-1">音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！会話力アップを図ります</p>
                     </div>
-                    <div className="p-6 space-y-4">
-                      <div className="overflow-hidden rounded-lg border border-gray-300">
-                        <div className="px-4 py-2 bg-[#1e3a5f]">
+                    <div className="p-6 space-y-0">
+                      <div className="overflow-hidden">
+                        <div className="px-4 py-2.5 bg-[#1e3a5f]">
                           <h3 className="font-semibold text-white text-sm">特徴</h3>
                         </div>
-                        <div className="text-sm">
+                        <div className="bg-white text-sm divide-y divide-gray-200">
                           {[
-                            { label: "①", content: "音読を通して声に出して言うのに自信が付きます" },
-                            { label: "②", content: "課題をすることで、語彙・文型・表現 パターンを覚えます" },
+                            { label: "◎", content: "音読を通して声に出して言うのに自信が付きます" },
+                            { label: "①", content: "課題をすることで、語彙・文型・表現 パターンを覚えます" },
                             { label: "③", content: "ネイティブ添削文と模範音声で受講生の問題点を改善します" },
                             { label: "④", content: "音読トレーニングで話すスピードも速くなり、会話力アップを図ります" },
                             { label: "⑤", content: "週１回ペースで１０週間レベルアップ出来ます" },
                           ].map((row) => (
-                            <div key={row.label} className="flex gap-2 px-3 py-2.5 border-b border-gray-300 last:border-b-0 text-gray-700 text-xs md:text-sm">
-                              <span className="text-[#1a4d2e] font-medium shrink-0">{row.label}</span>
+                            <div key={row.label} className="flex gap-3 px-4 py-3 text-gray-700">
+                              <span className="text-[#1e3a5f] font-medium shrink-0">{row.label}</span>
                               <span>{row.content}</span>
                             </div>
                           ))}
                         </div>
                       </div>
-                      <div className="overflow-hidden rounded-lg border border-gray-300">
-                        <div className="px-4 py-2 bg-[#1e3a5f]">
+                      <div className="overflow-hidden mt-4">
+                        <div className="px-4 py-2.5 bg-[#1e3a5f]">
                           <h3 className="font-semibold text-white text-sm">詳細</h3>
                         </div>
-                        <div className="border-collapse text-sm">
+                        <div className="bg-white text-sm">
                           {[
                             { label: "対象", content: "初中級 / 中上級 (レベルに合わせて選択可能)" },
                             { label: "目標", content: "❶会話パターンを覚える ❷発音・抑揚の矯正 ❸音読トレーニングで話すスピードも速くなり → 会話力が上がる事" },
-                            { label: "授業の流れ", content: <>❶毎週月曜日：課題をメールにて送信 ❷課題の勉強、読みの練習後、スマホなどで録音 ❸翌週の月曜日21時までに録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1a4d2e] hover:underline">ondoku@kaonnuri.com</a>に提出 ❹毎週金曜日：先生の解説文及び模範発音録音ファイルをメールにて送信</> },
+                            { label: "授業の流れ", content: <>❶毎週月曜日：課題をメールにて送信 ❷課題の勉強、読みの練習後、スマホなどで録音 ❸翌週の月曜日21時までに録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1e3a5f] hover:underline font-medium">ondoku@kaonnuri.com</a>に提出 ❹毎週金曜日：先生の解説文及び模範発音録音ファイルをメールにて送信</> },
                             { label: "日程", content: "4月3日(金)から10週間" },
                             { label: "教室", content: "オンライン" },
                             { label: "募集期間", content: "～4月1日(水)" },
                             { label: "テキスト", content: "ミリネ独自のテキスト(PDF)※事前にメールにてお送りします。" },
                           ].map((row, i) => (
-                            <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
-                              <div className="w-20 md:w-32 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">{row.label}</div>
-                              <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>{row.content}</div>
+                            <div key={row.label} className={`flex flex-row border-b border-gray-300 last:border-b-0 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+                              <div className="w-24 md:w-28 shrink-0 px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">{row.label}</div>
+                              <div className="flex-1 min-w-0 px-3 py-2.5 text-gray-700 text-xs md:text-sm">{row.content}</div>
                             </div>
                           ))}
                         </div>
                       </div>
-                      <div className="pt-4">
-                        <div className="overflow-hidden rounded-lg border border-gray-300">
-                          <div className="px-4 py-2 bg-[#1e3a5f]">
-                            <h3 className="font-semibold text-white text-sm">まずは体験から!</h3>
+                      <div id="trial-form-section" className="mt-6 pt-6 border-t border-gray-200">
+                        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                          <div className="flex">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (trialActiveTab === "trial" && showTrialModal) {
+                                  setShowTrialModal(false);
+                                } else {
+                                  setTrialActiveTab("trial");
+                                  setShowTrialModal(true);
+                                  setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" });
+                                  setTrialSuccess(false);
+                                  setTrialError(null);
+                                }
+                              }}
+                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                            >
+                              <span>体験申込</span>
+                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (trialActiveTab === "course" && showTrialModal) {
+                                  setShowTrialModal(false);
+                                } else {
+                                  setTrialActiveTab("course");
+                                  setShowTrialModal(true);
+                                  setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" });
+                                  setTrialSuccess(false);
+                                  setTrialError(null);
+                                }
+                              }}
+                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                            >
+                              <span>講座申込</span>
+                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
+                            </button>
                           </div>
-                          <div className="border-collapse text-sm">
-                            {[
-                              { label: "体験申込の締切", content: "3月19日(木)" },
-                              { label: "体験課題送信日", content: "3月20日(金)" },
-                              { label: "体験添削送信日", content: "3月27日(金)" },
-                              { label: "当講座開始日", content: "4月3日(金)" },
-                            ].map((row, i) => (
-                              <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
-                                <div className="w-20 md:w-32 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">{row.label}</div>
-                                <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm font-semibold ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>{row.content}</div>
-                              </div>
-                            ))}
-                            <div className="px-2 md:px-3 py-2.5 bg-[#1e3a5f] text-white text-xs md:text-sm font-semibold text-center">初中級: 1,800円 / 中上級: 2,300円</div>
-                          </div>
+                          {showTrialModal && (
+                            <div className="p-6 border-t border-gray-200 relative">
+                              {trialError && (
+                                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                                  {trialError}
+                                  <button type="button" onClick={() => setTrialError(null)} className="ml-2 underline">閉じる</button>
+                                </div>
+                              )}
+                              {trialSuccess ? (
+                                <div className="text-center py-8">
+                                  <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
+                                  <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
+                                </div>
+                              ) : (
+                                <form onSubmit={handleTrialSubmit} className="space-y-4 max-w-xl mx-auto">
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">お名前(*必須)</label>
+                                    <input type="text" value={trialForm.name} onChange={(e) => setTrialForm((f) => ({ ...f, name: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="お名前" required />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ふりがな(*必須)</label>
+                                    <input type="text" value={trialForm.furigana} onChange={(e) => setTrialForm((f) => ({ ...f, furigana: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="ふりがな" required />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">韓国語レベル</label>
+                                    <select value={trialForm.koreanLevel} onChange={(e) => setTrialForm((f) => ({ ...f, koreanLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                      {KOREAN_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス(*必須)</label>
+                                    <p className="text-xs text-gray-500 mb-1">☆携帯メールの場合は返信のため、パソコン受信設定のチェックをお願いします。</p>
+                                    <input type="email" value={trialForm.email} onChange={(e) => setTrialForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="メールアドレスを入力" required />
+                                  </div>
+                                  <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
+                                    {trialSubmitting ? "送信中..." : "送信"}
+                                  </button>
+                                </form>
+                              )}
+                            </div>
+                          )}
                         </div>
+                        <p className="mt-3 text-center text-xs text-gray-500">初中級: 1,800円 / 中上級: 2,300円</p>
                       </div>
-                      <div className="pt-4">
-                        <a href="https://mirinae.jp/trial.html?tab=tab02" className="block w-full py-3 bg-[#1a4d2e] text-white text-center font-medium rounded-lg hover:bg-[#2d6a4a]">体験申込▼講座申込</a>
-                      </div>
-                      <div className="pt-4 border-t-2 border-[#c45c26]">
-                        <h3 className="font-semibold text-[#c45c26] text-base md:text-lg mb-2">授業料</h3>
-                        <div className="border border-gray-300 rounded-b-lg overflow-hidden">
+                      <div className="mt-6 pt-4 border-t-2 border-[#8b6914]">
+                        <h3 className="font-semibold text-[#8b6914] text-base mb-3">授業料</h3>
+                        <div className="border border-gray-300 rounded-lg overflow-hidden">
                           <table className="w-full border-collapse text-sm">
                             <thead>
                               <tr className="bg-[#87ceeb]">
