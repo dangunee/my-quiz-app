@@ -189,6 +189,8 @@ export default function AdminPage() {
   const [ondokuFeedbackForm, setOndokuFeedbackForm] = useState<OndokuFeedbackForm | null>(null);
   const [ondokuFeedbackSaving, setOndokuFeedbackSaving] = useState(false);
   const [ondokuSelectedCell, setOndokuSelectedCell] = useState<{ row: number; col: string } | null>(null);
+  const [ondokuPdfMailBody, setOndokuPdfMailBody] = useState("");
+  const [ondokuPdfSending, setOndokuPdfSending] = useState(false);
   const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
 
   const DEFAULT_SEGMENT_ROWS = 40;
@@ -1663,10 +1665,12 @@ export default function AdminPage() {
                                     setExpandedOndokuId(null);
                                     setOndokuFeedbackForm(null);
                                     setOndokuSelectedCell(null);
+                                    setOndokuPdfMailBody("");
                                   } else {
                                     setExpandedOndokuId(s.id);
                                     setOndokuFeedbackForm(initOndokuFeedbackForm(s, ex));
                                     setOndokuSelectedCell(null);
+                                    setOndokuPdfMailBody("");
                                   }
                                 }}
                                 className="w-full flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 text-left text-sm"
@@ -1726,7 +1730,7 @@ export default function AdminPage() {
                                       ))}
                                     </div>
                                   )}
-                                  <div className="overflow-x-auto">
+                                  <div className="overflow-auto max-h-[60vh] max-w-full border border-gray-200 rounded">
                                     <table className="w-full min-w-[500px] border-collapse text-sm">
                                       <tbody>
                                         <tr>
@@ -1844,57 +1848,94 @@ export default function AdminPage() {
                                       </tbody>
                                     </table>
                                   </div>
-                                  <div className="mt-3 flex gap-2">
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        if (!ondokuFeedbackForm || !s.id) return;
-                                        setOndokuFeedbackSaving(true);
-                                        try {
-                                          const feedbackJson = JSON.stringify(ondokuFeedbackForm);
-                                          const res = await fetch(`/api/admin/ondoku/submissions/${s.id}`, {
-                                            method: "PUT",
-                                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-                                            body: JSON.stringify({ feedback: feedbackJson, status: "in_progress" }),
-                                          });
-                                          if (!res.ok) throw new Error("保存に失敗しました");
-                                          setOndokuSubmissions((prev) => prev.map((x) => x.id === s.id ? { ...x, feedback: feedbackJson, status: "in_progress" } : x));
-                                        } catch (e) {
-                                          alert(e instanceof Error ? e.message : "保存に失敗しました");
-                                        } finally {
-                                          setOndokuFeedbackSaving(false);
-                                        }
-                                      }}
-                                      disabled={ondokuFeedbackSaving}
-                                      className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
-                                    >
-                                      {ondokuFeedbackSaving ? "保存中..." : "保存"}
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        if (!ondokuFeedbackForm || !s.id) return;
-                                        setOndokuFeedbackSaving(true);
-                                        try {
-                                          const feedbackJson = JSON.stringify(ondokuFeedbackForm);
-                                          const res = await fetch(`/api/admin/ondoku/submissions/${s.id}`, {
-                                            method: "PUT",
-                                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-                                            body: JSON.stringify({ feedback: feedbackJson, status: "completed" }),
-                                          });
-                                          if (!res.ok) throw new Error("保存に失敗しました");
-                                          setOndokuSubmissions((prev) => prev.map((x) => x.id === s.id ? { ...x, feedback: feedbackJson, status: "completed" } : x));
-                                        } catch (e) {
-                                          alert(e instanceof Error ? e.message : "保存に失敗しました");
-                                        } finally {
-                                          setOndokuFeedbackSaving(false);
-                                        }
-                                      }}
-                                      disabled={ondokuFeedbackSaving}
-                                      className="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50"
-                                    >
-                                      完了
-                                    </button>
+                                  <div className="mt-3 flex flex-wrap gap-4 items-start justify-between">
+                                    <div className="flex gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={async () => {
+                                          if (!ondokuFeedbackForm || !s.id) return;
+                                          setOndokuFeedbackSaving(true);
+                                          try {
+                                            const feedbackJson = JSON.stringify(ondokuFeedbackForm);
+                                            const res = await fetch(`/api/admin/ondoku/submissions/${s.id}`, {
+                                              method: "PUT",
+                                              headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                              body: JSON.stringify({ feedback: feedbackJson, status: "in_progress" }),
+                                            });
+                                            if (!res.ok) throw new Error("保存に失敗しました");
+                                            setOndokuSubmissions((prev) => prev.map((x) => x.id === s.id ? { ...x, feedback: feedbackJson, status: "in_progress" } : x));
+                                          } catch (e) {
+                                            alert(e instanceof Error ? e.message : "保存に失敗しました");
+                                          } finally {
+                                            setOndokuFeedbackSaving(false);
+                                          }
+                                        }}
+                                        disabled={ondokuFeedbackSaving}
+                                        className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
+                                      >
+                                        {ondokuFeedbackSaving ? "保存中..." : "保存"}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={async () => {
+                                          if (!ondokuFeedbackForm || !s.id) return;
+                                          setOndokuFeedbackSaving(true);
+                                          try {
+                                            const feedbackJson = JSON.stringify(ondokuFeedbackForm);
+                                            const res = await fetch(`/api/admin/ondoku/submissions/${s.id}`, {
+                                              method: "PUT",
+                                              headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                              body: JSON.stringify({ feedback: feedbackJson, status: "completed" }),
+                                            });
+                                            if (!res.ok) throw new Error("保存に失敗しました");
+                                            setOndokuSubmissions((prev) => prev.map((x) => x.id === s.id ? { ...x, feedback: feedbackJson, status: "completed" } : x));
+                                          } catch (e) {
+                                            alert(e instanceof Error ? e.message : "保存に失敗しました");
+                                          } finally {
+                                            setOndokuFeedbackSaving(false);
+                                          }
+                                        }}
+                                        disabled={ondokuFeedbackSaving}
+                                        className="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50"
+                                      >
+                                        完了
+                                      </button>
+                                    </div>
+                                    <div className="flex flex-col gap-2 min-w-[280px]">
+                                      <textarea value={ondokuPdfMailBody} onChange={(e) => setOndokuPdfMailBody(e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded text-sm" placeholder="メール本文（PDF送付時）" />
+                                      <button
+                                        type="button"
+                                        disabled={ondokuPdfSending || !ondokuFeedbackForm}
+                                        onClick={async () => {
+                                          if (!ondokuFeedbackForm || !s.user?.email) {
+                                            alert("生徒のメールアドレスがありません");
+                                            return;
+                                          }
+                                          setOndokuPdfSending(true);
+                                          try {
+                                            const res = await fetch("/api/admin/ondoku/send-pdf-email", {
+                                              method: "POST",
+                                              headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                              body: JSON.stringify({
+                                                feedback: ondokuFeedbackForm,
+                                                to: s.user.email,
+                                                body: ondokuPdfMailBody.trim() || undefined,
+                                              }),
+                                            });
+                                            const data = await res.json();
+                                            if (!res.ok) throw new Error(data.error || "送信に失敗しました");
+                                            alert("メールを送信しました");
+                                          } catch (e) {
+                                            alert(e instanceof Error ? e.message : "PDF生成・送信に失敗しました");
+                                          } finally {
+                                            setOndokuPdfSending(false);
+                                          }
+                                        }}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+                                      >
+                                        {ondokuPdfSending ? "送信中..." : "PDF保存してメール送信"}
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               )}
