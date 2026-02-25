@@ -135,6 +135,47 @@ export default function OndokuPage() {
   const [trialSuccess, setTrialSuccess] = useState(false);
   const [trialError, setTrialError] = useState<string | null>(null);
   const [levelDetailTab, setLevelDetailTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminSubmissions, setAdminSubmissions] = useState<{ id: string; user_id: string; period_index: number; item_index: number; content: string; audio_url?: string; submitted_at: string; user?: { email?: string; name?: string; username?: string } }[]>([]);
+  const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
+  const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
+  const [sendEmailLoading, setSendEmailLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAdmin = (authKey: string | null) => {
+      const opts: RequestInit = authKey
+        ? { method: "POST", headers: { Authorization: `Bearer ${authKey}` } }
+        : { method: "POST", credentials: "include" };
+      fetch("/api/admin/verify", opts)
+        .then((r) => {
+          if (r.ok) {
+            setIsAdmin(true);
+            if (authKey) setAdminAuthKey(authKey);
+          }
+        })
+        .catch(() => {});
+    };
+    const stored = typeof window !== "undefined" ? localStorage.getItem("admin_auth") : null;
+    if (stored) {
+      checkAdmin(stored);
+    } else {
+      checkAdmin(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAdmin && activeTab === "writing") {
+      setAdminSubmissionsLoading(true);
+      const opts: RequestInit = adminAuthKey
+        ? { headers: { Authorization: `Bearer ${adminAuthKey}` } }
+        : { credentials: "include" };
+      fetch("/api/admin/ondoku/submissions", opts)
+        .then((r) => r.json())
+        .then((data) => setAdminSubmissions(data.submissions || []))
+        .catch(() => setAdminSubmissions([]))
+        .finally(() => setAdminSubmissionsLoading(false));
+    }
+  }, [isAdmin, activeTab, adminAuthKey]);
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -391,6 +432,11 @@ export default function OndokuPage() {
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">オンラインで音読トレーニング</h1>
+          {isAdmin && (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded-lg">
+              管理者モードで接続中
+            </span>
+          )}
         </div>
       </header>
 
@@ -666,10 +712,10 @@ export default function OndokuPage() {
                     <div className="mb-6 md:mb-8">
                       <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                       <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                        {user && (
+                        {(user || isAdmin) && (
                           <div className="px-4 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm">
-                            <span className="text-gray-600">ログイン中：</span>
-                            <span className="font-medium text-gray-800">{user.name || user.username || user.email || "-"}様</span>
+                            <span className="text-gray-600">{isAdmin ? "管理者モード：" : "ログイン中："}</span>
+                            <span className="font-medium text-gray-800">{isAdmin ? "全生徒の提出を表示" : `${user?.name || user?.username || user?.email || "-"}様`}</span>
                           </div>
                         )}
                         <div className="flex border-b border-[#e5dfd4]">
@@ -711,7 +757,7 @@ export default function OndokuPage() {
                           ))}
                         </div>
                         <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">音読課題例（{mergedExamples.length}件）</div>
-                        {!user ? (
+                        {!user && !isAdmin ? (
                           <div className="p-8 text-center bg-[#faf8f5] border-b border-[#e5dfd4]">
                             <p className="text-gray-700 mb-4">1期～4期の課題内容はログイン後にご覧いただけます。</p>
                             <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</Link>
@@ -738,7 +784,12 @@ export default function OndokuPage() {
                                 >
                                   <div className="flex items-center gap-3">
                                     <span className="text-gray-500 text-xs w-4 inline-block">{expandedExampleId === exId ? "▼" : "▶"}</span>
-                                    <span className={`font-medium text-gray-800 ${isSubmitted ? "underline" : ""}`}>{ex.title}</span>
+                                    <span className={`font-medium text-gray-800 ${isSubmitted || (isAdmin && adminSubmissions.some((s) => s.period_index === examplePeriodTab && s.item_index === idx)) ? "underline" : ""}`}>{ex.title}</span>
+                                    {isAdmin && (
+                                      <span className="text-xs text-gray-500">
+                                        ({adminSubmissions.filter((s) => s.period_index === examplePeriodTab && s.item_index === idx).length}件)
+                                      </span>
+                                    )}
                                   </div>
                                 </button>
                                 {expandedExampleId === exId && (
@@ -773,7 +824,71 @@ export default function OndokuPage() {
                                         )}
                                       </div>
                                       )}
-                                      {isSubmitted ? (
+                                      {isAdmin ? (
+                                        <div className="space-y-3">
+                                          {adminSubmissionsLoading ? (
+                                            <p className="text-gray-500 text-sm">読み込み中...</p>
+                                          ) : adminSubmissions.filter((s) => s.period_index === examplePeriodTab && s.item_index === idx).length === 0 ? (
+                                            <p className="text-gray-500 text-sm">この課題の提出はありません。</p>
+                                          ) : (
+                                            adminSubmissions
+                                              .filter((s) => s.period_index === examplePeriodTab && s.item_index === idx)
+                                              .map((s) => (
+                                                <div key={s.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-xl border border-[#e5dfd4]">
+                                                  <div className="min-w-[120px] font-medium text-gray-800">{(s.user?.name || s.user?.username || s.user?.email) || "-"}</div>
+                                                  <div className="flex-1 min-w-0 flex items-center gap-2">
+                                                    {s.audio_url ? (
+                                                      <>
+                                                        <audio controls src={s.audio_url} className="max-w-[200px] h-8" />
+                                                        <a href={s.audio_url} download className="text-sm text-[#1a4d2e] hover:underline">ダウンロード</a>
+                                                      </>
+                                                    ) : (
+                                                      <span className="text-gray-500 text-sm">音声なし</span>
+                                                    )}
+                                                  </div>
+                                                  <button
+                                                    type="button"
+                                                    onClick={async () => {
+                                                      if (!s.audio_url) return;
+                                                      setSendEmailLoading(s.id);
+                                                      try {
+                                                        const sendOpts: RequestInit = {
+                                                          method: "POST",
+                                                          headers: { "Content-Type": "application/json" },
+                                                          body: JSON.stringify({
+                                                            audio_url: s.audio_url,
+                                                            student_name: s.user?.name || s.user?.username || s.user?.email || "-",
+                                                            period_label: PERIOD_LABELS[examplePeriodTab],
+                                                            item_label: ex.title,
+                                                          }),
+                                                        };
+                                                        if (adminAuthKey) {
+                                                          (sendOpts.headers as Record<string, string>).Authorization = `Bearer ${adminAuthKey}`;
+                                                        } else {
+                                                          sendOpts.credentials = "include";
+                                                        }
+                                                        const res = await fetch("/api/admin/ondoku/send-email", sendOpts);
+                                                        if (!res.ok) {
+                                                          const err = await res.json().catch(() => ({}));
+                                                          throw new Error(err.error || "送信に失敗しました");
+                                                        }
+                                                        alert("ondoku@kaonnuri.com に送信しました");
+                                                      } catch (e) {
+                                                        alert(e instanceof Error ? e.message : "送信に失敗しました");
+                                                      } finally {
+                                                        setSendEmailLoading(null);
+                                                      }
+                                                    }}
+                                                    disabled={!s.audio_url || sendEmailLoading === s.id}
+                                                    className="shrink-0 px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] disabled:opacity-50 text-white text-sm font-medium rounded-lg"
+                                                  >
+                                                    {sendEmailLoading === s.id ? "送信中..." : "メールで送る"}
+                                                  </button>
+                                                </div>
+                                              ))
+                                          )}
+                                        </div>
+                                      ) : isSubmitted ? (
                                         <>
                                           <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
                                             <p className="text-sm font-medium text-[#166534] mb-2">提出済み</p>
@@ -812,7 +927,12 @@ export default function OndokuPage() {
 
                     <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">マイページ</h2>
 
-                    {!user ? (
+                    {isAdmin && !user ? (
+                      <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#f0fdf4] text-center">
+                        <p className="text-gray-600 mb-4">管理者モードです。上記の課題一覧で全生徒の提出を確認・メール送信できます。</p>
+                        <Link href="/admin" className="inline-block px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl">管理画面へ</Link>
+                      </div>
+                    ) : !user ? (
                       <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
                         <p className="text-gray-600 mb-4">マイページはログイン後にご利用いただけます。</p>
                         <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-2.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</Link>

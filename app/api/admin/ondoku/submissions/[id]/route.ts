@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { verifyAdmin } from "../../../../../lib/admin-auth";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const adminSecret = process.env.ADMIN_SECRET!;
-
-function verifyAdmin(request: NextRequest): boolean {
-  const auth = request.headers.get("authorization");
-  const key = auth?.replace("Bearer ", "");
-  return !!adminSecret && key === adminSecret;
-}
 
 export async function PUT(
   request: NextRequest,

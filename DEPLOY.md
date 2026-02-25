@@ -91,6 +91,8 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**:
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Service Role Key | ✅ |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Anon Key | 권장 |
 | `ADMIN_SECRET` | 관리자 로그인 비밀키 | ✅ |
+| `RESEND_API_KEY` | Resend API Key（音読メール送信用） | 音読メール送信時 |
+| `RESEND_FROM` | 送信元メールアドレス（例: noreply@mirinae.jp） | 任意 |
 
 ---
 
