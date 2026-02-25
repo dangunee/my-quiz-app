@@ -29,7 +29,10 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**에서 추가:
 
 1. [supabase.com](https://supabase.com) 대시보드
 2. **SQL Editor**에서 `supabase-schema.sql` 전체 실행
-3. **Authentication** → **URL Configuration**에 배포 URL 추가 (예: `https://quiz.mirinae.jp`)
+3. **Authentication** → **URL Configuration**에 배포 URL 추가:
+   - `https://quiz.mirinae.jp`
+   - `https://writing.mirinae.jp`
+   - `https://ondoku.mirinae.jp`
 
 ### 4. 生活韓国語 데이터 초기화
 
@@ -45,12 +48,13 @@ curl -X POST "https://your-domain.vercel.app/api/admin/sync-seikatsu" \
 ### 5. 커스텀 도메인
 
 - Vercel 프로젝트 → **Settings** → **Domains**
-- `quiz.mirinae.jp`, `writing.mirinae.jp` 추가
-- DNS에 Vercel 레코드 설정
+- `quiz.mirinae.jp`, `writing.mirinae.jp`, `ondoku.mirinae.jp` 추가
+- DNS에 Vercel 레코드 설정 (CNAME 또는 A 레코드)
 
 **도메인별 동작:**
-- `quiz.mirinae.jp` – 퀴즈 메인, `/writing` 접근 시 `writing.mirinae.jp`로 리다이렉트
+- `quiz.mirinae.jp` – 퀴즈 메인, `/writing` 접근 시 `writing.mirinae.jp`로 리다이렉트, `/ondoku` 접근 시 `ondoku.mirinae.jp`로 리다이렉트
 - `writing.mirinae.jp` – 作文 전용 (루트 = 作文 페이지, `/admin` = 作文 관리자)
+- `ondoku.mirinae.jp` – 音読 전용 (루트 = 音読 페이지)
 
 ---
 

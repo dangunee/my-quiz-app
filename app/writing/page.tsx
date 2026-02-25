@@ -379,6 +379,7 @@ export default function WritingPage() {
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
     { label: "クイズ", href: "https://quiz.mirinae.jp", external: true },
+    { label: "音読トレ", href: "/ondoku", external: false },
     { label: "ホームページ", href: "https://mirinae.jp", external: true },
     { label: "個人レッスン", href: "/kojin", external: false },
     { label: "短期個人", href: "/tanki-kojin", external: false },

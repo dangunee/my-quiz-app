@@ -312,7 +312,7 @@ export default function QuizClient() {
 
   const rightMenuLinks = [
     { label: "作文トレ", href: "https://writing.mirinae.jp", external: true },
-    { label: "音読トレ", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
+    { label: "音読トレ", href: "https://ondoku.mirinae.jp", external: true },
     { label: "生活韓国語", href: "/dailykorean", external: false },
     { label: "初級クイズ", href: "https://quiz.mirinae.jp", external: true },
     { label: "変則活用", href: "https://mirinae.jp", external: true },
