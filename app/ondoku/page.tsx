@@ -318,7 +318,7 @@ export default function OndokuPage() {
           <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">メールで音読トレーニング</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">オンラインで音読トレーニング</h1>
         </div>
       </header>
 
@@ -351,7 +351,7 @@ export default function OndokuPage() {
                 <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
                   <div className="bg-white rounded-lg border-t-4 border-t-[#1e3a5f] border border-gray-200 shadow-md overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-5">
-                      <h2 className="text-lg md:text-xl font-bold text-white">メールで音読トレーニング</h2>
+                      <h2 className="text-lg md:text-xl font-bold text-white">オンラインで音読トレーニング</h2>
                       <p className="text-white/95 text-sm mt-1">音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！会話力アップを図ります</p>
                     </div>
                     <div className="p-6 space-y-0">

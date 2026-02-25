@@ -88,7 +88,7 @@ const ONDOKU_METADATA: Metadata = {
     template: "%s｜ミリネ韓国語",
   },
   description:
-    "東京・新宿の韓国語教室ミリネ。メールで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。個人レッスン、グループレッスン、発音矯正。",
+    "東京・新宿の韓国語教室ミリネ。オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。個人レッスン、グループレッスン、発音矯正。",
   keywords: [
     "東京　韓国語教室",
     "韓国語教室　新宿",
@@ -105,12 +105,12 @@ const ONDOKU_METADATA: Metadata = {
     siteName: "ミリネ韓国語音読トレーニング",
     title: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
     description:
-      "東京・新宿の韓国語教室。メールで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
+      "東京・新宿の韓国語教室。オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
   },
   twitter: {
     card: "summary_large_image",
     title: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
-    description: "メールで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
+    description: "オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
   },
   alternates: { canonical: ONDOKU_URL },
   robots: { index: true, follow: true },
@@ -177,7 +177,7 @@ const ONDOKU_JSON_LD = {
   "@type": "WebApplication",
   name: "ミリネ韓国語音読トレーニング",
   description:
-    "東京・新宿の韓国語教室ミリネ。メールで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
+    "東京・新宿の韓国語教室ミリネ。オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
   url: ONDOKU_URL,
   applicationCategory: "EducationalApplication",
   operatingSystem: "Any",
