@@ -168,6 +168,8 @@ export default function AdminPage() {
   const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, KadaiOverrideItem>>>({});
   const [kadaiLoading, setKadaiLoading] = useState(false);
   const [kadaiPeriodTab, setKadaiPeriodTab] = useState(0);
+  const [visibilityData, setVisibilityData] = useState<Record<number, Record<number, string | null>>>({});
+  const [visibilitySaving, setVisibilitySaving] = useState<string | null>(null);
   const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
   const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
   const [kadaiSaving, setKadaiSaving] = useState(false);
@@ -322,10 +324,15 @@ export default function AdminPage() {
     else if (activeTab === "ondoku") loadOndokuSubmissions();
     else if (activeTab === "kadai") {
       setKadaiLoading(true);
-      fetch("/api/admin/writing/assignment-examples", { headers: { Authorization: `Bearer ${authKey}` } })
-        .then((r) => r.json())
-        .then((data) => setKadaiOverrides(data.overrides || {}))
-        .catch(() => setKadaiOverrides({}))
+      Promise.all([
+        fetch("/api/admin/writing/assignment-examples", { headers: { Authorization: `Bearer ${authKey}` } }).then((r) => r.json()),
+        fetch("/api/admin/writing/visibility", { headers: { Authorization: `Bearer ${authKey}` } }).then((r) => r.json()),
+      ])
+        .then(([assignData, visData]) => {
+          setKadaiOverrides(assignData.overrides || {});
+          setVisibilityData(visData.visibility || {});
+        })
+        .catch(() => {})
         .finally(() => setKadaiLoading(false));
     }
   }, [isAuthenticated, authKey, activeTab]);
@@ -1436,6 +1443,82 @@ export default function AdminPage() {
             <h1 className="text-2xl font-bold mb-4">作文課題（1期～8期）編集</h1>
             <p className="text-sm text-gray-600 mb-4">作文ページの作文課題掲示板の「제목」と「실제 과제」を編集できます。</p>
             <Link href="/writing" className="text-sm text-gray-600 hover:underline mb-4 block">作文ページ</Link>
+
+            <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <h2 className="font-bold text-gray-800 mb-3">公開日設定（기수/회차 공개일）</h2>
+              <p className="text-sm text-gray-600 mb-3">各課題の公開日を設定できます。設定した日付以降にのみ、生徒に課題内容が表示されます。空欄の場合は常に公開です。</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border px-2 py-1 text-left">期</th>
+                      <th className="border px-2 py-1 text-left">回</th>
+                      <th className="border px-2 py-1 text-left">公開日（YYYY-MM-DD）</th>
+                      <th className="border px-2 py-1"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
+                      const p = kadaiPeriodTab;
+                      const key = `${p}-${i}`;
+                      const val = visibilityData[p]?.[i];
+                      const dateStr = val ? new Date(val).toISOString().slice(0, 10) : "";
+                      return (
+                        <tr key={key}>
+                          <td className="border px-2 py-1">{PERIOD_LABELS[p]}</td>
+                          <td className="border px-2 py-1">第{i + 1}回</td>
+                          <td className="border px-2 py-1">
+                            <input
+                              type="date"
+                              id={`vis-${key}`}
+                              defaultValue={dateStr}
+                              className="border rounded px-2 py-1 w-36"
+                            />
+                          </td>
+                          <td className="border px-2 py-1">
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const input = document.getElementById(`vis-${key}`) as HTMLInputElement;
+                                const v = input?.value?.trim() || null;
+                                setVisibilitySaving(key);
+                                try {
+                                  const res = await fetch("/api/admin/writing/visibility", {
+                                    method: "PUT",
+                                    headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                    body: JSON.stringify({ period_index: p, item_index: i, visible_from: v ? `${v}T00:00:00Z` : null }),
+                                  });
+                                  if (res.ok) {
+                                    setVisibilityData((prev) => {
+                                      const next = { ...prev };
+                                      if (!next[p]) next[p] = {};
+                                      next[p][i] = v ? `${v}T00:00:00Z` : null;
+                                      return next;
+                                    });
+                                  } else {
+                                    const err = await res.json();
+                                    alert(err.error || "保存に失敗しました");
+                                  }
+                                } catch {
+                                  alert("保存中にエラーが発生しました");
+                                } finally {
+                                  setVisibilitySaving(null);
+                                }
+                              }}
+                              disabled={visibilitySaving === key}
+                              className="px-2 py-1 bg-amber-600 text-white rounded text-xs hover:bg-amber-700 disabled:opacity-50"
+                            >
+                              {visibilitySaving === key ? "保存中" : "保存"}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             {kadaiLoading ? (
               <p>読み込み中...</p>
             ) : (

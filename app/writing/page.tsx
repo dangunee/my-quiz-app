@@ -150,6 +150,61 @@ export default function WritingPage() {
   const [profileEditing, setProfileEditing] = useState(false);
   const [customerProfile, setCustomerProfile] = useState<{ region: string | null; plan_type: string | null } | null>(null);
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminSubmissions, setAdminSubmissions] = useState<{ id: string; user_id: string; period_index: number; item_index: number; content: string; submitted_at: string; user?: { email?: string; name?: string; username?: string } }[]>([]);
+  const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
+  const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
+  const [visibility, setVisibility] = useState<Record<number, Record<number, string | null>>>({});
+  const [emailModal, setEmailModal] = useState<{
+    sub: { id: string; content: string; user?: { email?: string; name?: string; username?: string } };
+    periodLabel: string;
+    itemLabel: string;
+  } | null>(null);
+  const [emailForm, setEmailForm] = useState({ to: "", subject: "", body: "" });
+  const [emailModalSending, setEmailModalSending] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = (authKey: string | null) => {
+      const opts: RequestInit = authKey
+        ? { method: "POST", headers: { Authorization: `Bearer ${authKey}` } }
+        : { method: "POST", credentials: "include" };
+      fetch("/api/admin/verify", opts)
+        .then((r) => {
+          if (r.ok) {
+            setIsAdmin(true);
+            if (authKey) setAdminAuthKey(authKey);
+          }
+        })
+        .catch(() => {});
+    };
+    const stored = typeof window !== "undefined" ? localStorage.getItem("admin_auth") : null;
+    if (stored) {
+      checkAdmin(stored);
+    } else {
+      checkAdmin(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/writing/visibility")
+      .then((r) => r.json())
+      .then((data) => setVisibility(data.visibility || {}))
+      .catch(() => setVisibility({}));
+  }, []);
+
+  useEffect(() => {
+    if (isAdmin && activeTab === "writing") {
+      setAdminSubmissionsLoading(true);
+      const opts: RequestInit = adminAuthKey
+        ? { headers: { Authorization: `Bearer ${adminAuthKey}` } }
+        : { credentials: "include" };
+      fetch("/api/writing/admin/submissions", opts)
+        .then((r) => r.json())
+        .then((data) => setAdminSubmissions(data.submissions || []))
+        .catch(() => setAdminSubmissions([]))
+        .finally(() => setAdminSubmissionsLoading(false));
+    }
+  }, [isAdmin, activeTab, adminAuthKey]);
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -547,6 +602,11 @@ export default function WritingPage() {
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 オンライン講座</h1>
+          {isAdmin && (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded-lg">
+              管理者モードで接続中
+            </span>
+          )}
         </div>
       </header>
 
@@ -950,10 +1010,10 @@ export default function WritingPage() {
                   <div className="mb-6 md:mb-8">
                     <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                      {user && (
+                      {(user || isAdmin) && (
                         <div className="px-4 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm">
-                          <span className="text-gray-600">ログイン中：</span>
-                          <span className="font-medium text-gray-800">{user.name || user.username || user.email || "-"}様</span>
+                          <span className="text-gray-600">{isAdmin ? "管理者モード：" : "ログイン中："}</span>
+                          <span className="font-medium text-gray-800">{isAdmin ? "全生徒の提出を表示" : `${user?.name || user?.username || user?.email || "-"}様`}</span>
                         </div>
                       )}
                       <div className="flex border-b border-[#e5dfd4]">
@@ -964,19 +1024,43 @@ export default function WritingPage() {
                         ))}
                       </div>
                       <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">課題例（10件）</div>
+                      {!user && !isAdmin ? (
+                        <div className="p-8 text-center bg-[#faf8f5] border-b border-[#e5dfd4]">
+                          <p className="text-gray-700 mb-4">1期～8期の課題内容はログイン後にご覧いただけます。</p>
+                          <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</Link>
+                        </div>
+                      ) : (
                       <div className="divide-y divide-[#e5dfd4]">
-                        {mergedAssignmentExamplesByPeriod[examplePeriodTab].map((ex) => (
+                        {mergedAssignmentExamplesByPeriod[examplePeriodTab].map((ex) => {
+                          const itemIdx = (ex.id - 1) % 10;
+                          const visibleFrom = visibility[examplePeriodTab]?.[itemIdx];
+                          const isContentVisible = isAdmin || !visibleFrom || new Date(visibleFrom) <= new Date();
+                          const visibleFromDateStr = visibleFrom ? new Date(visibleFrom).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" }) : null;
+                          return (
                           <div key={ex.id}>
                             <button type="button" onClick={() => setExpandedExampleId(expandedExampleId === ex.id ? null : ex.id)} className="w-full px-4 md:px-5 py-3 hover:bg-[#faf8f5] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
                               <div className="flex items-center gap-3">
                                 <span className="text-gray-500 text-xs w-4 inline-block">{expandedExampleId === ex.id ? "▼" : "▶"}</span>
-                                <span className={`font-medium text-gray-800 ${submittedKeys.has(`${examplePeriodTab}-${(ex.id - 1) % 10}`) ? "underline" : ""}`}>{ex.title}</span>
+                                <span className={`font-medium text-gray-800 ${submittedKeys.has(`${examplePeriodTab}-${itemIdx}`) || (isAdmin && adminSubmissions.some((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx)) ? "underline" : ""}`}>{ex.title}</span>
+                                {isAdmin && (
+                                  <span className="text-xs text-gray-500">
+                                    ({adminSubmissions.filter((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx).length}件)
+                                  </span>
+                                )}
                               </div>
                               {ex.topic && <p className="text-gray-600 text-sm pl-9 sm:pl-0 sm:max-w-md">{ex.topic}</p>}
                             </button>
-                            {expandedExampleId === ex.id && ex.modelContent && (
+                            {expandedExampleId === ex.id && (
                               <div className="px-4 md:px-5 pb-4 pt-0 border-t border-[#e5dfd4] bg-[#fafbfc]">
                                 <div className="mt-3 flex flex-col gap-3">
+                                  {!isContentVisible ? (
+                                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
+                                      <p className="text-amber-800 font-medium">해당 컨텐츠는 관리자가 설정한 날짜에 공개 예정입니다.</p>
+                                      <p className="text-amber-700 text-sm mt-1">該当コンテンツは管理者が設定した日付に公開予定です。</p>
+                                      {visibleFromDateStr && <p className="text-amber-600 text-sm mt-2">公開予定日：{visibleFromDateStr}</p>}
+                                    </div>
+                                  ) : ex.modelContent && (
+                                  <>
                                   <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm space-y-4">
                                     <p className="text-gray-600 font-medium">テーマ：{ex.modelContent.theme}</p>
                                     <p className="text-gray-800 leading-relaxed">{ex.modelContent.question}</p>
@@ -990,11 +1074,48 @@ export default function WritingPage() {
                                       ))}
                                     </div>
                                   </div>
-                                  {submittedKeys.has(`${examplePeriodTab}-${(ex.id - 1) % 10}`) ? (
+                                  {isAdmin ? (
+                                    <div className="space-y-3">
+                                      {adminSubmissionsLoading ? (
+                                        <p className="text-gray-500 text-sm">読み込み中...</p>
+                                      ) : adminSubmissions.filter((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx).length === 0 ? (
+                                        <p className="text-gray-500 text-sm">この課題の提出はありません。</p>
+                                      ) : (
+                                        adminSubmissions
+                                          .filter((s) => s.period_index === examplePeriodTab && s.item_index === itemIdx)
+                                          .map((s) => (
+                                            <div key={s.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-xl border border-[#e5dfd4]">
+                                              <div className="min-w-[120px] font-medium text-gray-800">{(s.user?.name || s.user?.username || s.user?.email) || "-"}</div>
+                                              <div className="flex-1 min-w-0">
+                                                <pre className="whitespace-pre-wrap text-gray-700 text-sm font-sans truncate max-h-12">{s.content}</pre>
+                                              </div>
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  setEmailModal({
+                                                    sub: s,
+                                                    periodLabel: PERIOD_LABELS[examplePeriodTab],
+                                                    itemLabel: ex.title,
+                                                  });
+                                                  setEmailForm({
+                                                    to: s.user?.email || "",
+                                                    subject: `作文課題: ${PERIOD_LABELS[examplePeriodTab]} ${ex.title} - ${s.user?.name || s.user?.username || s.user?.email || "生徒"}`,
+                                                    body: `作文課題の提出内容です。\n\n生徒名: ${s.user?.name || s.user?.username || s.user?.email || "-"}\n課題: ${PERIOD_LABELS[examplePeriodTab]} ${ex.title}\n\n--- 提出内容 ---\n\n${s.content}`,
+                                                  });
+                                                }}
+                                                className="shrink-0 px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white text-sm font-medium rounded-lg"
+                                              >
+                                                メールで送る
+                                              </button>
+                                            </div>
+                                          ))
+                                      )}
+                                    </div>
+                                  ) : submittedKeys.has(`${examplePeriodTab}-${itemIdx}`) ? (
                                     <>
                                       <div className="p-4 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
                                         <p className="text-sm font-medium text-[#166534] mb-2">提出された課題</p>
-                                        <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{submissionsByKey[`${examplePeriodTab}-${(ex.id - 1) % 10}`]?.content || ""}</pre>
+                                        <pre className="whitespace-pre-wrap text-gray-800 text-sm leading-relaxed font-sans">{submissionsByKey[`${examplePeriodTab}-${itemIdx}`]?.content || ""}</pre>
                                       </div>
                                       <button type="button" onClick={() => document.getElementById("mypage-section")?.scrollIntoView({ behavior: "smooth" })} className="w-full py-3 px-6 bg-[#4ade80] hover:bg-[#22c55e] text-gray-800 font-medium rounded-xl shadow-md">
                                         マイページで確認
@@ -1012,18 +1133,27 @@ export default function WritingPage() {
                                       </Link>
                                     </div>
                                   )}
+                                  </>
+                                  )}
                                 </div>
                               </div>
                             )}
                           </div>
-                        ))}
+                        );
+                        })}
                       </div>
+                      )}
                     </div>
                   </div>
 
                   <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">マイページ</h2>
 
-                  {!user ? (
+                  {isAdmin && !user ? (
+                    <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#f0fdf4] text-center">
+                      <p className="text-gray-600 mb-4">管理者モードです。上記の課題一覧で全生徒の提出を確認・メール送信できます。</p>
+                      <Link href="/admin" className="inline-block px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl">管理画面へ</Link>
+                    </div>
+                  ) : !user ? (
                     <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
                       <p className="text-gray-600 mb-4">マイページはログイン後にご利用いただけます。</p>
                       <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-2.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">
@@ -1239,6 +1369,107 @@ export default function WritingPage() {
                 className="px-6 py-2.5 bg-[#86efac] hover:bg-[#4ade80] disabled:opacity-50 text-gray-800 font-medium rounded-xl"
               >
                 提出する
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {emailModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="px-4 py-3 border-b border-gray-200">
+              <h3 className="text-lg font-bold text-gray-800">メール送信</h3>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">宛先（To）</label>
+                <input
+                  type="email"
+                  value={emailForm.to}
+                  onChange={(e) => setEmailForm((f) => ({ ...f, to: e.target.value }))}
+                  placeholder="student@example.com"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">件名</label>
+                <input
+                  type="text"
+                  value={emailForm.subject}
+                  onChange={(e) => setEmailForm((f) => ({ ...f, subject: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">本文</label>
+                <textarea
+                  value={emailForm.body}
+                  onChange={(e) => setEmailForm((f) => ({ ...f, body: e.target.value }))}
+                  rows={8}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent resize-y"
+                />
+              </div>
+            </div>
+            <div className="px-4 py-3 border-t border-gray-200 flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => { setEmailModal(null); setEmailForm({ to: "", subject: "", body: "" }); }}
+                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              >
+                キャンセル
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!emailForm.to.trim()) {
+                    alert("宛先を入力してください");
+                    return;
+                  }
+                  setEmailModalSending(true);
+                  try {
+                    const opts: RequestInit = {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        to: emailForm.to.trim(),
+                        subject: emailForm.subject.trim(),
+                        body: emailForm.body.trim(),
+                      }),
+                    };
+                    if (adminAuthKey) {
+                      opts.headers = { ...(opts.headers as Record<string, string>), Authorization: `Bearer ${adminAuthKey}` };
+                    } else {
+                      opts.credentials = "include";
+                    }
+                    const res = await fetch("/api/admin/writing/send-email", opts);
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({}));
+                      const msg = err.error || "送信に失敗しました";
+                      if (msg.includes("RESEND_API_KEY")) {
+                        const mailto = `mailto:${encodeURIComponent(emailForm.to)}?subject=${encodeURIComponent(emailForm.subject)}&body=${encodeURIComponent(emailForm.body)}`;
+                        if (confirm("RESEND_API_KEYが設定されていません。Vercelの環境変数にRESEND_API_KEYを追加してください。\n\nメールクライアントで送信しますか？")) {
+                          window.location.href = mailto;
+                          setEmailModal(null);
+                          setEmailForm({ to: "", subject: "", body: "" });
+                        }
+                        return;
+                      }
+                      throw new Error(msg);
+                    }
+                    setEmailModal(null);
+                    setEmailForm({ to: "", subject: "", body: "" });
+                    alert("送信しました");
+                  } catch (e) {
+                    alert(e instanceof Error ? e.message : "送信に失敗しました");
+                  } finally {
+                    setEmailModalSending(false);
+                  }
+                }}
+                disabled={emailModalSending}
+                className="px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] disabled:opacity-50 text-white font-medium rounded-lg"
+              >
+                {emailModalSending ? "送信中..." : "送信"}
               </button>
             </div>
           </div>
