@@ -60,6 +60,7 @@ export default function QuizClient() {
   const [kotaeList, setKotaeList] = useState<KotaeItem[]>([]);
   const [kotaeListLoading, setKotaeListLoading] = useState(true);
   const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
+  const [seikatsuPage, setSeikatsuPage] = useState(0);
   const [expandedKotaeId, setExpandedKotaeId] = useState<number | null>(null);
   const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
   const [kotaeLoading, setKotaeLoading] = useState(false);
@@ -155,6 +156,13 @@ export default function QuizClient() {
   const kotaePaginated = filteredKotae.slice(
     kotaePage * KOTAE_PAGE_SIZE,
     (kotaePage + 1) * KOTAE_PAGE_SIZE
+  );
+
+  const SEIKATSU_PAGE_SIZE = 20;
+  const seikatsuTotalPages = Math.ceil(seikatsuList.length / SEIKATSU_PAGE_SIZE) || 1;
+  const seikatsuPaginated = seikatsuList.slice(
+    seikatsuPage * SEIKATSU_PAGE_SIZE,
+    (seikatsuPage + 1) * SEIKATSU_PAGE_SIZE
   );
 
   const closeRightMenu = () => {
@@ -443,8 +451,6 @@ export default function QuizClient() {
     </>
   );
 
-  const SEIKATSU_SAMPLE = seikatsuList.slice(0, 12);
-
   const handleExpandMenu = (type: "qa" | "dailykorean") => {
     if (rightSidebarExpanded && expandedMenuType === type) {
       setRightSidebarExpanded(false);
@@ -606,6 +612,9 @@ export default function QuizClient() {
           <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition">
             生活韓国語を見る
           </span>
+          {seikatsuList.length > 0 && (
+            <p className="text-xs text-gray-500 mt-2">{seikatsuList.length}件の記事</p>
+          )}
         </button>
         {rightSidebarExpanded && expandedMenuType === "dailykorean" && (
           <div className="border-t border-gray-200 max-h-[320px] overflow-y-auto">
@@ -620,21 +629,50 @@ export default function QuizClient() {
               </button>
             </div>
             <div className="p-2">
-              {SEIKATSU_SAMPLE.map((title, i) => (
-                <a
-                  key={i}
-                  href={`/dailykorean?title=${encodeURIComponent(title)}`}
-                  className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg transition"
-                >
-                  {title}
-                </a>
-              ))}
-              <a
-                href="/dailykorean"
-                className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9] hover:underline"
-              >
-                一覧で見る →
-              </a>
+              {seikatsuList.length === 0 ? (
+                <p className="py-4 text-center text-gray-500 text-xs">読み込み中...</p>
+              ) : (
+                <>
+                  {seikatsuPaginated.map((title, i) => (
+                    <a
+                      key={i}
+                      href={`/dailykorean?title=${encodeURIComponent(title)}`}
+                      className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg transition"
+                    >
+                      {title}
+                    </a>
+                  ))}
+                  {seikatsuList.length > SEIKATSU_PAGE_SIZE && (
+                    <div className="flex justify-center gap-1 py-2">
+                      <button
+                        type="button"
+                        onClick={() => setSeikatsuPage((p) => Math.max(0, p - 1))}
+                        disabled={seikatsuPage === 0}
+                        className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40"
+                      >
+                        前へ
+                      </button>
+                      <span className="px-2 py-1 text-xs text-gray-600">
+                        {seikatsuPage + 1}/{seikatsuTotalPages}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSeikatsuPage((p) => Math.min(seikatsuTotalPages - 1, p + 1))}
+                        disabled={seikatsuPage >= seikatsuTotalPages - 1}
+                        className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40"
+                      >
+                        次へ
+                      </button>
+                    </div>
+                  )}
+                  <a
+                    href="/dailykorean"
+                    className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9] hover:underline"
+                  >
+                    一覧で見る →
+                  </a>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -755,12 +793,25 @@ export default function QuizClient() {
                 </button>
                 {rightSidebarExpanded && expandedMenuType === "dailykorean" && (
                   <div className="border-t border-gray-200 max-h-[240px] overflow-y-auto p-2">
-                    {SEIKATSU_SAMPLE.map((title, i) => (
-                      <a key={i} href={`/dailykorean?title=${encodeURIComponent(title)}`} onClick={() => closeRightMenu()} className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg">
-                        {title}
-                      </a>
-                    ))}
-                    <a href="/dailykorean" onClick={() => closeRightMenu()} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9]">一覧で見る →</a>
+                    {seikatsuList.length === 0 ? (
+                      <p className="py-4 text-center text-gray-500 text-xs">読み込み中...</p>
+                    ) : (
+                      <>
+                        {seikatsuPaginated.map((title, i) => (
+                          <a key={i} href={`/dailykorean?title=${encodeURIComponent(title)}`} onClick={() => closeRightMenu()} className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg">
+                            {title}
+                          </a>
+                        ))}
+                        {seikatsuList.length > SEIKATSU_PAGE_SIZE && (
+                          <div className="flex justify-center gap-1 py-2">
+                            <button type="button" onClick={() => setSeikatsuPage((p) => Math.max(0, p - 1))} disabled={seikatsuPage === 0} className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40">前へ</button>
+                            <span className="px-2 py-1 text-xs text-gray-600">{seikatsuPage + 1}/{seikatsuTotalPages}</span>
+                            <button type="button" onClick={() => setSeikatsuPage((p) => Math.min(seikatsuTotalPages - 1, p + 1))} disabled={seikatsuPage >= seikatsuTotalPages - 1} className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40">次へ</button>
+                          </div>
+                        )}
+                        <a href="/dailykorean" onClick={() => closeRightMenu()} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9]">一覧で見る →</a>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
