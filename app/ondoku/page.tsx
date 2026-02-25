@@ -469,43 +469,8 @@ export default function OndokuPage() {
                               </div>
                             </div>
                           ) : (
-                            <div className="space-y-5">
-                              <div>
-                                <h4 className="font-bold text-[#1e3a5f] text-base mb-2 border-b-2 border-red-500 pb-1 inline-block">中級～上級</h4>
-                                <p>政治、経済、文化、ドラマ、日常会話の5分野。各分野2週間、全10回コースです。</p>
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">週ごとの流れと目標</h4>
-                                <ul className="space-y-2">
-                                  <li>① 1週目：比較的短い文章5つを音読</li>
-                                  <li>② 2週目：特定テーマの長文1つを課題として音読</li>
-                                  <li>③ 1週目の音読トレーニング：中級語彙の増強、発音・抑揚のチェック</li>
-                                  <li>④ 2週目：長文を読みながら意味を把握し、相手に伝わるリズムで音読する練習</li>
-                                  <li>⑤ 担当講師が速度・リズム・流暢性の3点をチェックし、的確なアドバイス</li>
-                                  <li>⑥ ネイティブ録音は「ゆっくり版」と「自然な速さ版」の2種類でお届け</li>
-                                </ul>
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">提示文例</h4>
-                                <p className="font-medium text-gray-800">보수란 새로운 것이나 변화를 반대하고 전통적인 것을 유지하려는 것을 말하며 진보란 사회의 변화나 발전을 추구하는 것을 말한다.</p>
-                                <p className="mt-1 text-gray-600 text-xs">（保守とは新しいものや変化に反対し伝統的なものを維持しようとすることを指し、進歩とは社会の変化や発展を追求することを指す。）</p>
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-2">添削例（抑揚）</h4>
-                                <p className="mb-2">重要な主語（보수란、진보란など）の後、説明が続く場合はしっかり区切って読み、聞き取りやすく。</p>
-                                <p className="mb-2">「～고、～며、～서」などの文末では区切りを入れることが多いです。</p>
-                                <p className="mb-2">強調したい部分で区切りを入れることもできます。区切った音節の語尾はやや上げ気味に。</p>
-                                <div className="mt-3 overflow-x-auto">
-                                  <table className="min-w-[200px] border border-gray-300 text-xs">
-                                    <tbody>
-                                      <tr><td className="border border-gray-300 px-2 py-1 bg-gray-100 font-medium">速度</td><td className="border border-gray-300 px-2 py-1">下</td></tr>
-                                      <tr><td className="border border-gray-300 px-2 py-1 bg-gray-100 font-medium">リズム感</td><td className="border border-gray-300 px-2 py-1">上</td></tr>
-                                      <tr><td className="border border-gray-300 px-2 py-1 bg-gray-100 font-medium">流暢性</td><td className="border border-gray-300 px-2 py-1">中</td></tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <p className="mt-2 text-blue-600">주요 발음: 발전[발쩐]</p>
-                              </div>
+                            <div className="flex justify-center">
+                              <img src="/ondoku-chuujokyu.png" alt="中級～上級 音読トレーニングの詳細" className="max-w-full h-auto" />
                             </div>
                           )}
                         </div>
