@@ -91,6 +91,7 @@ export default function OndokuPage() {
   const [trialSubmitting, setTrialSubmitting] = useState(false);
   const [trialSuccess, setTrialSuccess] = useState(false);
   const [trialError, setTrialError] = useState<string | null>(null);
+  const [levelDetailTab, setLevelDetailTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -373,6 +374,30 @@ export default function OndokuPage() {
                           ))}
                         </div>
                       </div>
+                      <div className="mt-4 px-4 py-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700 space-y-4">
+                        <h3 className="font-semibold text-[#1e3a5f] text-base">授業について</h3>
+                        <div>
+                          <p className="font-medium text-[#1e3a5f] mb-1">★音読とは?</p>
+                          <p>音読とは、文字を声に出して読むことです。日々、語彙・文法・表現・発音など多くの知識をインプットしているのに、会話の場面ではなかなかアウトプットできない…そんな経験はありませんか？音読は、アウトプットの練習に最適。実際の会話で話せない・聞き取れないといった悩みを解消する近道です。</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-[#1e3a5f] mb-1">3ヶ月で上達! ご自宅で発音矯正&音読レッスン!</p>
+                          <p>通学が難しくても、韓国語で会話がしたい方へ。会話には語彙・文法の基礎が不可欠。そして、覚えた表現は正しい発音・抑揚で練習してこそ、相手に伝わります。</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-[#1e3a5f] mb-1">≪語彙・文型・表現 パターンを覚え + 発音・抑揚を自然に≫</p>
+                          <p>この2点を重視し、ご自宅で会話練習ができる講座を作りました。ミリネが厳選した課題文をしっかり音読して身につければ、リスニング・会話力・韓国語力の向上は間違いありません。</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-[#1e3a5f] mb-1">【音読トレーニングの方法】</p>
+                          <ul className="space-y-2 list-none">
+                            <li>❶ 文章の把握：まず、課題を日本語に訳して意味を把握します。</li>
+                            <li>❷ 文章を見ながら音読15回、スムーズに言えるようになるまで回数は調整してください。記録シートの作成をお勧めします。</li>
+                            <li>❸ 文章を見ないで音をたよりに音読15回（次週にネイティブの録音ファイルをお送りします）</li>
+                            <li>❹ シャドーイングの練習15回</li>
+                          </ul>
+                        </div>
+                      </div>
                       <div className="overflow-hidden mt-4">
                         <div className="px-4 py-2.5 bg-[#1e3a5f]">
                           <h3 className="font-semibold text-white text-sm">詳細</h3>
@@ -380,8 +405,8 @@ export default function OndokuPage() {
                         <div className="bg-white text-sm">
                           {[
                             { label: "対象", content: "初中級 / 中上級 (レベルに合わせて選択可能)" },
-                            { label: "目標", content: "❶会話パターンを覚える ❷発音・抑揚の矯正 ❸音読トレーニングで話すスピードも速くなり → 会話力が上がる事" },
-                            { label: "授業の流れ", content: <>❶毎週月曜日：課題をメールにて送信 ❷課題の勉強、読みの練習後、スマホなどで録音 ❸翌週の月曜日21時までに録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1e3a5f] hover:underline font-medium">ondoku@kaonnuri.com</a>に提出 ❹毎週金曜日：先生の解説文及び模範発音録音ファイルをメールにて送信</> },
+                            { label: "目標", content: <>❶会話パターンを覚える<br />❷発音・抑揚の矯正<br />❸音読トレーニングで話すスピードも速くなり → 会話力が上がる事</> },
+                            { label: "授業の流れ", content: <>❶毎週月曜日：課題をメールにて送信<br />❷課題の勉強、読みの練習後、スマホなどで録音<br />❸翌週の月曜日21時までに録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1e3a5f] hover:underline font-medium">ondoku@kaonnuri.com</a>に提出<br />❹毎週金曜日：先生の解説文及び模範発音録音ファイルをメールにて送信</> },
                             { label: "日程", content: "4月3日(金)から10週間" },
                             { label: "教室", content: "オンライン" },
                             { label: "募集期間", content: "～4月1日(水)" },
@@ -394,7 +419,103 @@ export default function OndokuPage() {
                           ))}
                         </div>
                       </div>
-                      <div id="trial-form-section" className="mt-6 pt-6 border-t border-gray-200">
+                      <div className="mt-4 overflow-hidden border border-gray-200 rounded-lg">
+                        <div className="flex border-b border-gray-200">
+                          <button
+                            type="button"
+                            onClick={() => setLevelDetailTab("chujokyu")}
+                            className={`flex-1 px-4 py-3 text-sm font-medium ${levelDetailTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                          >
+                            初中級
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setLevelDetailTab("chuujokyu")}
+                            className={`flex-1 px-4 py-3 text-sm font-medium border-l border-gray-200 ${levelDetailTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                          >
+                            中上級
+                          </button>
+                        </div>
+                        <div className="p-4 md:p-5 bg-white text-sm text-gray-700">
+                          {levelDetailTab === "chujokyu" ? (
+                            <div className="space-y-5">
+                              <div>
+                                <h4 className="font-bold text-[#1e3a5f] text-base mb-2 border-b-2 border-red-500 pb-1 inline-block">初中級</h4>
+                                <p className="mt-2">1回につき、8個の課題が出ます。全10回コースで会話に必要な文型、表現をたくさん覚えられます。</p>
+                                <p className="mt-1 text-gray-600">(9回目と10回目は、1-8回目で実施した内容からの出題となります。9・10回目で復習することで、発音の改善を実感できます。)</p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-3">課題</h4>
+                                <ul className="space-y-4">
+                                  <li>
+                                    <p className="font-medium">① <code className="bg-gray-100 px-1 rounded">-아/어지다</code>：形容詞の自然な変化を表す</p>
+                                    <p className="mt-1 text-gray-600">例) 날씨가 좋아졌어요, 얼굴이 예뻐졌어요.</p>
+                                    <p className="mt-1">課題：겨울이 가까워지면서 해가 짧아지고 추워졌어요。</p>
+                                    <p className="mt-1 text-blue-600">※発音ポイント：複合母音、二重バッチム、濃音、激音</p>
+                                  </li>
+                                  <li>
+                                    <p className="font-medium">② <code className="bg-gray-100 px-1 rounded">-(으)ㄹ 줄 알다</code>：(習って)することができる、する方法を知っている</p>
+                                    <p className="mt-1 text-gray-600">例) 수영할 줄 알아요?</p>
+                                    <p className="mt-1">課題：한국 사람들은 모두 김치를 담글 줄 알아요?</p>
+                                    <p className="mt-1 text-blue-600">※発音ポイント：ㄹの発音、連音</p>
+                                  </li>
+                                  <li>
+                                    <p className="font-medium">③ <code className="bg-gray-100 px-1 rounded">-(으)ㄹ 줄 모르다</code>：(習って)できない、する方法を知らない</p>
+                                    <p className="mt-1 text-gray-600">例) 저는 영어를 할 줄 몰라요。</p>
+                                    <p className="mt-1">課題：저는 면허가 없어요。運転할 줄 모릅니다。</p>
+                                    <p className="mt-1 text-blue-600">※発音ポイント：ㅎの発音、二重バッチム、鼻音化</p>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-5">
+                              <div>
+                                <h4 className="font-bold text-[#1e3a5f] text-base mb-2 border-b-2 border-red-500 pb-1 inline-block">中級～上級</h4>
+                                <p>政治、経済、文化、ドラマ、日常会話の5分野。各分野2週間、全10回コースです。</p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">週ごとの流れと目標</h4>
+                                <ul className="space-y-2">
+                                  <li>① 1週目：比較的短い文章5つを音読</li>
+                                  <li>② 2週目：特定テーマの長文1つを課題として音読</li>
+                                  <li>③ 1週目の音読トレーニング：中級語彙の増強、発音・抑揚のチェック</li>
+                                  <li>④ 2週目：長文を読みながら意味を把握し、相手に伝わるリズムで音読する練習</li>
+                                  <li>⑤ 担当講師が速度・リズム・流暢性の3点をチェックし、的確なアドバイス</li>
+                                  <li>⑥ ネイティブ録音は「ゆっくり版」と「自然な速さ版」の2種類でお届け</li>
+                                </ul>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">提示文例</h4>
+                                <p className="font-medium text-gray-800">보수란 새로운 것이나 변화를 반대하고 전통적인 것을 유지하려는 것을 말하며 진보란 사회의 변화나 발전을 추구하는 것을 말한다.</p>
+                                <p className="mt-1 text-gray-600 text-xs">（保守とは新しいものや変化に反対し伝統的なものを維持しようとすることを指し、進歩とは社会の変化や発展を追求することを指す。）</p>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-gray-800 mb-2">添削例（抑揚）</h4>
+                                <p className="mb-2">重要な主語（보수란、진보란など）の後、説明が続く場合はしっかり区切って読み、聞き取りやすく。</p>
+                                <p className="mb-2">「～고、～며、～서」などの文末では区切りを入れることが多いです。</p>
+                                <p className="mb-2">強調したい部分で区切りを入れることもできます。区切った音節の語尾はやや上げ気味に。</p>
+                                <div className="mt-3 overflow-x-auto">
+                                  <table className="min-w-[200px] border border-gray-300 text-xs">
+                                    <tbody>
+                                      <tr><td className="border border-gray-300 px-2 py-1 bg-gray-100 font-medium">速度</td><td className="border border-gray-300 px-2 py-1">下</td></tr>
+                                      <tr><td className="border border-gray-300 px-2 py-1 bg-gray-100 font-medium">リズム感</td><td className="border border-gray-300 px-2 py-1">上</td></tr>
+                                      <tr><td className="border border-gray-300 px-2 py-1 bg-gray-100 font-medium">流暢性</td><td className="border border-gray-300 px-2 py-1">中</td></tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                                <p className="mt-2 text-blue-600">주요 발음: 발전[발쩐]</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div id="trial-form-section" className="mt-6 pt-6 border-t-2 border-[#8b6914]">
+                        <div className="mb-6 py-5 px-6 bg-[#faf6eb] border-b-2 border-[#8b6914] rounded-lg">
+                          <p className="text-center text-2xl md:text-3xl font-bold text-[#5c4a1a]">
+                            初中級: 1,800円 / 中上級: 2,300円
+                          </p>
+                        </div>
                         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                           <div className="flex">
                             <button
@@ -476,7 +597,6 @@ export default function OndokuPage() {
                             </div>
                           )}
                         </div>
-                        <p className="mt-3 text-center text-xs text-gray-500">初中級: 1,800円 / 中上級: 2,300円</p>
                       </div>
                       <div className="mt-6 pt-4 border-t-2 border-[#8b6914]">
                         <h3 className="font-semibold text-[#8b6914] text-base mb-3">授業料</h3>
