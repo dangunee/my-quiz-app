@@ -36,7 +36,21 @@ type OndokuSubmission = {
   content: string;
   audio_url?: string;
   submitted_at: string;
+  feedback?: string;
+  corrected_content?: string;
+  status?: string;
+  feedback_at?: string;
+  completed_at?: string;
   user?: { email?: string; name?: string; username?: string };
+};
+
+type OndokuFeedbackSegment = { kadai: string; correct: string; learner: string };
+type OndokuFeedbackForm = {
+  bunkei: string;
+  wayaku: string;
+  point: string;
+  segments: OndokuFeedbackSegment[];
+  kaisetsu: string;
 };
 
 function formatJapanese(s: string) {
@@ -161,7 +175,41 @@ export default function AdminPage() {
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
   const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
+  const [expandedOndokuId, setExpandedOndokuId] = useState<string | null>(null);
+  const [ondokuFeedbackForm, setOndokuFeedbackForm] = useState<OndokuFeedbackForm | null>(null);
+  const [ondokuFeedbackSaving, setOndokuFeedbackSaving] = useState(false);
   const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
+
+  function initOndokuFeedbackForm(sub: OndokuSubmission, ex: { modelContent?: { theme?: string; sentence?: string; pronunciationNote?: string; patterns?: { pattern: string; example: string }[] }; topic?: string } | undefined): OndokuFeedbackForm {
+    const sentence = ex?.modelContent?.sentence || "";
+    const segments = (() => {
+      try {
+        const parsed = JSON.parse(sub.feedback || "{}");
+        if (parsed.segments && Array.isArray(parsed.segments) && parsed.segments.length > 0) return parsed.segments;
+      } catch {}
+      const segs = sentence.split(/\s+/).filter(Boolean).map((k) => ({ kadai: k, correct: k, learner: "" }));
+        return segs.length > 0 ? segs : [{ kadai: "", correct: "", learner: "" }];
+    })();
+    try {
+      const parsed = JSON.parse(sub.feedback || "{}");
+      if (parsed.bunkei != null || parsed.wayaku != null || parsed.point != null || parsed.kaisetsu != null) {
+        return {
+          bunkei: parsed.bunkei ?? ex?.modelContent?.theme ?? "",
+          wayaku: parsed.wayaku ?? ex?.topic ?? "",
+          point: parsed.point ?? ex?.modelContent?.pronunciationNote ?? "",
+          segments: parsed.segments ?? segments,
+          kaisetsu: parsed.kaisetsu ?? "",
+        };
+      }
+    } catch {}
+    return {
+      bunkei: ex?.modelContent?.theme ?? "",
+      wayaku: ex?.topic ?? "",
+      point: ex?.modelContent?.pronunciationNote ?? "",
+      segments,
+      kaisetsu: sub.feedback && !sub.feedback.startsWith("{") ? sub.feedback : "",
+    };
+  }
   const filteredUsers = userSearchKeyword.trim()
     ? users.filter((u) => {
         const kw = userSearchKeyword.trim().toLowerCase();
@@ -1548,19 +1596,169 @@ export default function AdminPage() {
                         </h3>
                         <ul className="space-y-3">
                           {periodSubmissions.map((s) => (
-                            <li key={s.id} className="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-gray-50 rounded text-sm">
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-gray-800">{(s.user?.name || s.user?.username || s.user?.email) || "-"}</p>
-                                <p className="text-xs text-gray-500">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
-                                {s.content && <p className="mt-1 text-gray-700 whitespace-pre-wrap">{s.content}</p>}
-                              </div>
-                              {s.audio_url ? (
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <audio controls src={s.audio_url} className="max-w-[200px] h-8" />
-                                  <a href={s.audio_url} download className="text-red-600 hover:underline text-xs">ダウンロード</a>
+                            <li key={s.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (expandedOndokuId === s.id) {
+                                    setExpandedOndokuId(null);
+                                    setOndokuFeedbackForm(null);
+                                  } else {
+                                    setExpandedOndokuId(s.id);
+                                    setOndokuFeedbackForm(initOndokuFeedbackForm(s, ex));
+                                  }
+                                }}
+                                className="w-full flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 text-left text-sm"
+                              >
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-gray-800">{(s.user?.name || s.user?.username || s.user?.email) || "-"}</p>
+                                  <p className="text-xs text-gray-500">{new Date(s.submitted_at).toLocaleString("ja-JP")}</p>
+                                  {s.content && <p className="mt-1 text-gray-700 whitespace-pre-wrap">{s.content}</p>}
                                 </div>
-                              ) : (
-                                <span className="text-gray-500 text-xs">音声なし</span>
+                                {s.audio_url ? (
+                                  <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                                    <audio controls src={s.audio_url} className="max-w-[200px] h-8" />
+                                    <a href={s.audio_url} download className="text-red-600 hover:underline text-xs">ダウンロード</a>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-500 text-xs">音声なし</span>
+                                )}
+                                <span className="text-gray-400 text-xs">{expandedOndokuId === s.id ? "▲ 閉じる" : "▼ 添削"}</span>
+                              </button>
+                              {expandedOndokuId === s.id && ondokuFeedbackForm && (
+                                <div className="p-4 bg-white border-t border-gray-200">
+                                  <h4 className="font-medium text-gray-800 mb-3">添削エディタ（スプレッドシート形式）</h4>
+                                  <div className="overflow-x-auto">
+                                    <table className="w-full min-w-[500px] border-collapse text-sm">
+                                      <tbody>
+                                        <tr>
+                                          <td className="py-1 px-2 bg-gray-100 font-medium w-20 align-top">文型</td>
+                                          <td className="py-1 px-2 border border-gray-200" colSpan={5}>
+                                            <input value={ondokuFeedbackForm.bunkei} onChange={(e) => setOndokuFeedbackForm((f) => f && { ...f, bunkei: e.target.value })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500" placeholder="文型" />
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td className="py-1 px-2 bg-gray-100 font-medium align-top">課題</td>
+                                          <td className="py-1 px-2 border border-gray-200 text-gray-800" colSpan={5}>{ex?.modelContent?.sentence || "-"}</td>
+                                        </tr>
+                                        <tr>
+                                          <td className="py-1 px-2 bg-gray-100 font-medium align-top">和訳</td>
+                                          <td className="py-1 px-2 border border-gray-200" colSpan={5}>
+                                            <input value={ondokuFeedbackForm.wayaku} onChange={(e) => setOndokuFeedbackForm((f) => f && { ...f, wayaku: e.target.value })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500" placeholder="和訳" />
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td className="py-1 px-2 bg-gray-100 font-medium align-top">ポイント</td>
+                                          <td className="py-1 px-2 border border-gray-200" colSpan={5}>
+                                            <input value={ondokuFeedbackForm.point} onChange={(e) => setOndokuFeedbackForm((f) => f && { ...f, point: e.target.value })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500" placeholder="発音ポイント" />
+                                          </td>
+                                        </tr>
+                                        <tr className="bg-gray-50">
+                                          <td className="py-1 px-2 font-medium">no.</td>
+                                          <td className="py-1 px-2 font-medium">課題</td>
+                                          <td className="py-1 px-2 font-medium">正しい発音</td>
+                                          <td className="py-1 px-2 font-medium">学習者の発音</td>
+                                          <td className="py-1 px-2 w-12" />
+                                        </tr>
+                                        {ondokuFeedbackForm.segments.map((seg, i) => (
+                                          <tr key={i}>
+                                            <td className="py-1 px-2">{i + 1}</td>
+                                            <td className="py-1 px-2 border border-gray-200">
+                                              <input value={seg.kadai} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                                if (!f) return f;
+                                                const segs = [...f.segments];
+                                                segs[i] = { ...segs[i], kadai: e.target.value };
+                                                return { ...f, segments: segs };
+                                              })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                            </td>
+                                            <td className="py-1 px-2 border border-gray-200">
+                                              <input value={seg.correct} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                                if (!f) return f;
+                                                const segs = [...f.segments];
+                                                segs[i] = { ...segs[i], correct: e.target.value };
+                                                return { ...f, segments: segs };
+                                              })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                            </td>
+                                            <td className="py-1 px-2 border border-gray-200">
+                                              <input value={seg.learner} onChange={(e) => setOndokuFeedbackForm((f) => {
+                                                if (!f) return f;
+                                                const segs = [...f.segments];
+                                                segs[i] = { ...segs[i], learner: e.target.value };
+                                                return { ...f, segments: segs };
+                                              })} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500 min-w-[60px]" />
+                                            </td>
+                                            <td className="py-1 px-2">
+                                              <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: f.segments.filter((_, j) => j !== i) })} className="text-red-600 text-xs hover:underline">削除</button>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                        <tr>
+                                          <td colSpan={5} className="py-1">
+                                            <button type="button" onClick={() => setOndokuFeedbackForm((f) => f && { ...f, segments: [...f.segments, { kadai: "", correct: "", learner: "" }] })} className="text-red-600 text-sm hover:underline">+ 行を追加</button>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td className="py-1 px-2 bg-gray-100 font-medium align-top">解説</td>
+                                          <td className="py-1 px-2 border border-gray-200" colSpan={5}>
+                                            <textarea value={ondokuFeedbackForm.kaisetsu} onChange={(e) => setOndokuFeedbackForm((f) => f && { ...f, kaisetsu: e.target.value })} rows={4} className="w-full px-2 py-1 border-0 focus:ring-1 focus:ring-red-500" placeholder="発音の解説・フィードバック" />
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div className="mt-3 flex gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        if (!ondokuFeedbackForm || !s.id) return;
+                                        setOndokuFeedbackSaving(true);
+                                        try {
+                                          const feedbackJson = JSON.stringify(ondokuFeedbackForm);
+                                          const res = await fetch(`/api/admin/ondoku/submissions/${s.id}`, {
+                                            method: "PUT",
+                                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                            body: JSON.stringify({ feedback: feedbackJson, status: "in_progress" }),
+                                          });
+                                          if (!res.ok) throw new Error("保存に失敗しました");
+                                          setOndokuSubmissions((prev) => prev.map((x) => x.id === s.id ? { ...x, feedback: feedbackJson, status: "in_progress" } : x));
+                                        } catch (e) {
+                                          alert(e instanceof Error ? e.message : "保存に失敗しました");
+                                        } finally {
+                                          setOndokuFeedbackSaving(false);
+                                        }
+                                      }}
+                                      disabled={ondokuFeedbackSaving}
+                                      className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
+                                    >
+                                      {ondokuFeedbackSaving ? "保存中..." : "保存"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        if (!ondokuFeedbackForm || !s.id) return;
+                                        setOndokuFeedbackSaving(true);
+                                        try {
+                                          const feedbackJson = JSON.stringify(ondokuFeedbackForm);
+                                          const res = await fetch(`/api/admin/ondoku/submissions/${s.id}`, {
+                                            method: "PUT",
+                                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+                                            body: JSON.stringify({ feedback: feedbackJson, status: "completed" }),
+                                          });
+                                          if (!res.ok) throw new Error("保存に失敗しました");
+                                          setOndokuSubmissions((prev) => prev.map((x) => x.id === s.id ? { ...x, feedback: feedbackJson, status: "completed" } : x));
+                                        } catch (e) {
+                                          alert(e instanceof Error ? e.message : "保存に失敗しました");
+                                        } finally {
+                                          setOndokuFeedbackSaving(false);
+                                        }
+                                      }}
+                                      disabled={ondokuFeedbackSaving}
+                                      className="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50"
+                                    >
+                                      完了
+                                    </button>
+                                  </div>
+                                </div>
                               )}
                             </li>
                           ))}

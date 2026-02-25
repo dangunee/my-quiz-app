@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("ondoku_submissions")
-      .select("id, user_id, period_index, item_index, content, audio_url, submitted_at")
+      .select("id, user_id, period_index, item_index, content, audio_url, submitted_at, feedback, corrected_content, status, feedback_at, completed_at")
       .order("submitted_at", { ascending: false });
 
     if (error) {
