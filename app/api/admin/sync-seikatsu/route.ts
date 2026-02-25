@@ -4,17 +4,10 @@ import { createClient } from "@supabase/supabase-js";
 const WP_API = "https://mirinae.jp/blog/index.php?rest_route=/wp/v2/posts";
 const CAT_ID = "2";
 
-function extractSeikatsuTitle(raw: string): string | null {
-  const decoded = raw.replace(/&#(\d+);/g, (_, code: string) =>
+function decodeTitle(raw: string): string {
+  return raw.replace(/&#(\d+);/g, (_, code: string) =>
     String.fromCharCode(parseInt(code, 10))
   );
-  if (decoded.startsWith("生活韓国語")) return decoded;
-  return null;
-}
-
-function getSeikatsuNumber(title: string): number {
-  const m = title.match(/生活韓国語\s*(\d+)/);
-  return m ? parseInt(m[1], 10) : 0;
 }
 
 export async function POST(request: NextRequest) {
@@ -46,14 +39,13 @@ export async function POST(request: NextRequest) {
       if (posts.length === 0) break;
 
       for (const p of posts) {
-        const title = extractSeikatsuTitle(p.title.rendered);
+        const title = decodeTitle(p.title.rendered).trim();
         if (title) all.push(title);
       }
       if (posts.length < 100) hasMore = false;
       else page++;
     }
-
-    all.sort((a, b) => getSeikatsuNumber(b) - getSeikatsuNumber(a));
+    // WP API returns newest first; keep that order
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
