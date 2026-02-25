@@ -497,10 +497,10 @@ export default function OndokuPage() {
                                   setTrialError(null);
                                 }
                               }}
-                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#faf6eb] text-[#5c4a1a] border-b-2 border-[#8b6914]" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                             >
                               <span>体験申込</span>
-                              {trialActiveTab === "trial" && <span className="text-[#5c4a1a]/70">{showTrialModal ? "▲" : "▼"}</span>}
+                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
                             <button
                               type="button"
@@ -515,10 +515,10 @@ export default function OndokuPage() {
                                   setTrialError(null);
                                 }
                               }}
-                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#faf6eb] text-[#5c4a1a] border-b-2 border-[#8b6914]" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                             >
                               <span>講座申込</span>
-                              {trialActiveTab === "course" && <span className="text-[#5c4a1a]/70">{showTrialModal ? "▲" : "▼"}</span>}
+                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
                           </div>
                           {showTrialModal && (
