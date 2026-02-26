@@ -467,8 +467,39 @@ export default function WritingPage() {
     window.location.reload();
   };
 
+  const loginCard = (
+    <div className="bg-white rounded-xl shadow-sm border border-[#e5dfd4] overflow-hidden mb-4">
+      <div className="p-3">
+        <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
+        {user ? (
+          <div className="space-y-1.5">
+            <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition">
+              マイページ
+            </button>
+            <div className="flex justify-between items-center text-xs text-gray-500">
+              <span>ログイン中</span>
+              <button type="button" onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="hover:text-red-600">ログアウト</button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-1.5">
+            <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition">
+              ログイン
+            </button>
+            <div className="flex justify-center gap-1.5 text-xs text-gray-500">
+              <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">アカウント</button>
+              <span>|</span>
+              <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">新規登録</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   const sidebarContent = (
     <nav className="space-y-0">
+      {loginCard}
       {isAdmin && (
         <button
           type="button"
@@ -478,25 +509,6 @@ export default function WritingPage() {
           管理者ログアウト
         </button>
       )}
-      {!isAdmin && (user ? (
-        <>
-          <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]">
-            マイページ
-          </button>
-          <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>
-          <button
-            type="button"
-            onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }}
-            className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]"
-          >
-            ログアウト
-          </button>
-        </>
-      ) : (
-        <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]">
-          ログイン
-        </button>
-      ))}
       {menuLinks.slice(1).map((item) => (
         <a
           key={item.href}
@@ -633,11 +645,22 @@ export default function WritingPage() {
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
           <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 オンライン講座</h1>
-          {isAdmin && (
-            <Link href="/admin" className="absolute right-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
-              管理者モードで接続中
-            </Link>
-          )}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            {user && !isAdmin && (
+              <button
+                type="button"
+                onClick={() => setShowProfileModal(true)}
+                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                {user.name || user.username || user.email || "-"}様
+              </button>
+            )}
+            {isAdmin && (
+              <Link href="/admin" className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
+                管理者モードで接続中
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 

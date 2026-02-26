@@ -153,7 +153,7 @@ export default function AdminPage() {
   const [userActionLoading, setUserActionLoading] = useState(false);
   const [userSearchKeyword, setUserSearchKeyword] = useState("");
   const [analytics, setAnalytics] = useState<{
-    referrers: { domain: string; count: number; avgDuration?: number }[];
+    referrers: { domain: string; count: number; avgDuration?: number; latestAt?: string | null }[];
     userTypes?: { type: string; count: number; avgDuration?: number }[];
     sourceTypes?: { type: string; count: number; avgDuration?: number }[];
     sourceMedias?: { media: string; count: number; avgDuration?: number }[];
@@ -1408,6 +1408,7 @@ export default function AdminPage() {
                           <th className="text-left py-2 px-3">参照元</th>
                           <th className="text-right py-2 px-3">アクセス数</th>
                           <th className="text-right py-2 px-3">平均滞在</th>
+                          <th className="text-left py-2 px-3">最新アクセス</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1416,6 +1417,7 @@ export default function AdminPage() {
                             <td className="py-2 px-3">{r.domain}</td>
                             <td className="py-2 px-3 text-right">{r.count}</td>
                             <td className="py-2 px-3 text-right">{formatDuration(r.avgDuration ?? null)}</td>
+                            <td className="py-2 px-3 text-gray-600">{r.latestAt ? new Date(r.latestAt).toLocaleString("ja-JP") : "データなし"}</td>
                           </tr>
                         ))}
                       </tbody>

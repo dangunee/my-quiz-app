@@ -401,35 +401,6 @@ export default function QuizClient() {
 
   const navLinks = (
     <div className="space-y-0">
-      {isLoggedIn ? (
-        <>
-          <a
-            href="/profile"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block py-3 text-gray-800 hover:text-red-600 border-b"
-            onClick={() => setMenuOpen(false)}
-          >
-            マイページ
-          </a>
-          <span className="block py-2 text-sm text-gray-500 border-b">ログイン中</span>
-          <button
-            type="button"
-            onClick={() => setShowLogoutModal(true)}
-            className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b"
-          >
-            ログアウト
-          </button>
-        </>
-      ) : (
-        <button
-          type="button"
-          onClick={() => { setShowLoginModal(true); setMenuOpen(false); }}
-          className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b"
-        >
-          ログイン
-        </button>
-      )}
       {menuLinks.slice(1).map((item) => (
         <a
           key={item.href}

@@ -38,21 +38,26 @@ export async function GET(request: NextRequest) {
 
     const list = rows || [];
 
-    // 접속 출처 (referrer_domain별 집계) + 평균 체류시간
-    const refAgg: Record<string, { count: number; domain: string; totalDuration: number; withDuration: number }> = {};
+    // 접속 출처 (referrer_domain별 집계) + 평균 체류시간 + 최신 접속일시
+    const refAgg: Record<string, { count: number; domain: string; totalDuration: number; withDuration: number; latestAt: string | null }> = {};
     for (const r of list) {
       const domain = r.referrer_domain || "(直接)";
-      if (!refAgg[domain]) refAgg[domain] = { count: 0, domain, totalDuration: 0, withDuration: 0 };
+      if (!refAgg[domain]) refAgg[domain] = { count: 0, domain, totalDuration: 0, withDuration: 0, latestAt: null };
       refAgg[domain].count++;
       if (r.duration_seconds != null) {
         refAgg[domain].totalDuration += r.duration_seconds;
         refAgg[domain].withDuration++;
+      }
+      if (r.started_at) {
+        const at = r.started_at;
+        if (!refAgg[domain].latestAt || at > refAgg[domain].latestAt!) refAgg[domain].latestAt = at;
       }
     }
     const referrers = Object.values(refAgg).map((a) => ({
       domain: a.domain,
       count: a.count,
       avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
+      latestAt: a.latestAt,
     })).sort((a, b) => b.count - a.count);
 
     // is_logged_in별 집계 (会員 / 外部)
