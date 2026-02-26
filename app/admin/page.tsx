@@ -1196,6 +1196,31 @@ export default function AdminPage() {
             <p className="text-sm text-gray-600 mb-4">
               クイズ・Q&Aアプリへのアクセス元と滞在時間を分析します。
             </p>
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 className="font-semibold text-gray-800 mb-3">流入元の把握方法</h3>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-300">
+                    <th className="text-left py-2 px-3 w-40">方法</th>
+                    <th className="text-left py-2 px-3">説明</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-2 px-3 font-medium">Referrer（リファラー）</td>
+                    <td className="py-2 px-3 text-gray-600">他サイトのリンクから遷移した場合、ブラウザが送る Referer ヘッダーで参照元を確認できます。</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-2 px-3 font-medium">UTMパラメータ</td>
+                    <td className="py-2 px-3 text-gray-600">リンクに ?utm_source=google などを付けると、その値で参照元を追跡できます。</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-2 px-3 font-medium">分析ツール</td>
+                    <td className="py-2 px-3 text-gray-600">Google Analytics、Vercel Analytics などで流入経路・チャネルを表示します。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div className="mb-4 flex items-center gap-2">
               <label className="text-sm">期間:</label>
               <select
