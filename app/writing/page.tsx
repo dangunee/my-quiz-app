@@ -528,7 +528,7 @@ export default function WritingPage() {
       {menuOpen && (
         <>
           <div className="fixed inset-0 z-40 bg-black/30 md:hidden" onClick={() => setMenuOpen(false)} aria-hidden />
-          <aside className="fixed left-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden" style={{ animation: "slideIn 0.2s ease" }}>
+          <aside className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden" style={{ animation: "slideInRight 0.2s ease" }}>
             <div className="flex items-center justify-between border-b px-4 py-3">
               <span className="font-semibold text-gray-800">メニュー</span>
               <button type="button" onClick={() => setMenuOpen(false)} className="rounded p-2 text-gray-500 hover:bg-gray-100" aria-label="メニューを閉じる">
@@ -666,13 +666,6 @@ export default function WritingPage() {
 
       <div className="flex flex-1 justify-center">
         <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
-          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-r border-[#e5dfd4]">
-            <div className="px-4 py-4 border-b border-[#e5dfd4]">
-              <span className="font-semibold text-gray-800">メニュー</span>
-            </div>
-            <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
-          </aside>
-
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
             {isAdmin && (
               <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm shrink-0">
@@ -1344,6 +1337,12 @@ export default function WritingPage() {
               )}
             </div>
           </main>
+          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-l border-[#e5dfd4]">
+            <div className="px-4 py-4 border-b border-[#e5dfd4]">
+              <span className="font-semibold text-gray-800">メニュー</span>
+            </div>
+            <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
+          </aside>
         </div>
       </div>
 

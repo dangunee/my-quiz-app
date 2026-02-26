@@ -58,7 +58,11 @@ export async function GET(request: NextRequest) {
       count: a.count,
       avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
       latestAt: a.latestAt,
-    })).sort((a, b) => b.count - a.count);
+    })).sort((a, b) => {
+      const aAt = a.latestAt || "";
+      const bAt = b.latestAt || "";
+      return bAt.localeCompare(aAt);
+    });
 
     // is_logged_in별 집계 (会員 / 外部)
     const userTypeAgg: Record<string, { count: number; totalDuration: number; withDuration: number }> = {};
