@@ -296,7 +296,7 @@ export default function OndokuPage() {
   const sidebarContent = (
     <nav className="space-y-0">
       {loginCard}
-      {isAdmin && (
+      {isAdmin && !user && (
         <button
           type="button"
           onClick={handleAdminLogout}
@@ -477,7 +477,7 @@ export default function OndokuPage() {
                 {user.name || user.username || user.email || "-"}様
               </button>
             )}
-            {isAdmin && (
+            {isAdmin && !user && (
               <Link href="/admin" className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
                 管理者モードで接続中
               </Link>
@@ -489,10 +489,10 @@ export default function OndokuPage() {
       <div className="relative flex flex-1 justify-center">
         <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            {isAdmin && (
+            {(user || (isAdmin && !user)) && (
               <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-gray-200 text-sm shrink-0">
-                <span className="text-gray-600">管理者モード：</span>
-                <span className="font-medium text-gray-800">全生徒の提出を表示</span>
+                <span className="text-gray-600">{user ? "ログイン中：" : "管理者モード："}</span>
+                <span className="font-medium text-gray-800">{user ? `${user?.name || user?.username || user?.email || "-"}様` : "全生徒の提出を表示"}</span>
               </div>
             )}
             <div className="bg-white border-b border-gray-200 shadow-sm shrink-0">
@@ -798,7 +798,7 @@ export default function OndokuPage() {
                         <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">音読トレーニングの方法・録音のご案内</div>
                         {!user && !isAdmin ? (
                           <div className="p-8 text-center bg-[#faf8f5] border-b border-[#e5dfd4]">
-                            <p className="text-gray-700 mb-4">1期～4期の課題内容はログイン後にご覧いただけます。</p>
+                            <p className="text-gray-700 mb-4">課題内容はログイン後にご覧いただけます。</p>
                             <button type="button" onClick={() => setShowLoginModal(true)} className="inline-block px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</button>
                           </div>
                         ) : (

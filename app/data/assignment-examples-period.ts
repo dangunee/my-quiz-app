@@ -12,16 +12,16 @@ export type PeriodExampleItem = {
 
 export const PERIOD_EXAMPLES: PeriodExampleItem[][] = [
   [
-    { title: "취미", topic: "", modelContent: { theme: "취미", question: "당신의 취미는 무엇입니까? 어렸을 때부터 계속 해 온 취미가 있습니까? 만약에 중간에 그만두었다면 그 이유는 무엇입니까?", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-기 시작하다　～し始める", example: "예) 건강을 위해 운동을 하기 시작했다" }, { pattern: "○-은/는 것을 좋아하다/ 싫어하다　～することが好きだ/嫌いだ", example: "예) 커피 마시는 것을 좋아한다" }, { pattern: "○-은지-이/가 되다　～してから～になる", example: "예) 바둑을 배운지 10년이 되었다" }, { pattern: "○-(으)려고　～しようと", example: "예) 여행을 자유롭게 하려고 영어 회화를 시작했다" }, { pattern: "○너무 아서 못-　～過ぎて〜できない", example: "예) 영어는 너무 어려워서 못 하고 있다" }] } },
-    { title: "스트레스 푸는 법", topic: "", modelContent: { theme: "스트레스 푸는 법", question: "당신은 어떨 때 스트레스를 느낍니까？ 스트레스가 쌓였을 때는 어떤 방법으로 풉니까?", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄹ/줄 몰랐다　～とは思わなかった", example: "예) 그런 좋은 방법이 있는 줄 몰랐다." }, { pattern: "○-(으)려고 ～しようと", example: "예) 살을 빼려고 저녁을 굶기로 했다." }] } },
-    { title: "내가 좋아하는 음식", topic: "", modelContent: { theme: "내가 좋아하는 음식", question: "가장 좋아하는 음식은 무엇입니까? 그 음식을 좋아하는 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/는/(으)ㄹ 것 같다 ～ようだ", example: "예) 그 음식은 맛있을 것 같다." }, { pattern: "○-기 때문에 ～ので", example: "예) 맛있기 때문에 자주 먹는다." }] } },
-    { title: "주말 계획", topic: "", modelContent: { theme: "주말 계획", question: "이번 주말에 무엇을 할 계획입니까? 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)ㄹ 예정이다 ～予定だ", example: "예) 친구를 만날 예정이다." }, { pattern: "○-기로 했다 ～することにした", example: "예) 영화를 보기로 했다." }] } },
-    { title: "가족 소개", topic: "", modelContent: { theme: "가족 소개", question: "가족 구성원을 소개해 보세요. 각 가족에 대해 1문장 이상씩 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/는/(으)ㄹ N ～するN", example: "예) 요리를 하는 엄마가 있다." }, { pattern: "○-고 ～て（接続）", example: "예) 아버지는 회사에 가고, 엄마는 집에 있다." }] } },
-    { title: "한국 여행", topic: "", modelContent: { theme: "한국 여행", question: "한국에서 가고 싶은 곳이 있습니까? 그곳에 가고 싶은 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)ㄹ까 하다 ～しようかと思う", example: "예) 부산에 갈까 한다." }, { pattern: "○-기로 했다 ～することにした", example: "예) 경복궁을 보기로 했다." }] } },
-    { title: "나의 취미", topic: "", modelContent: { theme: "나의 취미", question: "취미가 무엇입니까? 그 취미를 어떻게 즐기고 있는지 5문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-는/(으)ㄴ/(으)ㄹ 때 ～時", example: "예) 심심할 때 음악을 듣는다." }, { pattern: "○-기 시작하다 ～し始める", example: "예) 3년 전부터 기타를 치기 시작했다." }] } },
-    { title: "기억에 남는 날", topic: "", modelContent: { theme: "기억에 남는 날", question: "특별히 기억에 남는 날이 있습니까? 그날 무슨 일이 있었는지 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-ㄴ/은/(으)ㄹ 때 ～時", example: "예) 그날은 날씨가 좋았다." }, { pattern: "○-기 때문에 ～ので", example: "예) 특별한 날이었기 때문에 잊을 수 없다." }] } },
-    { title: "한국어 공부 방법", topic: "", modelContent: { theme: "한국어 공부 방법", question: "한국어를 어떻게 공부하고 있습니까? 효과적인 방법이 있다면 소개해 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)면서 ～ながら", example: "예) 드라마를 보면서 한국어를 배운다." }, { pattern: "○-는/(으)ㄴ/(으)ㄹ 것 같다 ～ようだ", example: "예) 이 방법이 효과적일 것 같다." }] } },
-    { title: "내 꿈", topic: "", modelContent: { theme: "내 꿈", question: "미래의 꿈이나 목표가 있습니까? 그 꿈을 위해 무엇을 하고 있는지 5문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-(으)려고 ～しようと", example: "예) 꿈을 이루려고 열심히 공부한다." }, { pattern: "○-기 위해 ～ために", example: "예) 좋은 직업을 갖기 위해 노력한다." }] } },
+    { title: "10回コースの第1回課題", topic: "約束", modelContent: { theme: "約束", question: "우리는 매일 나 혹은 다른 사람과 약속을 합니다. 최근에 누군가와 약속을 해 본 적이 있습니까? 그것은 어떤 약속이었습니까? 당신은 약속시간을 잘 지키는 편입니까? 자신과의 약속에 대해 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-기로 약속하다 ～すると約束する", example: "예) 매일 일찍 일어나기로 약속했다." }, { pattern: "○-하는 편이다 ～するほうだ", example: "예) 나는 약속을 하면 꼭 지키는 편이다." }, { pattern: "○-기 때문에 ～のために", example: "예) 約束을 지키지 않는 사람은 믿을 수 없다고 생각하기 때문에 나는 約束을 꼭 지키려고 한다." }] } },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
   ],
   [
     { title: "일상의 감사", topic: "", modelContent: { theme: "일상의 감사", question: "오늘 하루 중 감사했던 일이 있습니까? 그 이유를 3문장 이상으로 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-아/어서 ～て、～ので", example: "예) 친구가 도와줘서 감사했다." }, { pattern: "○-ㄴ/은/는/(으)ㄹ 수 있다 ～できる", example: "예) 덕분에 잘 할 수 있었다." }] } },

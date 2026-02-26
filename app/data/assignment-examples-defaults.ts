@@ -1,16 +1,16 @@
 // Default title and topic for 課題例 1期~8期 (10 items each)
 export const DEFAULT_ASSIGNMENT_EXAMPLES: { title: string; topic: string }[][] = [
   [
-    { title: "취미", topic: "" },
-    { title: "스트레스 푸는 법", topic: "" },
-    { title: "내가 좋아하는 음식", topic: "" },
-    { title: "주말 계획", topic: "" },
-    { title: "가족 소개", topic: "" },
-    { title: "한국 여행", topic: "" },
-    { title: "나의 취미", topic: "" },
-    { title: "기억에 남는 날", topic: "" },
-    { title: "한국어 공부 방법", topic: "" },
-    { title: "내 꿈", topic: "" },
+    { title: "10回コースの第1回課題", topic: "約束" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
+    { title: "", topic: "" },
   ],
   [
     { title: "일상의 감사", topic: "" },

@@ -500,7 +500,7 @@ export default function WritingPage() {
   const sidebarContent = (
     <nav className="space-y-0">
       {loginCard}
-      {isAdmin && (
+      {isAdmin && !user && (
         <button
           type="button"
           onClick={handleAdminLogout}
@@ -655,7 +655,7 @@ export default function WritingPage() {
                 {user.name || user.username || user.email || "-"}様
               </button>
             )}
-            {isAdmin && (
+            {isAdmin && !user && (
               <Link href="/admin" className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
                 管理者モードで接続中
               </Link>
@@ -667,10 +667,10 @@ export default function WritingPage() {
       <div className="flex flex-1 justify-center">
         <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            {isAdmin && (
+            {(user || (isAdmin && !user)) && (
               <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm shrink-0">
-                <span className="text-gray-600">管理者モード：</span>
-                <span className="font-medium text-gray-800">全生徒の提出を表示</span>
+                <span className="text-gray-600">{user ? "ログイン中：" : "管理者モード："}</span>
+                <span className="font-medium text-gray-800">{user ? `${user?.name || user?.username || user?.email || "-"}様` : "全生徒の提出を表示"}</span>
               </div>
             )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
