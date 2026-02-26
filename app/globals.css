@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #e8f6fc;
-  --background-deep: #d4edfa;
-  --foreground: #2c2c2c;
-  --accent: #cd3737;
-  --accent-dark: #a52d2d;
+  --primary: #006A71;
+  --primary-dark: #00565c;
+  --accent: #FF6B6B;
+  --accent-alt: #40E0D0;
+  --background: #F8F9FA;
+  --background-deep: #F1F3F5;
+  --foreground: #1A2B3C;
+  --text-muted: #6C757D;
   --correct: #2d7d46;
   --wrong: #c53030;
   --card-bg: #fff;
-  --border: #c5e3f0;
-  --muted: #6b6b6b;
+  --border: #E9ECEF;
+  --muted: #6C757D;
+  --radius: 10px;
 }
 
 @theme inline {
@@ -19,7 +23,7 @@
 }
 
 body {
-  background: #f5f5f5;
+  background: var(--background);
   color: var(--foreground);
   min-height: 100vh;
   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
@@ -30,16 +34,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  justify-content: flex-start;
+  padding: 0;
 }
 
 .quiz-container {
   max-width: 520px;
   width: 100%;
   background: var(--card-bg);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   overflow: hidden;
   animation: fadeIn 0.4s ease;
 }
@@ -74,7 +78,7 @@ body {
 }
 
 .quiz-header {
-  background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #7dd3fc 100%);
+  background: var(--primary);
   color: white;
   padding: 1.25rem 1.5rem;
 }
@@ -102,8 +106,8 @@ body {
   font-size: 1.1rem;
   font-weight: 700;
   padding: 0.35rem 0.75rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
   letter-spacing: 0.02em;
 }
 
@@ -122,8 +126,8 @@ body {
   line-height: 1.6;
   margin-bottom: 1rem;
   padding: 1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
+  background: var(--background);
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   overflow-x: hidden;
 }
@@ -156,17 +160,17 @@ body {
   gap: 0.75rem;
   padding: 1rem 1.25rem;
   background: white;
-  border: 2px solid var(--border);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   cursor: pointer;
   font-size: 1rem;
   text-align: left;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s, background 0.2s;
 }
 
 .quiz-option:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: #fff5f5;
+  border-color: var(--primary);
+  background: var(--background);
 }
 
 .quiz-option:disabled {
@@ -266,17 +270,17 @@ body {
 }
 
 .vocab-item strong {
-  color: var(--accent);
+  color: var(--primary);
   margin-right: 0.5rem;
 }
 
 .btn-primary {
   width: 100%;
   padding: 1rem 1.5rem;
-  background: var(--accent);
+  background: var(--primary);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -284,23 +288,23 @@ body {
 }
 
 .btn-primary:hover {
-  background: var(--accent-dark);
+  background: var(--primary-dark);
 }
 
 .btn-secondary {
   padding: 0.75rem 1.25rem;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   font-size: 0.95rem;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
 
 .btn-secondary:hover {
-  background: var(--bg-secondary);
-  border-color: var(--text-secondary);
+  background: var(--background-deep);
+  border-color: var(--text-muted);
 }
 
 .result-actions {
@@ -323,7 +327,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: var(--primary);
   transition: width 0.3s ease;
 }
 
@@ -351,7 +355,7 @@ body {
 }
 
 .kotae-blog-content a {
-  color: var(--accent);
+  color: var(--primary);
   text-decoration: underline;
 }
 
@@ -376,4 +380,63 @@ body {
 .kotae-blog-content th {
   background: #f3f4f6;
   font-weight: 600;
+}
+
+/* Landing page */
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.landing-hero {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.landing-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.landing-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 106, 113, 0.08);
+}
+
+.landing-card-header {
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.landing-cta {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.landing-cta:hover {
+  opacity: 0.9;
+}
+
+.landing-cta-primary {
+  background: var(--primary);
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+.landing-cta-primary:hover {
+  background: var(--primary-dark);
+  opacity: 1;
 }

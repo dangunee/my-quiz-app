@@ -58,6 +58,7 @@ export default function QuizClient() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
+  const [showLanding, setShowLanding] = useState(true);
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
   const [kotaeList, setKotaeList] = useState<KotaeItem[]>([]);
@@ -515,7 +516,7 @@ export default function QuizClient() {
                 href="/profile"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition"
+                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[var(--primary)] text-white hover:opacity-90 transition"
               >
                 マイページ
               </a>
@@ -535,7 +536,7 @@ export default function QuizClient() {
               <button
                 type="button"
                 onClick={() => setShowLoginModal(true)}
-                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition"
+                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[var(--accent)] text-gray-800 hover:opacity-90 transition"
               >
                 ログイン
               </button>
@@ -558,7 +559,7 @@ export default function QuizClient() {
         >
           <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
           <p className="text-xs text-gray-600 mb-3">韓国語の自然な表現を学ぶ</p>
-          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition">
+          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white hover:opacity-90 transition">
             クイズを始める
           </span>
         </button>
@@ -573,7 +574,7 @@ export default function QuizClient() {
         >
           <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
           <p className="text-xs text-gray-600 mb-3">韓国語の微妙なニュアンス</p>
-          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white hover:opacity-90 transition">
+          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white hover:opacity-90 transition">
             Q&Aを見る
           </span>
           {filteredKotae.length > 0 && (
@@ -606,7 +607,7 @@ export default function QuizClient() {
                       setActiveTab("kotae");
                       setExpandedKotaeId((prev) => (prev === item.id ? null : item.id));
                     }}
-                    className="w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#2d5a4a]/10 rounded-lg transition"
+                    className="w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg transition"
                   >
                     {item.title}
                   </button>
@@ -638,7 +639,7 @@ export default function QuizClient() {
               <button
                 type="button"
                 onClick={() => setActiveTab("kotae")}
-                className="w-full mt-2 py-2 text-center text-xs font-medium text-[#2d5a4a] hover:underline"
+                className="w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)] hover:underline"
               >
                 一覧で見る →
               </button>
@@ -656,7 +657,7 @@ export default function QuizClient() {
         >
           <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
           <p className="text-xs text-gray-600 mb-3">日常で使える韓国語表現</p>
-          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition">
+          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white hover:opacity-90 transition">
             生活韓国語を見る
           </span>
           {seikatsuList.length > 0 && (
@@ -684,7 +685,7 @@ export default function QuizClient() {
                     <a
                       key={i}
                       href={`/dailykorean?title=${encodeURIComponent(title)}`}
-                      className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg transition"
+                      className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg transition"
                     >
                       {title}
                     </a>
@@ -714,7 +715,7 @@ export default function QuizClient() {
                   )}
                   <a
                     href="/dailykorean"
-                    className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9] hover:underline"
+                    className="block w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)] hover:underline"
                   >
                     一覧で見る →
                   </a>
@@ -735,7 +736,7 @@ export default function QuizClient() {
                 key={item.label}
                 href={item.href}
                 {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="block py-2 text-sm text-gray-700 hover:text-[#0ea5e9] hover:underline"
+                className="block py-2 text-sm text-gray-700 hover:text-[var(--primary)] hover:underline"
               >
                 {item.label}
               </a>
@@ -758,6 +759,149 @@ export default function QuizClient() {
       </svg>
     </button>
   );
+
+  if (showLanding) {
+    return (
+      <div className="app-wrapper min-h-screen w-full">
+        <nav className="landing-nav w-full px-4 py-3 flex items-center justify-between gap-4">
+          <span className="font-bold text-lg" style={{ color: "var(--primary)" }}>
+            Mirinae Korean (미리내 한국어)
+          </span>
+          <div className="flex items-center gap-4">
+            <button type="button" onClick={() => { setShowLanding(false); setActiveTab("quiz"); }} className="text-sm font-medium hover:underline" style={{ color: "var(--foreground)" }}>
+              クイズ
+            </button>
+            <button type="button" onClick={() => { setShowLanding(false); setActiveTab("kotae"); }} className="text-sm font-medium hover:underline" style={{ color: "var(--foreground)" }}>
+              Q&A
+            </button>
+            <Link href="/dailykorean" className="text-sm font-medium hover:underline" style={{ color: "var(--foreground)" }}>
+              生活韓国語
+            </Link>
+            {isAdmin && !isLoggedIn ? (
+              <Link href="/admin" className="px-4 py-2 text-sm font-medium rounded-lg text-white" style={{ background: "var(--accent)" }}>
+                管理者
+              </Link>
+            ) : isLoggedIn ? (
+              <a href="/profile" target="_blank" rel="noopener noreferrer" className="text-sm font-medium hover:underline">
+                マイページ
+              </a>
+            ) : (
+              <button type="button" onClick={() => setShowLoginModal(true)} className="px-4 py-2 text-sm font-medium rounded-lg text-white" style={{ background: "var(--accent)" }}>
+                ログイン
+              </button>
+            )}
+          </div>
+        </nav>
+
+        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8 space-y-8">
+          <section className="landing-hero p-8 text-center">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4" style={{ color: "var(--foreground)" }}>
+              ミリネのクイズで学ぶ韓国語
+            </h1>
+            <p className="text-base mb-6" style={{ color: "var(--text-muted)" }}>
+              韓国語の微妙なニュアンスを、楽しいクイズと専門家のガイダンスで学びましょう。
+            </p>
+            <button
+              type="button"
+              onClick={() => { setShowLanding(false); setActiveTab("quiz"); }}
+              className="landing-cta landing-cta-primary inline-flex items-center gap-2"
+            >
+              지금 시작하기
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </section>
+
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <button
+              type="button"
+              onClick={() => { setShowLanding(false); setActiveTab("quiz"); }}
+              className="landing-card overflow-hidden text-left h-full flex flex-col"
+            >
+              <div className="landing-card-header text-white" style={{ background: "var(--primary)" }}>
+                クイズ (퀴즈 센터)
+              </div>
+              <div className="p-4 flex-1 flex flex-col">
+                <p className="text-sm mb-3" style={{ color: "var(--text-muted)" }}>
+                  韓国語の自然な表現をクイズで学ぶ
+                </p>
+                <p className="text-xs mt-auto" style={{ color: "var(--text-muted)" }}>
+                  90問のクイズで実力アップ
+                </p>
+                <span className="mt-3 inline-block py-2 px-4 text-center text-sm font-medium rounded-lg text-white" style={{ background: "var(--primary)" }}>
+                  クイズを始める
+                </span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setShowLanding(false); setActiveTab("kotae"); }}
+              className="landing-card overflow-hidden text-left h-full flex flex-col"
+            >
+              <div className="landing-card-header text-white" style={{ background: "var(--primary)", opacity: 0.9 }}>
+                Q&A (큐앤에이)
+              </div>
+              <div className="p-4 flex-1 flex flex-col">
+                <p className="text-sm mb-3" style={{ color: "var(--text-muted)" }}>
+                  韓国語の微妙なニュアンスをQ&Aで
+                </p>
+                <p className="text-xs mt-auto" style={{ color: "var(--text-muted)" }}>
+                  {filteredKotae.length}件の質問と答え
+                </p>
+                <span className="mt-3 inline-block py-2 px-4 text-center text-sm font-medium rounded-lg text-white" style={{ background: "var(--primary)" }}>
+                  Q&Aを見る
+                </span>
+              </div>
+            </button>
+
+            <Link
+              href="/dailykorean"
+              className="landing-card overflow-hidden text-left h-full flex flex-col block"
+            >
+              <div className="landing-card-header text-white" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
+                生活韓国語 (생활 한국어)
+              </div>
+              <div className="p-4 flex-1 flex flex-col">
+                <p className="text-sm mb-3" style={{ color: "var(--text-muted)" }}>
+                  日常で使える韓国語表現
+                </p>
+                <p className="text-xs mt-auto" style={{ color: "var(--text-muted)" }}>
+                  {seikatsuList.length}件の記事
+                </p>
+                <span className="mt-3 inline-block py-2 px-4 text-center text-sm font-medium rounded-lg" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
+                  生活韓国語を見る
+                </span>
+              </div>
+            </Link>
+          </section>
+
+          <section className="flex flex-wrap gap-4 justify-center pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+            <a href="https://writing.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+              作文 (작문)
+            </a>
+            <a href="https://ondoku.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
+              発音 (발음)
+            </a>
+            <a href="https://quiz.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              初級 (기초)
+            </a>
+            <a href="https://mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              上級 (고급)
+            </a>
+          </section>
+        </main>
+
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath="/" />
+        <LogoutConfirmModal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={handleLogout} />
+      </div>
+    );
+  }
 
   return (
     <div className="app-wrapper">
@@ -799,7 +943,7 @@ export default function QuizClient() {
                   </>
                 ) : isLoggedIn ? (
                   <>
-                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white mb-1.5" onClick={() => closeRightMenu()}>マイページ</a>
+                    <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[var(--primary)] text-white mb-1.5" onClick={() => closeRightMenu()}>マイページ</a>
                     <div className="flex justify-between items-center text-xs text-gray-500">
                       <span>ログイン中</span>
                       <button type="button" onClick={() => { setShowLogoutModal(true); closeRightMenu(); }} className="hover:text-red-600">ログアウト</button>
@@ -807,7 +951,7 @@ export default function QuizClient() {
                   </>
                 ) : (
                   <>
-                    <button type="button" onClick={() => { setShowLoginModal(true); closeRightMenu(); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 mb-1.5">ログイン</button>
+                    <button type="button" onClick={() => { setShowLoginModal(true); closeRightMenu(); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[var(--accent)] text-gray-800 mb-1.5">ログイン</button>
                     <div className="flex justify-center gap-1.5 text-xs text-gray-500">
                       <Link href="/login" onClick={() => closeRightMenu()} className="hover:underline">アカウント</Link>
                       <span>|</span>
@@ -819,13 +963,13 @@ export default function QuizClient() {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <button type="button" onClick={() => { setActiveTab("quiz"); closeRightMenu(); }} className="w-full p-4 text-left">
                   <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
-                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white">クイズを始める</span>
+                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white">クイズを始める</span>
                 </button>
               </div>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <button type="button" onClick={() => handleExpandMenu("qa")} className="w-full p-4 text-left">
                   <h3 className="font-bold text-gray-800 text-sm mb-3">Q&A</h3>
-                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#2d5a4a] text-white">Q&Aを見る</span>
+                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white">Q&Aを見る</span>
                 </button>
                 {rightSidebarExpanded && expandedMenuType === "qa" && (
                   <div className="border-t border-gray-200 max-h-[240px] overflow-y-auto p-2">
@@ -835,19 +979,19 @@ export default function QuizClient() {
                       <p className="py-4 text-center text-gray-500 text-xs">該当なし</p>
                     ) : (
                       kotaePaginated.map((item) => (
-                        <button key={item.id} type="button" onClick={() => { setActiveTab("kotae"); setExpandedKotaeId((p) => (p === item.id ? null : item.id)); closeRightMenu(); }} className="w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#2d5a4a]/10 rounded-lg">
+                        <button key={item.id} type="button" onClick={() => { setActiveTab("kotae"); setExpandedKotaeId((p) => (p === item.id ? null : item.id)); closeRightMenu(); }} className="w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg">
                           {item.title}
                         </button>
                       ))
                     )}
-                    <button type="button" onClick={() => { setActiveTab("kotae"); closeRightMenu(); }} className="w-full mt-2 py-2 text-center text-xs font-medium text-[#2d5a4a]">一覧で見る →</button>
+                    <button type="button" onClick={() => { setActiveTab("kotae"); closeRightMenu(); }} className="w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)]">一覧で見る →</button>
                   </div>
                 )}
               </div>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <button type="button" onClick={() => handleExpandMenu("dailykorean")} className="w-full p-4 text-left">
                   <h3 className="font-bold text-gray-800 text-sm mb-3">生活韓国語</h3>
-                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white">生活韓国語を見る</span>
+                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white">生活韓国語を見る</span>
                 </button>
                 {rightSidebarExpanded && expandedMenuType === "dailykorean" && (
                   <div className="border-t border-gray-200 max-h-[240px] overflow-y-auto p-2">
@@ -856,7 +1000,7 @@ export default function QuizClient() {
                     ) : (
                       <>
                         {seikatsuPaginated.map((title, i) => (
-                          <a key={i} href={`/dailykorean?title=${encodeURIComponent(title)}`} onClick={() => closeRightMenu()} className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[#0ea5e9]/10 rounded-lg">
+                          <a key={i} href={`/dailykorean?title=${encodeURIComponent(title)}`} onClick={() => closeRightMenu()} className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg">
                             {title}
                           </a>
                         ))}
@@ -867,7 +1011,7 @@ export default function QuizClient() {
                             <button type="button" onClick={() => setSeikatsuPage((p) => Math.min(seikatsuTotalPages - 1, p + 1))} disabled={seikatsuPage >= seikatsuTotalPages - 1} className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40">次へ</button>
                           </div>
                         )}
-                        <a href="/dailykorean" onClick={() => closeRightMenu()} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[#0ea5e9]">一覧で見る →</a>
+                        <a href="/dailykorean" onClick={() => closeRightMenu()} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)]">一覧で見る →</a>
                       </>
                     )}
                   </div>
@@ -876,7 +1020,7 @@ export default function QuizClient() {
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-xs font-semibold text-gray-500 mb-2">その他</p>
                 {rightMenuLinks.filter((l) => !["生活韓国語"].includes(l.label)).map((item) => (
-                  <a key={item.label} href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-sm text-gray-700 hover:text-[#0ea5e9]" onClick={() => closeRightMenu()}>{item.label}</a>
+                  <a key={item.label} href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block py-2 text-sm text-gray-700 hover:text-[var(--primary)]" onClick={() => closeRightMenu()}>{item.label}</a>
                 ))}
               </div>
             </div>
@@ -939,12 +1083,13 @@ export default function QuizClient() {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2 p-3 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center gap-2 p-3 border-b bg-gray-50" style={{ borderColor: "var(--border)" }}>
           {desktopMenuToggle}
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            className="md:hidden shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+            className="md:hidden shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-white border text-gray-600 hover:bg-gray-50"
+            style={{ borderColor: "var(--border)" }}
             aria-label="メニューを開く"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -953,12 +1098,24 @@ export default function QuizClient() {
           </button>
           <button
             type="button"
+            onClick={() => setShowLanding(true)}
+            className="shrink-0 flex h-10 w-10 items-center justify-center rounded-lg border text-gray-600 hover:bg-gray-50"
+            style={{ borderColor: "var(--border)" }}
+            aria-label="ホームへ"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab("quiz")}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
-                ? "bg-[#0ea5e9] text-white shadow"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
+                ? "text-white"
+                : "bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)]"
             }`}
+            style={activeTab === "quiz" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
           >
             クイズ
           </button>
@@ -967,15 +1124,17 @@ export default function QuizClient() {
             onClick={() => setActiveTab("kotae")}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "kotae"
-                ? "bg-[#2d5a4a] text-white shadow"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-[#2d5a4a] hover:text-[#2d5a4a]"
+                ? "text-white"
+                : "bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)]"
             }`}
+            style={activeTab === "kotae" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
           >
             Q&A
           </button>
           <Link
             href="/dailykorean"
-            className="flex-1 py-2.5 px-3 text-sm font-bold rounded-lg text-center bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition"
+            className="flex-1 py-2.5 px-3 text-sm font-bold rounded-lg text-center bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)] transition"
+            style={{ borderColor: "var(--border)" }}
           >
             生活韓国語
           </Link>
@@ -1006,7 +1165,7 @@ export default function QuizClient() {
         </div>
         {activeTab === "kotae" ? (
           <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
-            <div className="bg-[#2d5a4a] text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10">
+            <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
               <input
                 type="search"
@@ -1064,7 +1223,7 @@ export default function QuizClient() {
                             href={kotaeContent.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block py-2 px-4 text-center text-xs text-[#2d5a4a] hover:underline border-t border-gray-100"
+                            className="block py-2 px-4 text-center text-xs text-[var(--primary)] hover:underline border-t border-gray-100"
                           >
                             ブログで続きを読む →
                           </a>
