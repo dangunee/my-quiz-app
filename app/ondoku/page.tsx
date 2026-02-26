@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { fetchWithAuth, getStoredToken } from "../../lib/auth";
+import { fetchWithAuth, getStoredToken, getStoredUser, clearStoredSession } from "../../lib/auth";
 import { LoginModal } from "../../components/LoginModal";
 import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
 
@@ -34,10 +34,11 @@ function useOndokuBase() {
   return base;
 }
 
-type TabId = "experience" | "writing";
+type TabId = "experience" | "assignment" | "writing";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "experience", label: "音読トレーニング" },
+  { id: "assignment", label: "音読課題" },
   { id: "writing", label: "課題提出" },
 ];
 
@@ -82,10 +83,12 @@ const ONDOKU_1KAI_INSTRUCTION = `初中級通信音読の第1回課題をお送�
 よろしくお願いいたします。`;
 
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
+import { ONDOKU_ASSIGNMENT_SHEETS, ONDOKU_MODEL_AUDIO_DEFAULTS } from "../data/ondoku-assignment-sheets";
 
 export default function OndokuPage() {
   const { redirectPath } = useOndokuBase();
   const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("experience");
   const [menuOpen, setMenuOpen] = useState(false);
   const [exampleLevelTab, setExampleLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
@@ -137,6 +140,11 @@ export default function OndokuPage() {
   const [trialSuccess, setTrialSuccess] = useState(false);
   const [trialError, setTrialError] = useState<string | null>(null);
   const [levelDetailTab, setLevelDetailTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
+  const [assignmentLevelTab, setAssignmentLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
+  const [assignmentPeriodTab, setAssignmentPeriodTab] = useState(0);
+  const [assignmentSheetTab, setAssignmentSheetTab] = useState<"sheet" | "pronunciation">("sheet");
+  const [modelAudioUrls, setModelAudioUrls] = useState(ONDOKU_MODEL_AUDIO_DEFAULTS);
+  const [modelAudioUploading, setModelAudioUploading] = useState<"fast" | "slow" | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminSubmissions, setAdminSubmissions] = useState<{ id: string; user_id: string; period_index: number; item_index: number; content: string; audio_url?: string; submitted_at: string; user?: { email?: string; name?: string; username?: string } }[]>([]);
   const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
@@ -190,16 +198,48 @@ export default function OndokuPage() {
   }, [isAdmin, activeTab, adminAuthKey]);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        setUser(null);
-      }
-    } else {
-      setUser(null);
+    const token = getStoredToken();
+    const refreshToken = typeof window !== "undefined" ? localStorage.getItem("quiz_refresh_token") : null;
+    if (!token || !refreshToken) {
+      setUser(getStoredUser() as User | null);
+      setAuthLoading(false);
+      return;
     }
+    fetch("/api/auth/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    })
+      .then((r) => {
+        if (r.ok) return r.json();
+        clearStoredSession();
+        setUser(null);
+        return null;
+      })
+      .then((data) => {
+        if (data?.user) {
+          setUser(data.user);
+        } else if (data === null) {
+          setUser(null);
+        } else {
+          setUser(getStoredUser() as User | null);
+        }
+      })
+      .catch(() => {
+        setUser(getStoredUser() as User | null);
+      })
+      .finally(() => setAuthLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const onCleared = () => setUser(null);
+    const onUpdated = (e: CustomEvent<User>) => setUser(e.detail as User);
+    window.addEventListener("auth-session-cleared", onCleared);
+    window.addEventListener("auth-session-updated", onUpdated as EventListener);
+    return () => {
+      window.removeEventListener("auth-session-cleared", onCleared);
+      window.removeEventListener("auth-session-updated", onUpdated as EventListener);
+    };
   }, []);
 
   useEffect(() => {
@@ -230,6 +270,23 @@ export default function OndokuPage() {
       })
       .finally(() => setMyPageLoading(false));
   }, [activeTab, user]);
+
+  useEffect(() => {
+    fetch("/api/ondoku/model-audio")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.urls) {
+          const merged = { ...ONDOKU_MODEL_AUDIO_DEFAULTS };
+          ["chujokyu", "chuujokyu"].forEach((level) => {
+            [0, 1, 2, 3].forEach((p) => {
+              merged[level][p] = { ...(merged[level][p] || {}), ...(data.urls[level]?.[p] || {}) };
+            });
+          });
+          setModelAudioUrls(merged);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!user || !getStoredToken()) return;
@@ -263,31 +320,72 @@ export default function OndokuPage() {
     window.location.reload();
   };
 
+  const handleModelAudioUpload = async (type: "fast" | "slow", file: File) => {
+    if (!isAdmin) return;
+    setModelAudioUploading(type);
+    try {
+      const adminKey = localStorage.getItem("admin_auth");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("level", assignmentLevelTab);
+      formData.append("period", String(assignmentPeriodTab));
+      formData.append("type", type);
+      const opts: RequestInit = adminKey
+        ? { method: "POST", headers: { Authorization: `Bearer ${adminKey}` }, body: formData }
+        : { method: "POST", credentials: "include", body: formData };
+      const res = await fetch("/api/admin/ondoku/model-audio", opts);
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setModelAudioUrls((prev) => ({
+          ...prev,
+          [assignmentLevelTab]: {
+            ...prev[assignmentLevelTab],
+            [assignmentPeriodTab]: { ...prev[assignmentLevelTab]?.[assignmentPeriodTab], [type]: data.url },
+          },
+        }));
+      } else {
+        alert(data.error || "アップロードに失敗しました");
+      }
+    } catch (e) {
+      alert("アップロードに失敗しました");
+    } finally {
+      setModelAudioUploading(null);
+    }
+  };
+
   const loginCard = (
     <div className="bg-white rounded-xl shadow-sm border border-[#e5dfd4] overflow-hidden mb-4">
       <div className="p-3">
-        <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
-        {user ? (
-          <div className="space-y-1.5">
-            <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition" onClick={() => setMenuOpen(false)}>
-              マイページ
-            </a>
-            <div className="flex justify-between items-center text-xs text-gray-500">
-              <span>ログイン中</span>
-              <button type="button" onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="hover:text-red-600">ログアウト</button>
-            </div>
+        {authLoading ? (
+          <div className="flex justify-between items-center text-xs text-gray-500 py-1">
+            <span>ログイン中</span>
           </div>
         ) : (
-          <div className="space-y-1.5">
-            <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition">
-              ログイン
-            </button>
-            <div className="flex justify-center gap-1.5 text-xs text-gray-500">
-              <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">アカウント</button>
-              <span>|</span>
-              <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">新規登録</button>
-            </div>
-          </div>
+          <>
+            <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
+            {user ? (
+              <div className="space-y-1.5">
+                <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition" onClick={() => setMenuOpen(false)}>
+                  マイページ
+                </a>
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>ログイン中</span>
+                  <button type="button" onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="hover:text-red-600">ログアウト</button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition">
+                  ログイン
+                </button>
+                <div className="flex justify-center gap-1.5 text-xs text-gray-500">
+                  <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">アカウント</button>
+                  <span>|</span>
+                  <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">新規登録</button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -744,6 +842,168 @@ export default function OndokuPage() {
                               <tr className="bg-gray-50"><td className="py-3 px-4 font-semibold text-gray-800">中級-上級</td><td className="py-3 px-4">2,720円</td><td className="py-3 px-4">10回</td><td className="py-3 px-4">29,920円</td></tr>
                             </tbody>
                           </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "assignment" && (
+                <div className="px-4 md:px-0 mx-auto max-w-4xl w-full">
+                  <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
+                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">音読課題</h2>
+                    <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
+                      <div className="flex border-b border-[#e5dfd4]">
+                        <button
+                          type="button"
+                          onClick={() => { setAssignmentLevelTab("chujokyu"); setAssignmentPeriodTab(0); }}
+                          className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${assignmentLevelTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                        >
+                          初中級
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setAssignmentLevelTab("chuujokyu"); setAssignmentPeriodTab(0); }}
+                          className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${assignmentLevelTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                        >
+                          中上級
+                        </button>
+                      </div>
+                      <div className="flex border-b border-[#e5dfd4]">
+                        {[0, 1, 2, 3].map((idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setAssignmentPeriodTab(idx)}
+                            className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${assignmentPeriodTab === idx ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                          >
+                            {PERIOD_LABELS[idx]}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex border-b border-[#e5dfd4]">
+                        <button
+                          type="button"
+                          onClick={() => setAssignmentSheetTab("sheet")}
+                          className={`flex-1 px-4 py-3 font-medium text-sm ${assignmentSheetTab === "sheet" ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                        >
+                          課題シート
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAssignmentSheetTab("pronunciation")}
+                          className={`flex-1 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${assignmentSheetTab === "pronunciation" ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
+                        >
+                          課題・発音・抑揚
+                        </button>
+                      </div>
+                      <div className="p-4 md:p-6">
+                        {assignmentSheetTab === "sheet" ? (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm border-collapse">
+                              <thead>
+                                <tr className="bg-[#1e3a5f] text-white">
+                                  <th className="py-2 px-3 text-left font-medium w-12">no.</th>
+                                  <th className="py-2 px-3 text-left font-medium">文型</th>
+                                  <th className="py-2 px-3 text-left font-medium">課題</th>
+                                  <th className="py-2 px-3 text-left font-medium">和訳</th>
+                                  <th className="py-2 px-3 text-left font-medium">ポイント</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab].map((item, i) => (
+                                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                                    <td className="py-2 px-3 font-medium text-gray-800">{i + 1}</td>
+                                    <td className="py-2 px-3 text-gray-800">{item.sheet.bunkei}</td>
+                                    <td className="py-2 px-3 text-gray-800">{item.sheet.kadai}</td>
+                                    <td className="py-2 px-3 text-gray-600">{item.sheet.wakaku}</td>
+                                    <td className="py-2 px-3 text-gray-600 text-xs">{item.sheet.point}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm border-collapse">
+                              <thead>
+                                <tr className="bg-[#1e3a5f] text-white">
+                                  <th className="py-2 px-3 text-left font-medium w-12">no.</th>
+                                  <th className="py-2 px-3 text-left font-medium">課題</th>
+                                  <th className="py-2 px-3 text-left font-medium">正しい発音</th>
+                                  <th className="py-2 px-3 text-left font-medium">解説</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab].map((item, i) => (
+                                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                                    <td className="py-2 px-3 font-medium text-gray-800">{i + 1}</td>
+                                    <td className="py-2 px-3 text-gray-800">{item.pronunciation?.kadaiSpaced ?? item.sheet.kadai}</td>
+                                    <td className="py-2 px-3 text-gray-800">{item.pronunciation?.correctPronunciation ?? "-"}</td>
+                                    <td className="py-2 px-3 text-gray-600 text-xs">{item.pronunciation?.commentary ?? "-"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                        <div className="mt-6 pt-6 border-t border-[#e5dfd4]">
+                          <h3 className="font-semibold text-gray-800 mb-3">模範音声</h3>
+                          <div className="flex flex-wrap gap-6">
+                            <div className="flex flex-col gap-2">
+                              <span className="text-sm font-medium text-gray-600">Fast バージョン</span>
+                              {(modelAudioUrls[assignmentLevelTab]?.[assignmentPeriodTab]?.fast) ? (
+                                <div className="space-y-2">
+                                  <audio controls src={modelAudioUrls[assignmentLevelTab][assignmentPeriodTab].fast} className="max-w-full" />
+                                  {isAdmin && (
+                                    <label className="block">
+                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("fast", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                                      <span className="inline-block px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer disabled:opacity-50">差し替え</span>
+                                    </label>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="space-y-2">
+                                  <div className="px-4 py-3 bg-gray-100 rounded-lg text-sm text-gray-500">
+                                    {isAdmin ? "音声をアップロード" : "音声ファイルをアップロードできます"}
+                                  </div>
+                                  {isAdmin && (
+                                    <label className="block">
+                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("fast", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                                      <span className="inline-block px-3 py-1.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white rounded text-sm cursor-pointer disabled:opacity-50">{modelAudioUploading === "fast" ? "アップロード中..." : "アップロード"}</span>
+                                    </label>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <span className="text-sm font-medium text-gray-600">Slow バージョン</span>
+                              {(modelAudioUrls[assignmentLevelTab]?.[assignmentPeriodTab]?.slow) ? (
+                                <div className="space-y-2">
+                                  <audio controls src={modelAudioUrls[assignmentLevelTab][assignmentPeriodTab].slow} className="max-w-full" />
+                                  {isAdmin && (
+                                    <label className="block">
+                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("slow", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                                      <span className="inline-block px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer disabled:opacity-50">差し替え</span>
+                                    </label>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="space-y-2">
+                                  <div className="px-4 py-3 bg-gray-100 rounded-lg text-sm text-gray-500">
+                                    {isAdmin ? "音声をアップロード" : "音声ファイルをアップロードできます"}
+                                  </div>
+                                  {isAdmin && (
+                                    <label className="block">
+                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("slow", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                                      <span className="inline-block px-3 py-1.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white rounded text-sm cursor-pointer disabled:opacity-50">{modelAudioUploading === "slow" ? "アップロード中..." : "アップロード"}</span>
+                                    </label>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

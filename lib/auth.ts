@@ -7,6 +7,17 @@ export function getStoredToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
+export function getStoredUser(): { id: string; email?: string; name?: string; username?: string } | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem(USER_KEY);
+  if (!stored) return null;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return null;
+  }
+}
+
 export function getStoredRefreshToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(REFRESH_TOKEN_KEY);
@@ -18,6 +29,7 @@ export function setStoredSession(accessToken: string, refreshToken: string, user
   localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   if (user) {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
+    window.dispatchEvent(new CustomEvent("auth-session-updated", { detail: user }));
   }
 }
 
@@ -26,6 +38,7 @@ export function clearStoredSession() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
+  window.dispatchEvent(new CustomEvent("auth-session-cleared"));
 }
 
 async function refreshTokens(): Promise<string | null> {

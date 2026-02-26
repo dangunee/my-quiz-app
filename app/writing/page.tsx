@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { fetchWithAuth, getStoredToken } from "../../lib/auth";
+import { fetchWithAuth, getStoredToken, getStoredUser, clearStoredSession } from "../../lib/auth";
 import { LoginModal } from "../../components/LoginModal";
 import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
 
@@ -116,6 +116,7 @@ const TABS: { id: TabId; label: string }[] = [
 export default function WritingPage() {
   const { redirectPath } = useWritingBase();
   const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("experience");
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -221,16 +222,48 @@ export default function WritingPage() {
   }, [isAdmin, activeTab, adminAuthKey]);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        setUser(null);
-      }
-    } else {
-      setUser(null);
+    const token = getStoredToken();
+    const refreshToken = typeof window !== "undefined" ? localStorage.getItem("quiz_refresh_token") : null;
+    if (!token || !refreshToken) {
+      setUser(getStoredUser() as User | null);
+      setAuthLoading(false);
+      return;
     }
+    fetch("/api/auth/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    })
+      .then((r) => {
+        if (r.ok) return r.json();
+        clearStoredSession();
+        setUser(null);
+        return null;
+      })
+      .then((data) => {
+        if (data?.user) {
+          setUser(data.user);
+        } else if (data === null) {
+          setUser(null);
+        } else {
+          setUser(getStoredUser() as User | null);
+        }
+      })
+      .catch(() => {
+        setUser(getStoredUser() as User | null);
+      })
+      .finally(() => setAuthLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const onCleared = () => setUser(null);
+    const onUpdated = (e: CustomEvent<User>) => setUser(e.detail as User);
+    window.addEventListener("auth-session-cleared", onCleared);
+    window.addEventListener("auth-session-updated", onUpdated as EventListener);
+    return () => {
+      window.removeEventListener("auth-session-cleared", onCleared);
+      window.removeEventListener("auth-session-updated", onUpdated as EventListener);
+    };
   }, []);
 
   useEffect(() => {
@@ -472,28 +505,36 @@ export default function WritingPage() {
   const loginCard = (
     <div className="bg-white rounded-xl shadow-sm border border-[#e5dfd4] overflow-hidden mb-4">
       <div className="p-3">
-        <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
-        {user ? (
-          <div className="space-y-1.5">
-            <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition">
-              マイページ
-            </button>
-            <div className="flex justify-between items-center text-xs text-gray-500">
-              <span>ログイン中</span>
-              <button type="button" onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="hover:text-red-600">ログアウト</button>
-            </div>
+        {authLoading ? (
+          <div className="flex justify-between items-center text-xs text-gray-500 py-1">
+            <span>ログイン中</span>
           </div>
         ) : (
-          <div className="space-y-1.5">
-            <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition">
-              ログイン
-            </button>
-            <div className="flex justify-center gap-1.5 text-xs text-gray-500">
-              <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">アカウント</button>
-              <span>|</span>
-              <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">新規登録</button>
-            </div>
-          </div>
+          <>
+            <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
+            {user ? (
+              <div className="space-y-1.5">
+                <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white hover:opacity-90 transition">
+                  マイページ
+                </button>
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>ログイン中</span>
+                  <button type="button" onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="hover:text-red-600">ログアウト</button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition">
+                  ログイン
+                </button>
+                <div className="flex justify-center gap-1.5 text-xs text-gray-500">
+                  <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">アカウント</button>
+                  <span>|</span>
+                  <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="hover:underline">新規登録</button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
