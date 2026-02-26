@@ -32,8 +32,8 @@ function useWritingBase() {
   return base;
 }
 
-type AssignmentStatus = "미제출" | "수정중" | "제출완료" | "첨삭완료";
-type CorrectionStatus = "-" | "확인" | "완료";
+type AssignmentStatus = "未提出" | "修正中" | "提出済み" | "添削完了";
+type CorrectionStatus = "-" | "確認" | "完了";
 
 interface Assignment {
   id: string;
@@ -49,16 +49,16 @@ interface Assignment {
 }
 
 const MOCK_ASSIGNMENTS: Assignment[] = [
-  { id: "1", title: "과제 1", dateRange: "2/15 ~ 2/21", status: "미제출", correction: "-", studentView: false },
-  { id: "2", title: "과제 2", dateRange: "2/8 ~ 2/14", status: "미제출", correction: "-", studentView: false },
-  { id: "3", title: "과제 3", dateRange: "2/1 ~ 2/7", status: "미제출", correction: "-", studentView: false },
-  { id: "4", title: "과제 4", dateRange: "1/25 ~ 1/31", status: "미제출", correction: "-", studentView: false },
-  { id: "5", title: "과제 5", dateRange: "1/18 ~ 1/24", status: "미제출", correction: "-", studentView: false },
-  { id: "6", title: "과제 6", dateRange: "1/11 ~ 1/17", status: "미제출", correction: "-", studentView: false },
-  { id: "7", title: "과제 7", dateRange: "1/4 ~ 1/10", status: "미제출", correction: "-", studentView: false },
-  { id: "8", title: "과제 8", dateRange: "12/28 ~ 1/3", status: "미제출", correction: "-", studentView: false },
-  { id: "9", title: "과제 9", dateRange: "12/21 ~ 12/27", status: "미제출", correction: "-", studentView: false },
-  { id: "10", title: "과제 10", dateRange: "12/14 ~ 12/20", status: "미제출", correction: "-", studentView: false },
+  { id: "1", title: "課題 1", dateRange: "2/15 ~ 2/21", status: "未提出", correction: "-", studentView: false },
+  { id: "2", title: "課題 2", dateRange: "2/8 ~ 2/14", status: "未提出", correction: "-", studentView: false },
+  { id: "3", title: "課題 3", dateRange: "2/1 ~ 2/7", status: "未提出", correction: "-", studentView: false },
+  { id: "4", title: "課題 4", dateRange: "1/25 ~ 1/31", status: "未提出", correction: "-", studentView: false },
+  { id: "5", title: "課題 5", dateRange: "1/18 ~ 1/24", status: "未提出", correction: "-", studentView: false },
+  { id: "6", title: "課題 6", dateRange: "1/11 ~ 1/17", status: "未提出", correction: "-", studentView: false },
+  { id: "7", title: "課題 7", dateRange: "1/4 ~ 1/10", status: "未提出", correction: "-", studentView: false },
+  { id: "8", title: "課題 8", dateRange: "12/28 ~ 1/3", status: "未提出", correction: "-", studentView: false },
+  { id: "9", title: "課題 9", dateRange: "12/21 ~ 12/27", status: "未提出", correction: "-", studentView: false },
+  { id: "10", title: "課題 10", dateRange: "12/14 ~ 12/20", status: "未提出", correction: "-", studentView: false },
 ];
 
 interface AssignmentExample {
@@ -1086,15 +1086,11 @@ export default function WritingPage() {
                                     <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
                                       {visibleFrom ? (
                                         <>
-                                          <p className="text-amber-800 font-medium">해당 컨텐츠는 관리자가 설정한 날짜에 공개 예정입니다.</p>
-                                          <p className="text-amber-700 text-sm mt-1">該当コンテンツは管理者が設定した日付に公開予定です。</p>
+                                          <p className="text-amber-800 font-medium">該当コンテンツは管理者が設定した日付に公開予定です。</p>
                                           <p className="text-amber-600 text-sm mt-2">公開予定日：{visibleFromDateStr}</p>
                                         </>
                                       ) : (
-                                        <>
-                                          <p className="text-amber-800 font-medium">관리자가 공개 날짜를 설정하지 않았습니다.</p>
-                                          <p className="text-amber-700 text-sm mt-1">管理者が公開日を設定していません。設定後にご利用いただけます。</p>
-                                        </>
+                                        <p className="text-amber-800 font-medium">管理者が公開日を設定していません。設定後にご利用いただけます。</p>
                                       )}
                                     </div>
                                   ) : ex.modelContent && (
@@ -1329,7 +1325,7 @@ export default function WritingPage() {
           <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="relative px-4 sm:px-6 py-4 shrink-0 border-b border-gray-200">
               <h3 className="text-lg font-bold text-gray-800 text-center pr-14">
-                {myPageContentModal.type === "submit" ? "제출 내용" : myPageContentModal.type === "correction" ? "添削結果" : "模範文"}
+                {myPageContentModal.type === "submit" ? "提出内容" : myPageContentModal.type === "correction" ? "添削結果" : "模範文"}
                 {myPageContentModal.title ? ` - ${myPageContentModal.title}` : ""}
               </h3>
               <button onClick={() => setMyPageContentModal(null)} className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 font-medium shrink-0">閉じる</button>
@@ -1364,8 +1360,8 @@ export default function WritingPage() {
               </div>
               <div className="border-t-2 border-dashed border-[#e5dfd4]" />
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">작문 내용</label>
-                <textarea value={exampleSubmitContent} onChange={(e) => setExampleSubmitContent(e.target.value)} placeholder="여기에 글을 입력해 주세요..." className="w-full min-h-[300px] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
+                <label className="block text-sm font-medium text-gray-700 mb-2">作文内容</label>
+                <textarea value={exampleSubmitContent} onChange={(e) => setExampleSubmitContent(e.target.value)} placeholder="ここに作文を入力してください..." className="w-full min-h-[300px] p-4 border border-gray-200 rounded-xl resize-y focus:ring-2 focus:ring-[#1a4d2e] focus:border-transparent" autoFocus />
               </div>
             </div>
             <div className="px-4 sm:px-6 py-4 flex justify-end shrink-0 border-t border-gray-200">
@@ -1373,7 +1369,7 @@ export default function WritingPage() {
                 onClick={async () => {
                   if (!selectedExample || !exampleSubmitContent.trim()) return;
                   if (!getStoredToken()) {
-                    alert("로그인이 필요합니다.");
+                    alert("ログインが必要です。");
                     return;
                   }
                   const period_index = Math.floor((selectedExample.id - 1) / 10);
@@ -1386,21 +1382,21 @@ export default function WritingPage() {
                     });
                     if (!res.ok) {
                       const err = await res.json().catch(() => ({}));
-                      throw new Error(err.error || `제출 실패 (${res.status})`);
+                      throw new Error(err.error || `提出に失敗しました (${res.status})`);
                     }
                     setSubmittedKeys((prev) => new Set([...prev, `${period_index}-${item_index}`]));
                     setSubmissionsByKey((prev) => ({ ...prev, [`${period_index}-${item_index}`]: { content: exampleSubmitContent.trim(), submitted_at: new Date().toISOString() } }));
-                    const targetId = assignments.find((x) => x.status === "미제출")?.id;
+                    const targetId = assignments.find((x) => x.status === "未提出")?.id;
                     if (targetId) {
                       const updated = assignments.map((a) =>
-                        a.id === targetId ? { ...a, status: "제출완료" as AssignmentStatus, content: exampleSubmitContent, submittedAt: new Date().toISOString() } : a
+                        a.id === targetId ? { ...a, status: "提出済み" as AssignmentStatus, content: exampleSubmitContent, submittedAt: new Date().toISOString() } : a
                       );
                       setAssignments(updated);
                       saveAssignments(updated);
                     }
                     handleCloseExampleSubmitModal();
                   } catch (e) {
-                    alert(e instanceof Error ? e.message : "제출에 실패했습니다.");
+                    alert(e instanceof Error ? e.message : "提出に失敗しました。");
                   }
                 }}
                 disabled={!exampleSubmitContent.trim()}

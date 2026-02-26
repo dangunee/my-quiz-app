@@ -824,7 +824,7 @@ export default function OndokuPage() {
                                       {examplePeriodTab === 0 && exampleLevelTab === "chujokyu" && idx === 0 && (
                                         <>
                                         <div className="p-4 rounded-xl bg-white border border-[#e5dfd4]">
-                                          <img src="/ondoku-1st-assignment.png" alt="1회 과제 - 文型と課題一覧" className="w-full max-w-2xl mx-auto rounded-lg border border-gray-200 shadow-sm" />
+                                          <img src="/ondoku-1st-assignment.png" alt="1回 課題 - 文型と課題一覧" className="w-full max-w-2xl mx-auto rounded-lg border border-gray-200 shadow-sm" />
                                         </div>
                                         <div className="p-4 rounded-xl bg-white border border-[#e5dfd4] text-sm text-gray-800 leading-relaxed whitespace-pre-line">
                                           {ONDOKU_1KAI_INSTRUCTION}
