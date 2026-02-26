@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { fetchWithAuth, getStoredToken } from "../../lib/auth";
 import { LoginModal } from "../../components/LoginModal";
+import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
 
 const WRITING_HOST = "writing.mirinae.jp";
 
@@ -158,6 +159,7 @@ export default function WritingPage() {
   const [visibility, setVisibility] = useState<Record<number, Record<number, string | null>>>({});
   const [studentVisibility, setStudentVisibility] = useState<Record<number, Record<number, string | null>>>({});
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [emailModal, setEmailModal] = useState<{
     sub: { id: string; content: string; user?: { email?: string; name?: string; username?: string } };
     periodLabel: string;
@@ -484,7 +486,7 @@ export default function WritingPage() {
           <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>
           <button
             type="button"
-            onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setMenuOpen(false); window.location.href = redirectPath; }}
+            onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }}
             className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]"
           >
             ログアウト
@@ -608,7 +610,7 @@ export default function WritingPage() {
             )}
             <button
               type="button"
-              onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setUser(null); setShowProfileModal(false); window.location.href = redirectPath; }}
+              onClick={() => { setShowProfileModal(false); setShowLogoutModal(true); }}
               className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 mb-3"
             >
               ログアウト
@@ -649,10 +651,10 @@ export default function WritingPage() {
           </aside>
 
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            {(user || isAdmin) && (
+            {isAdmin && (
               <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm shrink-0">
-                <span className="text-gray-600">{isAdmin ? "管理者モード：" : "ログイン中："}</span>
-                <span className="font-medium text-gray-800">{isAdmin ? "全生徒の提出を表示" : `${user?.name || user?.username || user?.email || "-"}様`}</span>
+                <span className="text-gray-600">管理者モード：</span>
+                <span className="font-medium text-gray-800">全生徒の提出を表示</span>
               </div>
             )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
@@ -1412,6 +1414,17 @@ export default function WritingPage() {
       )}
 
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath={redirectPath} />
+      <LogoutConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={() => {
+          localStorage.removeItem("quiz_token");
+          localStorage.removeItem("quiz_refresh_token");
+          localStorage.removeItem("quiz_user");
+          setUser(null);
+          window.location.href = redirectPath;
+        }}
+      />
 
       {emailModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

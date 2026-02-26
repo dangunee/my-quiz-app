@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
+import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 
 const BLANK = "_________________________";
 
@@ -68,7 +69,17 @@ export default function QuizClient() {
   const [kotaeLoading, setKotaeLoading] = useState(false);
   const [kotaeError, setKotaeError] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const japaneseRef = useRef<HTMLDivElement>(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem("quiz_token");
+    localStorage.removeItem("quiz_refresh_token");
+    localStorage.removeItem("quiz_user");
+    setIsLoggedIn(false);
+    setMenuOpen(false);
+    setRightMenuOpen(false);
+  };
   const analyticsSessionRef = useRef<{ id: string; start: number } | null>(null);
 
   useEffect(() => {
@@ -404,13 +415,7 @@ export default function QuizClient() {
           <span className="block py-2 text-sm text-gray-500 border-b">ログイン中</span>
           <button
             type="button"
-            onClick={() => {
-              localStorage.removeItem("quiz_token");
-              localStorage.removeItem("quiz_refresh_token");
-              localStorage.removeItem("quiz_user");
-              setIsLoggedIn(false);
-              setMenuOpen(false);
-            }}
+            onClick={() => setShowLogoutModal(true)}
             className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b"
           >
             ログアウト
@@ -486,12 +491,7 @@ export default function QuizClient() {
                 <span>ログイン中</span>
                 <button
                   type="button"
-                  onClick={() => {
-                    localStorage.removeItem("quiz_token");
-                    localStorage.removeItem("quiz_refresh_token");
-                    localStorage.removeItem("quiz_user");
-                    setIsLoggedIn(false);
-                  }}
+                  onClick={() => setShowLogoutModal(true)}
                   className="text-gray-500 hover:text-red-600"
                 >
                   ログアウト
@@ -750,7 +750,7 @@ export default function QuizClient() {
                     <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white mb-1.5" onClick={() => closeRightMenu()}>マイページ</a>
                     <div className="flex justify-between items-center text-xs text-gray-500">
                       <span>ログイン中</span>
-                      <button type="button" onClick={() => { localStorage.removeItem("quiz_token"); localStorage.removeItem("quiz_refresh_token"); localStorage.removeItem("quiz_user"); setIsLoggedIn(false); closeRightMenu(); }} className="hover:text-red-600">ログアウト</button>
+                      <button type="button" onClick={() => { setShowLogoutModal(true); closeRightMenu(); }} className="hover:text-red-600">ログアウト</button>
                     </div>
                   </>
                 ) : (
@@ -1082,18 +1082,13 @@ export default function QuizClient() {
                     </a>
                     <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      localStorage.removeItem("quiz_token");
-                      localStorage.removeItem("quiz_refresh_token");
-                      localStorage.removeItem("quiz_user");
-                      setIsLoggedIn(false);
-                    }}
-                    className="text-white/90 text-sm hover:underline hover:text-white"
-                  >
-                    ログアウト
-                  </button>
+<button
+                  type="button"
+                  onClick={() => setShowLogoutModal(true)}
+                  className="text-white/90 text-sm hover:underline hover:text-white"
+                >
+                  ログアウト
+                </button>
                 </div>
               ) : (
                 <button
@@ -1223,6 +1218,7 @@ export default function QuizClient() {
       </div>
       </div>
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath="/" />
+      <LogoutConfirmModal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={handleLogout} />
     </div>
   );
 }

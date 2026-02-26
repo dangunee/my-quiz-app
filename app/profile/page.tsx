@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { fetchWithAuth, getStoredToken } from "../../lib/auth";
+import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
 
 type User = {
   id: string;
@@ -17,6 +18,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? localStorage.getItem("quiz_user") : null;
@@ -140,16 +142,22 @@ export default function ProfilePage() {
 
         <button
           type="button"
-          onClick={() => {
+          onClick={() => setShowLogoutModal(true)}
+          className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 mb-3"
+        >
+          ログアウト
+        </button>
+
+        <LogoutConfirmModal
+          isOpen={showLogoutModal}
+          onClose={() => setShowLogoutModal(false)}
+          onConfirm={() => {
             localStorage.removeItem("quiz_token");
             localStorage.removeItem("quiz_refresh_token");
             localStorage.removeItem("quiz_user");
             window.location.href = "/";
           }}
-          className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700 mb-3"
-        >
-          ログアウト
-        </button>
+        />
 
         <button
           type="button"
