@@ -476,6 +476,12 @@ export default function OndokuPage() {
           </aside>
 
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
+            {(user || isAdmin) && (
+              <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-gray-200 text-sm shrink-0">
+                <span className="text-gray-600">{isAdmin ? "管理者モード：" : "ログイン中："}</span>
+                <span className="font-medium text-gray-800">{isAdmin ? "全生徒の提出を表示" : `${user?.name || user?.username || user?.email || "-"}様`}</span>
+              </div>
+            )}
             <div className="bg-white border-b border-gray-200 shadow-sm shrink-0">
               <nav className="flex overflow-x-auto px-4 md:px-6 py-0">
                 {TABS.map((tab) => (
@@ -738,12 +744,6 @@ export default function OndokuPage() {
                     <div className="mb-6 md:mb-8">
                       <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                       <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                        {(user || isAdmin) && (
-                          <div className="px-4 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm mb-1.5">
-                            <span className="text-gray-600">{isAdmin ? "管理者モード：" : "ログイン中："}</span>
-                            <span className="font-medium text-gray-800">{isAdmin ? "全生徒の提出を表示" : `${user?.name || user?.username || user?.email || "-"}様`}</span>
-                          </div>
-                        )}
                         <div className="flex border-b border-[#e5dfd4] mb-1.5">
                           <button
                             type="button"
