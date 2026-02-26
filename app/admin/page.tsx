@@ -723,7 +723,13 @@ export default function AdminPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/"
+              href={
+                activeTab === "quiz"
+                  ? "https://quiz.mirinae.jp"
+                  : ["ondokuKadai", "ondoku"].includes(activeTab)
+                    ? "https://ondoku.mirinae.jp"
+                    : "https://writing.mirinae.jp"
+              }
               className="text-sm text-gray-600 hover:text-gray-800"
             >
               フロントページへ
