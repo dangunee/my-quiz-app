@@ -1,543 +1,1505 @@
+const QUESTION = "次の文を韓国語にすると一番自然なのはどれでしょうか。";
+
 export const QUIZZES = [
   {
-    "id": 1,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「今日も上司に一言いわれた。」",
-    "koreanTemplate": "오늘도 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "상사가 한 말 했다"
-      },
-      {
-        "id": 2,
-        "text": "상사가 한 소리 말했다"
-      },
-      {
-        "id": 3,
-        "text": "상사에게 한 소리 들었다"
-      },
-      {
-        "id": 4,
-        "text": "상사에게 한 소리 말해졌다"
-      }
+    id: 1,
+    question: QUESTION,
+    japanese: "「今日も上司に一言いわれた。」",
+    koreanTemplate: "오늘도 _________________________.",
+    options: [
+      { id: 1, text: "상사가 한 말 했다" },
+      { id: 2, text: "상사가 한 소리 말했다" },
+      { id: 3, text: "상사에게 한 소리 들었다" },
+      { id: 4, text: "상사에게 한 소리 말해졌다" },
     ],
-    "correctAnswer": 3,
-    "explanation": "上司に=상사에게\\n一言=한 소리\\nいわれる=듣다(聞く) \\n小言の意味では한 말と言わない。\\n❶は상사가 한 소리 했다になる。\\n❷한 소리 말하다は소리に言葉の意味があるので不自然。\\n❹말해지다とは言わない。",
-    "vocabulary": []
+    correctAnswer: 3,
+    explanation: "上司に=상사에게\\n一言=한 소리\\nいわれる=듣다(聞く)\\n小言の意味では한 말と言わない。\\n❶は상사가 한 소리 했다になる。\\n❷한 소리 말하다は소리に言葉の意味があるので不自然。\\n❹말해지다とは言わない。",
+    vocabulary: [],
   },
   {
-    "id": 2,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「メールで返事してほしいです。」",
-    "koreanTemplate": "메일로 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "대답해 주세요"
-      },
-      {
-        "id": 2,
-        "text": "대답을 주시면 좋아요"
-      },
-      {
-        "id": 3,
-        "text": "답장을 듣고 싶어요"
-      },
-      {
-        "id": 4,
-        "text": "답장을 주시면 좋겠어요"
-      }
+    id: 2,
+    question: QUESTION,
+    japanese: "「メールで返事してほしいです。」",
+    koreanTemplate: "메일로 _________________________.",
+    options: [
+      { id: 1, text: "대답해 주세요" },
+      { id: 2, text: "대답을 주시면 좋아요" },
+      { id: 3, text: "답장을 듣고 싶어요" },
+      { id: 4, text: "답장을 주시면 좋겠어요" },
     ],
-    "correctAnswer": 4,
-    "explanation": "❶ 대답→답장\\n대답は声で答える時のみ使い、メールでは使いません。\\n❷ ~면 좋아요 ～したらいいです。\\n라면에 김치를 넣으면 좋아요\\nラーメンにキムチを入れたらいいです\\n❹~면 좋겠어요 ～してほしいです\\n여기에 써 주시면 좋겠어요\\nここに書いてほしいです。",
-    "vocabulary": []
+    correctAnswer: 4,
+    explanation: "❶ 대답→답장\\n대답は声で答える時のみ使い、メールでは使いません。\\n❷ ~면 좋아요 ～したらいいです。\\n❹~면 좋겠어요 ～してほしいです\\n여기에 써 주시면 좋겠어요",
+    vocabulary: [],
   },
   {
-    "id": 3,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「そうするわけにはいきません」",
-    "koreanTemplate": "그렇게 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "할 것은 없습니다"
-      },
-      {
-        "id": 2,
-        "text": "할 수는 없습니다"
-      },
-      {
-        "id": 3,
-        "text": "할 셈은 없습니다"
-      },
-      {
-        "id": 4,
-        "text": "할 리는 없습니다"
-      }
+    id: 3,
+    question: QUESTION,
+    japanese: "「そうするわけにはいきません」",
+    koreanTemplate: "그렇게 _________________________.",
+    options: [
+      { id: 1, text: "할 것은 없습니다" },
+      { id: 2, text: "할 수는 없습니다" },
+      { id: 3, text: "할 셈은 없습니다" },
+      { id: 4, text: "할 리는 없습니다" },
     ],
-    "correctAnswer": 2,
-    "explanation": "❶그렇게 할 것은 없습니다\\n=そうすることはありません\\n*그렇게까지 할 것은 없어\\n=そこまですることはない\\n❸그렇게 할 셈은 없습니다 (x)\\n* 그렇게 할 셈이야?\\n=そうする気なの？\\n❹그렇게 할 리는 없습니다.\\n=そうするはずはありません。",
-    "vocabulary": []
+    correctAnswer: 2,
+    explanation: "❶그렇게 할 것은 없습니다=そうすることはありません\\n❸그렇게 할 셈은 없습니다 (x)\\n❹그렇게 할 리는 없습니다.=そうするはずはありません。",
+    vocabulary: [],
   },
   {
-    "id": 4,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「なんでそんなことを言うの？」",
-    "koreanTemplate": "왜 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "그런 것을 말해?"
-      },
-      {
-        "id": 2,
-        "text": "그런 말을 말해?"
-      },
-      {
-        "id": 3,
-        "text": "그런 것을 해?"
-      },
-      {
-        "id": 4,
-        "text": "그런 소리를 해?"
-      }
+    id: 4,
+    question: QUESTION,
+    japanese: "「なんでそんなことを言うの？」",
+    koreanTemplate: "왜 _________________________.",
+    options: [
+      { id: 1, text: "그런 것을 말해?" },
+      { id: 2, text: "그런 말을 말해?" },
+      { id: 3, text: "그런 것을 해?" },
+      { id: 4, text: "그런 소리를 해?" },
     ],
-    "correctAnswer": 4,
-    "explanation": "❶の「そんなこと」を그런 것と言いがちですが、「そんなこと」は그런 말または그런 소리が自然です。\\n❶왜 그런 이야기를 해?　だとOKです。\\n❷왜 그런 말을 해?　だとOKです。\\n❸왜 그런 짓을 해?(なんでそんなことをするの)　に変えると自然な韓国語になります。",
-    "vocabulary": []
+    correctAnswer: 4,
+    explanation: "「そんなこと」は그런 말または그런 소리が自然です。\\n❶왜 그런 이야기를 해? だとOKです。\\n❸왜 그런 짓을 해?(なんでそんなことをするの)",
+    vocabulary: [],
   },
   {
-    "id": 5,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「それでも僕はやっていない」",
-    "koreanTemplate": "그래도 내가 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "하지 않아"
-      },
-      {
-        "id": 2,
-        "text": "하지 않았어"
-      },
-      {
-        "id": 3,
-        "text": "하지 않고 있어"
-      },
-      {
-        "id": 4,
-        "text": "하고 있지 않았어"
-      }
+    id: 5,
+    question: QUESTION,
+    japanese: "「それでも僕はやっていない」",
+    koreanTemplate: "그래도 내가 _________________________.",
+    options: [
+      { id: 1, text: "하지 않아" },
+      { id: 2, text: "하지 않았어" },
+      { id: 3, text: "하지 않고 있어" },
+      { id: 4, text: "하고 있지 않았어" },
     ],
-    "correctAnswer": 2,
-    "explanation": "~していない=~하지 않았어\\n~하지 않아は「元々~しない」という意味になります。\\n❸〜하지 않고 있어 〜しないでいる\\n❹〜하지 않고 있었어 〜しないでいた\\n\\n※ 僕、宿題まだやってない\\n= 나, 숙제 아직 안 했어",
-    "vocabulary": []
+    correctAnswer: 2,
+    explanation: "~していない=~하지 않았어\\n~하지 않아は「元々~しない」という意味になります。\\n❸〜하지 않고 있어 〜しないでいる\\n❹〜하지 않고 있었어 〜しないでいた",
+    vocabulary: [],
   },
   {
-    "id": 6,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「その店は学生時代によく行っていました」",
-    "koreanTemplate": "그 가게는 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "학생 시절에 자주 갔었어요"
-      },
-      {
-        "id": 2,
-        "text": "학생 시대에 자주 가고 있었어요"
-      },
-      {
-        "id": 3,
-        "text": "학생 시절에 자주 가 있었어요"
-      },
-      {
-        "id": 4,
-        "text": "학생 시대에 자주 가고 있어요"
-      }
+    id: 6,
+    question: QUESTION,
+    japanese: "「その店は学生時代によく行っていました」",
+    koreanTemplate: "그 가게는 _________________________.",
+    options: [
+      { id: 1, text: "학생 시절에 자주 갔었어요" },
+      { id: 2, text: "학생 시대에 자주 가고 있었어요" },
+      { id: 3, text: "학생 시절에 자주 가 있었어요" },
+      { id: 4, text: "학생 시대에 자주 가고 있어요" },
     ],
-    "correctAnswer": 1,
-    "explanation": "ある時の習慣のことを言う時は～았/었다を使います。\\n～고 있었다は特定の瞬間に何をしていたかを説明するときだけ使います。\\n지진이 났을 때 밥을 먹고 있었어요.\\n地震が起きた時ご飯を食べていました。\\n\\n❸ 가 있다は既にそこに到着している時\\n❹ 가고 있어요今向かっている\\n※ 학생시대 (✖)",
-    "vocabulary": []
+    correctAnswer: 1,
+    explanation: "ある時の習慣のことを言う時は～았/었다を使います。\\n～고 있었다は特定の瞬間に何をしていたかを説明するときだけ使います。\\n❸ 가 있다は既にそこに到着している時\\n❹ 가고 있어요今向かっている\\n※ 학생시대 (✖)",
+    vocabulary: [],
   },
   {
-    "id": 7,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「トイレで水を流しました」",
-    "koreanTemplate": "화장실에서 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "물이 흘렀어요"
-      },
-      {
-        "id": 2,
-        "text": "물을 흘렸어요"
-      },
-      {
-        "id": 3,
-        "text": "물이 내렸어요"
-      },
-      {
-        "id": 4,
-        "text": "물을 내렸어요"
-      }
+    id: 7,
+    question: QUESTION,
+    japanese: "「トイレで水を流しました」",
+    koreanTemplate: "화장실에서 _________________________.",
+    options: [
+      { id: 1, text: "물이 흘렀어요" },
+      { id: 2, text: "물을 흘렸어요" },
+      { id: 3, text: "물이 내렸어요" },
+      { id: 4, text: "물을 내렸어요" },
     ],
-    "correctAnswer": 4,
-    "explanation": "❶물이 흐르다水が流れる←水漏れしているような感じ\\n❷물을 흘리다水をこぼす←トイレで水筒などの水をこぼしてしまった感じです。\\n❸물이 내리다　「水が流した」なので不自然です\\n❹물을 내리다\\n※ 내리다は降ろす、降りる、降るとの意味ですが、トイレでは水を流すの意味になります。",
-    "vocabulary": []
+    correctAnswer: 4,
+    explanation: "❶물이 흐르다水が流れる\\n❷물을 흘리다水をこぼす\\n❸물이 내리다 「水が流した」なので不自然です\\n❹물을 내리다\\n※ 내리다は降ろす、降りる、降るとの意味ですが、トイレでは水を流すの意味になります。",
+    vocabulary: [],
   },
   {
-    "id": 8,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「ゴミは決められた所に出してください」",
-    "koreanTemplate": "쓰레기는 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "정해진 곳에 내세요"
-      },
-      {
-        "id": 2,
-        "text": "정해진 곳에 내놓으세요"
-      },
-      {
-        "id": 3,
-        "text": "결정된 곳에 내세요"
-      },
-      {
-        "id": 4,
-        "text": "결정된 곳에 내놓으세요"
-      }
+    id: 8,
+    question: QUESTION,
+    japanese: "「ゴミは決められた所に出してください」",
+    koreanTemplate: "쓰레기는 _________________________.",
+    options: [
+      { id: 1, text: "정해진 곳에 내세요" },
+      { id: 2, text: "정해진 곳에 내놓으세요" },
+      { id: 3, text: "결정된 곳에 내세요" },
+      { id: 4, text: "결정된 곳에 내놓으세요" },
     ],
-    "correctAnswer": 2,
-    "explanation": "必要なものを出す、払う=내다\\n手放す、捨てる=내놓다\\nなので❶はバツ印\\n❸결정된→정해진\\n결정된は主に会議内容や決定事項などに主に使います。\\n例)\\n결정된 사항(決定した事項)\\n회의에서 결정된 것이 없다.\\n会議でまだ決まったことはない。",
-    "vocabulary": []
+    correctAnswer: 2,
+    explanation: "必要なものを出す、払う=내다\\n手放す、捨てる=내놓다\\n❸결정된→정해진\\n결정된は主に会議内容や決定事項などに主に使います。",
+    vocabulary: [],
   },
   {
-    "id": 9,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「プロでも失敗することがある」",
-    "koreanTemplate": "프로라도 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "실수하는 것이 있다"
-      },
-      {
-        "id": 2,
-        "text": "실수할 것이 있다"
-      },
-      {
-        "id": 3,
-        "text": "실수하는 경우가 있다"
-      },
-      {
-        "id": 4,
-        "text": "실수할 경우가 있다"
-      }
+    id: 9,
+    question: QUESTION,
+    japanese: "「プロでも失敗することがある」",
+    koreanTemplate: "프로라도 _________________________.",
+    options: [
+      { id: 1, text: "실수하는 것이 있다" },
+      { id: 2, text: "실수할 것이 있다" },
+      { id: 3, text: "실수하는 경우가 있다" },
+      { id: 4, text: "실수할 경우가 있다" },
     ],
-    "correctAnswer": 3,
-    "explanation": "「〜することがある」\\n→「～する場合がある」とのニュアンスで、一般的に〜する「習慣」や「傾向」がある、というような時は❸～하는 경우가 있다を使います。\\n例)\\n우리회사는 일이 많으면 야근하는 경우도 있습니다.\\nうちの会社は仕事が多いと残業することもあります。",
-    "vocabulary": []
+    correctAnswer: 3,
+    explanation: "「〜することがある」→「～する場合がある」とのニュアンスで、一般的に〜する「習慣」や「傾向」がある、というような時は❸～하는 경우가 있다を使います。",
+    vocabulary: [],
   },
   {
-    "id": 10,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「身分証をお持ちですか」",
-    "koreanTemplate": "신분증을 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "가지세요?"
-      },
-      {
-        "id": 2,
-        "text": "가지고 있나요?"
-      },
-      {
-        "id": 3,
-        "text": "가져 계세요?"
-      },
-      {
-        "id": 4,
-        "text": "가지고 계세요?"
-      }
+    id: 10,
+    question: QUESTION,
+    japanese: "「身分証をお持ちですか」",
+    koreanTemplate: "신분증을 _________________________.",
+    options: [
+      { id: 1, text: "가지세요?" },
+      { id: 2, text: "가지고 있나요?" },
+      { id: 3, text: "가져 계세요?" },
+      { id: 4, text: "가지고 계세요?" },
     ],
-    "correctAnswer": 4,
-    "explanation": "❶가지다+~세요→持ちなさい＝あげます\t\t\\n❷가지고 있나요？→持っていますか？も文法的には間違いではありません。\t\t\\n❸가져 계세요/가져 있다 (X)\t\t\\n～을/를 가지다は他動詞なので～아/어 있다を付けられません。\t\t\\n❹가지고 계세요が正解です。",
-    "vocabulary": []
+    correctAnswer: 4,
+    explanation: "❶가지다+~세요→持ちなさい＝あげます\\n❸가져 계세요/가져 있다 (X)\\n～을/를 가지다は他動詞なので～아/어 있다を付けられません。\\n❹가지고 계세요が正解です。",
+    vocabulary: [],
   },
   {
-    "id": 11,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「こうした方がよく覚えられます」",
-    "koreanTemplate": "이렇게 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "하는 것이 잘 외울 수 있어요"
-      },
-      {
-        "id": 2,
-        "text": "하는 것이 잘 외우게 돼요"
-      },
-      {
-        "id": 3,
-        "text": "하는 편이 잘 외워져요"
-      },
-      {
-        "id": 4,
-        "text": "하는 편이 잘 외울 수 있게 돼요"
-      }
+    id: 11,
+    question: QUESTION,
+    japanese: "「こうした方がよく覚えられます」",
+    koreanTemplate: "이렇게 _________________________.",
+    options: [
+      { id: 1, text: "하는 것이 잘 외울 수 있어요" },
+      { id: 2, text: "하는 것이 잘 외우게 돼요" },
+      { id: 3, text: "하는 편이 잘 외워져요" },
+      { id: 4, text: "하는 편이 잘 외울 수 있게 돼요" },
     ],
-    "correctAnswer": 3,
-    "explanation": "❶は意味はわかるが不自然です。\t\t\\n〜하는 것이+외울 수 있다は (✖)\t\t\\n이렇게 하면 잘 외울 수 있어요(〇)\t\t\\n（こうすればよく覚えられます）\t\t\\n*～이/가 ～을 수 있다 (✖)\t\t\\n～을/를 ～을 수 있다 (〇)\t\t\\n❸외워지다は無理なく「覚えられる」の意味でよく使います。\t\t\\n❷、❹～게 되다は「～ことになる」",
-    "vocabulary": []
+    correctAnswer: 3,
+    explanation: "❸외워지다は無理なく「覚えられる」の意味でよく使います。\\n❷、❹～게 되다は「～ことになる」",
+    vocabulary: [],
   },
   {
-    "id": 12,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「夜中２時なのにまだ起きているんですか？」",
-    "koreanTemplate": "새벽 2시인데 아직도 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "안 자 있어요?"
-      },
-      {
-        "id": 2,
-        "text": "안 자고 있어요?"
-      },
-      {
-        "id": 3,
-        "text": "일어나 있어요?"
-      },
-      {
-        "id": 4,
-        "text": "일어나고 있어요?"
-      }
+    id: 12,
+    question: QUESTION,
+    japanese: "「夜中２時なのにまだ起きているんですか？」",
+    koreanTemplate: "새벽 2시인데 아직도 _________________________.",
+    options: [
+      { id: 1, text: "안 자 있어요?" },
+      { id: 2, text: "안 자고 있어요?" },
+      { id: 3, text: "일어나 있어요?" },
+      { id: 4, text: "일어나고 있어요?" },
     ],
-    "correctAnswer": 2,
-    "explanation": "❶자다+～아/어 있다 (✖)\t\t\t\\n❸일어나 있다はベッドから起き上がっている状態です。\t\t\t\\n왜 아직도 일어나 있어요\t\t\t\\n(なぜ寝転ばずまだ立っているの）\t\t\t\\n❹일어나고 있다は今まさにベッドから起きあがりつつある状態です。\t\t\t\\n그는 지금 일어나고 있어요\t\t\t\\n彼は今起き上がっている。\t\t\t\\n（今まさに起き上がりつつある最中）",
-    "vocabulary": []
+    correctAnswer: 2,
+    explanation: "❶자다+～아/어 있다X\\n❸일어나 있다はベッドから起き上がっている状態\\n❹일어나고 있다は今まさにベッドから起きあがりつつある状態",
+    vocabulary: [],
   },
   {
-    "id": 13,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「なぜ安定した職場を辞めるんですか」",
-    "koreanTemplate": "왜  _________________________ 그만두세요?",
-    "options": [
-      {
-        "id": 1,
-        "text": "안정한 직장을"
-      },
-      {
-        "id": 2,
-        "text": "안정하는 직장을"
-      },
-      {
-        "id": 3,
-        "text": "안정되는 직장을"
-      },
-      {
-        "id": 4,
-        "text": "안정된 직장을"
-      }
+    id: 13,
+    question: QUESTION,
+    japanese: "「なぜ安定した職場を辞めるんですか」",
+    koreanTemplate: "왜 _________________________ 그만두세요?",
+    options: [
+      { id: 1, text: "안정한 직장을" },
+      { id: 2, text: "안정하는 직장을" },
+      { id: 3, text: "안정되는 직장을" },
+      { id: 4, text: "안정된 직장을" },
     ],
-    "correctAnswer": 4,
-    "explanation": "安定するは안정되다を使います。\\n\\n안정하다は使わないので❶안정한、❷안정하는は不自然です。\\n❸안정되다は形容詞なので動詞連体形である～는は付けられません。",
-    "vocabulary": []
+    correctAnswer: 4,
+    explanation: "安定するは안정되다を使います。\\n안정하다は使わないので❶안정한、❷안정하는は不自然です。\\n❸안정되다は形容詞なので動詞連体形である～는は付けられません。",
+    vocabulary: [],
   },
   {
-    "id": 14,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「今日面接なのでとても緊張する」",
-    "koreanTemplate": "오늘 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "면접이니까 아주 긴장되."
-      },
-      {
-        "id": 2,
-        "text": "면접이라서 아주 긴장함."
-      },
-      {
-        "id": 3,
-        "text": "면접이라서 아주 긴장돼."
-      },
-      {
-        "id": 4,
-        "text": "면접이니까 아주 긴장해."
-      }
+    id: 14,
+    question: QUESTION,
+    japanese: "「今日面接なのでとても緊張する」",
+    koreanTemplate: "오늘 _________________________.",
+    options: [
+      { id: 1, text: "면접이니까 아주 긴장되." },
+      { id: 2, text: "면접이라서 아주 긴장함." },
+      { id: 3, text: "면접이라서 아주 긴장돼." },
+      { id: 4, text: "면접이니까 아주 긴장해." },
     ],
-    "correctAnswer": 3,
-    "explanation": "❶긴장되には+어が必要です。\\n\\n❷긴장함 緊張した(過去形)\\n\\n❹긴장해, 긴장해요は使いません。\\n\\n긴장하고 있다、긴장하지마、긴장했다は使います。",
-    "vocabulary": []
+    correctAnswer: 3,
+    explanation: "❶긴장되には+어が必要です。\\n❷긴장함 緊張した(過去形)\\n❹긴장해, 긴장해요は使わない。\\n긴장하고 있다、긴장하지마、긴장했다は使う。",
+    vocabulary: [],
   },
   {
-    "id": 15,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「彼は何度も自分のことが好きなのか聞いた」",
-    "koreanTemplate": "그는 _________________________ 물었다.",
-    "options": [
-      {
-        "id": 1,
-        "text": "몇번을 자기를 사랑하는지"
-      },
-      {
-        "id": 2,
-        "text": "몇번이나 자기가 사랑하는지"
-      },
-      {
-        "id": 3,
-        "text": "몇번이고 자기를 사랑하느냐고"
-      },
-      {
-        "id": 4,
-        "text": "몇번도 자기를 사랑하느냐고"
-      }
+    id: 15,
+    question: QUESTION,
+    japanese: "「彼は何度も自分のことが好きなのか聞いた」",
+    koreanTemplate: "그는 _________________________ 물었다.",
+    options: [
+      { id: 1, text: "몇번을 자기를 사랑하는지" },
+      { id: 2, text: "몇번이나 자기가 사랑하는지" },
+      { id: 3, text: "몇번이고 자기를 사랑하느냐고" },
+      { id: 4, text: "몇번도 자기를 사랑하느냐고" },
     ],
-    "correctAnswer": 3,
-    "explanation": "何度も=몇 번이나=몇 번이고もOKです。\\n❶몇 번을=何度か\\n❷자기가 사랑하는 自分が好きなのか\\n❹몇 번도は使わないので、注意してください！",
-    "vocabulary": []
+    correctAnswer: 3,
+    explanation: "何度も=몇 번이나=몇 번이고もOKです\\n❶몇 번을=何度か\\n❷자기가 사랑하는 自分が好きなのか\\n❹몇 번도は使わないので、注意してください！",
+    vocabulary: [],
   },
   {
-    "id": 16,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「今忙しいから掃除は明日やります」",
-    "koreanTemplate": "지금 _______ 청소는 내일 ________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "바쁘니까 / 합니다"
-      },
-      {
-        "id": 2,
-        "text": "바빠서 / 할게요"
-      },
-      {
-        "id": 3,
-        "text": "바빠서 / 할 거예요"
-      },
-      {
-        "id": 4,
-        "text": "바쁘니까 / 하겠습니다"
-      }
+    id: 16,
+    question: QUESTION,
+    japanese: "「今忙しいから掃除は明日やります」",
+    koreanTemplate: "지금 _______ 청소는 내일 ________.",
+    options: [
+      { id: 1, text: "바쁘니까 / 합니다" },
+      { id: 2, text: "바빠서 / 할게요" },
+      { id: 3, text: "바빠서 / 할 거예요" },
+      { id: 4, text: "바쁘니까 / 하겠습니다" },
     ],
-    "correctAnswer": 1,
-    "explanation": "このクイズは間違いを選ぶ問題です。\\n\\n掃除を明日やるので「やります」は未来の表現にしないといけません。現在形の합니다/해요は普段の習慣、決まりなど言う時のみ使いますので、내일と一緒に使います。のは間違いです。\\n\\n未来を表す❷～을게요❸～을 거예요❹～겠はOKです。",
-    "vocabulary": []
+    correctAnswer: 1,
+    explanation: "このクイズは間違いを選ぶ問題です。\\n掃除を明日やるので「やります」は未来の表現にしないといけません。\\n現在形の합니다/해요は普段の習慣、決まりなど言う時のみ使いますので、내일と一緒に使うのは間違いです。\\n未来を表す❷～을게요❸～을 거예요❹～겠はOKです。",
+    vocabulary: [],
   },
   {
-    "id": 17,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「韓国ドラマを観て韓国のことが好きになった」",
-    "koreanTemplate": "한국드라마를 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "봐서 한국이 좋아졌다"
-      },
-      {
-        "id": 2,
-        "text": "보고 한국을 좋아하게 됐다"
-      },
-      {
-        "id": 3,
-        "text": "보니까 한국이 좋아졌다"
-      },
-      {
-        "id": 4,
-        "text": "보니 한국이 좋아하게 됐다"
-      }
+    id: 17,
+    question: QUESTION,
+    japanese: "「韓国ドラマを観て韓国のことが好きになった」",
+    koreanTemplate: "한국드라마를 _________________________.",
+    options: [
+      { id: 1, text: "봐서 한국이 좋아졌다" },
+      { id: 2, text: "보고 한국을 좋아하게 됐다" },
+      { id: 3, text: "보니까 한국이 좋아졌다" },
+      { id: 4, text: "보니 한국이 좋아하게 됐다" },
     ],
-    "correctAnswer": 2,
-    "explanation": "❶봐서→보고\\n何かを見て、読んで、聞いて(いいと思ったら)→읽다, 보다, 듣다などは～고を使います。\\n❸보니까 見たら\\n❹보니=보니까の縮約です。\\n※좋아지다=좋아하게 되다",
-    "vocabulary": []
+    correctAnswer: 2,
+    explanation: "❶봐서→보고\\n何かを見て、読んで、聞いて(いいと思ったら)→읽다, 보다, 듣다などは～고を使います。\\n❸보니까 見たら\\n❹보니=보니까の縮約\\n※좋아지다=좋아하게 되다",
+    vocabulary: [],
   },
   {
-    "id": 18,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「あなたに出会って幸せだった」",
-    "koreanTemplate": "당신을 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "만나고 행복했어"
-      },
-      {
-        "id": 2,
-        "text": "만나니까 행복이었어"
-      },
-      {
-        "id": 3,
-        "text": "만났으니까 행복이었어"
-      },
-      {
-        "id": 4,
-        "text": "만나서 행복했어"
-      }
+    id: 18,
+    question: QUESTION,
+    japanese: "「あなたに出会って幸せだった」",
+    koreanTemplate: "당신을 _________________________.",
+    options: [
+      { id: 1, text: "만나고 행복했어" },
+      { id: 2, text: "만나니까 행복이었어" },
+      { id: 3, text: "만났으니까 행복이었어" },
+      { id: 4, text: "만나서 행복했어" },
     ],
-    "correctAnswer": 4,
-    "explanation": "❶만나고: 会ったことと関係ない\\n\\n당신을 만나고 (그 후에) 학교에 갔어요. OKです。\\n\\n❷만나니까 (習慣)会うから\\n\\n당신을 만나니까 행복해 OKです。\\n\\n❸만났으니까 (一度)会ったから\\n\\n어제 당신 만났으니까 오늘은 안 만나도 돼 OKです。\\n\\n* 행복이었어→ 행복했어",
-    "vocabulary": []
+    correctAnswer: 4,
+    explanation: "❶만나고: 会ったことと関係ない\\n❷만나니까 (習慣)会うから\\n❸만났으니까 (一度)会ったから\\n* 행복이었어→ 행복했어",
+    vocabulary: [],
   },
   {
-    "id": 19,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「前もって言ってくれればよかったのに 。」",
-    "koreanTemplate": "미리 _________________________.",
-    "options": [
-      {
-        "id": 1,
-        "text": "이야기해 주지"
-      },
-      {
-        "id": 2,
-        "text": "이야기해 주지 그랬는데"
-      },
-      {
-        "id": 3,
-        "text": "이야기해 주면 좋았는데"
-      },
-      {
-        "id": 4,
-        "text": "이야기해 주면 잘됐을걸"
-      }
+    id: 19,
+    question: QUESTION,
+    japanese: "「前もって言ってくれればよかったのに」",
+    koreanTemplate: "미리 _________________________.",
+    options: [
+      { id: 1, text: "이야기해 주지" },
+      { id: 2, text: "이야기해 주지 그랬는데" },
+      { id: 3, text: "이야기해 주면 좋았는데" },
+      { id: 4, text: "이야기해 주면 잘됐을걸" },
     ],
-    "correctAnswer": 1,
-    "explanation": "前もって言ってくれればよかったのに\\n=미리 이야기해 주지 그랬어→그랬어は省略可\\n=미리 이야기해주면 좋았을 텐데◯\\n❷～해 주지 그랬는데✗　このような表現はない\\n❸～해 주면 좋았는데✗　このような表現はない\\n미리 이야기해 주면 좋았는데→좋았을 텐데だったらOKです。\\n좋았는데は以前「何かがよかったのに」という時に使います。\\n[例] 그 가게 좋았는데 / 그 사람 좋았는데\\n❹～해 주지 잘됐을걸✗　このような表現はない",
-    "vocabulary": []
+    correctAnswer: 1,
+    explanation: "前もって言ってくれればよかったのに\\n=미리 이야기해 주지 그랬어→그랬어は省略可\\n=미리 이야기해주면 좋았을 텐데◯",
+    vocabulary: [],
   },
   {
-    "id": 20,
-    "question": "次の文を韓国語にすると一番自然なのはどれでしょうか。",
-    "japanese": "「それは二度と買いません」",
-    "koreanTemplate": "그건 _________________________안 사요.",
-    "options": [
-      {
-        "id": 1,
-        "text": "두 번도"
-      },
-      {
-        "id": 2,
-        "text": "두 번 다시"
-      },
-      {
-        "id": 3,
-        "text": "두 번이라도"
-      },
-      {
-        "id": 4,
-        "text": "두 번이라"
-      }
+    id: 20,
+    question: QUESTION,
+    japanese: "「それは二度と買いません」",
+    koreanTemplate: "그건 _________________________안 사요.",
+    options: [
+      { id: 1, text: "두 번도" },
+      { id: 2, text: "두 번 다시" },
+      { id: 3, text: "두 번이라도" },
+      { id: 4, text: "두 번이라" },
     ],
-    "correctAnswer": 2,
-    "explanation": "❶두 번도２回も\\n소리내서 읽는 건 두 번도 좋고, 세 번도 좋아요\\n音読するのは２回（するの）もいいし、３回（するの）もいいです。\\n❸두 번이라도 ２回だとしても\\n❹두 번이라(서) ２回なので\\n二度と= 두 번 다시 \\n二度と来るな = 두 번 다시 오지 마",
-    "vocabulary": []
-  }
+    correctAnswer: 2,
+    explanation: "❶두 번도２回も\\n❸두 번이라도 ２回だとしても\\n❹두 번이라(서) ２回なので\\n二度と= 두 번 다시\\n二度と来るな = 두 번 다시 오지 마",
+    vocabulary: [],
+  },
+  {
+    id: 21,
+    question: QUESTION,
+    japanese: "「それは二度と買いません」",
+    koreanTemplate: "_________________________.",
+    options: [
+      { id: 1, text: "그건 두 번도 안 사요" },
+      { id: 2, text: "그건 두 번 다시 안 사요" },
+      { id: 3, text: "그건 두 번이라도 안 사요" },
+      { id: 4, text: "그건 두 번이라 안 사요" },
+    ],
+    correctAnswer: 2,
+    explanation: "二度と= 두 번 다시\\n二度と来るな = 두 번 다시 오지 마",
+    vocabulary: [],
+  },
+  {
+    id: 22,
+    question: QUESTION,
+    japanese: "「あなたと話すことはありません」",
+    koreanTemplate: "_________________________.",
+    options: [
+      { id: 1, text: "당신과 할 것이 없어요" },
+      { id: 2, text: "당신과 할 말이 없어요" },
+      { id: 3, text: "당신과 하는 것이 없어요" },
+      { id: 4, text: "당신과 하는 말이 없어요" },
+    ],
+    correctAnswer: 2,
+    explanation: "これから話すことは～을 말、～을 이야기を使うのが自然です。",
+    vocabulary: [],
+  },
+  {
+    id: 23,
+    question: QUESTION,
+    japanese: "「それは面白くないと思うよ」",
+    koreanTemplate: "그거 _________________________.",
+    options: [
+      { id: 1, text: "그거 재미없을걸?" },
+      { id: 2, text: "그거 재미없을 걸 그랬어" },
+      { id: 3, text: "그거 재미없을 리 있어?" },
+      { id: 4, text: "그거 재미없겠어?" },
+    ],
+    correctAnswer: 1,
+    explanation: "❷～을 걸 그랬어=～すればよかった→動詞のみ可能",
+    vocabulary: [],
+  },
+  {
+    id: 24,
+    question: QUESTION,
+    japanese: "「ここを通る度に懐かしい感じがします」",
+    koreanTemplate: "여기 지날 때마다 _________________________.",
+    options: [
+      { id: 1, text: "그리웠던 느낌이 나요" },
+      { id: 2, text: "그리운 생각을 해요" },
+      { id: 3, text: "옛날 생각이 나요" },
+      { id: 4, text: "옛날 느낌이 나요" },
+    ],
+    correctAnswer: 3,
+    explanation: "懐かしい = 옛날 생각이 나다\\n❹ 옛날 느낌이 나다 = 昔風の感じがする、古臭い感じがする",
+    vocabulary: [],
+  },
+  {
+    id: 25,
+    question: QUESTION,
+    japanese: "「良かったですね」",
+    koreanTemplate: "_________________________.",
+    options: [
+      { id: 1, text: "좋았네요" },
+      { id: 2, text: "다행이었어요" },
+      { id: 3, text: "좋았어요" },
+      { id: 4, text: "다행이네요" },
+    ],
+    correctAnswer: 4,
+    explanation: "幸いだった→ 다행이네요",
+    vocabulary: [],
+  },
+  {
+    id: 26,
+    question: QUESTION,
+    japanese: "「友達に会ってから映画を観ました」",
+    koreanTemplate: "____________ 영화를 봤어요.",
+    options: [
+      { id: 1, text: "친구를 만나니" },
+      { id: 2, text: "친구를 만나서" },
+      { id: 3, text: "친구를 만나고" },
+      { id: 4, text: "친구를 만났고" },
+    ],
+    correctAnswer: 3,
+    explanation: "順番を意味する「～してから」の意味で使う場合は～고のみを使います。",
+    vocabulary: [],
+  },
+  {
+    id: 27,
+    question: QUESTION,
+    japanese: "「彼の顔を今でも覚えています」",
+    koreanTemplate: "그의 얼굴을 _________________________.",
+    options: [
+      { id: 1, text: "지금도 외우고 있어요" },
+      { id: 2, text: "지금도 기억하고 있어요" },
+      { id: 3, text: "지금이라도 외우고 있어요" },
+      { id: 4, text: "지금이라도 기억하고 있어요" },
+    ],
+    correctAnswer: 2,
+    explanation: "❶외우다 →数字・単語などを暗記する\\n❸지금이라도→今からでもすぐに～",
+    vocabulary: [],
+  },
+  {
+    id: 28,
+    question: QUESTION,
+    japanese: "「電車に冷房がかかっている」",
+    koreanTemplate: "전철에 _________________________.",
+    options: [
+      { id: 1, text: "냉방이 돌아가고 있다" },
+      { id: 2, text: "냉방이 돌아가 있다" },
+      { id: 3, text: "냉방이 틀어 있다" },
+      { id: 4, text: "냉방이 걸리고 있다" },
+    ],
+    correctAnswer: 1,
+    explanation: "❶에어컨,난방 등이 돌아가다 動いている\\n❷돌아가 있다 曲がっている",
+    vocabulary: [],
+  },
+  {
+    id: 29,
+    question: QUESTION,
+    japanese: "「ここは車の通る道です」",
+    koreanTemplate: "여기는 _________ 길입니다.",
+    options: [
+      { id: 1, text: "차의 지나가는" },
+      { id: 2, text: "차의 지나치는" },
+      { id: 3, text: "차가 다니는" },
+      { id: 4, text: "차가 가는" },
+    ],
+    correctAnswer: 3,
+    explanation: "❸다니다 通る、行き来する、往来する\\n❹가는 길 ただ行く道で往来の意味はない",
+    vocabulary: [],
+  },
+  {
+    id: 30,
+    question: QUESTION,
+    japanese: "「お前に編集の何がわかる」",
+    koreanTemplate: "_________________________.",
+    options: [
+      { id: 1, text: "너에게 편집의 뭐를 알아" },
+      { id: 2, text: "너에게 편집의 뭐가 알아" },
+      { id: 3, text: "네가 편집에 대해 뭐 알아" },
+      { id: 4, text: "네가 편집에 대해 뭘 안다고" },
+    ],
+    correctAnswer: 4,
+    explanation: "❶너에게を使う時は主に+주다を使う\\n❹が最も自然な表現です。",
+    vocabulary: [],
+  },
+  {
+    id: 31,
+    question: QUESTION,
+    japanese: "「都会はうるさいから田舎に引っ越しました」",
+    koreanTemplate: "도시가 _________________ 이사했어요.",
+    options: [
+      { id: 1, text: "시끄러워서 시골에" },
+      { id: 2, text: "시끄러워서 시골로" },
+      { id: 3, text: "시끄러우니까 시골에" },
+      { id: 4, text: "시끄러우니까 시골로" },
+    ],
+    correctAnswer: 2,
+    explanation: "後ろに移動や変化を表す動詞が来る場合は「~로」\\n❶시골에→시골로",
+    vocabulary: [],
+  },
+  {
+    id: 32,
+    question: QUESTION,
+    japanese: "「飲み始めたばっかりなのに、もう帰るの」",
+    koreanTemplate: "_______ 마시기 시작했는데 ___________.",
+    options: [
+      { id: 1, text: "이미 / 이제 가?" },
+      { id: 2, text: "벌써 / 이미 가?" },
+      { id: 3, text: "방금 / 이미 가?" },
+      { id: 4, text: "이제 / 벌써 가?" },
+    ],
+    correctAnswer: 4,
+    explanation: "*이제・방금・지금～기 시작하다 ～し始めたばっかりだ",
+    vocabulary: [],
+  },
+  {
+    id: 33,
+    question: QUESTION,
+    japanese: "「早く家を出たからもう着いたでしょう」",
+    koreanTemplate: "_____ 집을 ___________________.",
+    options: [
+      { id: 1, text: "어서 / 나갔으니 이미 도착했을걸요" },
+      { id: 2, text: "서둘러 / 나섰으니 이미 도착했겠죠" },
+      { id: 3, text: "빨리 / 나가니 벌써 도착했는걸요" },
+      { id: 4, text: "일찍 / 나서니 벌써 도착했을걸요" },
+    ],
+    correctAnswer: 2,
+    explanation: "❶어서は促す意味。第三者のことを言う時には使わない\\n*～니까/니の後に推測や推量は使えません。",
+    vocabulary: [],
+  },
+  {
+    id: 34,
+    question: QUESTION,
+    japanese: "「いつだって私は大丈夫です」",
+    koreanTemplate: "__________ 저는 괜찮습니다.",
+    options: [
+      { id: 1, text: "언제라든" },
+      { id: 2, text: "언제가 되든" },
+      { id: 3, text: "언제까지라도" },
+      { id: 4, text: "언제까지도" },
+    ],
+    correctAnswer: 2,
+    explanation: "*いつだって=언제라도=언제가 되든=언제든",
+    vocabulary: [],
+  },
+  {
+    id: 35,
+    question: QUESTION,
+    japanese: "「君にはただそばにいて欲しいだけなんだ」",
+    koreanTemplate: "네게 ______ 곁에 ___________________.",
+    options: [
+      { id: 1, text: "바랄 건 / 있어 달라는 뿐이야" },
+      { id: 2, text: "바랄 건 / 있어 달라는 만이야" },
+      { id: 3, text: "바라는 건 / 있어 달라는 것만이야" },
+      { id: 4, text: "바라는 건 / 있어 달라는 것뿐이야" },
+    ],
+    correctAnswer: 4,
+    explanation: "～뿐の前には２種類しか来ない。\\n現在連体を使う場合は代名詞を使い、～는 것뿐になります。",
+    vocabulary: [],
+  },
+  {
+    id: 36,
+    question: QUESTION,
+    japanese: "「今、何を言っているのかよく分かりません」",
+    koreanTemplate: "지금 _______________________________.",
+    options: [
+      { id: 1, text: "무엇을 하는지 잘 모르겠어요" },
+      { id: 2, text: "무엇을 말하는지 잘 몰라요" },
+      { id: 3, text: "무슨 소리를 하는지 잘 모르겠어요" },
+      { id: 4, text: "뭐라고 하는지 잘 몰라요" },
+    ],
+    correctAnswer: 3,
+    explanation: "❶ 무엇을 하는지 何をするのか\\n❹ 몰라요が모르겠어요だったらOKです。",
+    vocabulary: [],
+  },
+  {
+    id: 37,
+    question: QUESTION,
+    japanese: "「今忙しいから食事は３時にしようかな」",
+    koreanTemplate: "지금 _____ 식사는 _____________.",
+    options: [
+      { id: 1, text: "지금 바빠서 식사는 3시로 할까나" },
+      { id: 2, text: "지금 바빠서 식사는 3시에 하려나" },
+      { id: 3, text: "지금 바쁘니까 식사는 3시에 할까나" },
+      { id: 4, text: "지금 바쁘니까 식사는 3시로 하려나" },
+    ],
+    correctAnswer: 3,
+    explanation: "～아/어서はある事実を淡々と伝えるときに使います。",
+    vocabulary: [],
+  },
+  {
+    id: 38,
+    question: QUESTION,
+    japanese: "「ずっと悩んでた契約の問題が解決してよかったじゃん」",
+    koreanTemplate: "계속 고민했던 계약문제가 ____________________.",
+    options: [
+      { id: 1, text: "해결돼서 좋았잖아" },
+      { id: 2, text: "해결됐으니까 됐잖아" },
+      { id: 3, text: "해결해서 다행이잖아" },
+      { id: 4, text: "해결했으니까 좋았잖아" },
+    ],
+    correctAnswer: 2,
+    explanation: "〜이/가 해결되다 / ~을/를 해결하다",
+    vocabulary: [],
+  },
+  {
+    id: 39,
+    question: QUESTION,
+    japanese: "「今は忙しいから後で話すよ」",
+    koreanTemplate: "지금은 _______ 나중에 _________.",
+    options: [
+      { id: 1, text: "바빠서 / 이야기할게" },
+      { id: 2, text: "바빠서 / 이야기해줄게" },
+      { id: 3, text: "바쁘니까 / 이야기할게" },
+      { id: 4, text: "바쁘니까 / 이야기해줄게" },
+    ],
+    correctAnswer: 4,
+    explanation: "이야기해줄게→話を求めた相手にちゃんと答える感じ",
+    vocabulary: [],
+  },
+  {
+    id: 40,
+    question: QUESTION,
+    japanese: "「次、韓国に行ったらその店は絶対に行く！」",
+    koreanTemplate: "다음에 한국에 가면 그 가게는 ___________________.",
+    options: [
+      { id: 1, text: "절대로 가!" },
+      { id: 2, text: "반드시 가!" },
+      { id: 3, text: "절대로 갈 거야!" },
+      { id: 4, text: "꼭 갈 거야!" },
+    ],
+    correctAnswer: 4,
+    explanation: "韓国語は未来形を使う。절대로は否定形と一緒に使うのが自然。",
+    vocabulary: [],
+  },
+  {
+    id: 41,
+    question: QUESTION,
+    japanese: "「そこは歩いて5分の距離です」",
+    koreanTemplate: "거기는 ________ 5분 거리예요.",
+    options: [
+      { id: 1, text: "걸어서" },
+      { id: 2, text: "걷기로" },
+      { id: 3, text: "걷고" },
+      { id: 4, text: "걸음으로" },
+    ],
+    correctAnswer: 1,
+    explanation: "걷기=歩くこと 걷고=歩いてから 걸음=歩き",
+    vocabulary: [],
+  },
+  {
+    id: 42,
+    question: QUESTION,
+    japanese: "「話を聞いて驚いた／既に聞いて知ってた」",
+    koreanTemplate: "나 그 이야기 _____ 놀랐는데 / 나는 이미 _____ 알고 있는데",
+    options: [
+      { id: 1, text: "듣고 / 듣고" },
+      { id: 2, text: "듣고 / 들어서" },
+      { id: 3, text: "들어서 / 듣고" },
+      { id: 4, text: "들어서 / 들어서" },
+    ],
+    correctAnswer: 2,
+    explanation: "驚いたりショックを受けるときは듣고。既に知っている場合は들어서 알다。",
+    vocabulary: [],
+  },
+  {
+    id: 43,
+    question: QUESTION,
+    japanese: "「その店に行くと好きなものが多いから買うことが多いです」",
+    koreanTemplate: "거기에 가면 마음에 드는 ______ 많아서 사는 ______ 많아요.",
+    options: [
+      { id: 1, text: "경우가 / 경우가" },
+      { id: 2, text: "것이 / 게" },
+      { id: 3, text: "경우가 / 게" },
+      { id: 4, text: "게 / 경우가" },
+    ],
+    correctAnswer: 4,
+    explanation: "好きなもの=마음에 드는 것 買うこと=사는 경우",
+    vocabulary: [],
+  },
+  {
+    id: 44,
+    question: QUESTION,
+    japanese: "「私はあなたが諦めないことを願っている」",
+    koreanTemplate: "나는 당신이 _______________________.",
+    options: [
+      { id: 1, text: "포기하지 않는 것을 기원해요" },
+      { id: 2, text: "포기하지 않았으면 좋겠어요" },
+      { id: 3, text: "포기하지 않기를 바라고 있어요" },
+      { id: 4, text: "포기하지 않게 되기를 바랍니다" },
+    ],
+    correctAnswer: 3,
+    explanation: "～지 않기를 바라다=～しないことを願う",
+    vocabulary: [],
+  },
+  {
+    id: 45,
+    question: QUESTION,
+    japanese: "「そんな話聞いてないです」",
+    koreanTemplate: "그런 이야기 ___________.",
+    options: [
+      { id: 1, text: "안 들어요" },
+      { id: 2, text: "안 들었어요" },
+      { id: 3, text: "안 듣고 있어요" },
+      { id: 4, text: "안 듣고 있었어요" },
+    ],
+    correctAnswer: 2,
+    explanation: "～していない→韓国語では「～았/었다」と過去形で表現します。",
+    vocabulary: [],
+  },
+  {
+    id: 46,
+    question: QUESTION,
+    japanese: "「多分あると思う」",
+    koreanTemplate: "아마 ____________________",
+    options: [
+      { id: 1, text: "있는 거 같아" },
+      { id: 2, text: "있을 생각이야" },
+      { id: 3, text: "있다고 생각해" },
+      { id: 4, text: "있을 거라고 생각해" },
+    ],
+    correctAnswer: 4,
+    explanation: "아마（多分）の後には必ず未来形がきます。",
+    vocabulary: [],
+  },
+  {
+    id: 47,
+    question: QUESTION,
+    japanese: "「どうしてそれが分かるの？」",
+    koreanTemplate: "_______ 그걸 _________?",
+    options: [
+      { id: 1, text: "왜 / 알아?" },
+      { id: 2, text: "왜 / 알았어?" },
+      { id: 3, text: "어떻게 / 알아?" },
+      { id: 4, text: "어떻게 / 알았어?" },
+    ],
+    correctAnswer: 4,
+    explanation: "가 가장 자연한 표현입니다。",
+    vocabulary: [],
+  },
+  {
+    id: 48,
+    question: QUESTION,
+    japanese: "「パソコンが勝手に再起動しました」",
+    koreanTemplate: "컴퓨터가 제멋대로 _____________.",
+    options: [
+      { id: 1, text: "꺼졌다 켜졌어요" },
+      { id: 2, text: "껐다 켰어요" },
+      { id: 3, text: "재기동했어요" },
+      { id: 4, text: "재기동됐어요" },
+    ],
+    correctAnswer: 1,
+    explanation: "꺼졌다가 켜지다 再起動される。再起動は리부팅という。",
+    vocabulary: [],
+  },
+  {
+    id: 49,
+    question: QUESTION,
+    japanese: "「いまのところ、大丈夫です」",
+    koreanTemplate: "____________________.",
+    options: [
+      { id: 1, text: "지금까지는 괜찮았어요" },
+      { id: 2, text: "아직까지는 괜찮아요" },
+      { id: 3, text: "지금으로선 괜찮아요" },
+      { id: 4, text: "아직까지는 괜찮을 거예요" },
+    ],
+    correctAnswer: 2,
+    explanation: "지금까지는 今までは  지금으로서는 今の段階では",
+    vocabulary: [],
+  },
+  {
+    id: 50,
+    question: QUESTION,
+    japanese: "「今手に持ったのは何ですか」",
+    koreanTemplate: "지금 ___________________ 뭐예요?",
+    options: [
+      { id: 1, text: "손에 든 거" },
+      { id: 2, text: "손에 가진 거" },
+      { id: 3, text: "손에 잡힌 거" },
+      { id: 4, text: "손에 잡은 거" },
+    ],
+    correctAnswer: 1,
+    explanation: "가지다は～을/를が必要  손에 잡히다 手に捕れる  손으로 잡다 (〇)",
+    vocabulary: [],
+  },
+  {
+    id: 51,
+    question: QUESTION,
+    japanese: "「スーツを着ている人がKさんです」",
+    koreanTemplate: "양복을 ___________________이 K씨예요.",
+    options: [
+      { id: 1, text: "입고 있던 사람" },
+      { id: 2, text: "입는 사람" },
+      { id: 3, text: "입을 사람" },
+      { id: 4, text: "입은 사람" },
+    ],
+    correctAnswer: 4,
+    explanation: "입은=着た→着ている、입은が最も自然です。",
+    vocabulary: [],
+  },
+  {
+    id: 52,
+    question: QUESTION,
+    japanese: "「あのレストランは今混む時間だからまた今度にしよう」",
+    koreanTemplate: "그 레스토랑은 지금 ______시간이니까 __________ 하자.",
+    options: [
+      { id: 1, text: "바쁠 / 앞으로" },
+      { id: 2, text: "바쁜 / 다음으로" },
+      { id: 3, text: "바쁠 / 다음에" },
+      { id: 4, text: "바쁜 / 다음에" },
+    ],
+    correctAnswer: 3,
+    explanation: "推測の場合は未来連体形を使う→바쁠 시간。",
+    vocabulary: [],
+  },
+  {
+    id: 53,
+    question: QUESTION,
+    japanese: "「もうこんな時間だとは気づかず、外出の準備もしてない！」",
+    koreanTemplate: "벌써 __________ 외출 준비도 못 했네！",
+    options: [
+      { id: 1, text: "이런 시간인 줄도 모르고" },
+      { id: 2, text: "시간이 이렇게 된 줄도 모르고" },
+      { id: 3, text: "시간이 이런 줄도 몰라서" },
+      { id: 4, text: "이런 시간이 된 줄도 몰라서" },
+    ],
+    correctAnswer: 2,
+    explanation: "こんな時間だとは気づかず=시간이 이렇게 된 줄도 모르고",
+    vocabulary: [],
+  },
+  {
+    id: 54,
+    question: QUESTION,
+    japanese: "「彼女は危なっかしいから、もうこの仕事はさせないことにしたよ」",
+    koreanTemplate: "그 사람은 일하는 게 A: ____________, 더 이상 이 일을 B: ____________ 했어!",
+    options: [
+      { id: 1, text: "A: 불안하니까 B: 시키지 않기로" },
+      { id: 2, text: "A: 위험하니까 B: 시키지 말기로" },
+      { id: 3, text: "A: 불안하니까 B: 시키지 않게" },
+      { id: 4, text: "A: 위험하니까 B: 시키지 말게" },
+    ],
+    correctAnswer: 1,
+    explanation: "말기로 (✖) 시키지 않기로 させないことにした。",
+    vocabulary: [],
+  },
+  {
+    id: 55,
+    question: QUESTION,
+    japanese: "「彼ほど仕事ができる人はいない」",
+    koreanTemplate: "그 사람 ____________________.",
+    options: [
+      { id: 1, text: "만큼 일이 할 수 있는 사람은 없다" },
+      { id: 2, text: "정도 일이 잘 되는 사람은 없다" },
+      { id: 3, text: "만큼 일이 잘하는 사람은 없다" },
+      { id: 4, text: "정도 일을 잘하는 사람은 없다" },
+    ],
+    correctAnswer: 4,
+    explanation: "仕事ができる=일을 잘하다。만큼=정도로",
+    vocabulary: [],
+  },
+  {
+    id: 56,
+    question: QUESTION,
+    japanese: "「今日は香水をつけてきてないんですよ」",
+    koreanTemplate: "오늘 향수를 _____________________.",
+    options: [
+      { id: 1, text: "안 뿌려서 왔어요" },
+      { id: 2, text: "안 뿌려 왔어요" },
+      { id: 3, text: "안 뿌리고 왔어요" },
+      { id: 4, text: "뿌리지 않아 왔어요" },
+    ],
+    correctAnswer: 3,
+    explanation: "안 뿌리고 오다=안 뿌린 채 오다=つけないまま来る",
+    vocabulary: [],
+  },
+  {
+    id: 57,
+    question: QUESTION,
+    japanese: "「今日は寒いから駅の待合室に入っている人多いね」",
+    koreanTemplate: "오늘은 추우니까 역 대합실에 _________ 사람이 많네요.",
+    options: [
+      { id: 1, text: "들어 있는" },
+      { id: 2, text: "들어가 있는" },
+      { id: 3, text: "들어가고 있는" },
+      { id: 4, text: "들어서 있는" },
+    ],
+    correctAnswer: 2,
+    explanation: "들어 있다は人には使わない。들어가고 있다→進行中。",
+    vocabulary: [],
+  },
+  {
+    id: 58,
+    question: QUESTION,
+    japanese: "「仕事ができる人がなかなか見つからない」",
+    koreanTemplate: "일 잘하는 _________________________.",
+    options: [
+      { id: 1, text: "사람이 좀처럼 찾을 수 없다" },
+      { id: 2, text: "사람을 좀처럼 찾아질 수 없다" },
+      { id: 3, text: "사람을 잘 찾아지지 않는다" },
+      { id: 4, text: "사람이 잘 안 찾아진다" },
+    ],
+    correctAnswer: 4,
+    explanation: "～가 찾아지다=～을 찾을 수 있다。なかなかない=잘 없다",
+    vocabulary: [],
+  },
+  {
+    id: 59,
+    question: QUESTION,
+    japanese: "「ドラマを観る時間はあるけど、勉強する時間はない」",
+    koreanTemplate: "A:________ 시간 있지만 B:__________시간은 없다.",
+    options: [
+      { id: 1, text: "드라마를 보는 / 공부하는" },
+      { id: 2, text: "드라마를 볼 / 공부할" },
+      { id: 3, text: "드라마를 보는 / 공부할" },
+      { id: 4, text: "드라마를 볼 / 공부하는" },
+    ],
+    correctAnswer: 2,
+    explanation: "習慣は現在連体形。これから行おうとする動作は未来連体形～을/를を使う。",
+    vocabulary: [],
+  },
+  {
+    id: 60,
+    question: QUESTION,
+    japanese: "「あ、目になんか入った！」",
+    koreanTemplate: "아, 눈에 뭔가 ________ !",
+    options: [
+      { id: 1, text: "들었어" },
+      { id: 2, text: "들어왔어" },
+      { id: 3, text: "들어갔어" },
+      { id: 4, text: "들어있어" },
+    ],
+    correctAnswer: 3,
+    explanation: "들어갔어 - いらないものが目や鼻に入ったとき。들어왔어 - 欲しいものが入った時。",
+    vocabulary: [],
+  },
+  {
+    id: 61,
+    question: QUESTION,
+    japanese: "「野良猫が皮膚病にかかっている！」",
+    koreanTemplate: "길고양이가 피부병에 ___________!",
+    options: [
+      { id: 1, text: "걸렸어" },
+      { id: 2, text: "걸려 있어" },
+      { id: 3, text: "걸려서 있어" },
+      { id: 4, text: "걸리고 있어" },
+    ],
+    correctAnswer: 1,
+    explanation: "皮膚病にかかっている=피부병에 걸렸다。",
+    vocabulary: [],
+  },
+  {
+    id: 62,
+    question: QUESTION,
+    japanese: "「あら、また雨？私雨女かも」",
+    koreanTemplate: "어 또 비 오네? 나 __________여자인가 봐",
+    options: [
+      { id: 1, text: "비를 내리는" },
+      { id: 2, text: "비를 뿌리는" },
+      { id: 3, text: "비를 가지고 다니는" },
+      { id: 4, text: "비를 몰고 다니는" },
+    ],
+    correctAnswer: 4,
+    explanation: "慣用的に비를 몰고 다니다と使う。",
+    vocabulary: [],
+  },
+  {
+    id: 63,
+    question: QUESTION,
+    japanese: "「1日10分でも、一年だと3650分勉強することになります。わけだ。」",
+    koreanTemplate: "하루 10분이라도 일년이라면 3600분_______.",
+    options: [
+      { id: 1, text: "공부하게 될 셈이다" },
+      { id: 2, text: "공부하게 되는 셈이다" },
+      { id: 3, text: "공부하게 될 뜻이다" },
+      { id: 4, text: "공부하게 되는 뜻이다" },
+    ],
+    correctAnswer: 2,
+    explanation: "～는 셈이다=～するわけだ。～을 셈이다は～するつもりだ",
+    vocabulary: [],
+  },
+  {
+    id: 64,
+    question: QUESTION,
+    japanese: "「在宅勤務で太って服が入らない」",
+    koreanTemplate: "재택근무로 살이 쪄서 _______.",
+    options: [
+      { id: 1, text: "옷이 못 들어가" },
+      { id: 2, text: "옷을 못 들어가" },
+      { id: 3, text: "옷이 안 들어가" },
+      { id: 4, text: "옷을 안 들어가" },
+    ],
+    correctAnswer: 3,
+    explanation: "들어가다は自動詞なので못は付けられず안のみになります。",
+    vocabulary: [],
+  },
+  {
+    id: 65,
+    question: QUESTION,
+    japanese: "「両手に荷物もってて手がふさがってる」",
+    koreanTemplate: "양손에 짐을 들고 있어서 _______.",
+    options: [
+      { id: 1, text: "손이 막혔어" },
+      { id: 2, text: "손이 못 움직여" },
+      { id: 3, text: "손이 쓸 수 없어" },
+      { id: 4, text: "손이 없어" },
+    ],
+    correctAnswer: 4,
+    explanation: "(쓸 수 있는) 손이 없다というニュアンスで使う。",
+    vocabulary: [],
+  },
+  {
+    id: 66,
+    question: QUESTION,
+    japanese: "「お話はたくさん伺っております」",
+    koreanTemplate: "말씀은 ________________.",
+    options: [
+      { id: 1, text: "많이 들어요" },
+      { id: 2, text: "많이 들었어요" },
+      { id: 3, text: "많이 듣고 있어요" },
+      { id: 4, text: "많이 여쭙고 있어요" },
+    ],
+    correctAnswer: 2,
+    explanation: "많이 들었어요 よく聞いています。많이 여쭙고 있어요 よく尋ねています。",
+    vocabulary: [],
+  },
+  {
+    id: 67,
+    question: QUESTION,
+    japanese: "「その色の服がA)あるか分かりませんが、とりあえず倉庫に行ってB)あるか探してみます」",
+    koreanTemplate: "그 색깔의 옷이 A)_____ 모르겠지만, 일단 창고에 가서 B)________ 찾아볼게요.",
+    options: [
+      { id: 1, text: "있는지 / 있는지" },
+      { id: 2, text: "있는지 / 있을지" },
+      { id: 3, text: "있을지 / 있을지" },
+      { id: 4, text: "있을지 / 있는지" },
+    ],
+    correctAnswer: 4,
+    explanation: "A)不確かな場合は未来形。B)確認が必要な場合は現在形。",
+    vocabulary: [],
+  },
+  {
+    id: 68,
+    question: QUESTION,
+    japanese: "「A)この道をまっすぐ行くとB)映画館に出ます」",
+    koreanTemplate: "A)_____ 똑바로 가면 B)________ 나와요",
+    options: [
+      { id: 1, text: "이 길을 / 극장에" },
+      { id: 2, text: "이 길을 / 극장으로" },
+      { id: 3, text: "이 길로 / 극장이" },
+      { id: 4, text: "이 길로 / 극장에" },
+    ],
+    correctAnswer: 3,
+    explanation: "이 길로 가다。場所+に出る ～이 나오다。～에 나오다は使わない",
+    vocabulary: [],
+  },
+  {
+    id: 69,
+    question: QUESTION,
+    japanese: "「私をちょっとほっといて」",
+    koreanTemplate: "나 좀 __________________",
+    options: [
+      { id: 1, text: "내 버려." },
+      { id: 2, text: "내 버려 줘." },
+      { id: 3, text: "내 버려 둬." },
+      { id: 4, text: "내다 버려 둬." },
+    ],
+    correctAnswer: 3,
+    explanation: "ほっといて=내 버려 둬。～아/어 두다 ～しておく",
+    vocabulary: [],
+  },
+  {
+    id: 70,
+    question: QUESTION,
+    japanese: "「しまった！二度寝しちゃった!」",
+    koreanTemplate: "망했다! _____________________",
+    options: [
+      { id: 1, text: "두번째 자 버렸다" },
+      { id: 2, text: "두번 자 버렸다" },
+      { id: 3, text: "두번 다시 자 버렸다" },
+      { id: 4, text: "다시 자 버렸다" },
+    ],
+    correctAnswer: 4,
+    explanation: "다시 자 버렸다 二度寝してしまった。두번 2回。두번 다시 二度と",
+    vocabulary: [],
+  },
+  {
+    id: 71,
+    question: QUESTION,
+    japanese: "「このかばん、ずいぶんもったね」",
+    koreanTemplate: "이 가방, ____________",
+    options: [
+      { id: 1, text: "오래 버텼네" },
+      { id: 2, text: "오래 들었네" },
+      { id: 3, text: "오래 가졌네" },
+      { id: 4, text: "오래 갔네" },
+    ],
+    correctAnswer: 1,
+    explanation: "오래 버텼네 長くもった。오래 들었네 長く手に持っていた。",
+    vocabulary: [],
+  },
+  {
+    id: 72,
+    question: QUESTION,
+    japanese: "「少し前に買った観葉植物、ちょっとだけ大きくなったみたい」",
+    koreanTemplate: "얼마 전에 산 관엽식물, ____________ 거 같아",
+    options: [
+      { id: 1, text: "조금은 크게 된" },
+      { id: 2, text: "조금만 커진" },
+      { id: 3, text: "조금은 큰" },
+      { id: 4, text: "조금만 크는" },
+    ],
+    correctAnswer: 3,
+    explanation: "크다は「成長する、大きくなります」の意味もある。",
+    vocabulary: [],
+  },
+  {
+    id: 73,
+    question: QUESTION,
+    japanese: "「この調査結果から次のことが分かる」",
+    koreanTemplate: "이 조사결과로 _________________",
+    options: [
+      { id: 1, text: "다음을 안다" },
+      { id: 2, text: "다음을 알 수 있다" },
+      { id: 3, text: "다음 것을 안다" },
+      { id: 4, text: "다음 것을 알 수 있다" },
+    ],
+    correctAnswer: 2,
+    explanation: "안다→知っている。알 수 있다→分かる。「～のこと」に것は入れない",
+    vocabulary: [],
+  },
+  {
+    id: 74,
+    question: QUESTION,
+    japanese: "「それ、修理に出したら?」",
+    koreanTemplate: "그거 _________________?",
+    options: [
+      { id: 1, text: "수리에 내면 어때?" },
+      { id: 2, text: "수리에 맡기면 어때?" },
+      { id: 3, text: "수리를 내지 그래?" },
+      { id: 4, text: "수리를 맡기지 그래?" },
+    ],
+    correctAnswer: 4,
+    explanation: "修理に出す=수리를 맡기다(O)。～したら=～지 그래",
+    vocabulary: [],
+  },
+  {
+    id: 75,
+    question: QUESTION,
+    japanese: "「違うものは違うとはっきりものを言わなければならない」",
+    koreanTemplate: "아닌 것은 아니라고 확실히 ____은 해야 한다.",
+    options: [
+      { id: 1, text: "할 말" },
+      { id: 2, text: "하는 말" },
+      { id: 3, text: "문제 발언" },
+      { id: 4, text: "문제의 말" },
+    ],
+    correctAnswer: 1,
+    explanation: "ものをいう=할 말을 하다。하는 말 言っていること",
+    vocabulary: [],
+  },
+  {
+    id: 76,
+    question: QUESTION,
+    japanese: "「その修理、結構お金かかるからすごく悩むの」",
+    koreanTemplate: "그 수리, 꽤 돈 ❶___________ 진짜 ❷______.",
+    options: [
+      { id: 1, text: "걸려서 / 고민해" },
+      { id: 2, text: "걸리니까 / 고민돼" },
+      { id: 3, text: "들어서 / 고민해" },
+      { id: 4, text: "드니까 / 고민돼" },
+    ],
+    correctAnswer: 4,
+    explanation: "かかる: 時間→걸리다 お金→들다(O) 걸리다(X)。悩む: 고민돼。고민해は使わない。",
+    vocabulary: [],
+  },
+  {
+    id: 77,
+    question: QUESTION,
+    japanese: "「お姉さん、実家にはいつ帰るの？」",
+    koreanTemplate: "언니, 친정에는 ____________?",
+    options: [
+      { id: 1, text: "언제 가?" },
+      { id: 2, text: "언제 돌아가?" },
+      { id: 3, text: "언제 들어가?" },
+      { id: 4, text: "언제 돌아와?" },
+    ],
+    correctAnswer: 1,
+    explanation: "돌아가다 元の場所に戻る。들어가다 自分の家に帰る。돌아오다 いつ帰ってくるの？",
+    vocabulary: [],
+  },
+  {
+    id: 78,
+    question: QUESTION,
+    japanese: "「今忙しいから、ちょっとあとで電話する」",
+    koreanTemplate: "지금 바쁘니까 ____ 전화할게.",
+    options: [
+      { id: 1, text: "나중에" },
+      { id: 2, text: "다음에" },
+      { id: 3, text: "잠깐 뒤에" },
+      { id: 4, text: "이따" },
+    ],
+    correctAnswer: 4,
+    explanation: "이따(가)ちょっとあとで→その日のうち。나중에 あとで。다음에 今度",
+    vocabulary: [],
+  },
+  {
+    id: 79,
+    question: QUESTION,
+    japanese: "「最近あの業界が調子がいい理由は？」",
+    koreanTemplate: "최근 그 업계가 _______ 이유는?",
+    options: [
+      { id: 1, text: "잘 되어 있는" },
+      { id: 2, text: "잘 되어 가는" },
+      { id: 3, text: "잘 가는" },
+      { id: 4, text: "잘 나가는" },
+    ],
+    correctAnswer: 4,
+    explanation: "잘 나가다 よく売れている、調子がいい",
+    vocabulary: [],
+  },
+  {
+    id: 80,
+    question: QUESTION,
+    japanese: "「今は時間があるから、今のうちに旅行に行けたらいいんだけど」",
+    koreanTemplate: "지금 시간이 있으니 이때 여행을 ______",
+    options: [
+      { id: 1, text: "가면 좋은데요" },
+      { id: 2, text: "가면 좋겠는데요" },
+      { id: 3, text: "갈 수 있으면 좋네요" },
+      { id: 4, text: "갈 수 있으면 좋은데요" },
+    ],
+    correctAnswer: 2,
+    explanation: "가면 좋겠는데요 行けたらいいのですが。願望の場合は～면～좋겠다のように겠が必要",
+    vocabulary: [],
+  },
+  {
+    id: 81,
+    question: QUESTION,
+    japanese: "「あの化粧品ほぼ使い切りつつある」",
+    koreanTemplate: "그 화장품 이제 ___________________",
+    options: [
+      { id: 1, text: "다 써 가" },
+      { id: 2, text: "다 쓰고 가" },
+      { id: 3, text: "거의 써서 가" },
+      { id: 4, text: "거의 쓰고 가" },
+    ],
+    correctAnswer: 1,
+    explanation: "다～아/어 가다 ほぼなくなりつつある。다 쓰고 가 全部使ってから行って",
+    vocabulary: [],
+  },
+  {
+    id: 82,
+    question: QUESTION,
+    japanese: "「歯の間にカスが残っていると歯周病になります」",
+    koreanTemplate: "이 사이에 음식물 찌꺼기가 ___________________ 잇몸병이 생겨.",
+    options: [
+      { id: 1, text: "남아 놓고 있으면" },
+      { id: 2, text: "남겨 있으면" },
+      { id: 3, text: "남아 있으면" },
+      { id: 4, text: "남기고 있으면" },
+    ],
+    correctAnswer: 3,
+    explanation: "남아 있다残っている。남겨 놓다 残しておく。남기고 있다 (常に)残している",
+    vocabulary: [],
+  },
+  {
+    id: 83,
+    question: QUESTION,
+    japanese: "「何で夜中に電話なんかするの？」",
+    koreanTemplate: "왜 한밤중에 전화를 ___________?",
+    options: [
+      { id: 1, text: "하고 그래" },
+      { id: 2, text: "해서 그래" },
+      { id: 3, text: "하지 그래" },
+      { id: 4, text: "하니 그래" },
+    ],
+    correctAnswer: 1,
+    explanation: "～なんかするの=하고 그래。왜 화를 내고 그래? 何で怒ったりするの。",
+    vocabulary: [],
+  },
+  {
+    id: 84,
+    question: QUESTION,
+    japanese: "「あなたが今そんなことしてる場合じゃないでしょ？」",
+    koreanTemplate: "네가 지금 그런 거 ___________________",
+    options: [
+      { id: 1, text: "할 경우가 아니잖아?" },
+      { id: 2, text: "하는 때야?" },
+      { id: 3, text: "할지 말지 고민이야?" },
+      { id: 4, text: "하게 생겼어?" },
+    ],
+    correctAnswer: 4,
+    explanation: "～する場合じゃない=～게 생겼느냐? する場合じゃないでしょ？",
+    vocabulary: [],
+  },
+  {
+    id: 85,
+    question: QUESTION,
+    japanese: "「明日は急な用事があって来られそうにありません」",
+    koreanTemplate: "내일은 급한 일이 있어서 ___________________",
+    options: [
+      { id: 1, text: "못 올 수 있어요" },
+      { id: 2, text: "못 오는 수도 있어요" },
+      { id: 3, text: "못 올 것 같아요" },
+      { id: 4, text: "못 오는 것 같아요" },
+    ],
+    correctAnswer: 3,
+    explanation: "못 올 것 같아요 これそうにありません。못 오는 것 같아요 これないと思います。",
+    vocabulary: [],
+  },
+  {
+    id: 86,
+    question: QUESTION,
+    japanese: "「(トイレで)タバコを吸わないこと」",
+    koreanTemplate: "(화장실에서) 담배를 ___________________",
+    options: [
+      { id: 1, text: "피우지 않을 것" },
+      { id: 2, text: "피우지 않는 것" },
+      { id: 3, text: "피우지 말 것" },
+      { id: 4, text: "피우지 마는 것" },
+    ],
+    correctAnswer: 3,
+    explanation: "～しないこと=～하지 말 것。떠들지 말 것 お喋りしないこと",
+    vocabulary: [],
+  },
+  {
+    id: 87,
+    question: QUESTION,
+    japanese: "「子供は皆ゲームが好きだということはない」",
+    koreanTemplate: "아이들이 모두 게임을 좋아한다는 _______",
+    options: [
+      { id: 1, text: "까닭은 없다" },
+      { id: 2, text: "법은 없다" },
+      { id: 3, text: "것은 없다" },
+      { id: 4, text: "셈은 없다" },
+    ],
+    correctAnswer: 2,
+    explanation: "～ものはない、ことはない=법은 없다。",
+    vocabulary: [],
+  },
+  {
+    id: 88,
+    question: QUESTION,
+    japanese: "「その言葉は冗談かと思った」",
+    koreanTemplate: "그 말이 농담 _______",
+    options: [
+      { id: 1, text: "이냐고 생각했다" },
+      { id: 2, text: "인 줄 생각했다" },
+      { id: 3, text: "일까 알았다" },
+      { id: 4, text: "인 줄 알았다" },
+    ],
+    correctAnswer: 4,
+    explanation: "～인 줄 알았다 ～かと思った。",
+    vocabulary: [],
+  },
+  {
+    id: 89,
+    question: QUESTION,
+    japanese: "「その人は大ヒット曲を飛ばし、顔が売れた歌手になった」",
+    koreanTemplate: "그 사람은 빅히트곡을 내면서, 얼굴이 ___________ 가수가 됐다",
+    options: [
+      { id: 1, text: "알린" },
+      { id: 2, text: "알려진" },
+      { id: 3, text: "팔린" },
+      { id: 4, text: "팔려진" },
+    ],
+    correctAnswer: 2,
+    explanation: "얼굴이 알린→얼굴을 알린ならOK。얼굴이 팔려진→不自然",
+    vocabulary: [],
+  },
+  {
+    id: 90,
+    question: QUESTION,
+    japanese: "「(A)いつか(B)分からないけど世界一周をしてみたい」",
+    koreanTemplate: "(A)________(B)_________ 세계일주를 해 보고 싶다",
+    options: [
+      { id: 1, text: "언제인지 / 모르지만" },
+      { id: 2, text: "언제일까 / 모르겠지만" },
+      { id: 3, text: "언젠가는 / 모르지만" },
+      { id: 4, text: "언제일지 / 모르겠지만" },
+    ],
+    correctAnswer: 4,
+    explanation: "언제일지 모르겠지만 いつか分からないけど",
+    vocabulary: [],
+  },
+  {
+    id: 91,
+    question: QUESTION,
+    japanese: "「セールだから百貨店に行ったんだけど、人が(A)多かったから(B)諦めて帰って来たよ」",
+    koreanTemplate: "세일이라서 백화점에 갔는데 사람이 (A)________(B)_________ 그냥 돌아왔어.",
+    options: [
+      { id: 1, text: "많아서 / 포기하고" },
+      { id: 2, text: "많았으니까 / 포기해서" },
+      { id: 3, text: "많아서 / 포기해서" },
+      { id: 4, text: "많았으니까 / 포기하고" },
+    ],
+    correctAnswer: 1,
+    explanation: "많았으니까→많아서 過去の事実は～어서。포기해서→포기하고 보다,읽다,듣다,포기하다は～고を使う。",
+    vocabulary: [],
+  },
+  {
+    id: 92,
+    question: QUESTION,
+    japanese: "「明日は急な用事があって来られそうにありません」",
+    koreanTemplate: "내일은 급한 일이 있어서 ___________________",
+    options: [
+      { id: 1, text: "못 올 수 있어요" },
+      { id: 2, text: "못 오는 수도 있어요" },
+      { id: 3, text: "못 올 것 같아요" },
+      { id: 4, text: "못 오는 것 같아요" },
+    ],
+    correctAnswer: 3,
+    explanation: "못 올 것 같아요 これそうにありません。",
+    vocabulary: [],
+  },
+  {
+    id: 93,
+    question: QUESTION,
+    japanese: "「あなたが今そんなことしてる場合じゃないでしょ？」",
+    koreanTemplate: "네가 지금 그런 거 ___________________",
+    options: [
+      { id: 1, text: "할 경우가 아니잖아?" },
+      { id: 2, text: "하는 때야?" },
+      { id: 3, text: "할지 말지 고민이야?" },
+      { id: 4, text: "하게 생겼어?" },
+    ],
+    correctAnswer: 4,
+    explanation: "～する場合じゃない=～게 생겼느냐?",
+    vocabulary: [],
+  },
+  {
+    id: 94,
+    question: QUESTION,
+    japanese: "「(トイレで)タバコを吸わないこと」",
+    koreanTemplate: "(화장실에서) 담배를 ___________________",
+    options: [
+      { id: 1, text: "피우지 않을 것" },
+      { id: 2, text: "피우지 않는 것" },
+      { id: 3, text: "피우지 말 것" },
+      { id: 4, text: "피우지 마는 것" },
+    ],
+    correctAnswer: 3,
+    explanation: "～しないこと=～하지 말 것。",
+    vocabulary: [],
+  },
+  {
+    id: 95,
+    question: QUESTION,
+    japanese: "「子供は皆ゲームが好きだということはない」",
+    koreanTemplate: "아이들이 모두 게임을 좋아한다는 _______",
+    options: [
+      { id: 1, text: "까닭은 없다" },
+      { id: 2, text: "법은 없다" },
+      { id: 3, text: "것은 없다" },
+      { id: 4, text: "셈은 없다" },
+    ],
+    correctAnswer: 2,
+    explanation: "～ものはない、ことはない=법은 없다。",
+    vocabulary: [],
+  },
+  {
+    id: 96,
+    question: QUESTION,
+    japanese: "「その言葉は冗談かと思った」",
+    koreanTemplate: "그 말이 농담 _______",
+    options: [
+      { id: 1, text: "이냐고 생각했다" },
+      { id: 2, text: "인 줄 생각했다" },
+      { id: 3, text: "일까 알았다" },
+      { id: 4, text: "인 줄 알았다" },
+    ],
+    correctAnswer: 4,
+    explanation: "～인 줄 알았다 ～かと思った。",
+    vocabulary: [],
+  },
+  {
+    id: 97,
+    question: QUESTION,
+    japanese: "「その人は大ヒット曲を飛ばし、顔が売れた歌手になった」",
+    koreanTemplate: "그 사람은 빅히트곡을 내면서, 얼굴이 ___________ 가수가 됐다",
+    options: [
+      { id: 1, text: "알린" },
+      { id: 2, text: "알려진" },
+      { id: 3, text: "팔린" },
+      { id: 4, text: "팔려진" },
+    ],
+    correctAnswer: 2,
+    explanation: "얼굴이 알려진 顔が売れた。",
+    vocabulary: [],
+  },
+  {
+    id: 98,
+    question: QUESTION,
+    japanese: "「(A)いつか(B)分からないけど世界一周をしてみたい」",
+    koreanTemplate: "(A)________(B)_________ 세계일주를 해 보고 싶다",
+    options: [
+      { id: 1, text: "언제인지 / 모르지만" },
+      { id: 2, text: "언제일까 / 모르겠지만" },
+      { id: 3, text: "언젠가는 / 모르지만" },
+      { id: 4, text: "언제일지 / 모르겠지만" },
+    ],
+    correctAnswer: 4,
+    explanation: "언제일지 모르겠지만 いつか分からないけど。",
+    vocabulary: [],
+  },
+  {
+    id: 99,
+    question: QUESTION,
+    japanese: "「セールだから百貨店に行ったんだけど、人が多かったから諦めて帰って来たよ」",
+    koreanTemplate: "세일이라서 백화점에 갔는데 사람이 (A)________(B)_________ 그냥 돌아왔어.",
+    options: [
+      { id: 1, text: "많아서 / 포기하고" },
+      { id: 2, text: "많았으니까 / 포기해서" },
+      { id: 3, text: "많아서 / 포기해서" },
+      { id: 4, text: "많았으니까 / 포기하고" },
+    ],
+    correctAnswer: 1,
+    explanation: "많았으니까→많아서。포기해서→포기하고。",
+    vocabulary: [],
+  },
+  {
+    id: 100,
+    question: QUESTION,
+    japanese: "「今日も上司に一言いわれた」",
+    koreanTemplate: "오늘도 _________________________.",
+    options: [
+      { id: 1, text: "상사가 한 말 했다" },
+      { id: 2, text: "상사가 한 소리 말했다" },
+      { id: 3, text: "상사에게 한 소리 들었다" },
+      { id: 4, text: "상사에게 한 소리 말해졌다" },
+    ],
+    correctAnswer: 3,
+    explanation: "上司に=상사에게 一言=한 소리 いわれる=듣다(聞く)。",
+    vocabulary: [],
+  },
 ] as const;
 export type Quiz = (typeof QUIZZES)[number];
