@@ -24,7 +24,19 @@ export const DEFAULT_ASSIGNMENT_EXAMPLES: { title: string; topic: string }[][] =
     { title: "第9回課題：　テーマ：韓国、韓国人", topic: "韓国、韓国人" },
     { title: "第10回課題：　テーマ：料理", topic: "料理" },
   ],
-  ...Array(6).fill(null).map(() => Array(10).fill(null).map(() => ({ title: "", topic: "" }))),
+  [
+    { title: "第1回課題：　テーマ：理想型", topic: "理想型" },
+    { title: "第2回課題：　テーマ：ドラマ", topic: "ドラマ" },
+    { title: "第3回課題：　テーマ：思い出", topic: "思い出" },
+    { title: "第4回課題：　テーマ：服", topic: "服" },
+    { title: "第5回課題：　テーマ：好きな食材と食べ方", topic: "好きな食材と食べ方" },
+    { title: "第6回課題：　テーマ：ぞっとしたこと", topic: "ぞっとしたこと" },
+    { title: "第7回課題：　テーマ：配達", topic: "配達" },
+    { title: "第8回課題：　テーマ：癖", topic: "癖" },
+    { title: "第9回課題：　テーマ：占い", topic: "占い" },
+    { title: "第10回課題：　テーマ：公共秩序", topic: "公共秩序" },
+  ],
+  ...Array(5).fill(null).map(() => Array(10).fill(null).map(() => ({ title: "", topic: "" }))),
 ];
 
 export const PERIOD_LABELS = ["1期", "2期", "3期", "4期", "5期", "6期", "7期", "8期"];
