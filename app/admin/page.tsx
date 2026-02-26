@@ -1640,9 +1640,29 @@ export default function AdminPage() {
                                 placeholder="모범문 (밑줄: <u>단어</u>)"
                               />
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 flex-wrap">
                               <button type="button" onClick={handleSaveKadai} disabled={kadaiSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
                                 保存
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const defModel = PERIOD_EXAMPLES[editingKadai!.period]?.[editingKadai!.item]?.modelContent;
+                                  const defTitle = DEFAULT_ASSIGNMENT_EXAMPLES[editingKadai!.period]?.[editingKadai!.item]?.title ?? "";
+                                  const defTopic = DEFAULT_ASSIGNMENT_EXAMPLES[editingKadai!.period]?.[editingKadai!.item]?.topic ?? "";
+                                  setKadaiEditForm({
+                                    title: defTitle,
+                                    topic: defTopic,
+                                    theme: defModel?.theme ?? "",
+                                    question: defModel?.question ?? "",
+                                    grammarNote: defModel?.grammarNote ?? "",
+                                    patterns: defModel?.patterns ?? [],
+                                    modelEssay: defModel?.modelEssay ?? "",
+                                  });
+                                }}
+                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
+                              >
+                                既定に戻す
                               </button>
                               <button type="button" onClick={() => setEditingKadai(null)} className="px-3 py-1 bg-gray-300 rounded text-sm">
                                 キャンセル
