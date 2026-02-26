@@ -1,7 +1,7 @@
 // Default title and topic for 課題例 1期~8期 (10 items each)
 export const DEFAULT_ASSIGNMENT_EXAMPLES: { title: string; topic: string }[][] = [
   [
-    { title: "오늘 하루 일과", topic: "" },
+    { title: "취미", topic: "" },
     { title: "스트레스 푸는 법", topic: "" },
     { title: "내가 좋아하는 음식", topic: "" },
     { title: "주말 계획", topic: "" },
