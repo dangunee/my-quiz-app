@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { fetchWithAuth, getStoredToken, getStoredUser, clearStoredSession } from "../../lib/auth";
 import { LoginModal } from "../../components/LoginModal";
@@ -83,7 +83,9 @@ const ONDOKU_1KAI_INSTRUCTION = `初中級通信音読の第1回課題をお送�
 よろしくお願いいたします。`;
 
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
-import { ONDOKU_ASSIGNMENT_SHEETS, ONDOKU_MODEL_AUDIO_DEFAULTS } from "../data/ondoku-assignment-sheets";
+import { ONDOKU_ASSIGNMENT_SHEETS, ONDOKU_MODEL_AUDIO_DEFAULTS, type OndokuAssignmentItem } from "../data/ondoku-assignment-sheets";
+
+type SheetOverrides = Record<string, OndokuAssignmentItem[]>;
 
 export default function OndokuPage() {
   const { redirectPath } = useOndokuBase();
@@ -152,6 +154,8 @@ export default function OndokuPage() {
   const [assignmentPeriodTab, setAssignmentPeriodTab] = useState(0);
   const [modelAudioUrls, setModelAudioUrls] = useState(ONDOKU_MODEL_AUDIO_DEFAULTS);
   const [modelAudioUploading, setModelAudioUploading] = useState<"fast" | "slow" | null>(null);
+  const sheetTableRef = useRef<HTMLTableElement>(null);
+  const [sheetOverrides, setSheetOverrides] = useState<SheetOverrides>({});
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminSubmissions, setAdminSubmissions] = useState<{ id: string; user_id: string; period_index: number; item_index: number; content: string; audio_url?: string; submitted_at: string; user?: { email?: string; name?: string; username?: string } }[]>([]);
   const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
@@ -277,6 +281,16 @@ export default function OndokuPage() {
       })
       .finally(() => setMyPageLoading(false));
   }, [activeTab, user]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("ondoku-sheet-overrides");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") setSheetOverrides(parsed);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     fetch("/api/ondoku/model-audio")
@@ -535,6 +549,132 @@ export default function OndokuPage() {
   };
 
   const mergedExamples = ONDOKU_PERIOD_EXAMPLES[examplePeriodTab] || [];
+
+  // 音読課題 フルスクリーン表示（ヘッダー・タブ・サイドバー非表示）
+  if (activeTab === "assignment") {
+    return (
+      <div className="fixed inset-0 flex flex-col bg-white z-[100]">
+        <div className="shrink-0 flex items-center justify-between gap-4 px-4 py-2 border-b border-[#dadce0] bg-[#f8f9fa]">
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => setActiveTab("experience")} className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 rounded" title="戻る">← 戻る</button>
+            <span className="text-gray-400">|</span>
+            {["chujokyu", "chuujokyu"].map((lev) => (
+              <button key={lev} type="button" onClick={() => setAssignmentLevelTab(lev as "chujokyu" | "chuujokyu")} className={`px-3 py-1.5 text-sm rounded ${assignmentLevelTab === lev ? "bg-[#1e3a5f] text-white" : "text-gray-600 hover:bg-gray-200"}`}>{lev === "chujokyu" ? "初中級" : "中上級"}</button>
+            ))}
+            <span className="text-gray-400">|</span>
+            {[0, 1, 2, 3].map((idx) => (
+              <button key={idx} type="button" onClick={() => setAssignmentPeriodTab(idx)} className={`px-3 py-1.5 text-sm rounded ${assignmentPeriodTab === idx ? "bg-[#1a4d2e] text-white" : "text-gray-600 hover:bg-gray-200"}`}>{PERIOD_LABELS[idx]}</button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => document.execCommand("bold")} className="p-1.5 text-gray-600 hover:bg-gray-200 rounded" title="太字">B</button>
+            <button type="button" onClick={() => document.execCommand("underline")} className="p-1.5 text-gray-600 hover:bg-gray-200 rounded" title="下線">U</button>
+            <button type="button" onClick={() => {
+              const t = sheetTableRef.current;
+              if (!t) return;
+              const rows = t.querySelectorAll("tbody tr");
+              const data: OndokuAssignmentItem[] = [];
+              rows.forEach((tr, i) => {
+                const cells = tr.querySelectorAll("td");
+                if (cells.length >= 7) {
+                  data.push({
+                    sheet: { bunkei: (cells[1] as HTMLElement).innerText?.trim() ?? "", kadai: (cells[2] as HTMLElement).innerText?.trim() ?? "", wakaku: (cells[3] as HTMLElement).innerText?.trim() ?? "", point: (cells[4] as HTMLElement).innerText?.trim() ?? "" },
+                    pronunciation: { kadaiSpaced: "", correctPronunciation: (cells[5] as HTMLElement).innerText?.trim() ?? "", commentary: (cells[6] as HTMLElement).innerText?.trim() ?? "" },
+                  });
+                }
+              });
+              const key = `${assignmentLevelTab}-${assignmentPeriodTab}`;
+              setSheetOverrides((prev) => { const next = { ...prev, [key]: data }; try { localStorage.setItem("ondoku-sheet-overrides", JSON.stringify(next)); } catch {} return next; });
+              alert("保存しました");
+            }} className="px-3 py-1.5 text-sm bg-[#1a4d2e] text-white rounded hover:bg-[#2d6a4a]">保存</button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-auto p-4">
+          <div className="inline-block min-w-full">
+            <table ref={sheetTableRef} className="border-collapse text-sm" style={{ minWidth: "900px" }}>
+              <thead className="sticky top-0 z-10 bg-[#f8f9fa]">
+                <tr>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 w-12 bg-[#f8f9fa]">no.</th>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[100px] bg-[#f8f9fa]">文型</th>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[180px] bg-[#f8f9fa]">課題</th>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[140px] bg-[#f8f9fa]">和訳</th>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[120px] bg-[#f8f9fa]">ポイント</th>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[160px] bg-[#f8f9fa]">正しい発音</th>
+                  <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[180px] bg-[#f8f9fa]">解説</th>
+                </tr>
+              </thead>
+              <tbody>
+                {((sheetOverrides[`${assignmentLevelTab}-${assignmentPeriodTab}`]) ?? ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab]).map((item, i) => (
+                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#f8f9fa]/50"}>
+                    <td className="border border-[#dadce0] py-2 px-3 font-medium text-gray-800 bg-[#f8f9fa]/80">{i + 1}</td>
+                    <td contentEditable suppressContentEditableWarning className="border border-[#dadce0] py-2 px-3 text-gray-800 outline-none focus:bg-blue-50/50" data-cell="bunkei">{item.sheet.bunkei}</td>
+                    <td contentEditable suppressContentEditableWarning className="border border-[#dadce0] py-2 px-3 text-gray-800 outline-none focus:bg-blue-50/50" data-cell="kadai">{item.sheet.kadai}</td>
+                    <td contentEditable suppressContentEditableWarning className="border border-[#dadce0] py-2 px-3 text-gray-600 outline-none focus:bg-blue-50/50" data-cell="wakaku">{item.sheet.wakaku}</td>
+                    <td contentEditable suppressContentEditableWarning className="border border-[#dadce0] py-2 px-3 text-gray-600 text-xs outline-none focus:bg-blue-50/50" data-cell="point">{item.sheet.point}</td>
+                    <td contentEditable suppressContentEditableWarning className="border border-[#dadce0] py-2 px-3 text-gray-800 outline-none focus:bg-blue-50/50" data-cell="pronunciation">{item.pronunciation?.correctPronunciation ?? ""}</td>
+                    <td contentEditable suppressContentEditableWarning className="border border-[#dadce0] py-2 px-3 text-gray-600 text-xs outline-none focus:bg-blue-50/50" data-cell="commentary">{item.pronunciation?.commentary ?? ""}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-6 pt-6 border-t border-[#dadce0]">
+            <h3 className="font-semibold text-gray-800 mb-3">模範音声</h3>
+            <div className="flex flex-wrap gap-6">
+              <div>
+                <span className="text-sm text-gray-600 block mb-1">Fast</span>
+                {(modelAudioUrls[assignmentLevelTab]?.[assignmentPeriodTab]?.fast) ? (
+                  <div className="flex items-center gap-2">
+                    <audio controls src={modelAudioUrls[assignmentLevelTab][assignmentPeriodTab].fast} className="max-w-full" />
+                    {isAdmin && (
+                      <label className="text-sm text-[#1a4d2e] hover:underline cursor-pointer">
+                        <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("fast", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                        差し替え
+                      </label>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-sm text-gray-500">音声なし</span>
+                    {isAdmin && (
+                      <label className="block mt-1">
+                        <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("fast", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                        <span className="inline-block px-3 py-1.5 bg-[#1a4d2e] text-white rounded text-sm cursor-pointer hover:bg-[#2d6a4a]">{modelAudioUploading === "fast" ? "アップロード中..." : "アップロード"}</span>
+                      </label>
+                    )}
+                  </>
+                )}
+              </div>
+              <div>
+                <span className="text-sm text-gray-600 block mb-1">Slow</span>
+                {(modelAudioUrls[assignmentLevelTab]?.[assignmentPeriodTab]?.slow) ? (
+                  <div className="flex items-center gap-2">
+                    <audio controls src={modelAudioUrls[assignmentLevelTab][assignmentPeriodTab].slow} className="max-w-full" />
+                    {isAdmin && (
+                      <label className="text-sm text-[#1a4d2e] hover:underline cursor-pointer">
+                        <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("slow", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                        差し替え
+                      </label>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-sm text-gray-500">音声なし</span>
+                    {isAdmin && (
+                      <label className="block mt-1">
+                        <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("slow", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
+                        <span className="inline-block px-3 py-1.5 bg-[#1a4d2e] text-white rounded text-sm cursor-pointer hover:bg-[#2d6a4a]">{modelAudioUploading === "slow" ? "アップロード中..." : "アップロード"}</span>
+                      </label>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#e8f0f5]">
@@ -849,131 +989,6 @@ export default function OndokuPage() {
                               <tr className="bg-gray-50"><td className="py-3 px-4 font-semibold text-gray-800">中級-上級</td><td className="py-3 px-4">2,720円</td><td className="py-3 px-4">10回</td><td className="py-3 px-4">29,920円</td></tr>
                             </tbody>
                           </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "assignment" && (
-                <div className="px-4 md:px-0 mx-auto max-w-4xl w-full">
-                  <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
-                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">音読課題</h2>
-                    <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                      <div className="flex border-b border-[#e5dfd4]">
-                        <button
-                          type="button"
-                          onClick={() => { setAssignmentLevelTab("chujokyu"); setAssignmentPeriodTab(0); }}
-                          className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${assignmentLevelTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
-                        >
-                          初中級
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { setAssignmentLevelTab("chuujokyu"); setAssignmentPeriodTab(0); }}
-                          className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${assignmentLevelTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
-                        >
-                          中上級
-                        </button>
-                      </div>
-                      <div className="flex border-b border-[#e5dfd4]">
-                        {[0, 1, 2, 3].map((idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => setAssignmentPeriodTab(idx)}
-                            className={`flex-1 min-w-0 px-4 py-3 font-medium text-sm ${assignmentPeriodTab === idx ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
-                          >
-                            {PERIOD_LABELS[idx]}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="overflow-hidden">
-                        <div className="overflow-x-auto overflow-y-auto max-h-[480px] border border-t-0 border-[#dadce0]">
-                          <table className="w-full text-sm border-collapse" style={{ minWidth: "900px" }}>
-                            <thead className="sticky top-0 z-10 bg-[#f8f9fa]">
-                              <tr>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 w-12 bg-[#f8f9fa]">no.</th>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[100px] bg-[#f8f9fa]">文型</th>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[180px] bg-[#f8f9fa]">課題</th>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[140px] bg-[#f8f9fa]">和訳</th>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[120px] bg-[#f8f9fa]">ポイント</th>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[160px] bg-[#f8f9fa]">正しい発音</th>
-                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[180px] bg-[#f8f9fa]">解説</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab].map((item, i) => (
-                                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#f8f9fa]/50"}>
-                                  <td className="border border-[#dadce0] py-2 px-3 font-medium text-gray-800 bg-[#f8f9fa]/80">{i + 1}</td>
-                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-800">{item.sheet.bunkei}</td>
-                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-800">{item.sheet.kadai}</td>
-                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-600">{item.sheet.wakaku}</td>
-                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-600 text-xs">{item.sheet.point}</td>
-                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-800">{item.pronunciation?.correctPronunciation ?? "-"}</td>
-                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-600 text-xs">{item.pronunciation?.commentary ?? "-"}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="p-4 md:p-6 mt-0 pt-6 border-t border-[#dadce0] bg-white">
-                          <h3 className="font-semibold text-gray-800 mb-3">模範音声</h3>
-                          <div className="flex flex-wrap gap-6">
-                            <div className="flex flex-col gap-2">
-                              <span className="text-sm font-medium text-gray-600">Fast バージョン</span>
-                              {(modelAudioUrls[assignmentLevelTab]?.[assignmentPeriodTab]?.fast) ? (
-                                <div className="space-y-2">
-                                  <audio controls src={modelAudioUrls[assignmentLevelTab][assignmentPeriodTab].fast} className="max-w-full" />
-                                  {isAdmin && (
-                                    <label className="block">
-                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("fast", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
-                                      <span className="inline-block px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer disabled:opacity-50">差し替え</span>
-                                    </label>
-                                  )}
-                                </div>
-                              ) : (
-                                <div className="space-y-2">
-                                  <div className="px-4 py-3 bg-gray-100 rounded-lg text-sm text-gray-500">
-                                    {isAdmin ? "音声をアップロード" : "音声ファイルをアップロードできます"}
-                                  </div>
-                                  {isAdmin && (
-                                    <label className="block">
-                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("fast", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
-                                      <span className="inline-block px-3 py-1.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white rounded text-sm cursor-pointer disabled:opacity-50">{modelAudioUploading === "fast" ? "アップロード中..." : "アップロード"}</span>
-                                    </label>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex flex-col gap-2">
-                              <span className="text-sm font-medium text-gray-600">Slow バージョン</span>
-                              {(modelAudioUrls[assignmentLevelTab]?.[assignmentPeriodTab]?.slow) ? (
-                                <div className="space-y-2">
-                                  <audio controls src={modelAudioUrls[assignmentLevelTab][assignmentPeriodTab].slow} className="max-w-full" />
-                                  {isAdmin && (
-                                    <label className="block">
-                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("slow", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
-                                      <span className="inline-block px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer disabled:opacity-50">差し替え</span>
-                                    </label>
-                                  )}
-                                </div>
-                              ) : (
-                                <div className="space-y-2">
-                                  <div className="px-4 py-3 bg-gray-100 rounded-lg text-sm text-gray-500">
-                                    {isAdmin ? "音声をアップロード" : "音声ファイルをアップロードできます"}
-                                  </div>
-                                  {isAdmin && (
-                                    <label className="block">
-                                      <input type="file" accept=".mp3,.wav,.webm,.ogg,.m4a" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleModelAudioUpload("slow", f); e.target.value = ""; }} disabled={!!modelAudioUploading} />
-                                      <span className="inline-block px-3 py-1.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white rounded text-sm cursor-pointer disabled:opacity-50">{modelAudioUploading === "slow" ? "アップロード中..." : "アップロード"}</span>
-                                    </label>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
