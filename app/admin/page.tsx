@@ -1653,68 +1653,25 @@ export default function AdminPage() {
                           <>
                             <p className="font-medium text-gray-800">{title}</p>
                             {topic && <p className="text-sm text-gray-600 mt-1">{topic}</p>}
-                            <div className="mt-2 flex gap-3">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                const defModel = PERIOD_EXAMPLES[kadaiPeriodTab]?.[itemIdx]?.modelContent;
-                                setEditingKadai({ period: kadaiPeriodTab, item: itemIdx });
-                                setKadaiEditForm({
-                                  title,
-                                  topic: "",
-                                  theme: ov?.theme ?? defModel?.theme ?? "",
-                                  question: ov?.question ?? defModel?.question ?? "",
-                                  grammarNote: ov?.grammarNote ?? defModel?.grammarNote ?? "",
-                                  patterns: (ov?.patterns && ov.patterns.length > 0) ? ov.patterns : (defModel?.patterns ?? []),
-                                  modelEssay: ov?.modelEssay ?? defModel?.modelEssay ?? "",
-                                });
-                              }}
-                                className="text-sm text-red-600 hover:underline"
-                              >
-                                編集
-                              </button>
-                              {ov && (
-                                <button
-                                  type="button"
-                                  onClick={async () => {
-                                    if (!confirm("この課題の上書きを削除し、コードの既定値に戻します。よろしいですか？")) return;
-                                    setKadaiSaving(true);
-                                    try {
-                                      const res = await fetch(`/api/admin/writing/assignment-examples?period_index=${kadaiPeriodTab}&item_index=${itemIdx}`, {
-                                        method: "DELETE",
-                                        headers: { Authorization: `Bearer ${authKey}` },
-                                      });
-                                      if (res.ok) {
-                                        setKadaiOverrides((prev) => {
-                                          const next = { ...prev };
-                                          if (next[kadaiPeriodTab]) {
-                                            const period = { ...next[kadaiPeriodTab] };
-                                            delete period[itemIdx];
-                                            if (Object.keys(period).length) {
-                                              next[kadaiPeriodTab] = period;
-                                            } else {
-                                              delete next[kadaiPeriodTab];
-                                            }
-                                          }
-                                          return next;
-                                        });
-                                      } else {
-                                        const data = await res.json();
-                                        alert(data.error || "削除に失敗しました");
-                                      }
-                                    } catch {
-                                      alert("エラーが発生しました");
-                                    } finally {
-                                      setKadaiSaving(false);
-                                    }
-                                  }}
-                                  disabled={kadaiSaving}
-                                  className="text-sm text-gray-600 hover:underline"
-                                >
-                                  既定に戻す
-                                </button>
-                              )}
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                              const defModel = PERIOD_EXAMPLES[kadaiPeriodTab]?.[itemIdx]?.modelContent;
+                              setEditingKadai({ period: kadaiPeriodTab, item: itemIdx });
+                              setKadaiEditForm({
+                                title,
+                                topic: "",
+                                theme: ov?.theme ?? defModel?.theme ?? "",
+                                question: ov?.question ?? defModel?.question ?? "",
+                                grammarNote: ov?.grammarNote ?? defModel?.grammarNote ?? "",
+                                patterns: (ov?.patterns && ov.patterns.length > 0) ? ov.patterns : (defModel?.patterns ?? []),
+                                modelEssay: ov?.modelEssay ?? defModel?.modelEssay ?? "",
+                              });
+                            }}
+                              className="mt-2 text-sm text-red-600 hover:underline"
+                            >
+                              編集
+                            </button>
                           </>
                         )}
                       </div>
