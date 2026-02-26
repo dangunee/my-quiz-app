@@ -13,14 +13,14 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("assignment_example_overrides")
-      .select("period_index, item_index, title, topic, theme, question, grammar_note, patterns");
+      .select("period_index, item_index, title, topic, theme, question, grammar_note, patterns, model_essay");
 
     if (error) {
       console.error("[assignment-examples]", error);
       return NextResponse.json({ overrides: {} });
     }
 
-    const overrides: Record<number, Record<number, { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] }>> = {};
+    const overrides: Record<number, Record<number, { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[]; modelEssay?: string }>> = {};
     for (const row of data || []) {
       if (!overrides[row.period_index]) overrides[row.period_index] = {};
       overrides[row.period_index][row.item_index] = {
@@ -30,6 +30,7 @@ export async function GET() {
         question: row.question ?? undefined,
         grammarNote: row.grammar_note ?? undefined,
         patterns: Array.isArray(row.patterns) ? row.patterns : undefined,
+        modelEssay: typeof row.model_essay === "string" ? row.model_essay : undefined,
       };
     }
     return NextResponse.json({ overrides });

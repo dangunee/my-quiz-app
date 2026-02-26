@@ -72,6 +72,7 @@ interface AssignmentExample {
     question: string;
     grammarNote?: string;
     patterns: { pattern: string; example: string }[];
+    modelEssay?: string;
   };
 }
 
@@ -120,7 +121,7 @@ export default function WritingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [expandedExampleId, setExpandedExampleId] = useState<number | null>(null);
   const [examplePeriodTab, setExamplePeriodTab] = useState<number>(0);
-  const [exampleOverrides, setExampleOverrides] = useState<Record<number, Record<number, { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] }>>>({});
+  const [exampleOverrides, setExampleOverrides] = useState<Record<number, Record<number, { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[]; modelEssay?: string }>>>({});
   const [expandedExperience, setExpandedExperience] = useState(false);
   const [expandedCheombi, setExpandedCheombi] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -297,6 +298,7 @@ export default function WritingPage() {
               question: ov?.question ?? baseModel.question,
               grammarNote: ov?.grammarNote ?? baseModel.grammarNote,
               patterns: (ov?.patterns && ov.patterns.length > 0) ? ov.patterns : baseModel.patterns,
+              modelEssay: ov?.modelEssay ?? baseModel.modelEssay,
             }
           : undefined;
         return { ...ex, title, topic, modelContent };
@@ -1127,6 +1129,12 @@ export default function WritingPage() {
                                         </div>
                                       ))}
                                     </div>
+                                    {ex.modelContent.modelEssay && (
+                                      <div className="pt-4 mt-4 border-t border-[#e5dfd4]">
+                                        <p className="text-gray-600 font-medium mb-2">모범문</p>
+                                        <div className="text-gray-800 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: ex.modelContent.modelEssay }} />
+                                      </div>
+                                    )}
                                   </div>
                                   {isAdmin ? (
                                     <div className="space-y-3">
@@ -1383,6 +1391,12 @@ export default function WritingPage() {
                     </div>
                   ))}
                 </div>
+                {selectedExample.modelContent.modelEssay && (
+                  <div className="pt-4 mt-4 border-t border-[#e5dfd4]">
+                    <p className="text-gray-600 font-medium mb-2">모범문</p>
+                    <div className="text-gray-800 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: selectedExample.modelContent.modelEssay }} />
+                  </div>
+                )}
               </div>
               <div className="border-t-2 border-dashed border-[#e5dfd4]" />
               <div>

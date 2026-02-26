@@ -167,7 +167,7 @@ export default function AdminPage() {
   const formatDuration = (sec: number | null | undefined) =>
     sec == null ? "データなし" : sec > 0 ? `${Math.floor(sec / 60)}分${sec % 60}秒` : "0分0秒";
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  type KadaiOverrideItem = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
+  type KadaiOverrideItem = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[]; modelEssay?: string };
   const [kadaiOverrides, setKadaiOverrides] = useState<Record<number, Record<number, KadaiOverrideItem>>>({});
   const [kadaiLoading, setKadaiLoading] = useState(false);
   const [kadaiPeriodTab, setKadaiPeriodTab] = useState(0);
@@ -179,7 +179,7 @@ export default function AdminPage() {
   const [writingVisScheduleStudent, setWritingVisScheduleStudent] = useState<{ id: string; name: string; email: string } | null>(null);
   const [writingVisScheduleData, setWritingVisScheduleData] = useState<Record<number, Record<number, { visible: boolean; date: string | null }>> | null>(null);
   const [editingKadai, setEditingKadai] = useState<{ period: number; item: number } | null>(null);
-  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[] });
+  const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[], modelEssay: "" });
   const [kadaiSaving, setKadaiSaving] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
@@ -626,6 +626,7 @@ export default function AdminPage() {
           question: kadaiEditForm.question || null,
           grammar_note: kadaiEditForm.grammarNote || null,
           patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : null,
+          model_essay: kadaiEditForm.modelEssay || null,
         }),
       });
       const data = await res.json();
@@ -633,7 +634,7 @@ export default function AdminPage() {
         setKadaiOverrides((prev) => {
           const next = { ...prev };
           if (!next[editingKadai.period]) next[editingKadai.period] = {};
-          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic, theme: kadaiEditForm.theme || undefined, question: kadaiEditForm.question || undefined, grammarNote: kadaiEditForm.grammarNote || undefined, patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : undefined } };
+          next[editingKadai.period] = { ...next[editingKadai.period], [editingKadai.item]: { title: kadaiEditForm.title, topic: kadaiEditForm.topic, theme: kadaiEditForm.theme || undefined, question: kadaiEditForm.question || undefined, grammarNote: kadaiEditForm.grammarNote || undefined, patterns: kadaiEditForm.patterns.length > 0 ? kadaiEditForm.patterns : undefined, modelEssay: kadaiEditForm.modelEssay || undefined } };
           return next;
         });
         setEditingKadai(null);
@@ -1629,6 +1630,16 @@ export default function AdminPage() {
                               ))}
                               <button type="button" onClick={() => setKadaiEditForm((f) => ({ ...f, patterns: [...f.patterns, { pattern: "", example: "" }] }))} className="text-sm text-red-600 hover:underline">+ 文型を追加</button>
                             </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">모범문（밑줄은 &lt;u&gt;텍스트&lt;/u&gt;）</label>
+                              <textarea
+                                value={kadaiEditForm.modelEssay}
+                                onChange={(e) => setKadaiEditForm((f) => ({ ...f, modelEssay: e.target.value }))}
+                                className="w-full border rounded px-3 py-2 text-sm"
+                                rows={8}
+                                placeholder="모범문 (밑줄: <u>단어</u>)"
+                              />
+                            </div>
                             <div className="flex gap-2">
                               <button type="button" onClick={handleSaveKadai} disabled={kadaiSaving} className="px-3 py-1 bg-red-600 text-white rounded text-sm">
                                 保存
@@ -1655,6 +1666,7 @@ export default function AdminPage() {
                                   question: ov?.question ?? defModel?.question ?? "",
                                   grammarNote: ov?.grammarNote ?? defModel?.grammarNote ?? "",
                                   patterns: (ov?.patterns && ov.patterns.length > 0) ? ov.patterns : (defModel?.patterns ?? []),
+                                  modelEssay: ov?.modelEssay ?? defModel?.modelEssay ?? "",
                                 });
                               }}
                                 className="text-sm text-red-600 hover:underline"

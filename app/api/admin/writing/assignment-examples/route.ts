@@ -5,7 +5,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const adminSecret = process.env.ADMIN_SECRET!;
 
-type KadaiOverride = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[] };
+type KadaiOverride = { title: string; topic: string; theme?: string; question?: string; grammarNote?: string; patterns?: { pattern: string; example: string }[]; modelEssay?: string };
 
 function verifyAdmin(request: NextRequest): boolean {
   const auth = request.headers.get("authorization");
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("assignment_example_overrides")
-      .select("period_index, item_index, title, topic, theme, question, grammar_note, patterns")
+      .select("period_index, item_index, title, topic, theme, question, grammar_note, patterns, model_essay")
       .order("period_index")
       .order("item_index");
 
@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
         question: row.question ?? undefined,
         grammarNote: row.grammar_note ?? undefined,
         patterns: Array.isArray(row.patterns) ? row.patterns : undefined,
+        modelEssay: typeof row.model_essay === "string" ? row.model_essay : undefined,
       };
     }
     return NextResponse.json({ overrides });
@@ -61,7 +62,7 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { period_index, item_index, title, topic, theme, question, grammar_note, patterns } = body;
+  const { period_index, item_index, title, topic, theme, question, grammar_note, patterns, model_essay } = body;
 
   if (typeof period_index !== "number" || period_index < 0 || period_index > 7) {
     return NextResponse.json({ error: "period_index 0-7 required" }, { status: 400 });
@@ -93,6 +94,7 @@ export async function PUT(request: NextRequest) {
           question: typeof question === "string" ? question.trim() || null : null,
           grammar_note: typeof grammar_note === "string" ? grammar_note.trim() || null : null,
           patterns: patternsVal,
+          model_essay: typeof model_essay === "string" ? model_essay.trim() || null : null,
         },
         { onConflict: "period_index,item_index" }
       );
