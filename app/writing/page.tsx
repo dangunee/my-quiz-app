@@ -474,7 +474,7 @@ export default function WritingPage() {
           管理者ログアウト
         </button>
       )}
-      {user ? (
+      {!isAdmin && (user ? (
         <>
           <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]">
             マイページ
@@ -492,7 +492,7 @@ export default function WritingPage() {
         <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="block py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]" onClick={() => setMenuOpen(false)}>
           ログイン
         </Link>
-      )}
+      ))}
       {menuLinks.slice(1).map((item) => (
         <a
           key={item.href}

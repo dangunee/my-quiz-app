@@ -270,7 +270,7 @@ export default function OndokuPage() {
           管理者ログアウト
         </button>
       )}
-      {user ? (
+      {!isAdmin && (user ? (
         <>
           <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>
           <button
@@ -295,7 +295,7 @@ export default function OndokuPage() {
         >
           ログイン
         </Link>
-      )}
+      ))}
       {menuLinks.slice(1).map((item) => (
         <a
           key={item.href}
