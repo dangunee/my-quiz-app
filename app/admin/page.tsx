@@ -653,21 +653,6 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-6">
           <div className="flex gap-4">
           <button
-            onClick={() => setActiveTab("quiz")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "quiz" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            クイズ編集
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("users");
-              loadUsers();
-            }}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "users" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            会員一覧
-          </button>
-          <button
             onClick={() => {
               setActiveTab("analytics");
               setAnalyticsLoading(true);
@@ -687,10 +672,19 @@ export default function AdminPage() {
             アクセス解析
           </button>
           <button
-            onClick={() => setActiveTab("submissions")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "submissions" ? "bg-red-600 text-white" : "bg-white"}`}
+            onClick={() => {
+              setActiveTab("users");
+              loadUsers();
+            }}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "users" ? "bg-red-600 text-white" : "bg-white"}`}
           >
-            作文提出
+            会員一覧
+          </button>
+          <button
+            onClick={() => setActiveTab("quiz")}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "quiz" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            クイズ編集
           </button>
           <button
             onClick={() => setActiveTab("kadai")}
@@ -705,6 +699,12 @@ export default function AdminPage() {
             作文公開日
           </button>
           <button
+            onClick={() => setActiveTab("submissions")}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "submissions" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            作文提出
+          </button>
+          <button
             onClick={() => {
               setActiveTab("ondoku");
               loadOndokuSubmissions();
@@ -714,12 +714,20 @@ export default function AdminPage() {
             音読提出
           </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            ログアウト
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="text-sm text-gray-600 hover:text-gray-800"
+            >
+              フロントページへ
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              ログアウト
+            </button>
+          </div>
         </div>
 
         {activeTab === "quiz" && (
