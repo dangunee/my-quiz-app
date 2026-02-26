@@ -329,6 +329,9 @@ export default function AdminPage() {
 
   const handleLogout = () => {
     localStorage.removeItem(ADMIN_STORAGE_KEY);
+    if (typeof document !== "undefined" && document.location.hostname.includes("mirinae.jp")) {
+      document.cookie = "admin_auth=; Path=/; Domain=.mirinae.jp; Max-Age=0";
+    }
     setIsAuthenticated(false);
     setAuthKey("");
   };

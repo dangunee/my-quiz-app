@@ -250,8 +250,26 @@ export default function OndokuPage() {
     { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab02", external: true },
   ];
 
+  const handleAdminLogout = () => {
+    localStorage.removeItem("admin_auth");
+    if (typeof document !== "undefined" && document.location.hostname.includes("mirinae.jp")) {
+      document.cookie = "admin_auth=; Path=/; Domain=.mirinae.jp; Max-Age=0";
+    }
+    setMenuOpen(false);
+    window.location.reload();
+  };
+
   const sidebarContent = (
     <nav className="space-y-0">
+      {isAdmin && (
+        <button
+          type="button"
+          onClick={handleAdminLogout}
+          className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]"
+        >
+          管理者ログアウト
+        </button>
+      )}
       {user ? (
         <>
           <span className="block py-2 text-sm text-gray-500 border-b border-[#e5dfd4]">ログイン中</span>

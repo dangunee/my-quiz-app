@@ -454,8 +454,26 @@ export default function WritingPage() {
     { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab01", external: true },
   ];
 
+  const handleAdminLogout = () => {
+    localStorage.removeItem("admin_auth");
+    if (typeof document !== "undefined" && document.location.hostname.includes("mirinae.jp")) {
+      document.cookie = "admin_auth=; Path=/; Domain=.mirinae.jp; Max-Age=0";
+    }
+    setMenuOpen(false);
+    window.location.reload();
+  };
+
   const sidebarContent = (
     <nav className="space-y-0">
+      {isAdmin && (
+        <button
+          type="button"
+          onClick={handleAdminLogout}
+          className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]"
+        >
+          管理者ログアウト
+        </button>
+      )}
       {user ? (
         <>
           <button type="button" onClick={() => { setMenuOpen(false); setShowProfileModal(true); }} className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]">
