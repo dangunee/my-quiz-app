@@ -490,7 +490,7 @@ export default function QuizClient() {
       } ${rightSidebarExpanded ? "md:w-[420px]" : "md:w-64"}`}
     >
       {/* ログイン・マイページ カード - コンパクト */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden shrink-0">
         <div className="p-3">
           <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
           {isAdmin && !isLoggedIn ? (
@@ -549,8 +549,23 @@ export default function QuizClient() {
         </div>
       </div>
 
+      {/* クイズ カード - 上部 */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden shrink-0">
+        <button
+          type="button"
+          onClick={() => setActiveTab("quiz")}
+          className="w-full p-4 text-left hover:bg-gray-50/50 transition"
+        >
+          <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
+          <p className="text-xs text-gray-600 mb-3">韓国語の自然な表現を学ぶ</p>
+          <span className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white hover:opacity-90 transition">
+            クイズを始める
+          </span>
+        </button>
+      </div>
+
       {/* Q&A カード - クリックで展開・プルダウンメニュー */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden shrink-0">
         <button
           type="button"
           onClick={() => handleExpandMenu("qa")}
@@ -633,7 +648,7 @@ export default function QuizClient() {
       </div>
 
       {/* 生活韓国語 カード - クリックで展開・プルダウンメニュー */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden shrink-0">
         <button
           type="button"
           onClick={() => handleExpandMenu("dailykorean")}
@@ -710,8 +725,8 @@ export default function QuizClient() {
         )}
       </div>
 
-      {/* その他 - デスクトップでも表示 */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+      {/* その他 - 下部に配置 */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden shrink-0 mt-auto">
         <div className="p-4">
           <h3 className="font-bold text-gray-800 text-sm mb-3">その他</h3>
           <div className="space-y-2">
@@ -800,6 +815,12 @@ export default function QuizClient() {
                     </div>
                   </>
                 )}
+              </div>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <button type="button" onClick={() => { setActiveTab("quiz"); closeRightMenu(); }} className="w-full p-4 text-left">
+                  <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
+                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[#0ea5e9] text-white">クイズを始める</span>
+                </button>
               </div>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <button type="button" onClick={() => handleExpandMenu("qa")} className="w-full p-4 text-left">
@@ -933,7 +954,7 @@ export default function QuizClient() {
           <button
             type="button"
             onClick={() => setActiveTab("quiz")}
-            className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-lg transition ${
+            className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
                 ? "bg-[#0ea5e9] text-white shadow"
                 : "bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9]"
@@ -944,7 +965,7 @@ export default function QuizClient() {
           <button
             type="button"
             onClick={() => setActiveTab("kotae")}
-            className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-lg transition ${
+            className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "kotae"
                 ? "bg-[#2d5a4a] text-white shadow"
                 : "bg-white text-gray-600 border border-gray-200 hover:border-[#2d5a4a] hover:text-[#2d5a4a]"
@@ -952,6 +973,12 @@ export default function QuizClient() {
           >
             Q&A
           </button>
+          <Link
+            href="/dailykorean"
+            className="flex-1 py-2.5 px-3 text-sm font-bold rounded-lg text-center bg-white text-gray-600 border border-gray-200 hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition"
+          >
+            生活韓国語
+          </Link>
           <button
             type="button"
             onClick={() => setRightMenuOpen(true)}
