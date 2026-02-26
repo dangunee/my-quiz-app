@@ -106,3 +106,40 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  if (!verifyAdmin(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+  }
+
+  const { searchParams } = new URL(request.url);
+  const period_index = parseInt(searchParams.get("period_index") ?? "", 10);
+  const item_index = parseInt(searchParams.get("item_index") ?? "", 10);
+
+  if (isNaN(period_index) || period_index < 0 || period_index > 7) {
+    return NextResponse.json({ error: "period_index 0-7 required" }, { status: 400 });
+  }
+  if (isNaN(item_index) || item_index < 0 || item_index > 9) {
+    return NextResponse.json({ error: "item_index 0-9 required" }, { status: 400 });
+  }
+
+  try {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { error } = await supabase
+      .from("assignment_example_overrides")
+      .delete()
+      .eq("period_index", period_index)
+      .eq("item_index", item_index);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
