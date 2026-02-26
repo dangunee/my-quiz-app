@@ -14,7 +14,7 @@ interface KotaeItem {
   title: string;
   url: string;
 }
-const FREE_QUIZ_LIMIT = 10;
+const FREE_QUIZ_LIMIT = 999; // 결제 모듈 보류 - 무제한
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -330,6 +330,14 @@ export default function QuizClient() {
     if (optionId === quiz.correctAnswer) {
       setCorrectCount((c) => c + 1);
     }
+  };
+
+  const handleUndo = () => {
+    if (selectedAnswer === quiz.correctAnswer) {
+      setCorrectCount((c) => Math.max(0, c - 1));
+    }
+    setSelectedAnswer(null);
+    setShowResult(false);
   };
 
   const handleNext = () => {
@@ -1225,13 +1233,16 @@ export default function QuizClient() {
                   </div>
                 )}
               </div>
-              {currentIndex < total - 1 && (
-                <div className="result-actions">
+              <div className="result-actions">
+                <button type="button" className="btn-secondary" onClick={handleUndo}>
+                  解いてやり直す
+                </button>
+                {currentIndex < total - 1 && (
                   <button className="btn-primary" onClick={handleNext}>
                     次の問題へ
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           )}
         </main>
