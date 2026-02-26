@@ -669,10 +669,10 @@ export default function WritingPage() {
       <div className="flex flex-1 justify-center">
         <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            {(user || (isAdmin && !user)) && (
+            {isAdmin && !user && (
               <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm shrink-0">
-                <span className="text-gray-600">{user ? "ログイン中：" : "管理者モード："}</span>
-                <span className="font-medium text-gray-800">{user ? `${user?.name || user?.username || user?.email || "-"}様` : "全生徒の提出を表示"}</span>
+                <span className="text-gray-600">管理者モード：</span>
+                <span className="font-medium text-gray-800">全生徒の提出を表示</span>
               </div>
             )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
