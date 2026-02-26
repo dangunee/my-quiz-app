@@ -109,7 +109,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondoku" | "writingVisibility">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondokuKadai" | "ondoku" | "writingVisibility">("quiz");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
   const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
@@ -704,6 +704,12 @@ export default function AdminPage() {
             className={`px-4 py-2 rounded font-medium ${activeTab === "submissions" ? "bg-red-600 text-white" : "bg-white"}`}
           >
             作文提出
+          </button>
+          <button
+            onClick={() => setActiveTab("ondokuKadai")}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "ondokuKadai" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            音読課題
           </button>
           <button
             onClick={() => {
@@ -1700,6 +1706,21 @@ export default function AdminPage() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {activeTab === "ondokuKadai" && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">音読課題</h1>
+            <p className="text-sm text-gray-600 mb-4">課題シート・発音抑揚シートの確認、模範音声（Fast/Slow）のアップロードができます。</p>
+            <div className="border rounded-lg overflow-hidden" style={{ minHeight: "600px" }}>
+              <iframe
+                src="/ondoku?tab=assignment"
+                title="音読課題"
+                className="w-full border-0"
+                style={{ height: "800px" }}
+              />
+            </div>
           </div>
         )}
 

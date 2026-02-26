@@ -90,6 +90,14 @@ export default function OndokuPage() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("experience");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "assignment") setActiveTab("assignment");
+    else if (tab === "writing") setActiveTab("writing");
+  }, []);
   const [menuOpen, setMenuOpen] = useState(false);
   const [exampleLevelTab, setExampleLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [examplePeriodTab, setExamplePeriodTab] = useState(0);
