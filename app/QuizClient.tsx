@@ -70,7 +70,41 @@ export default function QuizClient() {
   const [kotaeError, setKotaeError] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkAdmin = (authKey: string | null) => {
+      const opts: RequestInit = authKey
+        ? { method: "POST", headers: { Authorization: `Bearer ${authKey}` } }
+        : { method: "POST", credentials: "include" };
+      fetch("/api/admin/verify", opts)
+        .then((r) => {
+          if (r.ok) {
+            setIsAdmin(true);
+            if (authKey) setAdminAuthKey(authKey);
+          }
+        })
+        .catch(() => {});
+    };
+    const stored = typeof window !== "undefined" ? localStorage.getItem("admin_auth") : null;
+    if (stored) {
+      checkAdmin(stored);
+    } else {
+      checkAdmin(null);
+    }
+  }, []);
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem("admin_auth");
+    if (typeof document !== "undefined" && document.location.hostname.includes("mirinae.jp")) {
+      document.cookie = "admin_auth=; Path=/; Domain=.mirinae.jp; Max-Age=0";
+    }
+    setMenuOpen(false);
+    setRightMenuOpen(false);
+    window.location.reload();
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("quiz_token");
@@ -448,7 +482,23 @@ export default function QuizClient() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-3">
           <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
-          {isLoggedIn ? (
+          {isAdmin && !isLoggedIn ? (
+            <div className="space-y-1.5">
+              <Link
+                href="/admin"
+                className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-red-600 hover:bg-red-700 text-white transition"
+              >
+                管理者モードで接続中
+              </Link>
+              <button
+                type="button"
+                onClick={handleAdminLogout}
+                className="block w-full text-left text-xs text-gray-500 hover:text-red-600"
+              >
+                管理者ログアウト
+              </button>
+            </div>
+          ) : isLoggedIn ? (
             <div className="space-y-1.5">
               <a
                 href="/profile"
@@ -716,7 +766,12 @@ export default function QuizClient() {
             <div className="p-4 space-y-4">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
                 <h3 className="font-semibold text-gray-800 text-xs mb-2">ログイン・マイページ</h3>
-                {isLoggedIn ? (
+                {isAdmin && !isLoggedIn ? (
+                  <>
+                    <Link href="/admin" onClick={() => closeRightMenu()} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-red-600 hover:bg-red-700 text-white mb-1.5">管理者モードで接続中</Link>
+                    <button type="button" onClick={() => { handleAdminLogout(); closeRightMenu(); }} className="block w-full text-left text-xs text-gray-500 hover:text-red-600">管理者ログアウト</button>
+                  </>
+                ) : isLoggedIn ? (
                   <>
                     <a href="/profile" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#0ea5e9] text-white mb-1.5" onClick={() => closeRightMenu()}>マイページ</a>
                     <div className="flex justify-between items-center text-xs text-gray-500">
@@ -1042,7 +1097,14 @@ export default function QuizClient() {
           <div className="relative">
             <h1 className="min-w-0 break-words text-center">ミリネのクイズで学ぶ韓国語</h1>
             <div className="hidden sm:block md:hidden shrink-0 absolute right-0 top-0">
-              {isLoggedIn ? (
+              {isAdmin && !isLoggedIn ? (
+                <Link
+                  href="/admin"
+                  className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors"
+                >
+                  管理者モードで接続中
+                </Link>
+              ) : isLoggedIn ? (
                 <div className="flex flex-col items-end gap-1.5">
                   <div className="flex items-center gap-2">
                     <a
@@ -1053,13 +1115,13 @@ export default function QuizClient() {
                     </a>
                     <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
                   </div>
-<button
-                  type="button"
-                  onClick={() => setShowLogoutModal(true)}
-                  className="text-white/90 text-sm hover:underline hover:text-white"
-                >
-                  ログアウト
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowLogoutModal(true)}
+                    className="text-white/90 text-sm hover:underline hover:text-white"
+                  >
+                    ログアウト
+                  </button>
                 </div>
               ) : (
                 <button
