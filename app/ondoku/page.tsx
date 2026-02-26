@@ -150,7 +150,6 @@ export default function OndokuPage() {
   const [levelDetailTab, setLevelDetailTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [assignmentLevelTab, setAssignmentLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [assignmentPeriodTab, setAssignmentPeriodTab] = useState(0);
-  const [assignmentSheetTab, setAssignmentSheetTab] = useState<"sheet" | "pronunciation">("sheet");
   const [modelAudioUrls, setModelAudioUrls] = useState(ONDOKU_MODEL_AUDIO_DEFAULTS);
   const [modelAudioUploading, setModelAudioUploading] = useState<"fast" | "slow" | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -890,73 +889,36 @@ export default function OndokuPage() {
                           </button>
                         ))}
                       </div>
-                      <div className="flex border-b border-[#e5dfd4]">
-                        <button
-                          type="button"
-                          onClick={() => setAssignmentSheetTab("sheet")}
-                          className={`flex-1 px-4 py-3 font-medium text-sm ${assignmentSheetTab === "sheet" ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
-                        >
-                          課題シート
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setAssignmentSheetTab("pronunciation")}
-                          className={`flex-1 px-4 py-3 font-medium text-sm border-l border-[#e5dfd4] ${assignmentSheetTab === "pronunciation" ? "bg-[#1a4d2e] text-white" : "bg-[#faf8f5] text-gray-700 hover:bg-[#f5f0e6]"}`}
-                        >
-                          課題・発音・抑揚
-                        </button>
-                      </div>
-                      <div className="p-4 md:p-6">
-                        {assignmentSheetTab === "sheet" ? (
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm border-collapse">
-                              <thead>
-                                <tr className="bg-[#1e3a5f] text-white">
-                                  <th className="py-2 px-3 text-left font-medium w-12">no.</th>
-                                  <th className="py-2 px-3 text-left font-medium">文型</th>
-                                  <th className="py-2 px-3 text-left font-medium">課題</th>
-                                  <th className="py-2 px-3 text-left font-medium">和訳</th>
-                                  <th className="py-2 px-3 text-left font-medium">ポイント</th>
+                      <div className="overflow-hidden">
+                        <div className="overflow-x-auto overflow-y-auto max-h-[480px] border border-t-0 border-[#dadce0]">
+                          <table className="w-full text-sm border-collapse" style={{ minWidth: "900px" }}>
+                            <thead className="sticky top-0 z-10 bg-[#f8f9fa]">
+                              <tr>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 w-12 bg-[#f8f9fa]">no.</th>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[100px] bg-[#f8f9fa]">文型</th>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[180px] bg-[#f8f9fa]">課題</th>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[140px] bg-[#f8f9fa]">和訳</th>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[120px] bg-[#f8f9fa]">ポイント</th>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[160px] bg-[#f8f9fa]">正しい発音</th>
+                                <th className="border border-[#dadce0] py-2 px-3 text-left font-semibold text-gray-700 min-w-[180px] bg-[#f8f9fa]">解説</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab].map((item, i) => (
+                                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#f8f9fa]/50"}>
+                                  <td className="border border-[#dadce0] py-2 px-3 font-medium text-gray-800 bg-[#f8f9fa]/80">{i + 1}</td>
+                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-800">{item.sheet.bunkei}</td>
+                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-800">{item.sheet.kadai}</td>
+                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-600">{item.sheet.wakaku}</td>
+                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-600 text-xs">{item.sheet.point}</td>
+                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-800">{item.pronunciation?.correctPronunciation ?? "-"}</td>
+                                  <td className="border border-[#dadce0] py-2 px-3 text-gray-600 text-xs">{item.pronunciation?.commentary ?? "-"}</td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                {ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab].map((item, i) => (
-                                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                                    <td className="py-2 px-3 font-medium text-gray-800">{i + 1}</td>
-                                    <td className="py-2 px-3 text-gray-800">{item.sheet.bunkei}</td>
-                                    <td className="py-2 px-3 text-gray-800">{item.sheet.kadai}</td>
-                                    <td className="py-2 px-3 text-gray-600">{item.sheet.wakaku}</td>
-                                    <td className="py-2 px-3 text-gray-600 text-xs">{item.sheet.point}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        ) : (
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm border-collapse">
-                              <thead>
-                                <tr className="bg-[#1e3a5f] text-white">
-                                  <th className="py-2 px-3 text-left font-medium w-12">no.</th>
-                                  <th className="py-2 px-3 text-left font-medium">課題</th>
-                                  <th className="py-2 px-3 text-left font-medium">正しい発音</th>
-                                  <th className="py-2 px-3 text-left font-medium">解説</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {ONDOKU_ASSIGNMENT_SHEETS[assignmentLevelTab][assignmentPeriodTab].map((item, i) => (
-                                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                                    <td className="py-2 px-3 font-medium text-gray-800">{i + 1}</td>
-                                    <td className="py-2 px-3 text-gray-800">{item.pronunciation?.kadaiSpaced ?? item.sheet.kadai}</td>
-                                    <td className="py-2 px-3 text-gray-800">{item.pronunciation?.correctPronunciation ?? "-"}</td>
-                                    <td className="py-2 px-3 text-gray-600 text-xs">{item.pronunciation?.commentary ?? "-"}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        )}
-                        <div className="mt-6 pt-6 border-t border-[#e5dfd4]">
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="p-4 md:p-6 mt-0 pt-6 border-t border-[#dadce0] bg-white">
                           <h3 className="font-semibold text-gray-800 mb-3">模範音声</h3>
                           <div className="flex flex-wrap gap-6">
                             <div className="flex flex-col gap-2">
