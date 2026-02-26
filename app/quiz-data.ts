@@ -452,14 +452,14 @@ export const QUIZZES = [
   },
   {
     id: 23,
-    question: QUESTION,
-    japanese: "次の会話文「B」を韓国語にすると一番自然なのはどれでしょうか。",
-    koreanTemplate: "A: 어제 지갑을 잃어버렸다가 찾았어요\n➊좋았네요\n➋다행이었어요\n➌좋았어요\n➍다행이네요",
+    question: "次の会話文「B」を韓国語にすると一番自然なのはどれでしょうか。",
+    japanese: "A: 昨日、財布をなくしたんですが、見つかりました。B: 良かったですね",
+    koreanTemplate: "A: 어제 지갑을 잃어버렸다가 찾았어요\nB: _________________________",
     options: [
-      { id: 1, text: "" },
-      { id: 2, text: "" },
-      { id: 3, text: "" },
-      { id: 4, text: "" },
+      { id: 1, text: "좋았네요" },
+      { id: 2, text: "다행이었어요" },
+      { id: 3, text: "좋았어요" },
+      { id: 4, text: "다행이네요" },
     ],
     correctAnswer: 4,
     explanation: `日本語の「良かった」は色んな場面でオールマイティに使えるが韓国語に訳す場合その時々で訳
@@ -509,13 +509,13 @@ export const QUIZZES = [
   {
     id: 26,
     question: QUESTION,
-    japanese: "",
-    koreanTemplate: "전철에 _________________________.\n➊ 냉방이 돌아가고 있다\n➋ 냉방이 돌아가 있다\n➌ 냉방이 틀어 있다\n➍ 냉방이 걸리고 있다",
+    japanese: "電車に冷房がかかっている",
+    koreanTemplate: "전철에 _________________________.",
     options: [
-      { id: 1, text: "" },
-      { id: 2, text: "" },
-      { id: 3, text: "" },
-      { id: 4, text: "" },
+      { id: 1, text: "냉방이 돌아가고 있다" },
+      { id: 2, text: "냉방이 돌아가 있다" },
+      { id: 3, text: "냉방이 틀어 있다" },
+      { id: 4, text: "냉방이 걸리고 있다" },
     ],
     correctAnswer: 1,
     explanation: `❶에어컨,난방(暖房) 등이 돌아가다 動いている

@@ -259,8 +259,11 @@ export default function QuizClient() {
   }, [expandedKotaeId, kotaeList]);
 
   useEffect(() => {
+    const validQuizzes = QUIZZES.filter(
+      (q) => q.options?.every((o) => o.text?.trim()) && q.koreanTemplate?.trim()
+    );
     const shuffled = shuffle(
-      QUIZZES.map((q) => ({
+      validQuizzes.map((q) => ({
         ...q,
         options: shuffle([...q.options]),
       }))
