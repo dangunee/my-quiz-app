@@ -13,6 +13,7 @@ export type PeriodExampleItem = {
 export const PERIOD_EXAMPLES: PeriodExampleItem[][] = [
   [
     { title: "10回コースの第1回課題", topic: "約束", modelContent: { theme: "約束", question: "우리는 매일 나 혹은 다른 사람과 약속을 합니다. 최근에 누군가와 약속을 해 본 적이 있습니까? 그것은 어떤 약속이었습니까? 당신은 약속시간을 잘 지키는 편입니까? 자신과의 약속에 대해 써 보세요.", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-기로 약속하다 ～すると約束する", example: "예) 매일 일찍 일어나기로 약속했다." }, { pattern: "○-하는 편이다 ～するほうだ", example: "예) 나는 약속을 하면 꼭 지키는 편이다." }, { pattern: "○-기 때문에 ～のために", example: "예) 約束을 지키지 않는 사람은 믿을 수 없다고 생각하기 때문에 나는 約束을 꼭 지키려고 한다." }] } },
+    { title: "10回コースの第2回課題", topic: "季節 (계절)", modelContent: { theme: "季節 (계절)", question: "당신은 어떤 계절을 좋아하세요? 계절이 바뀌는 것을 느낄 때는 언제입니까? 봄, 여름, 가을, 겨울 각 계절마다 생각나는 단어가 있습니까? 각 계절에는 어떤 행사가 있습니까?", grammarNote: "下記に提示された文型を、必ず2つ以上使用すること。", patterns: [{ pattern: "○-이/가 지나가다/지나다 ～が過ぎる", example: "예) 겨울이 지나고 바로 여름이 온 것 같다." }, { pattern: "○-이/가 다 되다 もう～になる、～が出来上がる", example: "예) 겨울이 다 된 것 같다." }, { pattern: "○-아지다/어지다 ～くなる", example: "예) 봄이 되니까 따뜻해졌다." }, { pattern: "○-하면 ~이다 ～と言えば～だ", example: "예) 여름하면 수박이다." }, { pattern: "○-(으)면 ~을/를 것이다 ～したら～するつもりだ", example: "예) 가을이 오면 단풍놀이를 갈 것이다." }] } },
     { title: "", topic: "" },
     { title: "", topic: "" },
     { title: "", topic: "" },

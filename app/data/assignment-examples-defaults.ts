@@ -2,6 +2,7 @@
 export const DEFAULT_ASSIGNMENT_EXAMPLES: { title: string; topic: string }[][] = [
   [
     { title: "10回コースの第1回課題", topic: "約束" },
+    { title: "10回コースの第2回課題", topic: "季節 (계절)" },
     { title: "", topic: "" },
     { title: "", topic: "" },
     { title: "", topic: "" },
