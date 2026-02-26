@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { fetchWithAuth, getStoredToken } from "../../lib/auth";
+import { LoginModal } from "../../components/LoginModal";
 
 const WRITING_HOST = "writing.mirinae.jp";
 
@@ -156,6 +157,7 @@ export default function WritingPage() {
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const [visibility, setVisibility] = useState<Record<number, Record<number, string | null>>>({});
   const [studentVisibility, setStudentVisibility] = useState<Record<number, Record<number, string | null>>>({});
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [emailModal, setEmailModal] = useState<{
     sub: { id: string; content: string; user?: { email?: string; name?: string; username?: string } };
     periodLabel: string;
@@ -489,9 +491,9 @@ export default function WritingPage() {
           </button>
         </>
       ) : (
-        <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="block py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]" onClick={() => setMenuOpen(false)}>
+        <button type="button" onClick={() => { setShowLoginModal(true); setMenuOpen(false); }} className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b border-[#e5dfd4]">
           ログイン
-        </Link>
+        </button>
       ))}
       {menuLinks.slice(1).map((item) => (
         <a
@@ -1053,8 +1055,8 @@ export default function WritingPage() {
                       <div className="px-4 md:px-5 py-3 bg-[#faf8f5] border-b border-[#e5dfd4] font-semibold text-gray-800 text-sm md:text-base">課題例（10件）</div>
                       {!user && !isAdmin ? (
                         <div className="p-8 text-center bg-[#faf8f5] border-b border-[#e5dfd4]">
-                          <p className="text-gray-700 mb-4">1期～8期の課題内容はログイン後にご覧いただけます。</p>
-                          <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</Link>
+<p className="text-gray-700 mb-4">1期～8期の課題内容はログイン後にご覧いただけます。</p>
+                        <button type="button" onClick={() => setShowLoginModal(true)} className="inline-block px-6 py-3 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">ログイン</button>
                         </div>
                       ) : (
                       <div className="divide-y divide-[#e5dfd4]">
@@ -1162,9 +1164,9 @@ export default function WritingPage() {
                                   ) : (
                                     <div className="p-4 rounded-xl bg-[#fef3c7] border border-[#fcd34d]">
                                       <p className="text-gray-700 text-sm mb-2">課題提出はログイン後にご利用いただけます。</p>
-                                      <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg text-sm">
+                                      <button type="button" onClick={() => setShowLoginModal(true)} className="inline-block px-4 py-2 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-lg text-sm">
                                         ログイン
-                                      </Link>
+                                      </button>
                                     </div>
                                   )}
                                   </>
@@ -1190,9 +1192,9 @@ export default function WritingPage() {
                   ) : !user ? (
                     <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center">
                       <p className="text-gray-600 mb-4">マイページはログイン後にご利用いただけます。</p>
-                      <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="inline-block px-6 py-2.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">
+                      <button type="button" onClick={() => setShowLoginModal(true)} className="inline-block px-6 py-2.5 bg-[#1a4d2e] hover:bg-[#2d6a4a] text-white font-medium rounded-xl">
                         ログイン
-                      </Link>
+                      </button>
                     </div>
                   ) : myPageLoading ? (
                     <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#faf8f5] text-center text-gray-600">読み込み中...</div>
@@ -1369,7 +1371,7 @@ export default function WritingPage() {
                 onClick={async () => {
                   if (!selectedExample || !exampleSubmitContent.trim()) return;
                   if (!getStoredToken()) {
-                    alert("ログインが必要です。");
+                    setShowLoginModal(true);
                     return;
                   }
                   const period_index = Math.floor((selectedExample.id - 1) / 10);
@@ -1408,6 +1410,8 @@ export default function WritingPage() {
           </div>
         </div>
       )}
+
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath={redirectPath} />
 
       {emailModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

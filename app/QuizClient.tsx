@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { createPortal } from "react-dom";
 import { QUIZZES } from "./quiz-data";
+import { LoginModal } from "../components/LoginModal";
 
 const BLANK = "_________________________";
 
@@ -65,6 +67,7 @@ export default function QuizClient() {
   const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
   const [kotaeLoading, setKotaeLoading] = useState(false);
   const [kotaeError, setKotaeError] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const japaneseRef = useRef<HTMLDivElement>(null);
   const analyticsSessionRef = useRef<{ id: string; start: number } | null>(null);
 
@@ -322,7 +325,7 @@ export default function QuizClient() {
   ];
 
   const menuLinks = [
-    { label: "ログイン", href: "/login", external: false },
+    { label: "ログイン", onClick: () => setShowLoginModal(true), external: false },
     { label: "個人レッスン", href: "/kojin", external: false },
     { label: "短期個人", href: "/tanki-kojin", external: false },
     { label: "発音講座", href: "https://mirinae.jp/kaiwa.html?tab=tab03", external: true },
@@ -414,15 +417,13 @@ export default function QuizClient() {
           </button>
         </>
       ) : (
-        <a
-          href="/login"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block py-3 text-gray-800 hover:text-red-600 border-b"
-          onClick={() => setMenuOpen(false)}
+        <button
+          type="button"
+          onClick={() => { setShowLoginModal(true); setMenuOpen(false); }}
+          className="block w-full text-left py-3 text-gray-800 hover:text-red-600 border-b"
         >
           ログイン
-        </a>
+        </button>
       )}
       {menuLinks.slice(1).map((item) => (
         <a
@@ -499,18 +500,17 @@ export default function QuizClient() {
             </div>
           ) : (
             <div className="space-y-1.5">
-              <a
-                href="/login"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(true)}
                 className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 hover:opacity-90 transition"
               >
                 ログイン
-              </a>
+              </button>
               <div className="flex justify-center gap-1.5 text-xs text-gray-500">
-                <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">アカウント</a>
+                <Link href="/login" className="hover:underline">アカウント</Link>
                 <span>|</span>
-                <a href="/login" target="_blank" rel="noopener noreferrer" className="hover:underline">新規登録</a>
+                <Link href="/login" className="hover:underline">新規登録</Link>
               </div>
             </div>
           )}
@@ -755,11 +755,11 @@ export default function QuizClient() {
                   </>
                 ) : (
                   <>
-                    <a href="/login" target="_blank" rel="noopener noreferrer" className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 mb-1.5" onClick={() => closeRightMenu()}>ログイン</a>
+                    <button type="button" onClick={() => { setShowLoginModal(true); closeRightMenu(); }} className="block w-full py-2 px-3 text-center text-sm font-medium rounded-lg bg-[#fae100] text-gray-800 mb-1.5">ログイン</button>
                     <div className="flex justify-center gap-1.5 text-xs text-gray-500">
-                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>アカウント</a>
+                      <Link href="/login" onClick={() => closeRightMenu()} className="hover:underline">アカウント</Link>
                       <span>|</span>
-                      <a href="/login" target="_blank" rel="noopener noreferrer" onClick={() => closeRightMenu()}>新規登録</a>
+                      <Link href="/login" onClick={() => closeRightMenu()} className="hover:underline">新規登録</Link>
                     </div>
                   </>
                 )}
@@ -1096,12 +1096,13 @@ export default function QuizClient() {
                   </button>
                 </div>
               ) : (
-                <a
-                  href="/login"
+                <button
+                  type="button"
+                  onClick={() => setShowLoginModal(true)}
                   className="text-white/90 text-sm hover:underline"
                 >
                   ログイン
-                </a>
+                </button>
               )}
             </div>
           </div>
@@ -1221,6 +1222,7 @@ export default function QuizClient() {
         {rightSidebar}
       </div>
       </div>
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath="/" />
     </div>
   );
 }

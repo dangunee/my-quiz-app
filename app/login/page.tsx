@@ -28,6 +28,10 @@ export default function LoginPage() {
   const [region, setRegion] = useState("選択してください");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,7 +168,83 @@ export default function LoginPage() {
               className="w-full border rounded px-3 py-2"
               required
             />
+            {!isRegister && (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForgotPassword(true);
+                  setForgotEmail(email);
+                  setForgotMessage("");
+                }}
+                className="mt-1 text-sm text-gray-500 hover:underline"
+              >
+                パスワードをお忘れの場合
+              </button>
+            )}
           </div>
+
+          {showForgotPassword && !isRegister && (
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3">
+              <p className="text-sm text-gray-700">登録済みのメールアドレスを入力してください。パスワード再設定用のリンクをお送りします。</p>
+              <input
+                type="email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="メールアドレス"
+                className="w-full border rounded px-3 py-2 text-sm"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!forgotEmail.trim()) {
+                      setForgotMessage("メールアドレスを入力してください。");
+                      return;
+                    }
+                    setForgotLoading(true);
+                    setForgotMessage("");
+                    try {
+                      const res = await fetch("/api/auth/forgot-password", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: forgotEmail.trim() }),
+                      });
+                      const data = await res.json();
+                      if (res.ok) {
+                        setForgotMessage("パスワード再設定用のメールを送信しました。メールをご確認ください。");
+                        setShowForgotPassword(false);
+                      } else {
+                        setForgotMessage(data.error || "送信に失敗しました。");
+                      }
+                    } catch {
+                      setForgotMessage("エラーが発生しました。");
+                    } finally {
+                      setForgotLoading(false);
+                    }
+                  }}
+                  disabled={forgotLoading}
+                  className="flex-1 py-2 bg-[#1a4d2e] text-white text-sm rounded hover:bg-[#2d6a4a] disabled:opacity-50"
+                >
+                  {forgotLoading ? "送信中..." : "送信"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setForgotMessage("");
+                  }}
+                  className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800"
+                >
+                  キャンセル
+                </button>
+              </div>
+              {forgotMessage && (
+                <p className={`text-sm ${forgotMessage.includes("送信しました") ? "text-green-600" : "text-red-600"}`}>
+                  {forgotMessage}
+                </p>
+              )}
+            </div>
+          )}
 
           <button
             type="submit"
