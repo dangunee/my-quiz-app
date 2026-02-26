@@ -38,11 +38,11 @@ export async function GET(request: NextRequest) {
 
     const list = rows || [];
 
-    // 접속 출처 (referrer_domain별 집계) + 평균 체류시간 + 최신 접속일시
-    const refAgg: Record<string, { count: number; domain: string; totalDuration: number; withDuration: number; latestAt: string | null }> = {};
+    // 접속 출처 (referrer_domain별 집계) + 평균 체류시간 + 최신 접속일시 + 최신 리퍼ラーURL
+    const refAgg: Record<string, { count: number; domain: string; totalDuration: number; withDuration: number; latestAt: string | null; latestReferrer: string | null }> = {};
     for (const r of list) {
       const domain = r.referrer_domain || "(直接)";
-      if (!refAgg[domain]) refAgg[domain] = { count: 0, domain, totalDuration: 0, withDuration: 0, latestAt: null };
+      if (!refAgg[domain]) refAgg[domain] = { count: 0, domain, totalDuration: 0, withDuration: 0, latestAt: null, latestReferrer: null };
       refAgg[domain].count++;
       if (r.duration_seconds != null) {
         refAgg[domain].totalDuration += r.duration_seconds;
@@ -50,11 +50,15 @@ export async function GET(request: NextRequest) {
       }
       if (r.started_at) {
         const at = r.started_at;
-        if (!refAgg[domain].latestAt || at > refAgg[domain].latestAt!) refAgg[domain].latestAt = at;
+        if (!refAgg[domain].latestAt || at > refAgg[domain].latestAt!) {
+          refAgg[domain].latestAt = at;
+          refAgg[domain].latestReferrer = r.referrer && r.referrer.startsWith("http") ? r.referrer : null;
+        }
       }
     }
     const referrers = Object.values(refAgg).map((a) => ({
       domain: a.domain,
+      referrer: a.latestReferrer,
       count: a.count,
       avgDuration: a.withDuration > 0 ? Math.round(a.totalDuration / a.withDuration) : null,
       latestAt: a.latestAt,
