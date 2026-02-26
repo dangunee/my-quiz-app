@@ -612,9 +612,9 @@ export default function WritingPage() {
           </button>
           <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 オンライン講座</h1>
           {isAdmin && (
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded-lg">
+            <Link href="/admin" className="absolute right-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
               管理者モードで接続中
-            </span>
+            </Link>
           )}
         </div>
       </header>
