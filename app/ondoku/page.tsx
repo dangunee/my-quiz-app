@@ -152,6 +152,7 @@ export default function OndokuPage() {
   const [levelDetailTab, setLevelDetailTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [assignmentLevelTab, setAssignmentLevelTab] = useState<"chujokyu" | "chuujokyu">("chujokyu");
   const [assignmentPeriodTab, setAssignmentPeriodTab] = useState(0);
+  const [assignmentFlatTab, setAssignmentFlatTab] = useState(0); // 0-7: 初中級1期~4期, 中上級1期~4期
   const [modelAudioUrls, setModelAudioUrls] = useState(ONDOKU_MODEL_AUDIO_DEFAULTS);
   const [modelAudioUploading, setModelAudioUploading] = useState<"fast" | "slow" | null>(null);
   const sheetTableRef = useRef<HTMLTableElement>(null);
@@ -555,15 +556,18 @@ export default function OndokuPage() {
     return (
       <div className="fixed inset-0 flex flex-col bg-white z-[100]">
         <div className="shrink-0 flex items-center justify-between gap-4 px-4 py-2 border-b border-[#dadce0] bg-[#f8f9fa]">
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setActiveTab("experience")} className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 rounded" title="戻る">← 戻る</button>
-            <span className="text-gray-400">|</span>
-            {["chujokyu", "chuujokyu"].map((lev) => (
-              <button key={lev} type="button" onClick={() => setAssignmentLevelTab(lev as "chujokyu" | "chuujokyu")} className={`px-3 py-1.5 text-sm rounded ${assignmentLevelTab === lev ? "bg-[#1e3a5f] text-white" : "text-gray-600 hover:bg-gray-200"}`}>{lev === "chujokyu" ? "初中級" : "中上級"}</button>
-            ))}
-            <span className="text-gray-400">|</span>
-            {[0, 1, 2, 3].map((idx) => (
-              <button key={idx} type="button" onClick={() => setAssignmentPeriodTab(idx)} className={`px-3 py-1.5 text-sm rounded ${assignmentPeriodTab === idx ? "bg-[#1a4d2e] text-white" : "text-gray-600 hover:bg-gray-200"}`}>{PERIOD_LABELS[idx]}</button>
+          <div className="flex items-center gap-1 flex-wrap">
+            {[
+              { label: "初中級 1期", idx: 0 },
+              { label: "初中級 2期", idx: 1 },
+              { label: "初中級 3期", idx: 2 },
+              { label: "初中級 4期", idx: 3 },
+              { label: "中上級 1期", idx: 4 },
+              { label: "中上級 2期", idx: 5 },
+              { label: "中上級 3期", idx: 6 },
+              { label: "中上級 4期", idx: 7 },
+            ].map(({ label, idx }) => (
+              <button key={idx} type="button" onClick={() => { setAssignmentFlatTab(idx); setAssignmentLevelTab(idx < 4 ? "chujokyu" : "chuujokyu"); setAssignmentPeriodTab(idx < 4 ? idx : idx - 4); }} className={`px-3 py-1.5 text-sm rounded ${assignmentFlatTab === idx ? "bg-[#1a4d2e] text-white" : "text-gray-600 hover:bg-gray-200"}`}>{label}</button>
             ))}
           </div>
           <div className="flex items-center gap-2">
