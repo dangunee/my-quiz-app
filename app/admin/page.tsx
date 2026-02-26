@@ -1678,7 +1678,11 @@ export default function AdminPage() {
                                           if (next[kadaiPeriodTab]) {
                                             const period = { ...next[kadaiPeriodTab] };
                                             delete period[itemIdx];
-                                            next[kadaiPeriodTab] = Object.keys(period).length ? period : undefined;
+                                            if (Object.keys(period).length) {
+                                              next[kadaiPeriodTab] = period;
+                                            } else {
+                                              delete next[kadaiPeriodTab];
+                                            }
                                           }
                                           return next;
                                         });
