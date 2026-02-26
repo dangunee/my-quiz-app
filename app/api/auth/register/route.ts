@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       const adminClient = createClient(supabaseUrl, supabaseServiceKey);
       const profile: { user_id: string; region?: string; registration_source?: string } = { user_id: data.user.id };
       if (typeof region === "string" && region && region !== "選択してください") profile.region = region;
-      if (registration_source === "QUIZ" || registration_source === "WRITING") profile.registration_source = registration_source;
+      if (registration_source === "QUIZ" || registration_source === "WRITING" || registration_source === "ONDOKU") profile.registration_source = registration_source;
       await adminClient.from("customer_profiles").upsert(profile, { onConflict: "user_id" });
     }
 
