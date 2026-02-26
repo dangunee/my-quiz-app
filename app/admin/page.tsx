@@ -768,7 +768,7 @@ export default function AdminPage() {
         ) : (
           <>
           <div className="flex gap-6 min-h-[calc(100vh-200px)] items-stretch">
-          <div className="flex-[7] min-w-0 space-y-4">
+          <div className="flex-1 min-w-0 space-y-4">
             {quizzesOnPage.map((q) => {
               const ov = overrides[q.id];
               const dispJapanese = ov?.japanese ?? q.japanese;
@@ -877,7 +877,7 @@ export default function AdminPage() {
             })}
           </div>
 
-          <aside className="flex-[3] shrink-0 min-w-0 flex flex-col">
+          <aside className="flex-1 shrink-0 min-w-0 flex flex-col">
             <div className="sticky top-4 flex flex-col flex-1 min-h-0 bg-white rounded-lg shadow p-4">
               <h3 className="font-medium text-sm text-gray-700 mb-3 shrink-0">問題タイトル</h3>
               <ul className="space-y-0 text-sm text-gray-600 flex-1 min-h-0 overflow-y-auto">
