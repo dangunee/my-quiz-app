@@ -1869,21 +1869,6 @@ B)場所+に出る ～이 나오다(現れる)
 비가 와서 외출을 포기하고 집에 있었어요`,
     vocabulary: [],
   },
-  ...Array.from({ length: 10 }, (_, i) => ({
-    id: 91 + i,
-    question: QUESTION,
-    japanese: "",
-    koreanTemplate: BLANK + ".",
-    options: [
-      { id: 1, text: "" },
-      { id: 2, text: "" },
-      { id: 3, text: "" },
-      { id: 4, text: "" },
-    ],
-    correctAnswer: 1,
-    explanation: "",
-    vocabulary: [],
-  })),
 ];
 
 export type Quiz = (typeof QUIZZES)[number];

@@ -964,7 +964,8 @@ export default function AdminPage() {
                       className="text-left w-full hover:text-red-600 hover:underline block break-words px-2 py-1.5 rounded"
                       title={`${formatJapanese(j)} ${getFullKorean(qWithOverrides)}`}
                     >
-                      {q.id}. {formatJapanese(j)} {getFullKorean(qWithOverrides)}
+                      <span className="block">{q.id}. {formatJapanese(j)}</span>
+                      <span className="block">{getFullKorean(qWithOverrides)}</span>
                     </button>
                   </li>
                 );
