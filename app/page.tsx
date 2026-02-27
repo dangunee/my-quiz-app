@@ -1,5 +1,5 @@
 import QuizClient from "./QuizClient";
 
 export default function Home() {
-  return <QuizClient />;
+  return <QuizClient initialShowLanding={false} />;
 }

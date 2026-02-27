@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
@@ -37,7 +38,14 @@ function getOptionNumber(id: number) {
   return ["❶", "❷", "❸", "❹"][id - 1] || "❶";
 }
 
-export default function QuizClient() {
+interface QuizClientProps {
+  initialShowLanding?: boolean;
+}
+
+export default function QuizClient({ initialShowLanding = true }: QuizClientProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [quizzes, setQuizzes] = useState(QUIZZES);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -55,7 +63,7 @@ export default function QuizClient() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailykorean">("quiz");
-  const [showLanding, setShowLanding] = useState(true);
+  const [showLanding, setShowLanding] = useState(initialShowLanding);
   const [landingNavDropdownOpen, setLandingNavDropdownOpen] = useState(false);
   const [quizSearch, setQuizSearch] = useState("");
   const landingNavDropdownRef = useRef<HTMLDivElement>(null);
@@ -228,6 +236,23 @@ export default function QuizClient() {
   const closeRightMenu = () => {
     setRightMenuOpen(false);
   };
+
+  const handleStartFromLanding = (tab: "quiz" | "kotae" | "dailykorean") => {
+    if (pathname === "/main.html") {
+      router.push(`/?tab=${tab}`);
+    } else {
+      setShowLanding(false);
+      setActiveTab(tab);
+    }
+  };
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "quiz" || tab === "kotae" || tab === "dailykorean") {
+      setActiveTab(tab);
+      setShowLanding(false);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     setKotaePage(0);
@@ -543,7 +568,7 @@ export default function QuizClient() {
                 >
                   <button
                     type="button"
-                    onClick={() => { setLandingNavDropdownOpen(false); setShowLanding(false); setActiveTab("quiz"); }}
+                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("quiz"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
@@ -551,7 +576,7 @@ export default function QuizClient() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setLandingNavDropdownOpen(false); setShowLanding(false); setActiveTab("kotae"); }}
+                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("kotae"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
@@ -559,7 +584,7 @@ export default function QuizClient() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setLandingNavDropdownOpen(false); setShowLanding(false); setActiveTab("dailykorean"); }}
+                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("dailykorean"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
@@ -594,7 +619,7 @@ export default function QuizClient() {
             </p>
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("quiz"); }}
+              onClick={() => handleStartFromLanding("quiz")}
               className="landing-cta landing-cta-primary inline-flex items-center gap-2"
             >
               지금 시작하기
@@ -607,7 +632,7 @@ export default function QuizClient() {
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("quiz"); }}
+              onClick={() => handleStartFromLanding("quiz")}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)" }}>
@@ -628,7 +653,7 @@ export default function QuizClient() {
 
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("kotae"); }}
+              onClick={() => handleStartFromLanding("kotae")}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)", opacity: 0.9 }}>
@@ -649,7 +674,7 @@ export default function QuizClient() {
 
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("dailykorean"); }}
+              onClick={() => handleStartFromLanding("dailykorean")}
               className="landing-card overflow-hidden text-left h-full flex flex-col block"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
@@ -799,7 +824,7 @@ export default function QuizClient() {
           </button>
           <button
             type="button"
-            onClick={() => setShowLanding(true)}
+            onClick={() => { if (pathname === "/") { router.push("/main.html"); } else { setShowLanding(true); } }}
             className="shrink-0 flex h-10 w-10 items-center justify-center rounded-lg border text-gray-600 hover:bg-gray-50"
             style={{ borderColor: "var(--border)" }}
             aria-label="ホームへ"
