@@ -865,11 +865,7 @@ export default function QuizClient() {
           </section>
 
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <button
-              type="button"
-              onClick={() => setShowQuizOverlay(true)}
-              className="landing-card overflow-hidden text-left h-full flex flex-col"
-            >
+            <div className="landing-card overflow-hidden text-left h-full flex flex-col">
               <div className="landing-card-header text-white" style={{ background: "var(--primary)" }}>
                 クイズ (퀴즈 센터)
               </div>
@@ -880,11 +876,16 @@ export default function QuizClient() {
                 <p className="text-xs mt-auto" style={{ color: "var(--text-muted)" }}>
                   90問のクイズで実力アップ
                 </p>
-                <span className="mt-3 inline-block py-2 px-4 text-center text-sm font-medium rounded-lg text-white" style={{ background: "var(--primary)" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowQuizOverlay(true)}
+                  className="mt-3 py-2 px-4 text-center text-sm font-medium rounded-lg text-white w-full"
+                  style={{ background: "var(--primary)" }}
+                >
                   クイズを始める
-                </span>
+                </button>
               </div>
-            </button>
+            </div>
 
             <button
               type="button"
@@ -929,40 +930,10 @@ export default function QuizClient() {
             </button>
           </section>
 
-          <section className="flex flex-wrap gap-4 justify-center pt-4 border-t" style={{ borderColor: "var(--border)" }}>
-            <a href="https://writing.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-              作文 (작문)
-            </a>
-            <a href="https://ondoku.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
-              発音 (발음)
-            </a>
-            <a href="https://quiz.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-              初級 (기초)
-            </a>
-            <a href="https://mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-              上級 (고급)
-            </a>
-          </section>
-        </main>
-
-        {showQuizOverlay && quiz && (
-          <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-            aria-modal
-            aria-labelledby="quiz-overlay-title"
-          >
-            <div
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setShowQuizOverlay(false)}
-              aria-hidden
-            />
-            <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl" style={{ borderRadius: "var(--radius)" }}>
-              <div className="sticky top-0 flex justify-between items-center px-4 py-3 bg-white border-b z-10" style={{ borderColor: "var(--border)" }}>
-                <span id="quiz-overlay-title" className="font-semibold" style={{ color: "var(--foreground)" }}>クイズ</span>
+          {showQuizOverlay && quiz && (
+            <section className="landing-card overflow-hidden" style={{ borderColor: "var(--border)" }}>
+              <div className="p-4 flex justify-between items-center border-b" style={{ borderColor: "var(--border)" }}>
+                <span className="font-semibold" style={{ color: "var(--foreground)" }}>クイズ</span>
                 <button
                   type="button"
                   onClick={() => setShowQuizOverlay(false)}
@@ -1048,9 +1019,28 @@ export default function QuizClient() {
                   <div className="progress-fill" style={{ width: `${((currentIndex + (showResult ? 1 : 0)) / total) * 100}%` }} />
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            </section>
+          )}
+
+          <section className="flex flex-wrap gap-4 justify-center pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+            <a href="https://writing.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+              作文 (작문)
+            </a>
+            <a href="https://ondoku.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
+              発音 (발음)
+            </a>
+            <a href="https://quiz.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              初級 (기초)
+            </a>
+            <a href="https://mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              上級 (고급)
+            </a>
+          </section>
+        </main>
 
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath="/" />
         <LogoutConfirmModal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={handleLogout} />
