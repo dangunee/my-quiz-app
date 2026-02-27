@@ -73,7 +73,19 @@ export default function QuizClient() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
+  const [landingNavOpen, setLandingNavOpen] = useState(false);
+  const landingNavRef = useRef<HTMLDivElement>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (landingNavRef.current && !landingNavRef.current.contains(e.target as Node)) {
+        setLandingNavOpen(false);
+      }
+    };
+    if (landingNavOpen) document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [landingNavOpen]);
 
   useEffect(() => {
     const checkAdmin = (authKey: string | null) => {
@@ -768,15 +780,50 @@ export default function QuizClient() {
             Mirinae Korean (미리내 한국어)
           </span>
           <div className="flex items-center gap-4">
-            <button type="button" onClick={() => { setShowLanding(false); setActiveTab("quiz"); }} className="text-sm font-medium hover:underline" style={{ color: "var(--foreground)" }}>
-              クイズ
-            </button>
-            <button type="button" onClick={() => { setShowLanding(false); setActiveTab("kotae"); }} className="text-sm font-medium hover:underline" style={{ color: "var(--foreground)" }}>
-              Q&A
-            </button>
-            <Link href="/dailykorean" className="text-sm font-medium hover:underline" style={{ color: "var(--foreground)" }}>
-              生活韓国語
-            </Link>
+            <div className="relative" ref={landingNavRef}>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setLandingNavOpen((p) => !p); }}
+                className="flex items-center gap-1 text-sm font-medium hover:underline"
+                style={{ color: "var(--foreground)" }}
+              >
+                퀴즈 · Q&A · 생활 한국어
+                <svg className={`w-4 h-4 transition-transform ${landingNavOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {landingNavOpen && (
+                <div
+                  className="absolute left-0 top-full mt-1 py-2 min-w-[180px] shadow-lg border z-50"
+                  style={{ background: "var(--card-bg)", borderColor: "var(--border)", borderRadius: "var(--radius)" }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => { setLandingNavOpen(false); setShowLanding(false); setActiveTab("quiz"); }}
+                    className="block w-full text-left px-4 py-2.5 text-sm hover:bg-black/5 transition"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    퀴즈 (퀴즈 센터)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setLandingNavOpen(false); setShowLanding(false); setActiveTab("kotae"); }}
+                    className="block w-full text-left px-4 py-2.5 text-sm hover:bg-black/5 transition"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    Q&A (큐앤에이)
+                  </button>
+                  <Link
+                    href="/dailykorean"
+                    onClick={() => setLandingNavOpen(false)}
+                    className="block w-full text-left px-4 py-2.5 text-sm hover:bg-black/5 transition"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    生活韓国語 (생활 한국어)
+                  </Link>
+                </div>
+              )}
+            </div>
             {isAdmin && !isLoggedIn ? (
               <Link href="/admin" className="px-4 py-2 text-sm font-medium rounded-lg text-white" style={{ background: "var(--accent)" }}>
                 管理者
