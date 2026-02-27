@@ -866,7 +866,7 @@ export default function QuizClient() {
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("quiz"); }}
+              onClick={() => setLandingNavOpen(true)}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)" }}>
@@ -887,7 +887,7 @@ export default function QuizClient() {
 
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("kotae"); }}
+              onClick={() => setLandingNavOpen(true)}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)", opacity: 0.9 }}>
@@ -908,7 +908,7 @@ export default function QuizClient() {
 
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("dailykorean"); }}
+              onClick={() => setLandingNavOpen(true)}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
