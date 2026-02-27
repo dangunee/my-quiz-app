@@ -54,7 +54,7 @@ export default function QuizClient() {
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailykorean">("quiz");
   const [showLanding, setShowLanding] = useState(true);
   const [landingNavDropdownOpen, setLandingNavDropdownOpen] = useState(false);
   const landingNavDropdownRef = useRef<HTMLDivElement>(null);
@@ -64,6 +64,11 @@ export default function QuizClient() {
   const [kotaeListLoading, setKotaeListLoading] = useState(true);
   const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
   const [seikatsuPage, setSeikatsuPage] = useState(0);
+  const [seikatsuSearch, setSeikatsuSearch] = useState("");
+  const [expandedSeikatsuTitle, setExpandedSeikatsuTitle] = useState<string | null>(null);
+  const [seikatsuContent, setSeikatsuContent] = useState<{ html: string; url: string } | null>(null);
+  const [seikatsuLoading, setSeikatsuLoading] = useState(false);
+  const [seikatsuError, setSeikatsuError] = useState<string | null>(null);
   const [expandedKotaeId, setExpandedKotaeId] = useState<number | null>(null);
   const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
   const [kotaeLoading, setKotaeLoading] = useState(false);
@@ -206,9 +211,15 @@ export default function QuizClient() {
     (kotaePage + 1) * KOTAE_PAGE_SIZE
   );
 
+  const filteredSeikatsu = seikatsuSearch.trim()
+    ? seikatsuList.filter((t) =>
+        t.toLowerCase().includes(seikatsuSearch.trim().toLowerCase())
+      )
+    : seikatsuList;
+
   const SEIKATSU_PAGE_SIZE = 10;
-  const seikatsuTotalPages = Math.ceil(seikatsuList.length / SEIKATSU_PAGE_SIZE) || 1;
-  const seikatsuPaginated = seikatsuList.slice(
+  const seikatsuTotalPages = Math.ceil(filteredSeikatsu.length / SEIKATSU_PAGE_SIZE) || 1;
+  const seikatsuPaginated = filteredSeikatsu.slice(
     seikatsuPage * SEIKATSU_PAGE_SIZE,
     (seikatsuPage + 1) * SEIKATSU_PAGE_SIZE
   );
@@ -220,6 +231,10 @@ export default function QuizClient() {
   useEffect(() => {
     setKotaePage(0);
   }, [kotaeSearch]);
+
+  useEffect(() => {
+    setSeikatsuPage(0);
+  }, [seikatsuSearch]);
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -238,6 +253,38 @@ export default function QuizClient() {
     setKotaeContent(null);
     setKotaeError(null);
   }, [kotaePage, kotaeSearch]);
+
+  useEffect(() => {
+    setExpandedSeikatsuTitle(null);
+    setSeikatsuContent(null);
+    setSeikatsuError(null);
+  }, [seikatsuPage, seikatsuSearch]);
+
+  useEffect(() => {
+    if (!expandedSeikatsuTitle) {
+      setSeikatsuContent(null);
+      setSeikatsuError(null);
+      return;
+    }
+    setSeikatsuLoading(true);
+    setSeikatsuError(null);
+    fetch(`/api/dailykorean-blog?title=${encodeURIComponent(expandedSeikatsuTitle)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error && !data.html) {
+          setSeikatsuError(data.error);
+          setSeikatsuContent(null);
+        } else {
+          setSeikatsuContent({ html: data.html || "", url: data.url || "" });
+          setSeikatsuError(null);
+        }
+      })
+      .catch((err) => {
+        setSeikatsuError(err.message || "読み込みに失敗しました");
+        setSeikatsuContent(null);
+      })
+      .finally(() => setSeikatsuLoading(false));
+  }, [expandedSeikatsuTitle]);
 
   useEffect(() => {
     if (!expandedKotaeId) {
@@ -484,14 +531,14 @@ export default function QuizClient() {
                   >
                     Q&A (큐앤에이)
                   </button>
-                  <Link
-                    href="/dailykorean"
-                    onClick={() => setLandingNavDropdownOpen(false)}
+                  <button
+                    type="button"
+                    onClick={() => { setLandingNavDropdownOpen(false); setShowLanding(false); setActiveTab("dailykorean"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
                     生活韓国語 (생활 한국어)
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -574,8 +621,9 @@ export default function QuizClient() {
               </div>
             </button>
 
-            <Link
-              href="/dailykorean"
+            <button
+              type="button"
+              onClick={() => { setShowLanding(false); setActiveTab("dailykorean"); }}
               className="landing-card overflow-hidden text-left h-full flex flex-col block"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
@@ -592,7 +640,7 @@ export default function QuizClient() {
                   生活韓国語を見る
                 </span>
               </div>
-            </Link>
+            </button>
           </section>
 
           <section className="flex flex-wrap gap-4 justify-center pt-4 border-t" style={{ borderColor: "var(--border)" }}>
@@ -776,13 +824,18 @@ export default function QuizClient() {
           >
             Q&A
           </button>
-          <Link
-            href="/dailykorean"
-            className="flex-1 py-2.5 px-3 text-sm font-bold rounded-lg text-center bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)] transition"
-            style={{ borderColor: "var(--border)" }}
+          <button
+            type="button"
+            onClick={() => setActiveTab("dailykorean")}
+            className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
+              activeTab === "dailykorean"
+                ? "text-white"
+                : "bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)]"
+            }`}
+            style={activeTab === "dailykorean" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
           >
             生活韓国語
-          </Link>
+          </button>
           <button
             type="button"
             onClick={() => setRightMenuOpen(true)}
@@ -892,6 +945,101 @@ export default function QuizClient() {
                   type="button"
                   onClick={() => setKotaePage((p) => Math.min(kotaeTotalPages - 1, p + 1))}
                   disabled={kotaePage >= kotaeTotalPages - 1}
+                  className="px-3 py-1.5 text-sm rounded border border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  次へ
+                </button>
+              </div>
+            )}
+          </div>
+        ) : activeTab === "dailykorean" ? (
+          <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
+            <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
+              <h2 className="text-center font-semibold text-base mb-3">生活韓国語 (생활 한국어)</h2>
+              <input
+                type="search"
+                placeholder="記事を検索... (例: 表現、使い方)"
+                value={seikatsuSearch}
+                onChange={(e) => setSeikatsuSearch(e.target.value)}
+                className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+              />
+              <p className="text-sm text-white/90 mt-2">{filteredSeikatsu.length}件の記事</p>
+            </div>
+            <ul className="flex-1 overflow-y-auto min-h-0">
+              {seikatsuList.length === 0 ? (
+                <li className="py-8 px-4 text-center text-gray-500 text-sm">
+                  読み込み中...
+                </li>
+              ) : filteredSeikatsu.length === 0 ? (
+                <li className="py-8 px-4 text-center text-gray-500 text-sm">
+                  該当する記事がありません
+                </li>
+              ) : (
+                seikatsuPaginated.map((title, i) => (
+                  <li key={i} className="border-b border-gray-200 last:border-b-0">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedSeikatsuTitle((prev) => (prev === title ? null : title))
+                      }
+                      className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
+                    >
+                      <span>{title}</span>
+                      <span
+                        className={`shrink-0 text-gray-400 transition-transform ${
+                          expandedSeikatsuTitle === title ? "rotate-180" : ""
+                        }`}
+                      >
+                        ▼
+                      </span>
+                    </button>
+                    {expandedSeikatsuTitle === title && (
+                      <div className="border-t border-gray-200 bg-white overflow-hidden">
+                        <div className="max-h-[500px] overflow-y-auto p-4">
+                          {seikatsuLoading ? (
+                            <p className="text-center text-gray-500 py-8">読み込み中...</p>
+                          ) : seikatsuError ? (
+                            <p className="text-center text-red-500 py-4">{seikatsuError}</p>
+                          ) : seikatsuContent?.html ? (
+                            <div
+                              className="kotae-blog-content text-gray-800"
+                              dangerouslySetInnerHTML={{ __html: seikatsuContent.html }}
+                            />
+                          ) : null}
+                        </div>
+                        {seikatsuContent?.url && (
+                          <a
+                            href={seikatsuContent.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block py-2 px-4 text-center text-xs text-[var(--primary)] hover:underline border-t border-gray-100"
+                          >
+                            ブログで続きを読む →
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                ))
+              )}
+            </ul>
+            {filteredSeikatsu.length > SEIKATSU_PAGE_SIZE && (
+              <div className="flex items-center justify-center gap-2 py-2 px-4 border-t border-gray-200 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setSeikatsuPage((p) => Math.max(0, p - 1))}
+                  disabled={seikatsuPage === 0}
+                  className="px-3 py-1.5 text-sm rounded border border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  前へ
+                </button>
+                <span className="text-sm text-gray-600">
+                  {seikatsuPage + 1} / {seikatsuTotalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSeikatsuPage((p) => Math.min(seikatsuTotalPages - 1, p + 1))}
+                  disabled={seikatsuPage >= seikatsuTotalPages - 1}
                   className="px-3 py-1.5 text-sm rounded border border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
                   次へ
