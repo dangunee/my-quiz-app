@@ -27,6 +27,7 @@ type OverrideRow = {
   explanation?: string;
   japanese?: string;
   options?: { id: number; text: string }[];
+  koreanTemplate?: string;
 };
 
 type OndokuSubmission = {
@@ -107,6 +108,7 @@ export default function AdminPage() {
   const [editing, setEditing] = useState<number | null>(null);
   const [editExplanation, setEditExplanation] = useState("");
   const [editJapanese, setEditJapanese] = useState("");
+  const [editKoreanTemplate, setEditKoreanTemplate] = useState("");
   const [editOptions, setEditOptions] = useState<{ id: number; text: string }[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -321,6 +323,7 @@ export default function AdminPage() {
     const dispOptions = ov?.options ?? q.options;
     const dispExplanation = ov?.explanation ?? q.explanation;
     setEditJapanese(dispJapanese);
+    setEditKoreanTemplate((ov?.koreanTemplate ?? q.koreanTemplate) || "");
     setEditOptions(JSON.parse(JSON.stringify(dispOptions)));
     setEditExplanation((dispExplanation || "").replace(/\\n/g, "\n"));
     setEditing(quizId);
@@ -422,7 +425,8 @@ export default function AdminPage() {
     quizId: number,
     explanation: string,
     japanese: string,
-    options: { id: number; text: string }[]
+    options: { id: number; text: string }[],
+    koreanTemplate?: string
   ) => {
     setSaving(true);
     try {
@@ -432,12 +436,12 @@ export default function AdminPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authKey}`,
         },
-        body: JSON.stringify({ explanation, japanese, options }),
+        body: JSON.stringify({ explanation, japanese, options, koreanTemplate }),
       });
       if (res.ok) {
         setOverrides((prev) => ({
           ...prev,
-          [quizId]: { explanation, japanese, options },
+          [quizId]: { explanation, japanese, options, koreanTemplate },
         }));
         setEditing(null);
       } else {
@@ -830,6 +834,15 @@ export default function AdminPage() {
                       />
                     </div>
                     <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">韓国語の文（빈칸は_________________________）</label>
+                      <input
+                        value={editKoreanTemplate}
+                        onChange={(e) => setEditKoreanTemplate(e.target.value)}
+                        className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none"
+                        placeholder="韓国語の文を入力（빈칸は_________________________）"
+                      />
+                    </div>
+                    <div>
                       <label className="block text-sm font-semibold text-gray-800 mb-2">選択肢（韓国語）</label>
                       <div className="space-y-2">
                         {editOptions.map((opt) => (
@@ -861,7 +874,7 @@ export default function AdminPage() {
                     </div>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleSave(q.id, editExplanation, editJapanese, editOptions)}
+                        onClick={() => handleSave(q.id, editExplanation, editJapanese, editOptions, editKoreanTemplate || undefined)}
                         disabled={saving}
                         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
                       >
@@ -878,7 +891,7 @@ export default function AdminPage() {
                 ) : (
                   <div>
                     <div className="text-base font-medium text-gray-800 mb-2 py-2">
-                      {q.koreanTemplate.replace(/_{10,}/g, "________________________")}
+                      {(ov?.koreanTemplate ?? q.koreanTemplate).replace(/_{10,}/g, "________________________")}
                     </div>
                     <div className="text-sm text-gray-700 mb-2 py-2 border-b">
                       <span className="font-medium">問題: </span>
@@ -894,9 +907,10 @@ export default function AdminPage() {
                     <pre className="text-sm whitespace-pre-wrap bg-gray-50 p-3 rounded overflow-x-auto max-h-24 overflow-y-auto mb-2">
                       {(dispExplanation || "").replace(/\\n/g, "\n")}
                     </pre>
-                    <button
-                      onClick={() => {
+                      <button
+                        onClick={() => {
                         setEditJapanese(dispJapanese);
+                        setEditKoreanTemplate((ov?.koreanTemplate ?? q.koreanTemplate) || "");
                         setEditOptions(JSON.parse(JSON.stringify(dispOptions)));
                         setEditExplanation((dispExplanation || "").replace(/\\n/g, "\n"));
                         setEditing(q.id);

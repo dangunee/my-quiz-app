@@ -13,7 +13,7 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from("explanation_overrides")
-      .select("quiz_id, explanation, japanese, options");
+      .select("quiz_id, explanation, japanese, options, korean_template");
 
     if (error) {
       console.error("Supabase error:", error);
@@ -22,13 +22,14 @@ export async function GET() {
 
     const overrides: Record<
       number,
-      { explanation?: string; japanese?: string | null; options?: { id: number; text: string }[] | null }
+      { explanation?: string; japanese?: string | null; options?: { id: number; text: string }[] | null; koreanTemplate?: string | null }
     > = {};
     for (const row of data || []) {
       overrides[row.quiz_id] = {
         explanation: row.explanation,
         japanese: row.japanese ?? undefined,
         options: row.options ?? undefined,
+        koreanTemplate: (row as { korean_template?: string }).korean_template ?? undefined,
       };
     }
     return NextResponse.json({ overrides });

@@ -52,7 +52,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [overrides, setOverrides] = useState<
-    Record<number, { explanation?: string; japanese?: string; options?: { id: number; text: string }[] }>
+    Record<number, { explanation?: string; japanese?: string; options?: { id: number; text: string }[]; koreanTemplate?: string }>
   >({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -1196,7 +1196,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             </span>
           </div>
           <div className="quiz-sentence quiz-korean">
-            {quiz.koreanTemplate.split(BLANK).map((part, i) => (
+            {(ov?.koreanTemplate ?? quiz.koreanTemplate).split(BLANK).map((part, i) => (
               <span key={i}>
                 {part.trim() === "." ? "" : part}
                 {i === 0 && (

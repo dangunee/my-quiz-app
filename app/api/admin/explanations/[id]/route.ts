@@ -33,7 +33,7 @@ export async function PUT(
   }
 
   const body = await request.json();
-  const { explanation, japanese, options } = body;
+  const { explanation, japanese, options, koreanTemplate } = body;
   if (typeof explanation !== "string") {
     return NextResponse.json({ error: "explanation required" }, { status: 400 });
   }
@@ -60,6 +60,7 @@ export async function PUT(
   };
   if (japanese !== undefined) payload.japanese = japanese;
   if (options !== undefined) payload.options = options;
+  if (koreanTemplate !== undefined) payload.korean_template = koreanTemplate;
 
   try {
     const supabase = createClient(supabaseUrl, supabaseKey);

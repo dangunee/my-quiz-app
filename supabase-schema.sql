@@ -4,12 +4,14 @@ create table if not exists explanation_overrides (
   explanation text not null,
   japanese text,
   options jsonb,
+  korean_template text,
   updated_at timestamptz default now()
 );
 
 -- If table already exists, run this to add new columns:
 -- alter table explanation_overrides add column if not exists japanese text;
 -- alter table explanation_overrides add column if not exists options jsonb;
+-- alter table explanation_overrides add column if not exists korean_template text;
 
 -- ========== Essay Submissions (作文提出: 期+第何回 기반)
 create table if not exists essay_submissions (
