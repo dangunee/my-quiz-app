@@ -237,6 +237,23 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     setRightMenuOpen(false);
   };
 
+  const getShareUrl = (tab: "kotae" | "dailykorean") => {
+    if (typeof window === "undefined") return "";
+    return `${window.location.origin}/?tab=${tab}`;
+  };
+
+  const [copySuccess, setCopySuccess] = useState<string | null>(null);
+  const handleCopyLink = async (tab: "kotae" | "dailykorean") => {
+    const url = getShareUrl(tab);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopySuccess(tab);
+      setTimeout(() => setCopySuccess(null), 2000);
+    } catch {
+      setCopySuccess(null);
+    }
+  };
+
   const handleStartFromLanding = (tab: "quiz" | "kotae" | "dailykorean") => {
     if (pathname === "/main.html") {
       router.push(`/?tab=${tab}`);
@@ -758,7 +775,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 )}
               </div>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <button type="button" onClick={() => { setActiveTab("quiz"); closeRightMenu(); }} className="w-full p-4 text-left">
+                <button type="button" onClick={() => { setActiveTab("quiz"); router.replace("/"); closeRightMenu(); }} className="w-full p-4 text-left">
                   <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
                   <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white">クイズを始める</span>
                 </button>
@@ -835,7 +852,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("quiz")}
+            onClick={() => { setActiveTab("quiz"); router.replace("/"); }}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
                 ? "text-white"
@@ -847,7 +864,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("kotae")}
+            onClick={() => { setActiveTab("kotae"); router.replace("/?tab=kotae"); }}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "kotae"
                 ? "text-white"
@@ -859,7 +876,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("dailykorean")}
+            onClick={() => { setActiveTab("dailykorean"); router.replace("/?tab=dailykorean"); }}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "dailykorean"
                 ? "text-white"
@@ -875,8 +892,10 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             className="md:hidden shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
             aria-label="メニューを開く"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="6" r="1.5" />
+              <circle cx="12" cy="12" r="1.5" />
+              <circle cx="12" cy="18" r="1.5" />
             </svg>
           </button>
           <button
@@ -885,8 +904,10 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             className="hidden md:flex shrink-0 h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
             aria-label="メニューを開く"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="6" r="1.5" />
+              <circle cx="12" cy="12" r="1.5" />
+              <circle cx="12" cy="18" r="1.5" />
             </svg>
           </button>
         </div>
@@ -902,6 +923,21 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
               <p className="text-sm text-white/90 mt-2">{filteredKotae.length}件の質問と答え</p>
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
+                <input
+                  type="text"
+                  readOnly
+                  value={getShareUrl("kotae")}
+                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-1 focus:ring-white/50"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCopyLink("kotae")}
+                  className="shrink-0 px-3 py-2 text-xs font-medium rounded bg-white/20 hover:bg-white/30 text-white border border-white/30 transition"
+                >
+                  {copySuccess === "kotae" ? "コピーしました" : "リンクをコピー"}
+                </button>
+              </div>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
               {kotaeListLoading ? (
@@ -997,6 +1033,21 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
               <p className="text-sm text-white/90 mt-2">{filteredSeikatsu.length}件の記事</p>
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
+                <input
+                  type="text"
+                  readOnly
+                  value={getShareUrl("dailykorean")}
+                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-1 focus:ring-white/50"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCopyLink("dailykorean")}
+                  className="shrink-0 px-3 py-2 text-xs font-medium rounded bg-white/20 hover:bg-white/30 text-white border border-white/30 transition"
+                >
+                  {copySuccess === "dailykorean" ? "コピーしました" : "リンクをコピー"}
+                </button>
+              </div>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
               {seikatsuList.length === 0 ? (
@@ -1122,7 +1173,6 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
               onChange={(e) => setQuizSearch(e.target.value)}
               className="w-full mt-3 px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
             />
-            <p className="text-sm text-white/90 mt-2">{total}問</p>
             <div className="hidden sm:block md:hidden shrink-0 absolute right-0 top-0">
               {isAdmin && !isLoggedIn ? (
                 <Link
@@ -1161,12 +1211,11 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
               )}
             </div>
           </div>
-          <div className="quiz-meta">
-            <span className="quiz-counter">
-              {currentIndex + 1} / {total}
-            </span>
+          <div className="quiz-meta flex items-center gap-3 flex-nowrap">
+            <span className="quiz-counter whitespace-nowrap">{total}問</span>
+            <span className="quiz-counter whitespace-nowrap">{currentIndex + 1} / {total}</span>
             {accuracyRate !== null && (
-              <span className="quiz-accuracy">正解率 {accuracyRate}%</span>
+              <span className="quiz-accuracy whitespace-nowrap">正解率 {accuracyRate}%</span>
             )}
           </div>
         </header>
@@ -1282,17 +1331,17 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
         </footer>
         </>
         )}
-        <section className="flex flex-wrap gap-4 justify-center py-4 px-4 border-t shrink-0" style={{ borderColor: "var(--border)", backgroundColor: "var(--background)" }}>
-          <a href="https://writing.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-            作文 (작문)
+        <section className="flex flex-nowrap gap-3 justify-center items-center py-4 px-4 border-t shrink-0 overflow-x-auto" style={{ borderColor: "var(--border)", backgroundColor: "var(--background)" }}>
+          <a href="https://writing.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+            作文
           </a>
-          <a href="https://ondoku.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
-            発音 (발음)
+          <a href="https://ondoku.mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
+            音読
           </a>
-          <a href="https://mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-lg border hover:border-[var(--primary)] transition" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+          <a href="https://mirinae.jp" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
             ホームページ
           </a>
         </section>
