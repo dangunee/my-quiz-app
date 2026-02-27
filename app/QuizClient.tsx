@@ -62,7 +62,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailykorean">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailylife">("quiz");
   const [showLanding, setShowLanding] = useState(initialShowLanding);
   const [landingNavDropdownOpen, setLandingNavDropdownOpen] = useState(false);
   const [quizSearch, setQuizSearch] = useState("");
@@ -199,7 +199,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   }, []);
 
   useEffect(() => {
-    fetch("/api/dailykorean-list")
+    fetch("/api/dailylife-list")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setSeikatsuList(data);
@@ -237,24 +237,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     setRightMenuOpen(false);
   };
 
-  const getShareUrl = (tab: "kotae" | "dailykorean") => {
-    if (typeof window === "undefined") return "";
-    return `${window.location.origin}/?tab=${tab}`;
-  };
-
-  const [copySuccess, setCopySuccess] = useState<string | null>(null);
-  const handleCopyLink = async (tab: "kotae" | "dailykorean") => {
-    const url = getShareUrl(tab);
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopySuccess(tab);
-      setTimeout(() => setCopySuccess(null), 2000);
-    } catch {
-      setCopySuccess(null);
-    }
-  };
-
-  const handleStartFromLanding = (tab: "quiz" | "kotae" | "dailykorean") => {
+  const handleStartFromLanding = (tab: "quiz" | "kotae" | "dailylife") => {
     if (pathname === "/main.html") {
       router.push(`/?tab=${tab}`);
     } else {
@@ -265,7 +248,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
 
   useEffect(() => {
     const tab = searchParams.get("tab");
-    if (tab === "quiz" || tab === "kotae" || tab === "dailykorean") {
+    if (tab === "quiz" || tab === "kotae" || tab === "dailylife") {
       setActiveTab(tab);
       setShowLanding(false);
     }
@@ -311,7 +294,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     }
     setSeikatsuLoading(true);
     setSeikatsuError(null);
-    fetch(`/api/dailykorean-blog?title=${encodeURIComponent(expandedSeikatsuTitle)}`)
+    fetch(`/api/dailylife-blog?title=${encodeURIComponent(expandedSeikatsuTitle)}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error && !data.html) {
@@ -497,7 +480,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const rightMenuLinks = [
     { label: "作文トレ", href: "https://writing.mirinae.jp", external: true },
     { label: "音読トレ", href: "https://ondoku.mirinae.jp", external: true },
-    { label: "生活韓国語", href: "/dailykorean", external: false },
+    { label: "生活韓国語", href: "/dailylife", external: false },
     { label: "初級クイズ", href: "https://quiz.mirinae.jp", external: true },
     { label: "変則活用", href: "https://mirinae.jp", external: true },
     { label: "初級文法", href: "https://mirinae.jp", external: true },
@@ -601,7 +584,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("dailykorean"); }}
+                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("dailylife"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
@@ -691,7 +674,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
 
             <button
               type="button"
-              onClick={() => handleStartFromLanding("dailykorean")}
+              onClick={() => handleStartFromLanding("dailylife")}
               className="landing-card overflow-hidden text-left h-full flex flex-col block"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
@@ -876,13 +859,13 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("dailykorean"); router.replace("/?tab=dailykorean"); }}
+            onClick={() => { setActiveTab("dailylife"); router.replace("/?tab=dailylife"); }}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
-              activeTab === "dailykorean"
+              activeTab === "dailylife"
                 ? "text-white"
                 : "bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)]"
             }`}
-            style={activeTab === "dailykorean" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
+            style={activeTab === "dailylife" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
           >
             生活韓国語
           </button>
@@ -923,21 +906,6 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
               <p className="text-sm text-white/90 mt-2">{filteredKotae.length}件の質問と答え</p>
-              <div className="mt-3 flex items-center gap-2 flex-wrap">
-                <input
-                  type="text"
-                  readOnly
-                  value={getShareUrl("kotae")}
-                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-1 focus:ring-white/50"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleCopyLink("kotae")}
-                  className="shrink-0 px-3 py-2 text-xs font-medium rounded bg-white/20 hover:bg-white/30 text-white border border-white/30 transition"
-                >
-                  {copySuccess === "kotae" ? "コピーしました" : "リンクをコピー"}
-                </button>
-              </div>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
               {kotaeListLoading ? (
@@ -1021,7 +989,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
               </div>
             )}
           </div>
-        ) : activeTab === "dailykorean" ? (
+        ) : activeTab === "dailylife" ? (
           <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
             <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">生活韓国語 (생활 한국어)</h2>
@@ -1033,21 +1001,6 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 className="w-full px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
               />
               <p className="text-sm text-white/90 mt-2">{filteredSeikatsu.length}件の記事</p>
-              <div className="mt-3 flex items-center gap-2 flex-wrap">
-                <input
-                  type="text"
-                  readOnly
-                  value={getShareUrl("dailykorean")}
-                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded bg-white/20 text-white placeholder-white/70 border border-white/30 focus:outline-none focus:ring-1 focus:ring-white/50"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleCopyLink("dailykorean")}
-                  className="shrink-0 px-3 py-2 text-xs font-medium rounded bg-white/20 hover:bg-white/30 text-white border border-white/30 transition"
-                >
-                  {copySuccess === "dailykorean" ? "コピーしました" : "リンクをコピー"}
-                </button>
-              </div>
             </div>
             <ul className="flex-1 overflow-y-auto min-h-0">
               {seikatsuList.length === 0 ? (

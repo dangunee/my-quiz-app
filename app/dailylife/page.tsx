@@ -7,7 +7,7 @@ import { Suspense, useState, useEffect } from "react";
 const BLOG_URL = "https://mirinae.jp/blog/?cat=2";
 const ITEMS_PER_PAGE = 20;
 
-function DailyKoreanContent() {
+function DailyLifeContent() {
   const searchParams = useSearchParams();
   const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
   const [listLoading, setListLoading] = useState(true);
@@ -18,7 +18,7 @@ function DailyKoreanContent() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetch("/api/dailykorean-list")
+    fetch("/api/dailylife-list")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setSeikatsuList(data);
@@ -62,7 +62,7 @@ function DailyKoreanContent() {
     }
     setLoading(true);
     setError(null);
-    fetch(`/api/dailykorean-blog?title=${encodeURIComponent(expandedTitle)}`)
+    fetch(`/api/dailylife-blog?title=${encodeURIComponent(expandedTitle)}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error && !data.html) {
@@ -219,10 +219,10 @@ function DailyKoreanContent() {
   );
 }
 
-export default function DailyKoreanPage() {
+export default function DailyLifePage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#f5f5f5] p-4 flex items-center justify-center">読み込み中...</div>}>
-      <DailyKoreanContent />
+      <DailyLifeContent />
     </Suspense>
   );
 }

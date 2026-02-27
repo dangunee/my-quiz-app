@@ -48,9 +48,9 @@ export async function GET() {
         const list = data.map((r) => r.title);
         return NextResponse.json(list);
       }
-      if (error) console.error("[dailykorean-list]", error);
+      if (error) console.error("[dailylife-list]", error);
     } catch (err) {
-      console.error("[dailykorean-list]", err);
+      console.error("[dailylife-list]", err);
     }
   }
 
@@ -59,7 +59,7 @@ export async function GET() {
     const list = await fetchFromWordPress();
     return NextResponse.json(list);
   } catch (err) {
-    console.error("[dailykorean-list] WP fallback", err);
+    console.error("[dailylife-list] WP fallback", err);
     return NextResponse.json([]);
   }
 }

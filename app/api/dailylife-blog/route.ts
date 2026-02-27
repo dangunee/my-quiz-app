@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ html: content, url: postUrl });
   } catch (err) {
-    console.error("[dailykorean-blog]", err);
+    console.error("[dailylife-blog]", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Failed to fetch" },
       { status: 500 }
