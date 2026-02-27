@@ -818,7 +818,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
       <div className="flex-1 flex flex-col md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
         <div className="quiz-container w-full md:shrink-0">
-        <div className="flex items-center gap-2 p-3 border-b bg-gray-50" style={{ borderColor: "var(--border)" }}>
+        <div className="flex items-center gap-2 p-3 bg-gray-50">
           {desktopMenuToggle}
           <button
             type="button"

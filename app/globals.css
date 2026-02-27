@@ -161,6 +161,11 @@ body {
   gap: 0.75rem;
 }
 
+/* 편집 버튼과 선택지 사이 선 제거 */
+.quiz-options .quiz-option:first-child {
+  border-top: none;
+}
+
 .quiz-option {
   display: flex;
   align-items: center;
