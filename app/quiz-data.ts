@@ -6,7 +6,7 @@ export const QUIZZES = [
   {
     id: 1,
     question: QUESTION,
-    japanese: "",
+    japanese: "「今日も上司に一言いわれた」",
     koreanTemplate: "_________________________.",
     options: [
       { id: 1, text: "상사가 한 말 했다" },
@@ -49,7 +49,7 @@ export const QUIZZES = [
   {
     id: 3,
     question: QUESTION,
-    japanese: "",
+    japanese: "「そうするわけにはいきません」",
     koreanTemplate: "그렇게 _________________________.",
     options: [
       { id: 1, text: "할 것은 없습니다" },
@@ -72,7 +72,7 @@ export const QUIZZES = [
   {
     id: 4,
     question: QUESTION,
-    japanese: "",
+    japanese: "「なんでそんなことを言うの？」",
     koreanTemplate: "왜 _________________________.",
     options: [
       { id: 1, text: "그런 것을 말해?" },
@@ -91,7 +91,7 @@ export const QUIZZES = [
   {
     id: 5,
     question: QUESTION,
-    japanese: "",
+    japanese: "「それでも僕はやっていない」",
     koreanTemplate: "그래도 내가 _________________________.",
     options: [
       { id: 1, text: "하지 않아" },
@@ -111,7 +111,7 @@ export const QUIZZES = [
   {
     id: 6,
     question: QUESTION,
-    japanese: "",
+    japanese: "「その店は学生時代によく行っていました」",
     koreanTemplate: "그 가게는 _________________________.",
     options: [
       { id: 1, text: "학생 시절에 자주 갔었어요" },
@@ -132,7 +132,7 @@ export const QUIZZES = [
   {
     id: 7,
     question: QUESTION,
-    japanese: "",
+    japanese: "「トイレで水を流しました」",
     koreanTemplate: "화장실에서 _________________________.",
     options: [
       { id: 1, text: "물이 흘렀어요" },
@@ -151,7 +151,7 @@ export const QUIZZES = [
   {
     id: 8,
     question: QUESTION,
-    japanese: "",
+    japanese: "「ゴミは決められた所に出してください」",
     koreanTemplate: "쓰레기는 _________________________.",
     options: [
       { id: 1, text: "정해진 곳에 내세요" },
@@ -174,7 +174,7 @@ export const QUIZZES = [
   {
     id: 9,
     question: QUESTION,
-    japanese: "",
+    japanese: "「プロでも失敗することがある」",
     koreanTemplate: "프로라도 _________________________.",
     options: [
       { id: 1, text: "실수하는 것이 있다" },
@@ -194,7 +194,7 @@ export const QUIZZES = [
   {
     id: 10,
     question: QUESTION,
-    japanese: "",
+    japanese: "「身分証をお持ちですか」",
     koreanTemplate: "신분증을 _________________________.",
     options: [
       { id: 1, text: "가지세요?" },
@@ -213,7 +213,7 @@ export const QUIZZES = [
   {
     id: 11,
     question: QUESTION,
-    japanese: "",
+    japanese: "「こうした方がよく覚えられます」",
     koreanTemplate: "이렇게 _________________________.",
     options: [
       { id: 1, text: "하는 것이 잘 외울 수 있어요" },
@@ -235,7 +235,7 @@ export const QUIZZES = [
   {
     id: 12,
     question: QUESTION,
-    japanese: "",
+    japanese: "「夜中２時なのにまだ起きているんですか？」",
     koreanTemplate: "새벽 2시인데 아직도 _________________________.",
     options: [
       { id: 1, text: "안 자 있어요?" },
@@ -257,7 +257,7 @@ export const QUIZZES = [
   {
     id: 13,
     question: QUESTION,
-    japanese: "",
+    japanese: "「なぜ安定した職場を辞めるんですか」",
     koreanTemplate: "왜 _________________________ 그만두세요?",
     options: [
       { id: 1, text: "안정한 직장을" },
@@ -274,7 +274,7 @@ export const QUIZZES = [
   {
     id: 14,
     question: QUESTION,
-    japanese: "",
+    japanese: "「今日面接なのでとても緊張する」",
     koreanTemplate: "오늘 _________________________.",
     options: [
       { id: 1, text: "면접이니까 아주 긴장되." },
@@ -292,7 +292,7 @@ export const QUIZZES = [
   {
     id: 15,
     question: QUESTION,
-    japanese: "",
+    japanese: "「彼は何度も自分のことが好きなのか聞いた」",
     koreanTemplate: "그는 _________________________ 물었다.",
     options: [
       { id: 1, text: "몇번을 자기를 사랑하는지" },
@@ -328,7 +328,7 @@ export const QUIZZES = [
   {
     id: 17,
     question: QUESTION,
-    japanese: "",
+    japanese: "「韓国ドラマを観て韓国のことが好きになった」",
     koreanTemplate: "한국드라마를 _________________________.",
     options: [
       { id: 1, text: "봐서 한국이 좋아졌다" },
@@ -347,7 +347,7 @@ export const QUIZZES = [
   {
     id: 18,
     question: QUESTION,
-    japanese: "",
+    japanese: "「あなたに出会って幸せだった」",
     koreanTemplate: "당신을 _________________________.",
     options: [
       { id: 1, text: "만나고 행복했어" },
@@ -368,7 +368,7 @@ export const QUIZZES = [
   {
     id: 19,
     question: QUESTION,
-    japanese: "",
+    japanese: "「前もって言ってくれればよかったのに」",
     koreanTemplate: "미리 _________________________.",
     options: [
       { id: 1, text: "이야기해 주지" },
@@ -391,7 +391,7 @@ export const QUIZZES = [
   {
     id: 20,
     question: QUESTION,
-    japanese: "",
+    japanese: "「それは二度と買いません」",
     koreanTemplate: "_________________________.",
     options: [
       { id: 1, text: "그건 두 번도 안 사요" },
@@ -412,7 +412,7 @@ export const QUIZZES = [
   {
     id: 21,
     question: QUESTION,
-    japanese: "",
+    japanese: "「あなたと話すことはありません」",
     koreanTemplate: "당신과 _________________________ 없어요.",
     options: [
       { id: 1, text: "당신과 할 것이 없어요" },
@@ -432,7 +432,7 @@ export const QUIZZES = [
   {
     id: 22,
     question: QUESTION,
-    japanese: "",
+    japanese: "「それは面白くないと思うよ」",
     koreanTemplate: "그거 _________________________.",
     options: [
       { id: 1, text: "그거 재미없을걸?" },
@@ -474,7 +474,7 @@ export const QUIZZES = [
   {
     id: 24,
     question: QUESTION,
-    japanese: "",
+    japanese: "「友達に会ってから映画を観ました」",
     koreanTemplate: "_________________________ 영화를 봤어요.",
     options: [
       { id: 1, text: "친구를 만나니" },
@@ -492,7 +492,7 @@ export const QUIZZES = [
   {
     id: 25,
     question: QUESTION,
-    japanese: "",
+    japanese: "「彼の顔を今でも覚えています」",
     koreanTemplate: "그의 얼굴을 _________________________.",
     options: [
       { id: 1, text: "지금도 외우고 있어요" },
@@ -529,7 +529,7 @@ export const QUIZZES = [
   {
     id: 27,
     question: QUESTION,
-    japanese: "",
+    japanese: "「ここは車の通る道です」",
     koreanTemplate: "여기는 _________________________ 길입니다.",
     options: [
       { id: 1, text: "차의 지나가는" },
@@ -548,7 +548,7 @@ export const QUIZZES = [
   {
     id: 28,
     question: QUESTION,
-    japanese: "",
+    japanese: "「お前に編集の何がわかる」",
     koreanTemplate: "_________________________.",
     options: [
       { id: 1, text: "너에게 편집의 뭐를 알아" },
@@ -569,7 +569,7 @@ export const QUIZZES = [
   {
     id: 29,
     question: QUESTION,
-    japanese: "",
+    japanese: "「都会はうるさいから田舎に引っ越しました」",
     koreanTemplate: "도시가 _________________________ 이사했어요.",
     options: [
       { id: 1, text: "시끄러워서 시골에" },
@@ -589,7 +589,7 @@ export const QUIZZES = [
   {
     id: 30,
     question: QUESTION,
-    japanese: "",
+    japanese: "「飲み始めたばっかりなのに、もう帰るの」",
     koreanTemplate: "_________________________ 마시기 시작했는데 _________________________.",
     options: [
       { id: 1, text: "이미 / 이제 가?" },
@@ -610,7 +610,7 @@ export const QUIZZES = [
   {
     id: 31,
     question: QUESTION,
-    japanese: "",
+    japanese: "「早く家を出たからもう着いたでしょう」",
     koreanTemplate: "_________________________ 집을 _________________________.",
     options: [
       { id: 1, text: "어서 / 나갔으니 이미 도착했을걸요" },
@@ -631,7 +631,7 @@ export const QUIZZES = [
   {
     id: 32,
     question: QUESTION,
-    japanese: "",
+    japanese: "「いつだって私は大丈夫です」",
     koreanTemplate: "_________________________ 저는 괜찮습니다.",
     options: [
       { id: 1, text: "언제라든" },
@@ -649,7 +649,7 @@ export const QUIZZES = [
   {
     id: 33,
     question: QUESTION,
-    japanese: "",
+    japanese: "「君にはただそばにいて欲しいだけなんだ」",
     koreanTemplate: "네게 _________________________ 곁에 _________________________.",
     options: [
       { id: 1, text: "바랄 건 / 있어 달라는 뿐이야" },
@@ -673,7 +673,7 @@ export const QUIZZES = [
   {
     id: 34,
     question: QUESTION,
-    japanese: "",
+    japanese: "「今、何を言っているのかよく分かりません」",
     koreanTemplate: "지금 _________________________.",
     options: [
       { id: 1, text: "무엇을 하는지 잘 모르겠어요" },
@@ -693,7 +693,7 @@ export const QUIZZES = [
   {
     id: 35,
     question: QUESTION,
-    japanese: "",
+    japanese: "「今忙しいから食事は３時にしようかな」",
     koreanTemplate: "지금 _________________________ 식사는 _________________________ .",
     options: [
       { id: 1, text: "지금 바빠서 식사는 3시로 할까나" },
@@ -714,7 +714,7 @@ export const QUIZZES = [
   {
     id: 36,
     question: QUESTION,
-    japanese: "",
+    japanese: "「ずっと悩んでた契約の問題が解決してよかったじゃん」",
     koreanTemplate: "계속 고민했던 계약문제가 _________________________.",
     options: [
       { id: 1, text: "해결돼서 좋았잖아" },
@@ -773,7 +773,7 @@ export const QUIZZES = [
   {
     id: 39,
     question: QUESTION,
-    japanese: "",
+    japanese: "次、韓国に行ったらその店は絶対に行く！",
     koreanTemplate: "다음에 한국에 가면 그 가게는 _________________________.",
     options: [
       { id: 1, text: "절대로 가!" },
@@ -817,7 +817,7 @@ export const QUIZZES = [
   {
     id: 41,
     question: QUESTION,
-    japanese: "",
+    japanese: "가: 나 그 이야기 _____ 놀랐는데, 들었어? 私はその話を聞いて驚いたけど、聞いた？ 나: 나는 이미 _____ 알고 있는데, 별로 놀랍지 않던데. 私は既に聞いて知ってたから別に驚かなかったよ",
     koreanTemplate: "가: 나 그 이야기 _________________________ 놀랐는데, 들었어?\n나: 나는 이미 _________________________ 알고 있는데, 별로 놀랍지 않던데.",
     options: [
       { id: 1, text: "듣고 / 듣고" },
@@ -950,7 +950,7 @@ B: 내가 그걸 어떻게 알아
   {
     id: 48,
     question: QUESTION,
-    japanese: "",
+    japanese: "B: いまのところ、大丈夫です。",
     koreanTemplate: "A: 그 컴퓨터 지난번에 잘 안 켜지던데 지금 어때?",
     options: [
       { id: 1, text: "지금까지는 괜찮았어요." },
@@ -968,7 +968,7 @@ B: 내가 그걸 어떻게 알아
   {
     id: 49,
     question: QUESTION,
-    japanese: "",
+    japanese: "今手に持ったのは何ですか",
     koreanTemplate: "지금 _________________________ 뭐예요?",
     options: [
       { id: 1, text: "손에 든 거" },
@@ -1027,7 +1027,7 @@ B: 내가 그걸 어떻게 알아
   {
     id: 52,
     question: QUESTION,
-    japanese: "",
+    japanese: "もうこんな時間だとは気づかず、外出の準備もしてない！",
     koreanTemplate: "벌써 _________________________ 외출 준비도 못 했네！",
     options: [
       { id: 1, text: "이런 시간인 줄도 모르고" },
@@ -1175,7 +1175,7 @@ B: 내가 그걸 어떻게 알아
   {
     id: 59,
     question: QUESTION,
-    japanese: "",
+    japanese: "あ、目になんか入った！",
     koreanTemplate: "아, 눈에 뭔가 _________________________ !",
     options: [
       { id: 1, text: "들었어" },
@@ -1195,7 +1195,7 @@ ex) 박스에 뭔가 들어있어`,
   {
     id: 60,
     question: QUESTION,
-    japanese: "",
+    japanese: "野良猫が皮膚病にかかっている！",
     koreanTemplate: "길고양이가 피부병에 _________________________!",
     options: [
       { id: 1, text: "걸렸어" },
@@ -1215,7 +1215,7 @@ ex) 벽에 그림에 걸려 있다
   {
     id: 61,
     question: QUESTION,
-    japanese: "",
+    japanese: "あら、また雨？私雨女かもT-T",
     koreanTemplate: "어 또 비 오네? 나 _________________________여자인가 봐 ㅜ.ㅜ",
     options: [
       { id: 1, text: "비를 내리는" },
@@ -1259,7 +1259,7 @@ ex) 벽에 그림에 걸려 있다
   {
     id: 63,
     question: QUESTION,
-    japanese: "",
+    japanese: "在宅勤務で太って服が入らない",
     koreanTemplate: "재택근무로 살이 쪄서 _________________________.",
     options: [
       { id: 1, text: "옷이 못 들어가" },
@@ -1359,7 +1359,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 68,
     question: QUESTION,
-    japanese: "",
+    japanese: "私をちょっとほっといて",
     koreanTemplate: "나 좀 _________________________",
     options: [
       { id: 1, text: "내 버려." },
@@ -1378,7 +1378,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 69,
     question: QUESTION,
-    japanese: "",
+    japanese: "しまった！二度寝しちゃった!",
     koreanTemplate: "망했다! _________________________",
     options: [
       { id: 1, text: "두번째 자 버렸다" },
@@ -1425,7 +1425,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 71,
     question: QUESTION,
-    japanese: "",
+    japanese: "少し前に買った観葉植物、ちょっとだけ大きくなったみたい",
     koreanTemplate: "얼마 전에 산 관엽식물, _________________________ 거 같아",
     options: [
       { id: 1, text: "조금은 크게 된" },
@@ -1467,7 +1467,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 73,
     question: QUESTION,
-    japanese: "",
+    japanese: "それ、修理に出したら?",
     koreanTemplate: "그거 _________________________?",
     options: [
       { id: 1, text: "수리에 내면 어때?" },
@@ -1577,7 +1577,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 78,
     question: QUESTION,
-    japanese: "",
+    japanese: "最近あの業界が調子がいい理由は？",
     koreanTemplate: "최근 그 업계가 _________________________ 이유는?",
     options: [
       { id: 1, text: "잘 되어 있는" },
@@ -1622,7 +1622,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 80,
     question: QUESTION,
-    japanese: "",
+    japanese: "あの化粧品ほぼ使い切りつつある",
     koreanTemplate: "그 화장품 이제 _________________________",
     options: [
       { id: 1, text: "다 써 가" },
@@ -1647,7 +1647,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 81,
     question: QUESTION,
-    japanese: "",
+    japanese: "歯の間にカスが残っていると歯周病になります。",
     koreanTemplate: "이 사이에 음식물 찌꺼기가 _________________________ 잇몸병(치주질환)이 생겨.",
     options: [
       { id: 1, text: "남아 놓고 있으면" },
@@ -1670,7 +1670,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 82,
     question: QUESTION,
-    japanese: "",
+    japanese: "何で夜中に電話なんかするの？",
     koreanTemplate: "왜 한밤중에 전화를 _________________________?",
     options: [
       { id: 1, text: "하고 그래" },
@@ -1696,7 +1696,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 83,
     question: QUESTION,
-    japanese: "",
+    japanese: "あなたが今そんなことしてる場合じゃないでしょ？",
     koreanTemplate: "네가 지금 그런 거 _________________________",
     options: [
       { id: 1, text: "할 경우가 아니잖아?" },
@@ -1741,7 +1741,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 85,
     question: QUESTION,
-    japanese: "",
+    japanese: "(トイレで)タバコを吸わないこと",
     koreanTemplate: "(화장실에서) 담배를 _________________________",
     options: [
       { id: 1, text: "피우지 않을 것" },
@@ -1827,7 +1827,7 @@ B)場所+に出る ～이 나오다(現れる)
   {
     id: 89,
     question: QUESTION,
-    japanese: "",
+    japanese: "(A)いつか(B)分からないけど世界一周をしてみたい",
     koreanTemplate: "_________________________ 세계일주를 해 보고 싶다",
     options: [
       { id: 1, text: "A:언제인지 B:모르지만" },

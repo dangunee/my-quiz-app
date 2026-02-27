@@ -826,20 +826,22 @@ export default function AdminPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-800 mb-2">問題（日本語の文）</label>
-                      <input
+                      <textarea
                         value={editJapanese}
                         onChange={(e) => setEditJapanese(e.target.value)}
-                        className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none"
-                        placeholder="日本語の文を入力"
+                        rows={3}
+                        className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none resize-y"
+                        placeholder="日本語の文を入力（改行可）"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-800 mb-2">韓国語の文（빈칸は_________________________）</label>
-                      <input
+                      <textarea
                         value={editKoreanTemplate}
                         onChange={(e) => setEditKoreanTemplate(e.target.value)}
-                        className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none"
-                        placeholder="韓国語の文を入力（빈칸は_________________________）"
+                        rows={3}
+                        className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none resize-y"
+                        placeholder="韓国語の文を入力（빈칸は_________________________、改行可）"
                       />
                     </div>
                     <div>
@@ -890,10 +892,10 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   <div>
-                    <div className="text-base font-medium text-gray-800 mb-2 py-2">
+                    <div className="text-base font-medium text-gray-800 mb-2 py-2 whitespace-pre-wrap">
                       {(ov?.koreanTemplate ?? q.koreanTemplate).replace(/_{10,}/g, "________________________")}
                     </div>
-                    <div className="text-sm text-gray-700 mb-2 py-2 border-b">
+                    <div className="text-sm text-gray-700 mb-2 py-2 border-b whitespace-pre-wrap">
                       <span className="font-medium">問題: </span>
                       {formatJapanese(dispJapanese)}
                     </div>
