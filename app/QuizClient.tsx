@@ -57,6 +57,7 @@ export default function QuizClient() {
   const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailykorean">("quiz");
   const [showLanding, setShowLanding] = useState(true);
   const [landingNavDropdownOpen, setLandingNavDropdownOpen] = useState(false);
+  const [quizSearch, setQuizSearch] = useState("");
   const landingNavDropdownRef = useRef<HTMLDivElement>(null);
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
@@ -328,12 +329,37 @@ export default function QuizClient() {
     setQuizzes(shuffled);
   }, []);
 
-  const quiz = quizzes[currentIndex];
-  const ov = overrides[quiz.id];
+  const filteredQuizzes = quizSearch.trim()
+    ? quizzes.filter((q) => {
+        const q2 = q as { japanese?: string; koreanTemplate?: string; options?: { text: string }[]; explanation?: string; vocabulary?: string[] };
+        const search = quizSearch.trim().toLowerCase();
+        const jp = (q2.japanese || "").toLowerCase();
+        const kr = (q2.koreanTemplate || "").toLowerCase();
+        const opts = (q2.options || []).map((o) => o.text?.toLowerCase() || "").join(" ");
+        const exp = (q2.explanation || "").toLowerCase();
+        const voc = (q2.vocabulary || []).join(" ").toLowerCase();
+        return [jp, kr, opts, exp, voc].some((s) => s.includes(search));
+      })
+    : quizzes;
+
+  useEffect(() => {
+    if (currentIndex >= filteredQuizzes.length) {
+      setCurrentIndex(Math.max(0, filteredQuizzes.length - 1));
+    }
+  }, [filteredQuizzes.length, currentIndex]);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+    setSelectedAnswer(null);
+    setShowResult(false);
+  }, [quizSearch]);
+
+  const quiz = filteredQuizzes[currentIndex];
+  const ov = quiz ? overrides[quiz.id] : undefined;
   const explanation =
-    (typeof ov === "string" ? ov : ov?.explanation) ?? quiz.explanation;
-  const japanese = (typeof ov === "object" && ov?.japanese != null ? ov.japanese : null) ?? quiz.japanese;
-  const options = (typeof ov === "object" && ov?.options != null ? ov.options : null) ?? quiz.options;
+    quiz ? ((typeof ov === "string" ? ov : ov?.explanation) ?? quiz.explanation) : "";
+  const japanese = quiz ? ((typeof ov === "object" && ov?.japanese != null ? ov.japanese : null) ?? quiz.japanese) : "";
+  const options = quiz ? ((typeof ov === "object" && ov?.options != null ? ov.options : null) ?? quiz.options) : [];
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("quiz_token") : null;
@@ -369,7 +395,7 @@ export default function QuizClient() {
       .then((data) => setOverrides(data.overrides || {}))
       .catch(() => {});
   }, []);
-  const total = quizzes.length;
+  const total = filteredQuizzes.length;
   const isComplete = currentIndex >= total - 1 && showResult;
   const answeredCount = showResult ? currentIndex + 1 : 0;
   const accuracyRate = showResult && answeredCount > 0
@@ -1082,6 +1108,14 @@ export default function QuizClient() {
         <header className="quiz-header">
           <div className="relative">
             <h1 className="min-w-0 break-words text-center">ミリネのクイズで学ぶ韓国語</h1>
+            <input
+              type="search"
+              placeholder="問題を検索... (例: 日本語、韓国語、単語)"
+              value={quizSearch}
+              onChange={(e) => setQuizSearch(e.target.value)}
+              className="w-full mt-3 px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+            <p className="text-sm text-white/90 mt-2">{total}問</p>
             <div className="hidden sm:block md:hidden shrink-0 absolute right-0 top-0">
               {isAdmin && !isLoggedIn ? (
                 <Link
@@ -1131,6 +1165,10 @@ export default function QuizClient() {
         </header>
 
         <main className="quiz-main">
+          {!quiz ? (
+            <p className="py-12 text-center text-gray-500">該当する問題がありません</p>
+          ) : (
+          <>
           <p className="quiz-instruction">{quiz.question}</p>
           <div ref={japaneseRef} className="quiz-sentence quiz-japanese" style={{ position: "relative" }}>
             {formatJapanese(japanese)}
@@ -1223,13 +1261,15 @@ export default function QuizClient() {
               </div>
             </div>
           )}
+          </>
+          )}
         </main>
 
         <footer className="quiz-footer">
           <div className="progress-bar">
             <div
               className="progress-fill"
-              style={{ width: `${((currentIndex + (showResult ? 1 : 0)) / total) * 100}%` }}
+              style={{ width: `${total > 0 ? ((currentIndex + (showResult ? 1 : 0)) / total) * 100 : 0}%` }}
             />
           </div>
         </footer>
