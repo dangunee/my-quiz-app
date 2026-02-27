@@ -74,6 +74,7 @@ export default function QuizClient() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const [landingNavOpen, setLandingNavOpen] = useState(false);
+  const [showQuizOverlay, setShowQuizOverlay] = useState(false);
   const [dailyKoreanTitle, setDailyKoreanTitle] = useState<string | null>(null);
   const landingNavRef = useRef<HTMLDivElement>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
@@ -866,7 +867,7 @@ export default function QuizClient() {
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button
               type="button"
-              onClick={() => setLandingNavOpen(true)}
+              onClick={() => setShowQuizOverlay(true)}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)" }}>
@@ -947,6 +948,109 @@ export default function QuizClient() {
             </a>
           </section>
         </main>
+
+        {showQuizOverlay && quiz && (
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            aria-modal
+            aria-labelledby="quiz-overlay-title"
+          >
+            <div
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setShowQuizOverlay(false)}
+              aria-hidden
+            />
+            <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl" style={{ borderRadius: "var(--radius)" }}>
+              <div className="sticky top-0 flex justify-between items-center px-4 py-3 bg-white border-b z-10" style={{ borderColor: "var(--border)" }}>
+                <span id="quiz-overlay-title" className="font-semibold" style={{ color: "var(--foreground)" }}>クイズ</span>
+                <button
+                  type="button"
+                  onClick={() => setShowQuizOverlay(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                  aria-label="閉じる"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="quiz-container p-4">
+                <div className="quiz-meta mb-3">
+                  <span className="quiz-counter">{currentIndex + 1} / {total}</span>
+                </div>
+                <p className="quiz-instruction">{quiz.question}</p>
+                <div ref={japaneseRef} className="quiz-sentence quiz-japanese" style={{ position: "relative" }}>
+                  {formatJapanese(japanese)}
+                  <span
+                    className="measure-span"
+                    aria-hidden
+                    style={{ position: "absolute", left: -9999, whiteSpace: "nowrap", visibility: "hidden", pointerEvents: "none" }}
+                  >
+                    {formatJapanese(japanese)}
+                  </span>
+                </div>
+                <div className="quiz-sentence quiz-korean">
+                  {quiz.koreanTemplate.split(BLANK).map((part, i) => (
+                    <span key={i}>
+                      {part.trim() === "." ? "" : part}
+                      {i === 0 && (
+                        <span className="blank" style={blankWidth != null ? { width: blankWidth, minWidth: blankWidth } : undefined} />
+                      )}
+                    </span>
+                  ))}
+                </div>
+                <div className="quiz-options">
+                  {options.map((option) => {
+                    const isSelected = selectedAnswer === option.id;
+                    const isCorrect = option.id === quiz.correctAnswer;
+                    const showCorrectness = showResult && (isSelected || isCorrect);
+                    const showMark = showCorrectness && (isCorrect || (isSelected && !isCorrect));
+                    return (
+                      <button
+                        key={option.id}
+                        className={`quiz-option ${showCorrectness ? "revealed" : ""} ${showCorrectness && isCorrect ? "correct" : ""} ${showCorrectness && isSelected && !isCorrect ? "wrong" : ""}`}
+                        onClick={() => handleSelect(option.id)}
+                        disabled={showResult}
+                      >
+                        <span className="option-number">{getOptionNumber(option.id)}</span>
+                        <span className="option-text">{option.text}</span>
+                        {showMark && <span className="option-mark" aria-hidden>{isCorrect ? "⭕" : "❌"}</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+                {showResult && (
+                  <div className="quiz-result">
+                    <div className={`result-badge ${selectedAnswer === quiz.correctAnswer ? "correct" : "wrong"}`}>
+                      {selectedAnswer === quiz.correctAnswer ? "正解！" : "不正解"}
+                    </div>
+                    <div className="result-explanation">
+                      <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(explanation)}</p>
+                      {quiz.vocabulary && quiz.vocabulary.length > 0 && (
+                        <div className="vocabulary-list">
+                          {quiz.vocabulary.map((v, i) => (
+                            <div key={i} className="vocab-item"><strong>{v}</strong></div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="result-actions">
+                      <button type="button" className="btn-secondary" onClick={handleUndo}>解いてやり直す</button>
+                      {currentIndex < total - 1 && (
+                        <button className="btn-primary" onClick={handleNext}>次の問題へ</button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="quiz-footer p-4 border-t" style={{ borderColor: "var(--border)" }}>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${((currentIndex + (showResult ? 1 : 0)) / total) * 100}%` }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} redirectPath="/" />
         <LogoutConfirmModal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={handleLogout} />
