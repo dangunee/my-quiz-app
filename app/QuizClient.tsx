@@ -1208,7 +1208,41 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </div>
 
           {isAdmin && !isLoggedIn && quiz && (
-            <div className="mb-4 flex justify-end">
+            <div className="mb-4 flex justify-end items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (currentIndex > 0) {
+                    setCurrentIndex(currentIndex - 1);
+                    setSelectedAnswer(null);
+                    setShowResult(false);
+                  }
+                }}
+                disabled={currentIndex <= 0}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-red-500 text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                aria-label="前の問題へ"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (currentIndex < total - 1) {
+                    setCurrentIndex(currentIndex + 1);
+                    setSelectedAnswer(null);
+                    setShowResult(false);
+                  }
+                }}
+                disabled={currentIndex >= total - 1}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-red-500 text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                aria-label="次の問題へ"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
               <Link
                 href={`/admin?tab=quiz&quiz=${quiz.id}`}
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-red-500 text-red-600 hover:bg-red-50 transition"
