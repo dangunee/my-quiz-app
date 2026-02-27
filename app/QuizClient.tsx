@@ -57,7 +57,7 @@ export default function QuizClient() {
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"quiz" | "kotae">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailykorean">("quiz");
   const [showLanding, setShowLanding] = useState(true);
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
@@ -74,6 +74,7 @@ export default function QuizClient() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const [landingNavOpen, setLandingNavOpen] = useState(false);
+  const [dailyKoreanTitle, setDailyKoreanTitle] = useState<string | null>(null);
   const landingNavRef = useRef<HTMLDivElement>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
 
@@ -694,13 +695,14 @@ export default function QuizClient() {
               ) : (
                 <>
                   {seikatsuPaginated.map((title, i) => (
-                    <a
+                    <button
                       key={i}
-                      href={`/dailykorean?title=${encodeURIComponent(title)}`}
+                      type="button"
+                      onClick={() => { setActiveTab("dailykorean"); setDailyKoreanTitle(title); setRightSidebarExpanded(false); setExpandedMenuType(null); }}
                       className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg transition"
                     >
                       {title}
-                    </a>
+                    </button>
                   ))}
                   {seikatsuList.length > SEIKATSU_PAGE_SIZE && (
                     <div className="flex justify-center gap-1 py-2">
@@ -725,12 +727,13 @@ export default function QuizClient() {
                       </button>
                     </div>
                   )}
-                  <a
-                    href="/dailykorean"
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab("dailykorean"); setDailyKoreanTitle(null); setRightSidebarExpanded(false); setExpandedMenuType(null); }}
                     className="block w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)] hover:underline"
                   >
                     一覧で見る →
-                  </a>
+                  </button>
                 </>
               )}
             </div>
@@ -813,14 +816,14 @@ export default function QuizClient() {
                   >
                     Q&A (큐앤에이)
                   </button>
-                  <Link
-                    href="/dailykorean"
-                    onClick={() => setLandingNavOpen(false)}
+                  <button
+                    type="button"
+                    onClick={() => { setLandingNavOpen(false); setShowLanding(false); setActiveTab("dailykorean"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-black/5 transition"
                     style={{ color: "var(--foreground)" }}
                   >
                     生活韓国語 (생활 한국어)
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -850,7 +853,7 @@ export default function QuizClient() {
             </p>
             <button
               type="button"
-              onClick={() => { setShowLanding(false); setActiveTab("quiz"); }}
+              onClick={() => setLandingNavOpen(true)}
               className="landing-cta landing-cta-primary inline-flex items-center gap-2"
             >
               지금 시작하기
@@ -903,9 +906,10 @@ export default function QuizClient() {
               </div>
             </button>
 
-            <Link
-              href="/dailykorean"
-              className="landing-card overflow-hidden text-left h-full flex flex-col block"
+            <button
+              type="button"
+              onClick={() => { setShowLanding(false); setActiveTab("dailykorean"); }}
+              className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--accent-alt)", color: "var(--foreground)" }}>
                 生活韓国語 (생활 한국어)
@@ -921,7 +925,7 @@ export default function QuizClient() {
                   生活韓国語を見る
                 </span>
               </div>
-            </Link>
+            </button>
           </section>
 
           <section className="flex flex-wrap gap-4 justify-center pt-4 border-t" style={{ borderColor: "var(--border)" }}>
@@ -1047,9 +1051,14 @@ export default function QuizClient() {
                     ) : (
                       <>
                         {seikatsuPaginated.map((title, i) => (
-                          <a key={i} href={`/dailykorean?title=${encodeURIComponent(title)}`} onClick={() => closeRightMenu()} className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg">
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => { setActiveTab("dailykorean"); setDailyKoreanTitle(title); closeRightMenu(); }}
+                            className="block w-full text-left py-2.5 px-3 text-xs text-gray-700 hover:bg-[var(--primary)]/10 rounded-lg"
+                          >
                             {title}
-                          </a>
+                          </button>
                         ))}
                         {seikatsuList.length > SEIKATSU_PAGE_SIZE && (
                           <div className="flex justify-center gap-1 py-2">
@@ -1058,7 +1067,7 @@ export default function QuizClient() {
                             <button type="button" onClick={() => setSeikatsuPage((p) => Math.min(seikatsuTotalPages - 1, p + 1))} disabled={seikatsuPage >= seikatsuTotalPages - 1} className="px-2 py-1 text-xs rounded border border-gray-300 disabled:opacity-40">次へ</button>
                           </div>
                         )}
-                        <a href="/dailykorean" onClick={() => closeRightMenu()} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)]">一覧で見る →</a>
+                        <button type="button" onClick={() => { setActiveTab("dailykorean"); setDailyKoreanTitle(null); closeRightMenu(); }} className="block w-full mt-2 py-2 text-center text-xs font-medium text-[var(--primary)]">一覧で見る →</button>
                       </>
                     )}
                   </div>
@@ -1178,13 +1187,18 @@ export default function QuizClient() {
           >
             Q&A
           </button>
-          <Link
-            href="/dailykorean"
-            className="flex-1 py-2.5 px-3 text-sm font-bold rounded-lg text-center bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)] transition"
-            style={{ borderColor: "var(--border)" }}
+          <button
+            type="button"
+            onClick={() => setActiveTab("dailykorean")}
+            className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
+              activeTab === "dailykorean"
+                ? "text-white"
+                : "bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)]"
+            }`}
+            style={activeTab === "dailykorean" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
           >
             生活韓国語
-          </Link>
+          </button>
           <button
             type="button"
             onClick={() => setRightMenuOpen(true)}
@@ -1210,7 +1224,16 @@ export default function QuizClient() {
             </svg>
           </button>
         </div>
-        {activeTab === "kotae" ? (
+        {activeTab === "dailykorean" ? (
+          <div className="flex flex-col w-full min-h-[calc(100dvh-6rem)] md:min-h-[70vh] overflow-hidden">
+            <iframe
+              src={dailyKoreanTitle ? `/dailykorean?title=${encodeURIComponent(dailyKoreanTitle)}` : "/dailykorean"}
+              title="生活韓国語"
+              className="w-full flex-1 min-h-[500px] border-0"
+              style={{ borderRadius: "0 0 var(--radius) var(--radius)" }}
+            />
+          </div>
+        ) : activeTab === "kotae" ? (
           <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
             <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
