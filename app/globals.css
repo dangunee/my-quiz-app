@@ -142,10 +142,7 @@ body {
   color: #1a1a1a;
 }
 
-.quiz-sentence.quiz-japanese {
-  border-bottom: none;
-}
-
+.quiz-sentence.quiz-japanese,
 .quiz-sentence.quiz-korean {
   border: none;
   box-shadow: none;
