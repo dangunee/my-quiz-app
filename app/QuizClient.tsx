@@ -254,6 +254,15 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     }
   }, [searchParams]);
 
+  const quizIdFromUrl = searchParams.get("quiz");
+  useEffect(() => {
+    if (activeTab !== "quiz" || !quizIdFromUrl) return;
+    const id = parseInt(quizIdFromUrl, 10);
+    if (isNaN(id)) return;
+    const idx = quizzes.findIndex((q) => q.id === id);
+    if (idx >= 0) setCurrentIndex(idx);
+  }, [activeTab, quizIdFromUrl, quizzes]);
+
   useEffect(() => {
     setKotaePage(0);
   }, [kotaeSearch]);

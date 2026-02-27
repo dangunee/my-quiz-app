@@ -907,6 +907,7 @@ export default function AdminPage() {
                     <pre className="text-sm whitespace-pre-wrap bg-gray-50 p-3 rounded overflow-x-auto max-h-24 overflow-y-auto mb-2">
                       {(dispExplanation || "").replace(/\\n/g, "\n")}
                     </pre>
+                    <div className="flex gap-3 mt-2">
                       <button
                         onClick={() => {
                         setEditJapanese(dispJapanese);
@@ -915,10 +916,19 @@ export default function AdminPage() {
                         setEditExplanation((dispExplanation || "").replace(/\\n/g, "\n"));
                         setEditing(q.id);
                       }}
-                      className="mt-2 text-sm text-red-600 hover:underline"
+                      className="text-sm text-red-600 hover:underline"
                     >
                       編集
                     </button>
+                      <Link
+                        href={`/?tab=quiz&quiz=${q.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        フロントで確認
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
