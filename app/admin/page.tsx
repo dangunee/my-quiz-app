@@ -892,7 +892,7 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   <div>
-                    <div className="text-sm text-gray-700 mb-2 py-2 border-b whitespace-pre-wrap">
+                    <div className="text-sm text-gray-700 mb-2 py-2 whitespace-pre-wrap">
                       <span className="font-medium">問題: </span>
                       {formatJapanese(dispJapanese)}
                     </div>
