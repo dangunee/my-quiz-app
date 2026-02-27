@@ -141,6 +141,10 @@ body {
   color: #1a1a1a;
 }
 
+.quiz-sentence.quiz-korean {
+  border-bottom: none;
+}
+
 .quiz-korean .blank {
   display: inline-block;
   min-width: 8em;
