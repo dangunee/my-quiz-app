@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { QUIZZES } from "../quiz-data";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
@@ -77,6 +78,7 @@ function getFullKorean(q: { options: readonly { id: number; text: string }[]; co
 }
 
 export default function AdminPage() {
+  const searchParams = useSearchParams();
   const [authKey, setAuthKey] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
@@ -299,6 +301,33 @@ export default function AdminPage() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  const quizIdFromUrl = searchParams.get("quiz");
+  const tabFromUrl = searchParams.get("tab");
+  const quizParamHandled = useRef(false);
+  useEffect(() => {
+    if (loading || !quizIdFromUrl || tabFromUrl !== "quiz" || quizParamHandled.current) return;
+    const quizId = parseInt(quizIdFromUrl, 10);
+    if (isNaN(quizId)) return;
+    quizParamHandled.current = true;
+    const allQuizzes = QUIZZES || [];
+    const idx = allQuizzes.findIndex((q) => q.id === quizId);
+    if (idx < 0) return;
+    setActiveTab("quiz");
+    setCurrentPage(Math.ceil((idx + 1) / 10) || 1);
+    const q = allQuizzes[idx];
+    const ov = overrides[q.id];
+    const dispJapanese = ov?.japanese ?? q.japanese;
+    const dispOptions = ov?.options ?? q.options;
+    const dispExplanation = ov?.explanation ?? q.explanation;
+    setEditJapanese(dispJapanese);
+    setEditOptions(JSON.parse(JSON.stringify(dispOptions)));
+    setEditExplanation((dispExplanation || "").replace(/\\n/g, "\n"));
+    setEditing(quizId);
+    setTimeout(() => {
+      document.getElementById(`quiz-${quizId}`)?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  }, [loading, quizIdFromUrl, tabFromUrl, overrides]);
 
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
