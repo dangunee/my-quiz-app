@@ -8,8 +8,10 @@ import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 
-/** Matches 2+ underscores so admin can use any underline length; first group is the blank. */
-const BLANK_REGEX = /(.*?)(_{2,})(.*)/s;
+/** Matches blank: 2+ underscores OR parenthesis ( ). Both supported. */
+const BLANK_REGEX = /(.*?)(_{2,}|\(\s*\))(.*)/s;
+/** Uniform width for parenthesis-style blank (inner space). */
+const PAREN_BLANK_WIDTH = "18ch";
 
 interface KotaeItem {
   id: number;
@@ -1209,28 +1211,42 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
               if (!m) {
                 return <span>{template}</span>;
               }
-              const [, before, underscoreStr, after] = m;
+              const [, before, blankStr, after] = m;
+              const isParen = blankStr.startsWith("(");
               return (
                 <span>
                   {before.trim() === "." ? "" : before}
-                  <span
-                    ref={blankMeasureRef}
-                    className="blank-measure"
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      left: -9999,
-                      whiteSpace: "nowrap",
-                      visibility: "hidden",
-                      pointerEvents: "none",
-                    }}
-                  >
-                    {underscoreStr}
-                  </span>
-                  <span
-                    className="blank"
-                    style={blankWidth != null ? { width: blankWidth, minWidth: blankWidth } : undefined}
-                  />
+                  {isParen ? (
+                    <>
+                      (
+                      <span
+                        className="blank"
+                        style={{ width: PAREN_BLANK_WIDTH, minWidth: PAREN_BLANK_WIDTH }}
+                      />
+                      )
+                    </>
+                  ) : (
+                    <>
+                      <span
+                        ref={blankMeasureRef}
+                        className="blank-measure"
+                        aria-hidden
+                        style={{
+                          position: "absolute",
+                          left: -9999,
+                          whiteSpace: "nowrap",
+                          visibility: "hidden",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        {blankStr}
+                      </span>
+                      <span
+                        className="blank"
+                        style={blankWidth != null ? { width: blankWidth, minWidth: blankWidth } : undefined}
+                      />
+                    </>
+                  )}
                   {after.trim() === "." ? "" : after}
                 </span>
               );

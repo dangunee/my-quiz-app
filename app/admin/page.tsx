@@ -73,9 +73,9 @@ function getFullKorean(q: { options: readonly { id: number; text: string }[]; co
   if (text.includes(" / ")) {
     const parts = text.split(" / ");
     let i = 0;
-    return q.koreanTemplate.replace(/_{2,}/g, () => parts[i++] ?? "");
+    return q.koreanTemplate.replace(/_{2,}|\(\s*\)/g, () => parts[i++] ?? "");
   }
-  return q.koreanTemplate.replace(/_{10,}/g, text);
+  return q.koreanTemplate.replace(/_{2,}|\(\s*\)/g, text);
 }
 
 export default function AdminPage() {
@@ -835,13 +835,13 @@ export default function AdminPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-800 mb-2">韓国語の文（빈칸は_________________________）</label>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">韓国語の文（빈칸은 (        ) または _____）</label>
                       <textarea
                         value={editKoreanTemplate}
                         onChange={(e) => setEditKoreanTemplate(e.target.value)}
                         rows={3}
                         className="w-full border-2 border-gray-300 rounded px-3 py-2.5 text-base focus:border-red-500 focus:outline-none resize-y"
-                        placeholder="韓国語の文を入力（빈칸は_________________________、改行可）"
+                        placeholder="韓国語の文を入力（빈칸은 (        ) または _____、改行可）"
                       />
                     </div>
                     <div>
@@ -897,7 +897,7 @@ export default function AdminPage() {
                       {formatJapanese(dispJapanese)}
                     </div>
                     <div className="text-base font-medium text-gray-800 mb-2 py-2 whitespace-pre-wrap">
-                      {(ov?.koreanTemplate ?? q.koreanTemplate).replace(/_{10,}/g, "________________________")}
+                      {(ov?.koreanTemplate ?? q.koreanTemplate).replace(/_{2,}|\(\s*\)/g, "(                    )")}
                     </div>
                     <div className="text-sm text-gray-700 mb-2 pt-2">
                       <span className="font-medium">選択肢(韓国語): </span>
