@@ -1118,70 +1118,47 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </>
         ) : (
         <>
-        <header className="quiz-header">
-          <div className="relative">
-            <h1 className="min-w-0 break-words text-center">ミリネのクイズで学ぶ韓国語</h1>
+        <header className="quiz-header-panel">
+          <div className="quiz-title">ミリネのクイズで学ぶ韓国語</div>
+          <div className="search-wrap">
+            <svg className="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
             <input
               type="search"
-              placeholder="問題を検索... (例: 日本語、韓国語、単語)"
+              className="search-box"
+              placeholder="問題を検索… (例: 日本語、韓国語、単語)"
               value={quizSearch}
               onChange={(e) => setQuizSearch(e.target.value)}
-              className="w-full mt-3 px-4 py-2.5 text-sm border-0 rounded-lg bg-white/95 text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50"
             />
-            <div className="hidden sm:block md:hidden shrink-0 absolute right-0 top-0">
-              {isAdmin && !isLoggedIn ? (
-                <Link
-                  href="/admin"
-                  className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors"
-                >
-                  管理者モードで接続中
-                </Link>
-              ) : isLoggedIn ? (
-                <div className="flex flex-col items-end gap-1.5">
-                  <div className="flex items-center gap-2">
-                    <a
-                      href="/profile"
-                      className="text-white/95 text-sm hover:underline whitespace-nowrap"
-                    >
-                      マイページ
-                    </a>
-                    <span className="text-white/95 text-sm whitespace-nowrap">ログイン中</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowLogoutModal(true)}
-                    className="text-white/90 text-sm hover:underline hover:text-white"
-                  >
-                    ログアウト
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowLoginModal(true)}
-                  className="text-white/90 text-sm hover:underline"
-                >
-                  ログイン
-                </button>
-              )}
-            </div>
           </div>
-          <div className="quiz-meta flex items-center gap-3 flex-nowrap">
-            <span className="quiz-counter whitespace-nowrap">{total}問</span>
-            <span className="quiz-counter whitespace-nowrap">{currentIndex + 1} / {total}</span>
+          <div className="quiz-meta">
+            <div className="quiz-count">{total}問 &nbsp;<strong>{currentIndex + 1} / {total}</strong></div>
             {accuracyRate !== null && (
-              <span className="quiz-accuracy whitespace-nowrap">正解率 {accuracyRate}%</span>
+              <div className="score-badge">
+                <span className="score-dot" />
+                正解率 {accuracyRate}%
+              </div>
             )}
+          </div>
+          <div className="progress-bar-wrap">
+            <div
+              className="progress-bar-fill"
+              style={{ width: `${total > 0 ? ((currentIndex + (showResult ? 1 : 0)) / total) * 100 : 0}%` }}
+            />
           </div>
         </header>
 
-        <main className="quiz-main">
+        <main className="quiz-body">
           {!quiz ? (
             <p className="py-12 text-center text-gray-500">該当する問題がありません</p>
           ) : (
           <>
-          <p className="quiz-instruction">{quiz.question}</p>
-          <div ref={japaneseRef} className="quiz-sentence quiz-japanese" style={{ position: "relative" }}>
+          <div className="demo-toggle">
+            選択肢をクリックして動作を確認できます（デモ）
+          </div>
+          <p className="instruction">{quiz.question}</p>
+          <div ref={japaneseRef} className="q-card" style={{ position: "relative" }}>
             {formatJapanese(japanese)}
             <span
               className="measure-span"
@@ -1197,7 +1174,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
               {formatJapanese(japanese)}
             </span>
           </div>
-          <div className="quiz-sentence quiz-korean">
+          <div className="q-card korean">
             {(ov?.koreanTemplate ?? quiz.koreanTemplate).split(BLANK).map((part, i) => (
               <span key={i}>
                 {part.trim() === "." ? "" : part}
@@ -1211,92 +1188,75 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             ))}
           </div>
 
-          {isAdmin && !isLoggedIn && quiz && (
-            <div className="mb-4 flex justify-end items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  if (currentIndex > 0) {
-                    setCurrentIndex(currentIndex - 1);
-                    setSelectedAnswer(null);
-                    setShowResult(false);
-                  }
-                }}
-                disabled={currentIndex <= 0}
-                className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-red-500 text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                aria-label="前の問題へ"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (currentIndex < total - 1) {
-                    setCurrentIndex(currentIndex + 1);
-                    setSelectedAnswer(null);
-                    setShowResult(false);
-                  }
-                }}
-                disabled={currentIndex >= total - 1}
-                className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-red-500 text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                aria-label="次の問題へ"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-              <Link
-                href={`/admin?tab=quiz&quiz=${quiz.id}`}
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-red-500 text-red-600 hover:bg-red-50 transition"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
+          <div className="nav-controls">
+            <button
+              type="button"
+              className="nav-btn"
+              onClick={() => {
+                if (currentIndex > 0) {
+                  setCurrentIndex(currentIndex - 1);
+                  setSelectedAnswer(null);
+                  setShowResult(false);
+                }
+              }}
+              disabled={currentIndex <= 0}
+              aria-label="前の問題へ"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+            </button>
+            <button
+              type="button"
+              className="nav-btn"
+              onClick={() => {
+                if (currentIndex < total - 1) {
+                  setCurrentIndex(currentIndex + 1);
+                  setSelectedAnswer(null);
+                  setShowResult(false);
+                }
+              }}
+              disabled={currentIndex >= total - 1}
+              aria-label="次の問題へ"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+            </button>
+            {isAdmin && !isLoggedIn && (
+              <Link href={`/admin?tab=quiz&quiz=${quiz.id}`} className="edit-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                 この問題を編集
               </Link>
-            </div>
-          )}
+            )}
+          </div>
 
-          <div className="quiz-options">
+          <div className="choices">
             {options.map((option) => {
               const isSelected = selectedAnswer === option.id;
               const isCorrect = option.id === quiz.correctAnswer;
               const showCorrectness = showResult && (isSelected || isCorrect);
-              const showMark = showCorrectness && (isCorrect || (isSelected && !isCorrect));
 
               return (
                 <button
                   key={option.id}
-                  className={`quiz-option ${showCorrectness ? "revealed" : ""} ${
+                  type="button"
+                  className={`choice ${isSelected && !showResult ? "selected" : ""} ${
                     showCorrectness && isCorrect ? "correct" : ""
                   } ${showCorrectness && isSelected && !isCorrect ? "wrong" : ""}`}
                   onClick={() => handleSelect(option.id)}
                   disabled={showResult}
                 >
-                  <span className="option-number">{getOptionNumber(option.id)}</span>
-                  <span className="option-text">{option.text}</span>
-                  {showMark && (
-                    <span className="option-mark" aria-hidden>
-                      {isCorrect ? "⭕" : "❌"}
-                    </span>
-                  )}
+                  <div className="choice-num">{["①", "②", "③", "④"][option.id - 1]}</div>
+                  <div className="choice-text">{option.text}</div>
+                  <div className="choice-mark" aria-hidden />
                 </button>
               );
             })}
           </div>
 
           {showResult && (
-            <div className="quiz-result">
-              <div
-                className={`result-badge ${
-                  selectedAnswer === quiz.correctAnswer ? "correct" : "wrong"
-                }`}
-              >
-                {selectedAnswer === quiz.correctAnswer ? "正解！" : "不正解"}
+            <div className="quiz-explanation">
+              <div className={`result-badge ${selectedAnswer === quiz.correctAnswer ? "correct" : "wrong"}`}>
+                {selectedAnswer === quiz.correctAnswer ? "✓  正解！" : "✗  不正解…"}
               </div>
-              <div className="result-explanation">
+              <div className="explanation-text">
                 <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(explanation)}</p>
                 {quiz.vocabulary && quiz.vocabulary.length > 0 && (
                   <div className="vocabulary-list">
@@ -1308,13 +1268,13 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                   </div>
                 )}
               </div>
-              <div className="result-actions">
-                <button type="button" className="btn-secondary" onClick={handleUndo}>
+              <div className="action-area">
+                <button type="button" className="btn-retry" onClick={handleUndo}>
                   解いてやり直す
                 </button>
                 {currentIndex < total - 1 && (
-                  <button className="btn-primary" onClick={handleNext}>
-                    次の問題へ
+                  <button type="button" className="btn-next" onClick={handleNext}>
+                    次の問題へ →
                   </button>
                 )}
               </div>
