@@ -320,11 +320,12 @@ body {
 }
 
 .quiz-title {
-  font-size: 17px;
+  font-size: 25.5px; /* 17px × 1.5 */
   font-weight: 700;
   color: white;
   margin-bottom: 14px;
   letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .quiz-header-panel .search-wrap {
@@ -667,18 +668,18 @@ body {
 }
 
 .explanation-text .point {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  display: block;
   background: var(--teal-pale);
-  border-left: 3px solid var(--teal);
-  padding: 8px 12px;
+  border-left: 4px solid var(--teal);
+  padding: 10px 14px;
   border-radius: 0 8px 8px 0;
-  margin: 8px 0;
+  margin: 10px 0;
   font-size: 13px;
-  color: var(--teal-mid);
-  font-weight: 500;
+  line-height: 1.85;
+  color: #1a1a1a;
+  font-weight: 400;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .action-area {

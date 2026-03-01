@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -446,6 +446,37 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
       .replace(/(?<!、)([❶❷❸❹])/g, "\n$1")
       .replace(/\n{2,}/g, "\n")
       .replace(/^\n+/, "");
+
+  const renderExplanation = (raw: string) => {
+    const t = raw || "";
+    const pointStart = "#";
+    const pointEnd = "/#";
+    if (!t.includes(pointStart)) {
+      return <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(t)}</p>;
+    }
+    const parts: React.ReactNode[] = [];
+    let rest = t;
+    let key = 0;
+    while (rest.length > 0) {
+      const i = rest.indexOf(pointStart);
+      const j = rest.indexOf(pointEnd, i + pointStart.length);
+      if (i === -1) {
+        parts.push(<p key={key++} style={{ whiteSpace: "pre-line" }}>{formatExplanation(rest)}</p>);
+        break;
+      }
+      if (i > 0) {
+        parts.push(<p key={key++} style={{ whiteSpace: "pre-line" }}>{formatExplanation(rest.slice(0, i))}</p>);
+      }
+      if (j !== -1) {
+        const pointContent = rest.slice(i + pointStart.length, j).trim();
+        parts.push(<div key={key++} className="point">{formatExplanation(pointContent)}</div>);
+        rest = rest.slice(j + pointEnd.length);
+      } else {
+        rest = rest.slice(i + pointStart.length);
+      }
+    }
+    return <>{parts}</>;
+  };
 
   const handleSelect = (optionId: number) => {
     if (showResult) return;
@@ -1154,9 +1185,6 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             <p className="py-12 text-center text-gray-500">該当する問題がありません</p>
           ) : (
           <>
-          <div className="demo-toggle">
-            選択肢をクリックして動作を確認できます（デモ）
-          </div>
           <p className="instruction">{quiz.question}</p>
           <div ref={japaneseRef} className="q-card" style={{ position: "relative" }}>
             {formatJapanese(japanese)}
@@ -1228,7 +1256,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </div>
 
           <div className="choices">
-            {options.map((option) => {
+            {[...options].sort((a, b) => a.id - b.id).map((option) => {
               const isSelected = selectedAnswer === option.id;
               const isCorrect = option.id === quiz.correctAnswer;
               const showCorrectness = showResult && (isSelected || isCorrect);
@@ -1257,7 +1285,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 {selectedAnswer === quiz.correctAnswer ? "✓  正解！" : "✗  不正解…"}
               </div>
               <div className="explanation-text">
-                <p style={{ whiteSpace: "pre-line" }}>{formatExplanation(explanation)}</p>
+                {renderExplanation(explanation)}
                 {quiz.vocabulary && quiz.vocabulary.length > 0 && (
                   <div className="vocabulary-list">
                     {quiz.vocabulary.map((v, i) => (
