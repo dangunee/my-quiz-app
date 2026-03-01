@@ -8,8 +8,8 @@ import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 
-/** Matches blank: 2+ underscores OR parenthesis ( ). Both supported. */
-const BLANK_REGEX = /(.*?)(_{2,}|\(\s*\))(.*)/s;
+/** Matches blank: 2+ underscores OR parenthesis ( ). Both supported. [\s\S] = any char including newline (no ES2018 's' flag). */
+const BLANK_REGEX = /([\s\S]*?)(_{2,}|\(\s*\))([\s\S]*)/;
 /** Uniform width for parenthesis-style blank (inner space). */
 const PAREN_BLANK_WIDTH = "18ch";
 
