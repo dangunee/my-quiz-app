@@ -8,7 +8,8 @@ import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 
-const BLANK = "_________________________";
+/** Matches 2+ underscores so admin can use any underline length; first group is the blank. */
+const BLANK_REGEX = /(.*?)(_{2,})(.*)/s;
 
 interface KotaeItem {
   id: number;
@@ -87,6 +88,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminAuthKey, setAdminAuthKey] = useState<string | null>(null);
   const japaneseRef = useRef<HTMLDivElement>(null);
+  const blankMeasureRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const checkAdmin = (authKey: string | null) => {
@@ -416,16 +418,14 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   }, [currentIndex, hasPaid]);
 
   useEffect(() => {
-    const el = japaneseRef.current;
-    if (!el) return;
-    const span = el.querySelector(".measure-span") as HTMLElement;
+    const span = blankMeasureRef.current;
     if (!span) return;
     const measure = () => setBlankWidth(span.offsetWidth);
     measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(el);
+    ro.observe(span);
     return () => ro.disconnect();
-  }, [japanese]);
+  }, [currentIndex, overrides, filteredQuizzes]);
 
   useEffect(() => {
     fetch("/api/explanations")
@@ -1203,17 +1203,38 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             </span>
           </div>
           <div className="q-card korean">
-            {(ov?.koreanTemplate ?? quiz.koreanTemplate).split(BLANK).map((part, i) => (
-              <span key={i}>
-                {part.trim() === "." ? "" : part}
-                {i === 0 && (
+            {(() => {
+              const template = (ov?.koreanTemplate ?? quiz.koreanTemplate) ?? "";
+              const m = template.match(BLANK_REGEX);
+              if (!m) {
+                return <span>{template}</span>;
+              }
+              const [, before, underscoreStr, after] = m;
+              return (
+                <span>
+                  {before.trim() === "." ? "" : before}
+                  <span
+                    ref={blankMeasureRef}
+                    className="blank-measure"
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      left: -9999,
+                      whiteSpace: "nowrap",
+                      visibility: "hidden",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    {underscoreStr}
+                  </span>
                   <span
                     className="blank"
                     style={blankWidth != null ? { width: blankWidth, minWidth: blankWidth } : undefined}
                   />
-                )}
-              </span>
-            ))}
+                  {after.trim() === "." ? "" : after}
+                </span>
+              );
+            })()}
           </div>
 
           <div className="nav-controls">
