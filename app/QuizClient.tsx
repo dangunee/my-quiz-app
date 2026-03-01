@@ -62,7 +62,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"quiz" | "kotae" | "dailylife">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "qna" | "dailylife">("quiz");
   const [showLanding, setShowLanding] = useState(initialShowLanding);
   const [landingNavDropdownOpen, setLandingNavDropdownOpen] = useState(false);
   const [quizSearch, setQuizSearch] = useState("");
@@ -147,7 +147,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
         event: "session_start",
         session_id: sessionId,
         referrer: typeof document !== "undefined" ? document.referrer || undefined : undefined,
-        app_type: activeTab,
+        app_type: activeTab === "qna" ? "kotae" : activeTab,
         is_logged_in: isLoggedIn,
       }),
     }).catch(() => {});
@@ -159,7 +159,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     fetch("/api/analytics", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event: "tab_view", session_id: s.id, app_type: activeTab }),
+      body: JSON.stringify({ event: "tab_view", session_id: s.id, app_type: activeTab === "qna" ? "kotae" : activeTab }),
     }).catch(() => {});
   }, [activeTab]);
 
@@ -237,7 +237,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     setRightMenuOpen(false);
   };
 
-  const handleStartFromLanding = (tab: "quiz" | "kotae" | "dailylife") => {
+  const handleStartFromLanding = (tab: "quiz" | "qna" | "dailylife") => {
     if (pathname === "/main.html") {
       router.push(`/?tab=${tab}`);
     } else {
@@ -248,9 +248,13 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
 
   useEffect(() => {
     const tab = searchParams.get("tab");
-    if (tab === "quiz" || tab === "kotae" || tab === "dailylife") {
+    if (tab === "quiz" || tab === "qna" || tab === "dailylife") {
       setActiveTab(tab);
       setShowLanding(false);
+    } else if (tab === "kotae") {
+      setActiveTab("qna");
+      setShowLanding(false);
+      router.replace("/?tab=qna", { scroll: false });
     }
   }, [searchParams]);
 
@@ -585,7 +589,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("kotae"); }}
+                    onClick={() => { setLandingNavDropdownOpen(false); handleStartFromLanding("qna"); }}
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
@@ -662,7 +666,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
 
             <button
               type="button"
-              onClick={() => handleStartFromLanding("kotae")}
+              onClick={() => handleStartFromLanding("qna")}
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)", opacity: 0.9 }}>
@@ -845,13 +849,13 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("kotae"); router.replace("/?tab=kotae"); }}
+            onClick={() => { setActiveTab("qna"); router.replace("/?tab=qna"); }}
             className={`flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
-              activeTab === "kotae"
+              activeTab === "qna"
                 ? "text-white"
                 : "bg-white text-gray-600 border hover:border-[var(--primary)] hover:text-[var(--primary)]"
             }`}
-            style={activeTab === "kotae" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
+            style={activeTab === "qna" ? { background: "var(--primary)" } : { borderColor: "var(--border)" }}
           >
             Q&A
           </button>
@@ -892,7 +896,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
             </svg>
           </button>
         </div>
-        {activeTab === "kotae" ? (
+        {activeTab === "qna" ? (
           <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
             <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>

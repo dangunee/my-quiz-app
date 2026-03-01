@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { isCourseAnnouncement, truncateCourseAnnouncementContent } from "@/lib/seikatsu-course";
 
 const WP_API = "https://mirinae.jp/blog/index.php?rest_route=/wp/v2/posts";
 const CAT_ID = "2";
@@ -9,6 +10,13 @@ function decodeTitle(raw: string): string {
     String.fromCharCode(parseInt(code, 10))
   );
 }
+
+type WpPost = {
+  id: number;
+  title: { rendered: string };
+  content: { rendered: string };
+  link: string;
+};
 
 export async function POST(request: NextRequest) {
   const auth = request.headers.get("authorization");
@@ -25,22 +33,32 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const all: string[] = [];
+    const all: { title: string; content: string; url: string; wp_id: number }[] = [];
     let page = 1;
     let hasMore = true;
 
     while (hasMore) {
       const res = await fetch(
-        `${WP_API}&categories=${CAT_ID}&per_page=100&page=${page}&_fields=title`,
+        `${WP_API}&categories=${CAT_ID}&per_page=100&page=${page}&_fields=id,title,content,link`,
         { headers: { "User-Agent": "Mozilla/5.0 (compatible; QuizApp/1.0)" } }
       );
       if (!res.ok) throw new Error("WP API failed");
-      const posts: { title: { rendered: string } }[] = await res.json();
+      const posts: WpPost[] = await res.json();
       if (posts.length === 0) break;
 
       for (const p of posts) {
         const title = decodeTitle(p.title.rendered).trim();
-        if (title) all.push(title);
+        if (!title) continue;
+        let content = (p.content?.rendered ?? "").trim();
+        if (isCourseAnnouncement(title, content)) {
+          content = truncateCourseAnnouncementContent(content);
+        }
+        all.push({
+          title,
+          content,
+          url: p.link ?? `https://mirinae.jp/blog/?p=${p.id}`,
+          wp_id: p.id,
+        });
       }
       if (posts.length < 100) hasMore = false;
       else page++;
@@ -57,9 +75,12 @@ export async function POST(request: NextRequest) {
         await supabase.from("seikatsu_items").delete().in("id", chunk);
       }
     }
-    const rows = all.map((title, i) => ({
-      title,
+    const rows = all.map((item, i) => ({
+      title: item.title,
       sort_order: all.length - i,
+      content: item.content || null,
+      url: item.url || null,
+      wp_id: item.wp_id,
     }));
 
     const { error: insertError } = await supabase.from("seikatsu_items").insert(rows);

@@ -104,9 +104,13 @@ create table if not exists seikatsu_items (
   id uuid primary key default gen_random_uuid(),
   title text not null unique,
   sort_order int not null default 0,
+  content text,
+  url text,
+  wp_id bigint,
   created_at timestamptz default now()
 );
 create index if not exists idx_seikatsu_items_sort on seikatsu_items(sort_order desc);
+create unique index if not exists idx_seikatsu_items_wp_id on seikatsu_items(wp_id) where wp_id is not null;
 alter table seikatsu_items enable row level security;
 create policy "Public read seikatsu" on seikatsu_items for select using (true);
 create policy "Service role full seikatsu" on seikatsu_items for all using (auth.role() = 'service_role');
