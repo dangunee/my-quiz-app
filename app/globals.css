@@ -448,6 +448,7 @@ body {
   display: inline-block;
   min-width: 80px;
   max-width: 100%;
+  border-bottom: 1px solid var(--teal);
   margin: 0 4px;
   vertical-align: bottom;
 }
