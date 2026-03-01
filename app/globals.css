@@ -320,7 +320,7 @@ body {
 }
 
 .quiz-title {
-  font-size: 25.5px; /* 17px × 1.5 */
+  font-size: 20.4px; /* 17px × 1.2 */
   font-weight: 700;
   color: white;
   margin-bottom: 14px;
@@ -339,7 +339,7 @@ body {
   border: none;
   background: rgba(255, 255, 255, 0.15);
   color: white;
-  font-size: 21px; /* 14 × 1.5 */
+  font-size: 16.8px; /* 14 × 1.2 */
   outline: none;
   backdrop-filter: blur(4px);
 }
@@ -366,13 +366,13 @@ body {
 
 .quiz-header-panel .quiz-count {
   color: rgba(255, 255, 255, 0.75);
-  font-size: 18px; /* 12 × 1.5 */
+  font-size: 14.4px; /* 12 × 1.2 */
   font-weight: 500;
 }
 
 .quiz-header-panel .quiz-count strong {
   color: white;
-  font-size: 21px; /* 14 × 1.5 */
+  font-size: 16.8px; /* 14 × 1.2 */
 }
 
 .score-badge {
@@ -381,7 +381,7 @@ body {
   color: white;
   padding: 5px 14px;
   border-radius: 20px;
-  font-size: 19.5px; /* 13 × 1.5 */
+  font-size: 15.6px; /* 13 × 1.2 */
   font-weight: 700;
   backdrop-filter: blur(4px);
   display: flex;
@@ -421,7 +421,7 @@ body {
 }
 
 .quiz-body .instruction {
-  font-size: 19.5px; /* 13 × 1.5 */
+  font-size: 15.6px; /* 13 × 1.2 */
   color: var(--gray);
   margin-bottom: 12px;
   font-weight: 300;
@@ -433,9 +433,10 @@ body {
   padding: 20px;
   margin-bottom: 10px;
   border: 1px solid var(--border);
-  font-size: 22.5px; /* 15 × 1.5 */
+  font-size: 18px; /* 15 × 1.2 */
   line-height: 1.75;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
 .q-card.korean {
@@ -446,6 +447,7 @@ body {
 .q-card .blank {
   display: inline-block;
   min-width: 80px;
+  max-width: 100%;
   border-bottom: 2px solid var(--teal);
   margin: 0 4px;
   vertical-align: bottom;
@@ -496,7 +498,7 @@ body {
   background: white;
   color: var(--gray);
   cursor: pointer;
-  font-size: 18px; /* 12 × 1.5 */
+  font-size: 14.4px; /* 12 × 1.2 */
   font-weight: 500;
   transition: all 0.15s;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
@@ -523,7 +525,7 @@ body {
   gap: 14px;
   cursor: pointer;
   transition: all 0.18s;
-  font-size: 22.5px; /* 15 × 1.5 */
+  font-size: 18px; /* 15 × 1.2 */
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   position: relative;
   overflow: hidden;
@@ -546,7 +548,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 19.5px; /* 13 × 1.5 */
+  font-size: 15.6px; /* 13 × 1.2 */
   font-weight: 700;
   color: var(--gray);
   flex-shrink: 0;
@@ -645,7 +647,7 @@ body {
   gap: 6px;
   padding: 5px 14px;
   border-radius: 20px;
-  font-size: 18px; /* 12 × 1.5 */
+  font-size: 14.4px; /* 12 × 1.2 */
   font-weight: 700;
   margin-bottom: 14px;
   letter-spacing: 0.03em;
@@ -662,7 +664,7 @@ body {
 }
 
 .explanation-text {
-  font-size: 19.5px; /* 13 × 1.5 */
+  font-size: 15.6px; /* 13 × 1.2 */
   line-height: 1.85;
   color: var(--foreground);
 }
@@ -674,7 +676,7 @@ body {
   padding: 10px 14px;
   border-radius: 0 8px 8px 0;
   margin: 10px 0;
-  font-size: 19.5px; /* 13 × 1.5 */
+  font-size: 15.6px; /* 13 × 1.2 */
   line-height: 1.85;
   color: #1a1a1a;
   font-weight: 400;
@@ -695,7 +697,7 @@ body {
   border-radius: 12px;
   border: 1.5px solid var(--border);
   background: white;
-  font-size: 21px; /* 14 × 1.5 */
+  font-size: 16.8px; /* 14 × 1.2 */
   font-weight: 500;
   color: var(--gray);
   cursor: pointer;
@@ -714,7 +716,7 @@ body {
   border: none;
   background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
   color: white;
-  font-size: 22.5px; /* 15 × 1.5 */
+  font-size: 18px; /* 15 × 1.2 */
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.15s, transform 0.15s;
@@ -729,10 +731,10 @@ body {
 
 /* 퀴즈 화면: 상단 탭·하단 링크 글자 1.5배 */
 .quiz-container .quiz-tab-btn {
-  font-size: 21px; /* 14 × 1.5 */
+  font-size: 16.8px; /* 14 × 1.2 */
 }
 .quiz-bottom-nav .quiz-bottom-link {
-  font-size: 21px; /* 14 × 1.5 */
+  font-size: 16.8px; /* 14 × 1.2 */
 }
 
 .demo-toggle {
