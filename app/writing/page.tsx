@@ -156,7 +156,7 @@ export default function WritingPage() {
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(false);
   const [sample1Tab, setSample1Tab] = useState<"learner" | "corrected" | "native">("learner");
-  const [sample2Tab, setSample2Tab] = useState<"corrected" | "comparison" | "model">("corrected");
+  const [sample2Tab, setSample2Tab] = useState<"assignment" | "corrected" | "comparison" | "model">("assignment");
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminSubmissions, setAdminSubmissions] = useState<{ id: string; user_id: string; period_index: number; item_index: number; content: string; submitted_at: string; user?: { email?: string; name?: string; username?: string } }[]>([]);
   const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
@@ -1058,7 +1058,7 @@ export default function WritingPage() {
                                         : "border-[#E2D9CC] bg-white text-[#8E8E93]"
                                     }`}
                                   >
-                                    ① 学習者の作文
+                                    ① 作文課題例
                                   </button>
                                   <button
                                     type="button"
@@ -1069,7 +1069,7 @@ export default function WritingPage() {
                                         : "border-[#E2D9CC] bg-white text-[#8E8E93]"
                                     }`}
                                   >
-                                    ② 添削後
+                                    ② ２点作例
                                   </button>
                                   <button
                                     type="button"
@@ -1080,7 +1080,7 @@ export default function WritingPage() {
                                         : "border-[#E2D9CC] bg-white text-[#8E8E93]"
                                     }`}
                                   >
-                                    ③ ネイティブ比較文
+                                    ③ 模範文
                                   </button>
                                 </div>
                                 {/* Tabs content */}
@@ -1189,6 +1189,17 @@ export default function WritingPage() {
                                 <div className="flex flex-wrap gap-2">
                                   <button
                                     type="button"
+                                    onClick={() => setSample2Tab("assignment")}
+                                    className={`rounded-full border px-4 py-2 text-[12px] font-semibold ${
+                                      sample2Tab === "assignment"
+                                        ? "border-[#3D6B5A] bg-[#3D6B5A] text-white"
+                                        : "border-[#E2D9CC] bg-white text-[#8E8E93]"
+                                    }`}
+                                  >
+                                    ① 作文課題
+                                  </button>
+                                  <button
+                                    type="button"
                                     onClick={() => setSample2Tab("corrected")}
                                     className={`rounded-full border px-4 py-2 text-[12px] font-semibold ${
                                       sample2Tab === "corrected"
@@ -1196,7 +1207,7 @@ export default function WritingPage() {
                                         : "border-[#E2D9CC] bg-white text-[#8E8E93]"
                                     }`}
                                   >
-                                    ① 添削文
+                                    ② 添削文
                                   </button>
                                   <button
                                     type="button"
@@ -1207,7 +1218,7 @@ export default function WritingPage() {
                                         : "border-[#E2D9CC] bg-white text-[#8E8E93]"
                                     }`}
                                   >
-                                    ② 比較文
+                                    ③ 比較文
                                   </button>
                                   <button
                                     type="button"
@@ -1218,10 +1229,40 @@ export default function WritingPage() {
                                         : "border-[#E2D9CC] bg-white text-[#8E8E93]"
                                     }`}
                                   >
-                                    ③ 模範文
+                                    ④ 模範文
                                   </button>
                                 </div>
                                 {/* Tabs content */}
+                                {sample2Tab === "assignment" && (
+                                  <div className="space-y-2 rounded-xl bg-white px-4 py-4 text-[13px] text-[#1F2933]">
+                                    <p className="text-[10px] font-semibold tracking-[0.18em] text-[#8E8E93]">
+                                      THEME
+                                    </p>
+                                    <p className="text-[12px] text-[#4B5563] whitespace-pre-line">
+                                      10回コースの第4回課題：　テーマ：옷
+
+                                      {"\n\n"}
+                                      내가 좋아하는 옷에 대해 이야기해 봅시다.
+                                      {"\n"}
+                                      평소에 자주 입는 옷을 설명해 주세요. 옷을 살 때 중요하게 생각하는 부분、어디에서 옷을 사는지、옷 보관은 어떻게 하고 있는지 등을 이야기해 주세요
+
+                                      {"\n\n"}
+                                      参考単語: 옷 관리、드라이클리닝、면、소재、실크、부들부들、デザイン、花柄、ヒョウ柄、水玉
+
+                                      {"\n\n"}
+                                      下記に提示された文型を、必ず2つ以上使用すること。
+
+                                      {"\n\n"}
+                                      ○-고 있다　～している　예) 내 친구는 항상 안경을 쓰고 있다.
+                                      {"\n"}
+                                      ○-(으)ㄹ까 하다　～しようかと思う　예) 이제는 여름옷을 꺼내 놓을까 한다.
+                                      {"\n"}
+                                      ○-(으)ㄹ 생각도 못 하다　～は思いもよらない、～することは考えられない　예) 살이 쪄서 딱 붙는 옷은 입을 생각도 못 한다.
+                                      {"\n"}
+                                      ○-(으)ㄴ 이상　～した以上は　예) 옷을 사러 나간 이상, 한 벌 정도는 사 오고 싶었다.
+                                    </p>
+                                  </div>
+                                )}
                                 {sample2Tab === "corrected" && (
                                   <div className="space-y-2 rounded-xl border border-[#E2D9CC] bg-white text-[13px]">
                                     <div className="rounded-t-xl bg-[#2A3650] px-4 py-2 text-sm font-semibold text-white">
