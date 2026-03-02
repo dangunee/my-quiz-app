@@ -793,7 +793,335 @@ export default function WritingPage() {
                   }
                 >
                   {/* HERO */}
-                  <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3D6B5A] via-[#2E5244] to-[#1C3328] px-6 py-10 md:px-10 md:py-12 text-white mb-8">
+                  <section className="hero relative overflow-hidden rounded-2xl px-6 py-10 md:px-10 md:py-12 text-white mb-8">
+                    <svg
+                      className="hw-canvas"
+                      viewBox="0 0 1200 500"
+                      preserveAspectRatio="xMidYMid slice"
+                    >
+                      {/* 노트 줄 (물결치는 가로선 4개) */}
+                      <path
+                        d="M-20 90 Q200 84 450 91 Q700 98 950 88 Q1100 82 1220 90"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                        strokeDasharray="1400"
+                        strokeDashoffset="1400"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="1400"
+                          to="0"
+                          dur="3s"
+                          begin="0.3s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M-20 165 Q250 159 500 167 Q750 175 1000 162 Q1120 155 1220 165"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                        strokeDasharray="1400"
+                        strokeDashoffset="1400"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="1400"
+                          to="0"
+                          dur="3s"
+                          begin="0.8s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M-20 245 Q180 239 420 247 Q660 255 900 242 Q1060 233 1220 245"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                        strokeDasharray="1400"
+                        strokeDashoffset="1400"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="1400"
+                          to="0"
+                          dur="3s"
+                          begin="1.3s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M-20 325 Q200 319 440 327 Q680 335 920 322 Q1080 313 1220 325"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1"
+                        strokeLinecap="round"
+                        strokeDasharray="1400"
+                        strokeDashoffset="1400"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="1400"
+                          to="0"
+                          dur="3s"
+                          begin="1.8s"
+                          fill="freeze"
+                        />
+                      </path>
+
+                      {/* 작 ㅈ */}
+                      <path
+                        d="M100 60 Q116 80 132 60"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray="80"
+                        strokeDashoffset="80"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="80"
+                          to="0"
+                          dur="0.8s"
+                          begin="0.5s"
+                          fill="freeze"
+                        />
+                      </path>
+                      {/* 작 ㅏ */}
+                      <path
+                        d="M148 48 L148 108 M148 72 L168 72"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray="120"
+                        strokeDashoffset="120"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="120"
+                          to="0"
+                          dur="1s"
+                          begin="1.1s"
+                          fill="freeze"
+                        />
+                      </path>
+                      {/* 작 ㄱ 받침 */}
+                      <path
+                        d="M96 114 L96 130 L140 130"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray="90"
+                        strokeDashoffset="90"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="90"
+                          to="0"
+                          dur="0.9s"
+                          begin="1.9s"
+                          fill="freeze"
+                        />
+                      </path>
+
+                      {/* 문 ㅁ */}
+                      <path
+                        d="M210 52 L210 108 L260 108 L260 52 L210 52"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeDasharray="230"
+                        strokeDashoffset="230"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="230"
+                          to="0"
+                          dur="1.6s"
+                          begin="2.6s"
+                          fill="freeze"
+                        />
+                      </path>
+                      {/* 문 ㅜ */}
+                      <path
+                        d="M278 46 L278 108 M258 108 L298 108"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray="130"
+                        strokeDashoffset="130"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="130"
+                          to="0"
+                          dur="1s"
+                          begin="3.8s"
+                          fill="freeze"
+                        />
+                      </path>
+                      {/* 문 ㄴ 받침 */}
+                      <path
+                        d="M210 120 L210 136 L260 136"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray="90"
+                        strokeDashoffset="90"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="90"
+                          to="0"
+                          dur="0.8s"
+                          begin="4.6s"
+                          fill="freeze"
+                        />
+                      </path>
+
+                      {/* 오른쪽: 흘림체 느낌의 짧은 획들 */}
+                      <path
+                        d="M820 80 Q880 68 940 82 Q990 94 1040 78"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeDasharray="280"
+                        strokeDashoffset="280"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="280"
+                          to="0"
+                          dur="1.6s"
+                          begin="1s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M840 120 Q900 108 960 122 Q1010 134 1060 118"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeDasharray="270"
+                        strokeDashoffset="270"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="270"
+                          to="0"
+                          dur="1.5s"
+                          begin="1.8s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M860 158 Q910 146 970 160 Q1020 172 1070 156"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeDasharray="260"
+                        strokeDashoffset="260"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="260"
+                          to="0"
+                          dur="1.4s"
+                          begin="2.6s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M830 198 Q890 186 950 198 Q1000 208 1050 194"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeDasharray="260"
+                        strokeDashoffset="260"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="260"
+                          to="0"
+                          dur="1.4s"
+                          begin="3.2s"
+                          fill="freeze"
+                        />
+                      </path>
+
+                      {/* 아래쪽 짧은 흘림 획 */}
+                      <path
+                        d="M60 360 Q130 350 200 362 Q260 372 320 358"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeDasharray="300"
+                        strokeDashoffset="300"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="300"
+                          to="0"
+                          dur="1.6s"
+                          begin="2.2s"
+                          fill="freeze"
+                        />
+                      </path>
+                      <path
+                        d="M80 400 Q150 390 220 402 Q280 412 340 398"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeDasharray="290"
+                        strokeDashoffset="290"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="290"
+                          to="0"
+                          dur="1.5s"
+                          begin="3s"
+                          fill="freeze"
+                        />
+                      </path>
+
+                      {/* 가운데 아래: 펜으로 쓴 느낌의 사선 */}
+                      <path
+                        d="M520 340 Q560 310 600 345 Q630 370 670 335"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeDasharray="200"
+                        strokeDashoffset="200"
+                      >
+                        <animate
+                          attributeName="stroke-dashoffset"
+                          from="200"
+                          to="0"
+                          dur="1.3s"
+                          begin="4s"
+                          fill="freeze"
+                        />
+                      </path>
+                    </svg>
                     <div
                       className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light"
                       style={{
