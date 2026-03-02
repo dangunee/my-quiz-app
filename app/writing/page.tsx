@@ -834,50 +834,184 @@ export default function WritingPage() {
                       </p>
                     </div>
                     <div className="p-6 space-y-6 md:space-y-8">
-                      <div className="overflow-hidden rounded-lg border border-gray-300">
-                        <div className="px-4 py-2 bg-[#1e3a5f]">
-                          <h3 className="font-semibold text-white text-sm">特徴</h3>
+                      {/* FEATURES */}
+                      <section aria-labelledby="features-heading" className="space-y-3">
+                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#3D6B5A] uppercase">
+                          <span className="h-[2px] w-4 rounded-full bg-[#3D6B5A]" />
+                          <span id="features-heading">FEATURES</span>
                         </div>
-                        <div className="text-sm">
+                        <div className="space-y-3">
                           {[
-                            { label: "①", content: "自分の書いた文章を自然な韓国語に直してもらいます" },
-                            { label: "②", content: "表現力をアップさせるために、毎週毎回違うテーマについての作文にチャレンジできます" },
-                            { label: "③", content: "課題は、さらに厳選された文型を必ず使用するよう出題します" },
-                            { label: "④", content: "ネイティブの添削とあわせて送付される模範作文を比較し、更に多くの文型や表現に触れることが出来、読解力も向上します" },
-                          ].map((row) => (
-                            <div key={row.label} className="flex gap-2 px-3 py-2.5 border-b border-gray-300 last:border-b-0 text-gray-700 text-xs md:text-sm">
-                              <span className="text-[#1a4d2e] font-medium shrink-0">{row.label}</span>
-                              <span>{row.content}</span>
+                            {
+                              num: "1",
+                              accent: "自然な韓国語に直して",
+                              rest: "もらえます",
+                              bar: "from-[#3D6B5A] to-[#6A9080]",
+                              badge: "bg-[#E6F0EC] text-[#3D6B5A]",
+                            },
+                            {
+                              num: "2",
+                              accent: "表現力が着実にアップ",
+                              rest: "します",
+                              bar: "from-[#B8963E] to-[#F2C86A]",
+                              badge: "bg-[#FBF4E3] text-[#B8963E]",
+                            },
+                            {
+                              num: "3",
+                              accent: "厳選された文型を必ず使用",
+                              rest: "するよう出題。文法が体に染み込みます",
+                              bar: "from-[#B85040] to-[#E58A73]",
+                              badge: "bg-[#FAEAE6] text-[#B85040]",
+                            },
+                            {
+                              num: "4",
+                              accent: "3点セットで届く",
+                              rest: "から、読解力も同時に向上します",
+                              bar: "from-[#6A7AAA] to-[#A3B0E8]",
+                              badge: "bg-[#EEF0FA] text-[#5A6AAA]",
+                            },
+                          ].map((item, idx) => (
+                            <div
+                              key={item.num}
+                              className="relative flex items-start gap-4 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-5 py-4 shadow-sm"
+                            >
+                              <div
+                                className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${item.bar}`}
+                              />
+                              <div className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-[13px] font-semibold font-['Noto_Serif_JP'] bg-white shadow-sm">
+                                <span
+                                  className={`inline-flex h-full w-full items-center justify-center rounded-full border text-[13px] font-semibold font-['Noto_Serif_JP'] ${
+                                    idx === 0
+                                      ? "bg-[#E6F0EC] text-[#3D6B5A] border-[#D0E0D8]"
+                                      : idx === 1
+                                      ? "bg-[#FBF4E3] text-[#B8963E] border-[#EAD9B4]"
+                                      : idx === 2
+                                      ? "bg-[#FAEAE6] text-[#B85040] border-[#F0C2B4]"
+                                      : "bg-[#EEF0FA] text-[#5A6AAA] border-[#D6DAF1]"
+                                  }`}
+                                >
+                                  {item.num}
+                                </span>
+                              </div>
+                              <p className="relative z-10 mt-1 text-[13px] md:text-[14px] leading-relaxed text-[#2C2C2E]">
+                                {idx === 0 && "自分の書いた文章を"}
+                                {idx === 1 && "毎週違うテーマで作文にチャレンジ。"}
+                                {idx === 2 && "課題は"}
+                                {idx === 3 && "添削 ＋ ネイティブ比較文 ＋ 模範文の"}
+                                <span className="font-semibold text-[#2E5244]">
+                                  {item.accent}
+                                </span>
+                                {item.rest}
+                              </p>
                             </div>
                           ))}
                         </div>
-                      </div>
-                      <div className="overflow-hidden rounded-lg border border-gray-300">
-                        <div className="px-4 py-2 bg-[#1e3a5f]">
-                          <h3 className="font-semibold text-white text-sm">詳細</h3>
+                      </section>
+
+                      {/* DETAILS */}
+                      <section aria-labelledby="details-heading" className="space-y-3">
+                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#3D6B5A] uppercase">
+                          <span className="h-[2px] w-4 rounded-full bg-[#3D6B5A]" />
+                          <span id="details-heading">DETAILS</span>
                         </div>
-                        <div className="border-collapse text-sm">
-                          {[
-                            { label: "特徴", content: "毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。" },
-                            { label: "対象", content: "初、中、上級(レベルの区別はありません)" },
-                            { label: "目標", content: "語彙・文型を増やし、自然な韓国語の表現を身につける" },
-                            { label: "授業の流れ", content: <>金曜にテーマ送付 → 月曜夜9時までに <a href="mailto:sakubun@kaonnuri.com" className="text-[#1a4d2e] hover:underline">sakubun@kaonnuri.com</a> へ提出</> },
-                            { label: "日程", content: "4月4日(金)から10週間" },
-                            { label: "教室", content: "オンライン" },
-                            { label: "募集期間", content: "～2026年4月3日(木)" },
-                            { label: "テキスト", content: "ミリネ独自テキスト(PDF)※事前にメールでお送りします" },
-                          ].map((row, i) => (
-                            <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
-                              <div className="w-20 md:w-32 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">
-                                {row.label}
-                              </div>
-                              <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
-                                {row.content}
-                              </div>
+                        <div className="space-y-2">
+                          {/* 特徴 */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              特徴
                             </div>
-                          ))}
+                            <div className="text-[#2C2C2E] leading-relaxed">
+                              毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。
+                            </div>
+                          </div>
+                          {/* 対象 */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              対象
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2 text-[#2C2C2E]">
+                              <span>初・中・上級</span>
+                              <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[11px] font-semibold text-[#3D6B5A]">
+                                レベル区別なし
+                              </span>
+                            </div>
+                          </div>
+                          {/* 目標 */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              目標
+                            </div>
+                            <div className="text-[#2C2C2E] leading-relaxed">
+                              語彙・文型を増やし、自然な韓国語の表現を身につける
+                            </div>
+                          </div>
+                          {/* 授業の流れ */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              授業の流れ
+                            </div>
+                            <div className="space-y-1">
+                              <div className="flex flex-wrap items-center gap-2 text-[12px] md:text-[13px]">
+                                <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[12px] font-medium text-[#3D6B5A]">
+                                  📬 金曜 テーマ送付
+                                </span>
+                                <span className="text-[#8E8E93] text-[11px]">→</span>
+                                <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[12px] font-medium text-[#3D6B5A]">
+                                  ✏️ 月曜夜9時までに提出
+                                </span>
+                                <span className="text-[#8E8E93] text-[11px]">→</span>
+                                <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[12px] font-medium text-[#3D6B5A]">
+                                  📝 添削返送
+                                </span>
+                              </div>
+                              <p className="mt-1 text-[11px] text-[#8E8E93]">
+                                送付先：
+                                <a
+                                  href="mailto:sakubun@kaonnuri.com"
+                                  className="text-[#3D6B5A] font-medium hover:underline"
+                                >
+                                  sakubun@kaonnuri.com
+                                </a>
+                              </p>
+                            </div>
+                          </div>
+                          {/* 日程 */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              日程
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2 text-[#2C2C2E]">
+                              <span>4月4日（金）から</span>
+                              <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[11px] font-semibold text-[#3D6B5A]">
+                                10週間
+                              </span>
+                            </div>
+                          </div>
+                          {/* 教室 */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              教室
+                            </div>
+                            <div className="text-[#2C2C2E]">オンライン（メール）</div>
+                          </div>
+                          {/* 募集期間 */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              募集期間
+                            </div>
+                            <div className="text-[#2C2C2E]">〜 2026年4月3日（木）</div>
+                          </div>
+                          {/* テキスト */}
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
+                              テキスト
+                            </div>
+                            <div className="text-[#2C2C2E]">
+                              ミリネ独自テキスト（PDF）※事前にメールでお送りします
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </section>
                       <div className="pt-4 border-t border-[#e5dfd4]">
                         <div className="px-4 md:px-5 py-3 bg-[#faf8f5] rounded-t-lg border border-b-0 border-gray-300 font-semibold text-gray-800 text-sm md:text-base">体験例</div>
                         <div className="border border-gray-300 rounded-b-lg overflow-hidden">
