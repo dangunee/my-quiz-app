@@ -707,12 +707,26 @@ export default function OndokuPage() {
 
       {menuOpen && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/30 md:hidden" onClick={() => setMenuOpen(false)} aria-hidden />
-          <aside className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl md:hidden" style={{ animation: "slideInRight 0.2s ease" }}>
+          <div
+            className="fixed inset-0 z-40 bg-black/30"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden
+          />
+          <aside
+            className="fixed right-0 top-0 z-50 h-full w-64 max-w-[85vw] bg-white shadow-xl"
+            style={{ animation: "slideInRight 0.2s ease" }}
+          >
             <div className="flex items-center justify-between border-b px-4 py-3">
               <span className="font-semibold text-gray-800">メニュー</span>
-              <button type="button" onClick={() => setMenuOpen(false)} className="rounded p-2 text-gray-500 hover:bg-gray-100" aria-label="メニューを閉じる">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="rounded p-2 text-gray-500 hover:bg-gray-100"
+                aria-label="メニューを閉じる"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
             <div className="p-4">{sidebarContent}</div>
@@ -720,42 +734,42 @@ export default function OndokuPage() {
         </>
       )}
 
-      {!embedded && (
-        <header className="relative bg-white border-b border-gray-200 py-4 md:py-5 px-4 md:px-6 shadow-sm">
-          <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem]">
-            <button
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              className="md:hidden absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
-              aria-label="メニューを開く"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">オンラインで音読トレーニング</h1>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              {user && (
-                <button
-                  type="button"
-                  onClick={() => setMenuOpen(true)}
-                  className="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg transition-colors"
-                >
-                  {user.name || user.username || user.email || "-"}様
-                </button>
-              )}
-              {isAdmin && !user && (
-                <Link
-                  href="/admin"
-                  className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors"
-                >
-                  管理者モードで接続中
-                </Link>
-              )}
-            </div>
+      <header className="relative bg-white border-b border-gray-200 py-4 md:py-5 px-4 md:px-6 shadow-sm">
+        <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem]">
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            className="absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
+            aria-label="メニューを開く"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">
+            オンラインで音読トレーニング
+          </h1>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            {user && (
+              <button
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                {user.name || user.username || user.email || "-"}様
+              </button>
+            )}
+            {isAdmin && !user && (
+              <Link
+                href="/admin"
+                className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors"
+              >
+                管理者モードで接続中
+              </Link>
+            )}
           </div>
-        </header>
-      )}
+        </div>
+      </header>
 
       <div className="relative flex flex-1 justify-center">
         <div
@@ -1358,14 +1372,7 @@ export default function OndokuPage() {
               )}
             </div>
           </main>
-          {!embedded && (
-            <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-white/80 border-l border-gray-200">
-              <div className="px-4 py-4 border-b border-gray-200">
-                <span className="font-semibold text-gray-800">メニュー</span>
-              </div>
-              <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
-            </aside>
-          )}
+          {/* 오른쪽 고정 메뉴는 제거하고, 상단 햄버거 메뉴만 사용 */}
         </div>
       </div>
 
