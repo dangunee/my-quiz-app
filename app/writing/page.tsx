@@ -785,7 +785,13 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
-                <div className="w-full md:w-4/5 mx-auto max-w-5xl md:max-w-6xl">
+                <div
+                  className={
+                    embedded
+                      ? "w-full mx-0 max-w-none"
+                      : "w-full md:w-4/5 mx-auto max-w-5xl md:max-w-6xl"
+                  }
+                >
                   {/* HERO */}
                   <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3D6B5A] via-[#2E5244] to-[#1C3328] px-6 py-10 md:px-10 md:py-12 text-white mb-8">
                     <div
@@ -1408,22 +1414,23 @@ export default function WritingPage() {
                             </div>
                             <div className="px-4 py-4 md:px-6">
                               <div className="overflow-hidden rounded-xl border border-[#E2D9CC] bg-white">
-                                <img
-                                  src="/sample-digital-correction.png"
-                                  alt="デジタル機器に関する添削文・比較文・模範文"
-                                  className="w-full h-auto"
-                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowImageModal(true)}
+                                  className="block w-full cursor-pointer transition-opacity hover:opacity-90"
+                                >
+                                  <img
+                                    src="/sample-digital-correction.png"
+                                    alt="デジタル機器に関する添削文・比較文・模範文"
+                                    className="w-full h-auto"
+                                  />
+                                </button>
                               </div>
+                              <p className="mt-2 text-center text-xs text-gray-500">クリックで拡大</p>
                             </div>
                           </div>
                         </div>
                       </section>
-                      <div className="pt-4">
-                        <button type="button" onClick={() => setShowImageModal(true)} className="w-full block rounded-lg overflow-x-auto overflow-y-hidden border border-[#e5dfd4] hover:opacity-90 transition-opacity cursor-pointer md:overflow-hidden">
-                          <img src="/experience-sample.png" alt="添削文・比較文・模範文" className="min-w-[800px] md:min-w-0 md:w-full h-auto" />
-                        </button>
-                        <p className="text-center text-gray-500 text-xs mt-1">クリックで拡大</p>
-                      </div>
                       <div className="pt-4">
                         <div className="overflow-hidden rounded-lg border border-gray-300">
                           <div className="px-4 py-2 bg-[#1e3a5f]">
@@ -1459,7 +1466,12 @@ export default function WritingPage() {
                             </button>
                           </div>
                           <div className="flex-1 overflow-auto p-4 flex items-start justify-center min-h-0" onClick={(e) => e.stopPropagation()}>
-                            <img src="/experience-sample.png" alt="添削文・比較文・模範文（拡大）" className="min-w-[800px] w-auto rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+                            <img
+                              src="/sample-digital-correction.png"
+                              alt="デジタル機器に関する添削文・比較文・模範文（拡大）"
+                              className="min-w-[800px] w-auto rounded-lg shadow-2xl"
+                              onClick={(e) => e.stopPropagation()}
+                            />
                           </div>
                         </div>
                       )}
