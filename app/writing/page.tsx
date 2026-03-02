@@ -113,29 +113,6 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "topik", label: "TOPIK作文トレ" },
 ];
 
-function AnimatedText({
-  text,
-  startDelay = 0,
-}: {
-  text: string;
-  startDelay?: number;
-}) {
-  const chars = Array.from(text);
-  return (
-    <span aria-hidden="true">
-      {chars.map((ch, idx) => (
-        <span
-          key={idx}
-          className="hero-char"
-          style={{ animationDelay: `${startDelay + idx * 0.03}s` }}
-        >
-          {ch === " " ? "\u00A0" : ch}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 export default function WritingPage() {
   const { redirectPath } = useWritingBase();
   const [user, setUser] = useState<User | null>(null);
@@ -823,115 +800,87 @@ export default function WritingPage() {
                       : "w-full md:w-4/5 mx-auto max-w-5xl md:max-w-6xl"
                   }
                 >
-                  {/* HERO */}
-                  <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3D6B5A] via-[#2E5244] to-[#1C3328] px-6 py-10 md:px-10 md:py-12 text-white mb-8">
-                    <div
-                      className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light"
-                      style={{
-                        backgroundImage:
-                          "radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)",
-                        backgroundSize: "28px 28px",
-                      }}
-                    />
-                    <div className="pointer-events-none absolute inset-y-0 right-4 hidden md:flex items-center justify-center">
-                      <span className="text-[5rem] lg:text-[7rem] xl:text-[9rem] font-extrabold tracking-[0.3em] text-white/5">
-                        작문
-                      </span>
-                    </div>
-                    <div className="relative z-10 max-w-2xl">
-                      <div
-                        className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] hero-fade"
-                        style={{ animationDelay: "0.3s" }}
-                      >
-                        <span className="h-2 w-2 animate-pulse rounded-full bg-[#A8EACC]" />
-                        <span>メール添削コース · 10週間</span>
+                  {/* HERO (match static design) */}
+                  <section className="hero relative rounded-2xl mb-8">
+                    <div className="hero-dots" />
+                    <div className="hero-inner">
+                      <div className="hero-tag">
+                        <span className="tag-dot" />
+                        メール添削コース · 10週間
                       </div>
-                      <h2 className="mt-5 text-[1.85rem] md:text-[2.6rem] font-bold leading-[1.35] tracking-[0.04em]">
-                        <AnimatedText text="書くたびに、" startDelay={0.4} />
+                      <h1>
+                        書くたびに、
                         <br />
-                        <AnimatedText text="韓国語が 自分のものになる。" startDelay={0.9} />
-                      </h2>
-                      <p
-                        className="mt-4 max-w-xl text-[13px] md:text-[15px] text-white/85 leading-relaxed hero-fade"
-                        style={{ animationDelay: "1.5s" }}
-                      >
+                        韓国語が
+                        <em>自分のものになる</em>。
+                      </h1>
+                      <p className="hero-sub">
                         300〜500字作文 ＋ 添削 ＋ ネイティブ比較文 ＋ 模範文まで届く。
+                        <br />
                         週1回のペースで、表現力を着実に積み上げます。
                       </p>
-                      <div
-                        className="mt-6 flex items-center gap-3 text-[11px] md:text-xs text-white/80 hero-fade"
-                        style={{ animationDelay: "1.8s" }}
-                      >
+                      <div className="pencil-row">
                         <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 40 40"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
                           fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                          stroke="rgba(255,255,255,0.5)"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <path
-                            d="M8 30 H30"
-                            stroke="rgba(255,255,255,0.45)"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M10 26 L25 11 L29 15 L14 30 L8 32 L10 26 Z"
-                            fill="rgba(255,255,255,0.18)"
-                            stroke="rgba(255,255,255,0.7)"
-                            strokeWidth="1.4"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M24 12 L28 16"
-                            stroke="rgba(255,255,255,0.8)"
-                            strokeWidth="1.2"
-                            strokeLinecap="round"
-                          />
+                          <path d="M12 20h9" />
+                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                         </svg>
-                        <div className="flex-1 h-px bg-white/30" />
-                        <span className="tracking-[0.22em] uppercase">
-                          毎週テーマで作文チャレンジ
-                        </span>
+                        <div className="pencil-lines">
+                          <div className="pline" />
+                          <div className="pline" />
+                          <div className="pline" />
+                        </div>
+                        <span className="pencil-label">毎週テーマで作文チャレンジ</span>
                       </div>
-                      <div
-                        className="mt-7 flex flex-wrap items-center gap-3 hero-fade"
-                        style={{ animationDelay: "2.1s" }}
-                      >
+                      <div className="hero-actions">
                         <button
                           type="button"
                           onClick={() => {
-                            document.getElementById("trial-form-section")?.scrollIntoView({ behavior: "smooth" });
+                            document
+                              .getElementById("trial-form-section")
+                              ?.scrollIntoView({ behavior: "smooth" });
                           }}
-                          className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-[#2E5244] shadow-lg shadow-black/30 hover:-translate-y-0.5 hover:shadow-xl transition-transform"
+                          className="btn-white"
                         >
                           体験申込（1,800円） →
                         </button>
                         <button
                           type="button"
                           onClick={() => {
-                            document.getElementById("experience-details")?.scrollIntoView({ behavior: "smooth" });
+                            document
+                              .getElementById("experience-details")
+                              ?.scrollIntoView({ behavior: "smooth" });
                           }}
-                          className="inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                          className="btn-ghost-w"
                         >
                           講座詳細を見る
                         </button>
                       </div>
-                      <div className="mt-6 flex flex-wrap gap-2 text-xs md:text-sm">
-                        {[
-                          { label: "開講日", value: "4月4日（金）" },
-                          { label: "期間", value: "10週間" },
-                          { label: "募集期限", value: "〜4月3日（木）" },
-                          { label: "授業料", value: "23,980円（税込）" },
-                        ].map((item) => (
-                          <div
-                            key={item.label}
-                            className="rounded-xl border border-white/30 bg-white/10 px-3 py-2"
-                          >
-                            <div className="text-[10px] font-medium text-white/70">{item.label}</div>
-                            <div className="text-[13px] font-semibold">{item.value}</div>
-                          </div>
-                        ))}
+                      <div className="schedule-strip">
+                        <div className="sched-item">
+                          <div className="s-label">開講日</div>
+                          <div className="s-val">4月4日（金）</div>
+                        </div>
+                        <div className="sched-item">
+                          <div className="s-label">期間</div>
+                          <div className="s-val">10週間</div>
+                        </div>
+                        <div className="sched-item">
+                          <div className="s-label">募集期限</div>
+                          <div className="s-val">〜4月3日（木）</div>
+                        </div>
+                        <div className="sched-item">
+                          <div className="s-label">授業料</div>
+                          <div className="s-val">23,980円（税込）</div>
+                        </div>
                       </div>
                     </div>
                   </section>
