@@ -1365,6 +1365,69 @@ export default function WritingPage() {
                               </div>
                             )}
                           </div>
+
+                          {/* THEME EXAMPLE 3 — 항상 펼쳐진 첨삭文・比較文・模範文 */}
+                          <div className="overflow-hidden rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3]">
+                            <div className="flex w-full items-center justify-between gap-3 border-b border-[#E2D9CC] bg-[#F5F0E8] px-4 py-3">
+                              <div className="flex flex-col gap-1">
+                                <span className="text-[11px] font-semibold tracking-[0.16em] text-[#3D6B5A]">
+                                  THEME EXAMPLE 3
+                                </span>
+                                <span className="text-[14px] font-bold text-[#2C2C2E]">
+                                  添削文・比較文・模範文
+                                </span>
+                              </div>
+                            </div>
+                            <div className="space-y-4 px-4 py-4 md:px-6">
+                              {/* 첨삭文 */}
+                              <div className="space-y-2 rounded-xl border border-[#E2D9CC] bg-white text-[13px]">
+                                <div className="rounded-t-xl bg-[#2A3650] px-4 py-2 text-sm font-semibold text-white">
+                                  添削文
+                                </div>
+                                <div className="px-4 py-3 text-[14px] leading-relaxed text-[#1F2933]">
+                                  <p className="whitespace-pre-line">
+                                    {`디지털 기기는 기술 발달로발달로 인해 계속 개발되고 있다.그리고 요즘은 우리 생활에 없어서는 안 되는 존재가 되었다. 장애 때문에 외출하기 어려운 사람이 배우거나 일하는 데 디지털 기기는 도움이 되고 있다.또 아무나누구나 간단히 예쁜 사진을 촬영하도록 사용하기 쉽게 만들어진 디지털 카메라는 많은 사람들이 일상적으로 사용하고 있다.
+
+그런데 멀어서 찾아갈 수 없는 장소를 화면을 통해 볼 수 있는 편리한 디지털 기술이 있다.이 기술은 방재/재해을 막기 위한 계획의 개선에 활용되는 경우도 있다.재해를 당한 지역의 이전 모습을 볼 수가 있기 때문이다.그 뿐만그뿐만 아니라 이전 모습을 봄으로써 추억을 되찾은 이재민이 다시 일어서는 계기가 되는 경우도 있다. 이처럼 대용량방대한 데이터 덕분에 화상영상 정보나 추억을추억이 빛이 바래지/빛바래지 않도록 저장할 수 있게 되었다. 이것은 디지털의 장점이다.
+
+그러나 화면을 통해 보고/보고서는 다/모든 것을 알았다고 생각하면 틀린 판단을 할 수도 있다.인간은 실제로 체험할 때에만체험했을 때에만 분위기를 느낄 수 있는 것 같은/느낄 수 있는 분위기 같은 것, 이른바 피부감각을 활용하고활용해서 특별한 정보를 얻을 수 있기 때문이다.해본 후에 판단했어야판단해야 하는데 편하다는 이유로 실제로 찾아가지 않았다가는 정작 중요한 정보를 놓쳐 버릴 것이다.
+
+그러므로 디지털 기술은 신중하게 사용하는 것이 좋다. 객관적인객관적이고 올바른 판단을 위해서는 수고를 아끼지 않는 것이 중요하다.`}
+                                  </p>
+                                </div>
+                              </div>
+                              {/* 比較文 */}
+                              <div className="space-y-2 rounded-xl border border-[#2A3650] bg-white text-[13px]">
+                                <div className="rounded-t-xl bg-[#2A3650] px-4 py-2 text-sm font-semibold text-white">
+                                  比較文
+                                </div>
+                                <div className="bg-[#2A3650]/8 px-4 py-3 text-[14px] leading-relaxed text-[#2A3650]">
+                                  <p className="whitespace-pre-line">
+                                    {`디지털 기기는 기술이 발달하면서 계속 개발되고 있다. 그리고 이제는 우리 생활에 없어서는 안 되는 존재가 되었다. 장애를 가지고 있어서 외출하기 어려운 사람이 무언가를 배우거나 일하는 데 디지털 기기는 도움이 되고 있다. 또한 누구나 간단히 사진을 잘 촬영하도록 사용하기 쉽게 만들어진 디지털 카메라는 많은 사람들이 일상적으로 사용하고 있다.
+
+그런데 멀어서 찾아가기 힘든 장소를 화면을 통해 볼 수 있는 편리한 디지털 기술이 있다. 이 기술을 재해를 막기 위한 계획의 개선에 활용되는 경우도 있다. 재해를 당한 지역의 이전 모습을 볼 수가 있기 때문이다. 그뿐만 아니라 이전 모습을 봄으로써 추억을 되찾은 이재민이 다시 일어서는 계기가 되는 경우도 있다. 이처럼 방대한 데이터 덕분에 영상이나 추억이 손상되지 않도록 저장할 수 있게 되었다. 이것은 디지털의 장점이다. 
+
+그러나 화면을 통해 보고서는 모두 알았다고 생각하면 잘못된 판단을 내릴 수도 있다. 인간은 실제로 체험했을 때에만 느낄 수 있는 분위기 같은 것, 이른바 '피부감각'을 활용해서 특별한 정보를 얻을 수 있기 때문이다. 직접 해 본 후에 판단해야 함에도 불구하고 편하다는 이유로 실제로 찾아가지 않았다가는 정작 중요한 정보를 놓쳐 버릴 수도 있는 것이다.
+
+그러므로 디지털 기술은 신중하게 사용하는 것이 바람직하다. 객관적이고 올바른 판단을 위해서는 수고를 아끼지 않는 것이 중요하다.`}
+                                  </p>
+                                </div>
+                              </div>
+                              {/* 模範文 */}
+                              <div className="space-y-2 rounded-xl border border-[#E2D9CC] bg-white text-[13px]">
+                                <div className="rounded-t-xl bg-[#2A3650] px-4 py-2 text-sm font-semibold text-white">
+                                  模範文
+                                </div>
+                                <div className="bg-[#F5F0E8] px-4 py-3 text-[14px] leading-relaxed text-[#1F2933]">
+                                  <p className="whitespace-pre-line">
+                                    {`디지털화가 가속화되면서 사람들은 직접 얼굴을 마주하는 대신 메시지로 소통한다. 만약 이런 식으로만 관계를 이어가다가는 진정한 의미의 교류가 사라질지도 모른다. 나는 디지털보다 아날로그가 좋았던 점이 많다고 생각한다. 특히, 사진과 음반에서 그런 감정을 느낀다. 디지털 사진이 무한정 저장되는 데이터인 것에 비해 필름 카메라로 찍은 사진은 한 장 한 장에 소중한 의미가 담겨 있다. 빛이 바랜 사진 앨범을 넘길 때마다 그 시절의 감정이 되살아난다.
+
+기술이 발전할수록 인간이 설 자리는 줄어드는 것 같다. 로봇이 사람의 일자리를 빼앗고, 인공지능이 인간의 영역을 침범하는 현실은 씁쓸하다. 편리함에만 의존하기 전에 인간성을 먼저 돌아봤어야 했는데 아쉬움이 든다. 아날로그적인 감성을 잃지 않는 노력이 필요하다.`}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </section>
                       <div className="pt-4">
