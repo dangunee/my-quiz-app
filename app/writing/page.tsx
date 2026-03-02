@@ -1431,28 +1431,37 @@ export default function WritingPage() {
                           </div>
                         </div>
                       </section>
-                      <div className="pt-4">
-                        <div className="overflow-hidden rounded-lg border border-gray-300">
-                          <div className="px-4 py-2 bg-[#1e3a5f]">
-                            <h3 className="font-semibold text-white text-sm">まずは体験から!</h3>
+                      <div className="pt-6">
+                        <div className="overflow-hidden rounded-3xl border border-[#d7e5db] bg-[#f6fbf8] shadow-sm">
+                          <div className="px-5 py-3 bg-[#1a4d2e] rounded-t-3xl">
+                            <h3 className="font-semibold text-white text-sm md:text-base">
+                              まずは体験から!
+                            </h3>
                           </div>
-                          <div className="border-collapse text-sm">
+                          <div className="border-collapse text-sm md:text-base">
                             {[
                               { label: "体験申込の締切", content: "3月19日(木)" },
                               { label: "体験課題送信日", content: "3月20日(金)" },
                               { label: "体験添削送信日", content: "3月27日(金)" },
                               { label: "当講座開始日", content: "4月3日(金)" },
                             ].map((row, i) => (
-                              <div key={row.label} className="flex flex-row border-b border-gray-300 last:border-b-0">
-                                <div className="w-20 md:w-32 shrink-0 px-2 md:px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">
+                              <div
+                                key={row.label}
+                                className="flex flex-row border-b border-[#e0ece3] last:border-b-0"
+                              >
+                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#eef4f0] font-medium text-[#1a4d2e] border-r border-[#e0ece3] text-xs md:text-sm">
                                   {row.label}
                                 </div>
-                                <div className={`flex-1 min-w-0 px-2 md:px-3 py-2.5 text-gray-700 text-xs md:text-sm font-semibold ${i % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                <div
+                                  className={`flex-1 min-w-0 px-3 md:px-4 py-3 text-gray-800 text-xs md:text-sm font-semibold ${
+                                    i % 2 === 0 ? "bg-white" : "bg-[#f9fcfa]"
+                                  }`}
+                                >
                                   {row.content}
                                 </div>
                               </div>
                             ))}
-                            <div className="px-2 md:px-3 py-2.5 bg-[#1e3a5f] text-white text-xs md:text-sm font-semibold text-center">
+                            <div className="px-3 md:px-4 py-3 bg-[#1a4d2e] text-white text-xs md:text-sm font-semibold text-center">
                               1回お試し 1,800円
                             </div>
                           </div>
@@ -1534,43 +1543,71 @@ export default function WritingPage() {
                           )}
                         </div>
                       </div>
-                      <div className="pt-4">
-                        <div className="border-t-2 border-[#c45c26] pt-2">
-                          <h3 className="font-semibold text-[#c45c26] text-base md:text-lg mb-0">授業料</h3>
-                          <div className="border border-gray-300 rounded-b-lg overflow-hidden mt-2">
-                            <table className="w-full border-collapse text-sm">
-                              <thead>
-                                <tr className="bg-[#87ceeb]">
-                                  <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">1回当たり</th>
-                                  <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">回数</th>
-                                  <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">授業料(税抜)</th>
-                                  <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">税込</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr className="bg-white">
-                                  <td className="py-3 px-4 font-semibold text-gray-800">2,180円</td>
-                                  <td className="py-3 px-4 font-semibold text-gray-800">10回</td>
-                                  <td className="py-3 px-4 font-semibold text-gray-800">21,800円</td>
-                                  <td className="py-3 px-4 font-semibold text-gray-800">23,980円</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
+                      <div className="pt-8">
+                        <div className="border-l-4 border-[#1a4d2e] pl-3 mb-3">
+                          <p className="text-xs font-semibold tracking-[0.2em] text-[#6b7c73]">
+                            PRICE
+                          </p>
+                          <h3 className="mt-1 font-semibold text-[#1a4d2e] text-base md:text-lg">
+                            授業料
+                          </h3>
+                        </div>
+                        <div className="rounded-2xl border border-[#d7e5db] bg-white overflow-hidden shadow-sm">
+                          <table className="w-full border-collapse text-sm md:text-base">
+                            <thead>
+                              <tr className="bg-[#f2f7f3]">
+                                <th className="py-3 px-4 text-left font-medium text-gray-700">
+                                  1回当たり
+                                </th>
+                                <th className="py-3 px-4 text-left font-medium text-gray-700">
+                                  回数
+                                </th>
+                                <th className="py-3 px-4 text-left font-medium text-gray-700">
+                                  授業料(税抜)
+                                </th>
+                                <th className="py-3 px-4 text-left font-medium text-gray-700">
+                                  税込
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="bg-white">
+                                <td className="py-4 px-4 font-semibold text-gray-900">
+                                  2,180円
+                                </td>
+                                <td className="py-4 px-4 font-semibold text-gray-900">
+                                  10回
+                                </td>
+                                <td className="py-4 px-4 font-semibold text-gray-900">
+                                  21,800円
+                                </td>
+                                <td className="py-4 px-4 font-semibold text-gray-900">
+                                  23,980円
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
-                      <div className="pt-4 border-t border-[#e5dfd4]">
-                        <div className="px-4 md:px-5 py-3 bg-[#1e3a5f] rounded-t-lg border border-b-0 border-gray-300 font-semibold text-white text-sm md:text-base">生徒の声</div>
-                        <div className="border border-gray-300 rounded-b-lg overflow-hidden p-4 space-y-4 bg-white">
-                          <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
+                      <div className="pt-8 border-t border-[#e5dfd4] mt-8">
+                        <div className="border-l-4 border-[#1a4d2e] pl-3 mb-3">
+                          <p className="text-xs font-semibold tracking-[0.2em] text-[#6b7c73]">
+                            REVIEWS
+                          </p>
+                          <h3 className="mt-1 font-semibold text-[#1a4d2e] text-base md:text-lg">
+                            生徒の声
+                          </h3>
+                        </div>
+                        <div className="border border-[#d7e5db] rounded-2xl overflow-hidden p-4 md:p-6 space-y-4 bg-[#fffef8] shadow-sm">
+                          <div className="p-4 bg-white rounded-xl border border-[#e5dfd4]">
                             <p className="font-semibold text-gray-800 mb-2">N様 | 2019.3月</p>
                             <p className="text-gray-700 text-sm leading-relaxed">毎週韓国語で文章を作ることで、自然な韓国語の表現について考える習慣がついたように感じます。自分の言葉で文章を作る難しさも痛感しました。添削していただいた文はすごく勉強になりました。まだ復習しきれていないので、これから1つ1つの添削をじっくり復習したいと思います。ありがとうございました。</p>
                           </div>
-                          <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
+                          <div className="p-4 bg-white rounded-xl border border-[#e5dfd4]">
                             <p className="font-semibold text-gray-800 mb-2">U様 | 2019.3月</p>
                             <p className="text-gray-700 text-sm leading-relaxed">大きな収穫は、やはり私の作文はただ日本語を韓国語に訳しただけのものだと痛感したことです。韓国語を意識して書いたつもりでも、どうしても日本語脳が働いてしまいます。決められた文型を使うことも難しかったですが、書き終えた時の達成感があり、楽しくトレーニングを受けることができました。ありがとうございました。模範文を繰り返し書いて、次の10回に活かします。</p>
                           </div>
-                          <div className="p-4 bg-[#fffde7] rounded-lg border border-[#e5dfd4]">
+                          <div className="p-4 bg-white rounded-xl border border-[#e5dfd4]">
                             <p className="font-semibold text-gray-800 mb-2">H様 | 2019.3月</p>
                             <p className="text-gray-700 text-sm leading-relaxed">10回のご指導をありがとうございました。最初は、決められた文型を入れて文章を作ることに時間がかかりましたが、だんだん慣れてきたとは思います。私は思った以上に、分かち書きと形容詞の한다体が間違いやすく、まだまだ慣れていかないとだめだなと感じています。ですが間違いなく、韓国語文字を入力することは、速くなりました(笑)打ち間違いが多くて変な文章内容だったりと、先生も添削に悪戦苦闘されたと思います。根気よくチェックしていただいて、本当にありがとうございました。</p>
                           </div>
