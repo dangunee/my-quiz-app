@@ -733,7 +733,13 @@ export default function WritingPage() {
       )}
 
       <div className="flex flex-1 justify-center">
-        <div className="flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full">
+        <div
+          className={
+            embedded
+              ? "flex flex-1 flex-col md:flex-row w-full"
+              : "flex flex-1 flex-col md:flex-row max-w-4xl md:max-w-[75rem] w-full"
+          }
+        >
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
             {isAdmin && !user && (
               <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm shrink-0">
