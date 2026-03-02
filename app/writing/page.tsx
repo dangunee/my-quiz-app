@@ -154,6 +154,7 @@ export default function WritingPage() {
   const [profileEditing, setProfileEditing] = useState(false);
   const [customerProfile, setCustomerProfile] = useState<{ region: string | null; plan_type: string | null } | null>(null);
   const [expandedSeitoVoice, setExpandedSeitoVoice] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminSubmissions, setAdminSubmissions] = useState<{ id: string; user_id: string; period_index: number; item_index: number; content: string; submitted_at: string; user?: { email?: string; name?: string; username?: string } }[]>([]);
   const [adminSubmissionsLoading, setAdminSubmissionsLoading] = useState(false);
@@ -687,7 +688,7 @@ export default function WritingPage() {
           <button type="button" onClick={() => setMenuOpen(true)} className="md:hidden absolute left-4 md:left-6 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30" aria-label="メニューを開く">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
-          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 オンライン講座</h1>
+          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 作文講座</h1>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
             {user && !isAdmin && (
               <button
@@ -717,16 +718,38 @@ export default function WritingPage() {
               </div>
             )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
-              <nav className="flex overflow-x-auto px-4 md:px-6 py-2">
-                {TABS.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-[#1a4d2e] text-[#1a4d2e]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+              <nav className="flex items-center px-4 md:px-6 py-2 gap-2">
+                <div className="flex flex-1 overflow-x-auto">
+                  {TABS.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
+                        activeTab === tab.id
+                          ? "border-[#1a4d2e] text-[#1a4d2e]"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDesktopSidebarOpen((v) => !v)}
+                  className="hidden md:inline-flex items-center gap-1 rounded-lg border border-[#e5dfd4] bg-[#f5f0e6] px-3 py-2 text-xs font-medium text-gray-700 hover:bg-[#ebe5d8]"
+                  aria-label="メニューを開く"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {tab.label}
-                  </button>
-                ))}
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                  <span>メニュー</span>
+                </button>
               </nav>
             </div>
 
@@ -1458,12 +1481,29 @@ export default function WritingPage() {
               )}
             </div>
           </main>
-          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-l border-[#e5dfd4]">
-            <div className="px-4 py-4 border-b border-[#e5dfd4]">
-              <span className="font-semibold text-gray-800">メニュー</span>
-            </div>
-            <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
-          </aside>
+          {desktopSidebarOpen && (
+            <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-[#f5f0e6] border-l border-[#e5dfd4]">
+              <div className="px-4 py-4 border-b border-[#e5dfd4] flex items-center justify-between">
+                <span className="font-semibold text-gray-800">メニュー</span>
+                <button
+                  type="button"
+                  onClick={() => setDesktopSidebarOpen(false)}
+                  className="rounded p-1 text-gray-500 hover:bg-[#ebe5d8]"
+                  aria-label="メニューを閉じる"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
+            </aside>
+          )}
         </div>
       </div>
 
