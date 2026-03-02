@@ -846,21 +846,57 @@ export default function WritingPage() {
                         <span className="h-2 w-2 animate-pulse rounded-full bg-[#A8EACC]" />
                         <span>メール添削コース · 10週間</span>
                       </div>
-                      <h2 className="mt-4 text-2xl md:text-4xl font-bold leading-snug tracking-[0.03em]">
+                      <h2 className="mt-5 text-[1.85rem] md:text-[2.6rem] font-bold leading-[1.35] tracking-[0.04em]">
                         <AnimatedText text="書くたびに、" startDelay={0.4} />
                         <br />
                         <AnimatedText text="韓国語が 自分のものになる。" startDelay={0.9} />
                       </h2>
                       <p
-                        className="mt-4 max-w-xl text-sm md:text-base text-white/80 leading-relaxed hero-fade"
+                        className="mt-4 max-w-xl text-[13px] md:text-[15px] text-white/85 leading-relaxed hero-fade"
                         style={{ animationDelay: "1.5s" }}
                       >
                         300〜500字作文 ＋ 添削 ＋ ネイティブ比較文 ＋ 模範文まで届く。
                         週1回のペースで、表現力を着実に積み上げます。
                       </p>
                       <div
-                        className="mt-6 flex flex-wrap items-center gap-3 hero-fade"
-                        style={{ animationDelay: "1.9s" }}
+                        className="mt-6 flex items-center gap-3 text-[11px] md:text-xs text-white/80 hero-fade"
+                        style={{ animationDelay: "1.8s" }}
+                      >
+                        <svg
+                          className="h-6 w-6"
+                          viewBox="0 0 40 40"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M8 30 H30"
+                            stroke="rgba(255,255,255,0.45)"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M10 26 L25 11 L29 15 L14 30 L8 32 L10 26 Z"
+                            fill="rgba(255,255,255,0.18)"
+                            stroke="rgba(255,255,255,0.7)"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M24 12 L28 16"
+                            stroke="rgba(255,255,255,0.8)"
+                            strokeWidth="1.2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div className="flex-1 h-px bg-white/30" />
+                        <span className="tracking-[0.22em] uppercase">
+                          毎週テーマで作文チャレンジ
+                        </span>
+                      </div>
+                      <div
+                        className="mt-7 flex flex-wrap items-center gap-3 hero-fade"
+                        style={{ animationDelay: "2.1s" }}
                       >
                         <button
                           type="button"
