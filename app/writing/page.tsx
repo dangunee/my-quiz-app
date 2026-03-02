@@ -732,13 +732,85 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
-                <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
-                  <div className="bg-white rounded-none md:rounded-2xl border border-[#e5dfd4] shadow-sm overflow-hidden">
-                    <div className="bg-[#1a4d2e] px-6 py-4">
-                      <h2 className="text-lg md:text-xl font-bold text-white">メールで作文トレーニング</h2>
-                      <p className="text-white/90 text-sm mt-1">300～500字作文 作文添削 ＋ ネイティブ比較文 ＋ 模範文 までつく！</p>
+                <div className="w-full mx-auto max-w-5xl md:max-w-6xl">
+                  {/* HERO */}
+                  <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3D6B5A] via-[#2E5244] to-[#1C3328] px-6 py-10 md:px-10 md:py-12 text-white mb-8">
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-30 mix-blend-soft-light"
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)",
+                        backgroundSize: "28px 28px",
+                      }}
+                    />
+                    <div className="relative z-10 max-w-2xl">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em]">
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-[#A8EACC]" />
+                        <span>メール添削コース · 10週間</span>
+                      </div>
+                      <h2 className="mt-4 text-2xl md:text-4xl font-bold leading-snug tracking-[0.03em]">
+                        書くたびに、
+                        <br />
+                        韓国語が
+                        <span className="text-[#A8EACC]"> 自分のものになる</span>。
+                      </h2>
+                      <p className="mt-4 max-w-xl text-sm md:text-base text-white/80 leading-relaxed">
+                        300〜500字作文 ＋ 添削 ＋ ネイティブ比較文 ＋ 模範文まで届く。
+                        週1回のペースで、表現力を着実に積み上げます。
+                      </p>
+                      <div className="mt-6 flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            document.getElementById("trial-form-section")?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-[#2E5244] shadow-lg shadow-black/30 hover:-translate-y-0.5 hover:shadow-xl transition-transform"
+                        >
+                          体験申込（1,800円） →
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            document.getElementById("experience-details")?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          className="inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-medium text-white hover:bg-white/20 transition-colors"
+                        >
+                          講座詳細を見る
+                        </button>
+                      </div>
+                      <div className="mt-6 flex flex-wrap gap-2 text-xs md:text-sm">
+                        {[
+                          { label: "開講日", value: "4月4日（金）" },
+                          { label: "期間", value: "10週間" },
+                          { label: "募集期限", value: "〜4月3日（木）" },
+                          { label: "授業料", value: "23,980円（税込）" },
+                        ].map((item) => (
+                          <div
+                            key={item.label}
+                            className="rounded-xl border border-white/30 bg-white/10 px-3 py-2"
+                          >
+                            <div className="text-[10px] font-medium text-white/70">{item.label}</div>
+                            <div className="text-[13px] font-semibold">{item.value}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="p-6 space-y-4">
+                  </section>
+
+                  {/* MAIN CONTENT CARD */}
+                  <div className="overflow-hidden rounded-2xl border border-[#E2D9CC] bg-white shadow-sm">
+                    <div
+                      id="experience-details"
+                      className="border-b border-[#E2D9CC] bg-[#F5F0E8] px-6 py-4"
+                    >
+                      <h3 className="text-base md:text-lg font-bold text-[#2C2C2E]">
+                        メールで作文トレーニング
+                      </h3>
+                      <p className="mt-1 text-xs md:text-sm text-[#8E8E93]">
+                        このページでは、コースの特徴・詳細・体験例・授業料・生徒の声をご紹介します。
+                      </p>
+                    </div>
+                    <div className="p-6 space-y-6 md:space-y-8">
                       <div className="overflow-hidden rounded-lg border border-gray-300">
                         <div className="px-4 py-2 bg-[#1e3a5f]">
                           <h3 className="font-semibold text-white text-sm">特徴</h3>
