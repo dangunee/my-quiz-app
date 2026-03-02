@@ -1358,12 +1358,14 @@ export default function OndokuPage() {
               )}
             </div>
           </main>
-          <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-white/80 border-l border-gray-200">
-            <div className="px-4 py-4 border-b border-gray-200">
-              <span className="font-semibold text-gray-800">メニュー</span>
-            </div>
-            <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
-          </aside>
+          {!embedded && (
+            <aside className="hidden md:flex md:flex-col md:w-56 md:shrink-0 bg-white/80 border-l border-gray-200">
+              <div className="px-4 py-4 border-b border-gray-200">
+                <span className="font-semibold text-gray-800">メニュー</span>
+              </div>
+              <div className="p-4 flex-1 overflow-y-auto">{sidebarContent}</div>
+            </aside>
+          )}
         </div>
       </div>
 
