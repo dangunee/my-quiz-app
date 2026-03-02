@@ -1543,28 +1543,92 @@ export default function WritingPage() {
                                   <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
                                 </div>
                               ) : (
-                                <form onSubmit={handleTrialSubmit} className="space-y-4 max-w-xl mx-auto">
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">お名前(*必須)</label>
-                                    <input type="text" value={trialForm.name} onChange={(e) => setTrialForm((f) => ({ ...f, name: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="お名前" required />
+                                <form onSubmit={handleTrialSubmit} className="space-y-5 max-w-xl mx-auto">
+                                  <div className="space-y-1.5">
+                                    <label className="flex items-center justify-between text-xs md:text-sm font-medium text-[#2C2C2E]">
+                                      <span>お名前</span>
+                                      <span className="inline-flex items-center rounded-[999px] bg-[#B85040] px-2.5 py-0.5 text-[10px] font-semibold text-white tracking-[0.12em]">
+                                        必須
+                                      </span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={trialForm.name}
+                                      onChange={(e) =>
+                                        setTrialForm((f) => ({ ...f, name: e.target.value }))
+                                      }
+                                      className="w-full rounded-lg border border-[#E2D9CC] bg-[#FAF8F3] px-3.5 py-2.5 text-sm text-[#2C2C2E] placeholder:text-[#C4BBAF] focus:border-[#3D6B5A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3D6B5A]/12 transition"
+                                      placeholder="例：田中 花子"
+                                      required
+                                    />
                                   </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ふりがな(*必須)</label>
-                                    <input type="text" value={trialForm.furigana} onChange={(e) => setTrialForm((f) => ({ ...f, furigana: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="ふりがな" required />
+                                  <div className="space-y-1.5">
+                                    <label className="flex items-center justify-between text-xs md:text-sm font-medium text-[#2C2C2E]">
+                                      <span>ふりがな</span>
+                                      <span className="inline-flex items-center rounded-[999px] bg-[#B85040] px-2.5 py-0.5 text-[10px] font-semibold text-white tracking-[0.12em]">
+                                        必須
+                                      </span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={trialForm.furigana}
+                                      onChange={(e) =>
+                                        setTrialForm((f) => ({ ...f, furigana: e.target.value }))
+                                      }
+                                      className="w-full rounded-lg border border-[#E2D9CC] bg-[#FAF8F3] px-3.5 py-2.5 text-sm text-[#2C2C2E] placeholder:text-[#C4BBAF] focus:border-[#3D6B5A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3D6B5A]/12 transition"
+                                      placeholder="例：たなか はなこ"
+                                      required
+                                    />
                                   </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">韓国語レベル</label>
-                                    <select value={trialForm.koreanLevel} onChange={(e) => setTrialForm((f) => ({ ...f, koreanLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
-                                      {KOREAN_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                                  <div className="space-y-1.5">
+                                    <label className="flex items-center justify-between text-xs md:text-sm font-medium text-[#2C2C2E]">
+                                      <span>韓国語レベル</span>
+                                      <span className="inline-flex items-center rounded-[999px] bg-[#B85040] px-2.5 py-0.5 text-[10px] font-semibold text-white tracking-[0.12em]">
+                                        必須
+                                      </span>
+                                    </label>
+                                    <select
+                                      value={trialForm.koreanLevel}
+                                      onChange={(e) =>
+                                        setTrialForm((f) => ({ ...f, koreanLevel: e.target.value }))
+                                      }
+                                      className="w-full rounded-lg border border-[#E2D9CC] bg-[#FAF8F3] px-3.5 py-2.5 text-sm text-[#2C2C2E] focus:border-[#3D6B5A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3D6B5A]/12 transition"
+                                      required
+                                    >
+                                      {KOREAN_LEVELS.map((l) => (
+                                        <option key={l} value={l}>
+                                          {l}
+                                        </option>
+                                      ))}
                                     </select>
                                   </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス(*必須)</label>
-                                    <p className="text-xs text-gray-500 mb-1">☆携帯メールの場合は返信のため、パソコン受信設定のチェックをお願いします。</p>
-                                    <input type="email" value={trialForm.email} onChange={(e) => setTrialForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="メールアドレスを入力" required />
+                                  <div className="space-y-1.5">
+                                    <label className="flex items-center justify-between text-xs md:text-sm font-medium text-[#2C2C2E]">
+                                      <span>メールアドレス</span>
+                                      <span className="inline-flex items-center rounded-[999px] bg-[#B85040] px-2.5 py-0.5 text-[10px] font-semibold text-white tracking-[0.12em]">
+                                        必須
+                                      </span>
+                                    </label>
+                                    <p className="text-[11px] text-[#8E8E93] mb-1">
+                                      ※携帯メールの場合は設定のパソコン受信設定をご確認ください
+                                    </p>
+                                    <input
+                                      type="email"
+                                      value={trialForm.email}
+                                      onChange={(e) =>
+                                        setTrialForm((f) => ({ ...f, email: e.target.value }))
+                                      }
+                                      className="w-full rounded-lg border border-[#E2D9CC] bg-[#FAF8F3] px-3.5 py-2.5 text-sm text-[#2C2C2E] placeholder:text-[#C4BBAF] focus:border-[#3D6B5A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3D6B5A]/12 transition"
+                                      placeholder="example@mail.com"
+                                      required
+                                    />
                                   </div>
-                                  <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
-                                    {trialSubmitting ? "送信中..." : "送信"}
+                                  <button
+                                    type="submit"
+                                    disabled={trialSubmitting}
+                                    className="mt-2 w-full rounded-xl bg-[#1a4d2e] py-3.5 text-sm md:text-base font-semibold text-white shadow-[0_10px_25px_rgba(12,95,54,0.35)] hover:bg-[#154024] disabled:opacity-50 transition"
+                                  >
+                                    {trialSubmitting ? "送信中..." : "送信する →"}
                                   </button>
                                 </form>
                               )}
