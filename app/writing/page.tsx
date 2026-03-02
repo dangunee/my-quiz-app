@@ -113,6 +113,29 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "topik", label: "TOPIK作文トレ" },
 ];
 
+function AnimatedText({
+  text,
+  startDelay = 0,
+}: {
+  text: string;
+  startDelay?: number;
+}) {
+  const chars = Array.from(text);
+  return (
+    <span aria-hidden="true">
+      {chars.map((ch, idx) => (
+        <span
+          key={idx}
+          className="hero-char"
+          style={{ animationDelay: `${startDelay + idx * 0.03}s` }}
+        >
+          {ch === " " ? "\u00A0" : ch}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function WritingPage() {
   const { redirectPath } = useWritingBase();
   const [user, setUser] = useState<User | null>(null);
@@ -748,38 +771,46 @@ export default function WritingPage() {
               </div>
             )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
-              <nav className="flex items-center px-4 md:px-6 py-2 gap-2">
-                <div className="flex flex-1 overflow-x-auto">
-                  {TABS.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
-                        activeTab === tab.id
-                          ? "border-[#1a4d2e] text-[#1a4d2e]"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      }`}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setDesktopSidebarOpen((v) => !v)}
-                  className="hidden md:inline-flex items-center gap-1 rounded-lg border border-[#e5dfd4] bg-[#f5f0e6] px-3 py-2 text-xs font-medium text-gray-700 hover:bg-[#ebe5d8]"
-                  aria-label="メニューを開く"
+              <nav className="px-4 md:px-6 py-2">
+                <div
+                  className={
+                    embedded
+                      ? "flex w-full items-center gap-2"
+                      : "flex w-full items-center gap-2 mx-auto max-w-5xl md:max-w-6xl"
+                  }
                 >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <div className="flex flex-1 overflow-x-auto">
+                    {TABS.map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
+                          activeTab === tab.id
+                            ? "border-[#1a4d2e] text-[#1a4d2e]"
+                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDesktopSidebarOpen((v) => !v)}
+                    className="hidden md:inline-flex items-center gap-1 rounded-lg border border-[#e5dfd4] bg-[#f5f0e6] px-3 py-2 text-xs font-medium text-gray-700 hover:bg-[#ebe5d8]"
+                    aria-label="メニューを開く"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                  <span>メニュー</span>
-                </button>
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <span>メニュー</span>
+                  </button>
+                </div>
               </nav>
             </div>
 
@@ -802,22 +833,35 @@ export default function WritingPage() {
                         backgroundSize: "28px 28px",
                       }}
                     />
+                    <div className="pointer-events-none absolute inset-y-0 right-4 hidden md:flex items-center justify-center">
+                      <span className="text-[5rem] lg:text-[7rem] xl:text-[9rem] font-extrabold tracking-[0.3em] text-white/5">
+                        작문
+                      </span>
+                    </div>
                     <div className="relative z-10 max-w-2xl">
-                      <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em]">
+                      <div
+                        className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em] hero-fade"
+                        style={{ animationDelay: "0.3s" }}
+                      >
                         <span className="h-2 w-2 animate-pulse rounded-full bg-[#A8EACC]" />
                         <span>メール添削コース · 10週間</span>
                       </div>
                       <h2 className="mt-4 text-2xl md:text-4xl font-bold leading-snug tracking-[0.03em]">
-                        書くたびに、
+                        <AnimatedText text="書くたびに、" startDelay={0.4} />
                         <br />
-                        韓国語が
-                        <span className="text-[#A8EACC]"> 自分のものになる</span>。
+                        <AnimatedText text="韓国語が 自分のものになる。" startDelay={0.9} />
                       </h2>
-                      <p className="mt-4 max-w-xl text-sm md:text-base text-white/80 leading-relaxed">
+                      <p
+                        className="mt-4 max-w-xl text-sm md:text-base text-white/80 leading-relaxed hero-fade"
+                        style={{ animationDelay: "1.5s" }}
+                      >
                         300〜500字作文 ＋ 添削 ＋ ネイティブ比較文 ＋ 模範文まで届く。
                         週1回のペースで、表現力を着実に積み上げます。
                       </p>
-                      <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <div
+                        className="mt-6 flex flex-wrap items-center gap-3 hero-fade"
+                        style={{ animationDelay: "1.9s" }}
+                      >
                         <button
                           type="button"
                           onClick={() => {
