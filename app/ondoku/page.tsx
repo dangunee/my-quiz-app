@@ -736,21 +736,21 @@ export default function OndokuPage() {
 
       {!embedded && (
         <header className="relative bg-white border-b border-gray-200 py-4 md:py-5 px-4 md:px-6 shadow-sm">
-          <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem]">
+          <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-between min-h-[2.5rem] gap-4">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
               aria-label="メニューを開く"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide text-center">
+            <h1 className="flex-1 text-center text-xl md:text-2xl font-bold text-gray-800 tracking-wide">
               オンラインで音読トレーニング
             </h1>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <div className="flex items-center gap-2">
               {user && (
                 <button
                   type="button"
