@@ -755,7 +755,7 @@ export default function WritingPage() {
 
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
-                <div className="w-full mx-auto max-w-5xl md:max-w-6xl">
+                <div className="w-full md:w-4/5 mx-auto max-w-5xl md:max-w-6xl">
                   {/* HERO */}
                   <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#3D6B5A] via-[#2E5244] to-[#1C3328] px-6 py-10 md:px-10 md:py-12 text-white mb-8">
                     <div
