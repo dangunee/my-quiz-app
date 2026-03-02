@@ -8,8 +8,8 @@ import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 
-/** Matches 2+ underscores so admin can use any underline length; first group is the blank. */
-const BLANK_REGEX = /(.*?)(_{2,})(.*)/s;
+/** Matches 2+ underscores so admin can use any underline length; first group is the blank. (dotall via [\s\S]) */
+const BLANK_REGEX = /([\s\S]*?)(_{2,})([\s\S]*)/;
 
 interface KotaeItem {
   id: number;
