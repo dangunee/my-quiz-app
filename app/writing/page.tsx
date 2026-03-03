@@ -884,9 +884,12 @@ export default function WritingPage() {
                     </div>
                   </section>
 
-                  {/* ABOUT: 전체를 연베이지 컨테이너로 감쌈 (작문 트레이닝 스타일) */}
-                  <div className="rounded-2xl border border-[#E2D9CC] bg-[#F5F0E8] shadow-sm p-6 md:p-8">
-                    <div id="experience-details" className="pb-4">
+                  {/* MAIN CONTENT CARD */}
+                  <div className="overflow-hidden rounded-2xl border border-[#E2D9CC] bg-white shadow-sm">
+                    <div
+                      id="experience-details"
+                      className="border-b border-[#E2D9CC] bg-[#F5F0E8] px-6 py-4"
+                    >
                       <h3 className="text-base md:text-lg font-bold text-[#2C2C2E]">
                         メールで作文トレーニング
                       </h3>
@@ -894,7 +897,7 @@ export default function WritingPage() {
                         このページでは、コースの特徴・詳細・体験例・授業料・生徒の声をご紹介します。
                       </p>
                     </div>
-                    <div className="pt-2 space-y-6 md:space-y-8">
+                    <div className="p-6 space-y-6 md:space-y-8">
                       {/* FEATURES */}
                       <section aria-labelledby="features-heading" className="space-y-3">
                         <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
@@ -1458,7 +1461,7 @@ export default function WritingPage() {
                       </section>
                       <div className="pt-6">
                         <div className="overflow-hidden rounded-3xl border border-[#d7e5db] bg-[#f6fbf8] shadow-sm">
-                          <div className="px-5 py-3 bg-[#146382] rounded-t-3xl">
+                          <div className="px-5 py-3 bg-[#1a4d2e] rounded-t-3xl">
                             <h3 className="font-semibold text-white text-sm md:text-base">
                               まずは体験から!
                             </h3>
@@ -1474,7 +1477,7 @@ export default function WritingPage() {
                                 key={row.label}
                                 className="flex flex-row border-b border-[#e0ece3] last:border-b-0"
                               >
-                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#eef4f0] font-medium text-[#146382] border-r border-[#e0ece3] text-xs md:text-sm">
+                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#eef4f0] font-medium text-[#1a4d2e] border-r border-[#e0ece3] text-xs md:text-sm">
                                   {row.label}
                                 </div>
                                 <div
@@ -1486,7 +1489,7 @@ export default function WritingPage() {
                                 </div>
                               </div>
                             ))}
-                            <div className="px-3 md:px-4 py-3 bg-[#146382] text-white text-xs md:text-sm font-semibold text-center">
+                            <div className="px-3 md:px-4 py-3 bg-[#1a4d2e] text-white text-xs md:text-sm font-semibold text-center">
                               1回お試し 1,800円
                             </div>
                           </div>
