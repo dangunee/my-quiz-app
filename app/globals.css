@@ -257,6 +257,120 @@ body {
   }
 }
 
+@keyframes waveDance {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+
+/* ondoku hero waveform (from design HTML) */
+.ondoku-waveform {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ondoku-waveform-bar {
+  width: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  animation: waveDance 1.4s ease-in-out infinite;
+}
+
+.ondoku-waveform-bar:nth-child(1) {
+  height: 12px;
+  animation-delay: 0s;
+}
+.ondoku-waveform-bar:nth-child(2) {
+  height: 22px;
+  animation-delay: 0.1s;
+}
+.ondoku-waveform-bar:nth-child(3) {
+  height: 34px;
+  animation-delay: 0.2s;
+}
+.ondoku-waveform-bar:nth-child(4) {
+  height: 48px;
+  animation-delay: 0.1s;
+  background: rgba(127, 255, 212, 0.7);
+}
+.ondoku-waveform-bar:nth-child(5) {
+  height: 60px;
+  animation-delay: 0s;
+  background: rgba(127, 255, 212, 0.8);
+}
+.ondoku-waveform-bar:nth-child(6) {
+  height: 72px;
+  animation-delay: 0.1s;
+  background: #7fffd4;
+}
+.ondoku-waveform-bar:nth-child(7) {
+  height: 60px;
+  animation-delay: 0.2s;
+  background: rgba(127, 255, 212, 0.8);
+}
+.ondoku-waveform-bar:nth-child(8) {
+  height: 72px;
+  animation-delay: 0.3s;
+  background: #7fffd4;
+}
+.ondoku-waveform-bar:nth-child(9) {
+  height: 52px;
+  animation-delay: 0.2s;
+  background: rgba(127, 255, 212, 0.7);
+}
+.ondoku-waveform-bar:nth-child(10) {
+  height: 64px;
+  animation-delay: 0.1s;
+  background: #7fffd4;
+}
+.ondoku-waveform-bar:nth-child(11) {
+  height: 44px;
+  animation-delay: 0s;
+  background: rgba(127, 255, 212, 0.6);
+}
+.ondoku-waveform-bar:nth-child(12) {
+  height: 56px;
+  animation-delay: 0.1s;
+  background: rgba(127, 255, 212, 0.7);
+}
+.ondoku-waveform-bar:nth-child(13) {
+  height: 38px;
+  animation-delay: 0.2s;
+}
+.ondoku-waveform-bar:nth-child(14) {
+  height: 48px;
+  animation-delay: 0.3s;
+}
+.ondoku-waveform-bar:nth-child(15) {
+  height: 28px;
+  animation-delay: 0.2s;
+}
+.ondoku-waveform-bar:nth-child(16) {
+  height: 36px;
+  animation-delay: 0.1s;
+}
+.ondoku-waveform-bar:nth-child(17) {
+  height: 18px;
+  animation-delay: 0s;
+}
+.ondoku-waveform-bar:nth-child(18) {
+  height: 24px;
+  animation-delay: 0.1s;
+}
+.ondoku-waveform-bar:nth-child(19) {
+  height: 14px;
+  animation-delay: 0.2s;
+}
+.ondoku-waveform-bar:nth-child(20) {
+  height: 8px;
+  animation-delay: 0.1s;
+}
+
 @keyframes wave {
   0%,
   100% {

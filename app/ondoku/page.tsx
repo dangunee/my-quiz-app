@@ -841,30 +841,27 @@ export default function OndokuPage() {
                         週1回・10週間で、話せる韓国語を手に入れる。
                       </p>
                       <div className="mt-5 flex items-center gap-3">
-                        <div className="flex items-end gap-[3px]">
-                          {[
-                            10, 16, 22, 30, 38, 48, 60, 72, 82, 90,
-                            90, 82, 72, 60, 48, 38, 30, 22, 16, 10,
-                          ].map((h, i, arr) => {
-                            const center = (arr.length - 1) / 2;
-                            const distance = Math.abs(i - center);
-                            const opacity = 0.35 + (1 - distance / center) * 0.55; // 가운데 진하게, 양끝 옅게
-                            const delay = distance * 0.06; // 가운데에서 바깥으로 퍼지는 느낌
-
-                            return (
-                              // eslint-disable-next-line react/no-array-index-key
-                              <div
-                                key={i}
-                                className="wave-bar w-[3px] md:w-1 rounded-full animate-[wave_1.4s_ease-in-out_infinite]"
-                                style={{
-                                  height: `${h}px`,
-                                  backgroundColor: "#7FFFD4",
-                                  opacity,
-                                  animationDelay: `${delay}s`,
-                                }}
-                              />
-                            );
-                          })}
+                        <div className="ondoku-waveform">
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
+                          <div className="ondoku-waveform-bar" />
                         </div>
                         <span className="text-[11px] text-white/60 tracking-[0.12em]">
                           발음 교정 중…
