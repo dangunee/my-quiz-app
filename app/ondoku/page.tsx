@@ -807,6 +807,15 @@ export default function OndokuPage() {
                 <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
                   {/* 새 히어로 섹션 */}
                   <section className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#2A7F74] via-[#1D6B61] to-[#0E4A42] px-6 py-8 md:px-10 md:py-10 text-white">
+                    {/* 배경 텍스트 */}
+                    <div className="pointer-events-none absolute inset-0">
+                      <div className="absolute -left-6 -top-10 text-[90px] md:text-[120px] font-bold tracking-[0.18em] text-white/5 select-none">
+                        미리내
+                      </div>
+                      <div className="absolute -right-8 -bottom-10 text-[70px] md:text-[110px] font-bold tracking-[0.18em] text-white/4 select-none">
+                        音読講座
+                      </div>
+                    </div>
                     <div
                       className="pointer-events-none absolute inset-0 opacity-10 mix-blend-soft-light"
                       style={{
