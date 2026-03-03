@@ -1064,8 +1064,8 @@ body {
 .hero::after {
   content: "글쓰기";
   position: absolute;
-  right: 20px;
-  bottom: 40px;
+  right: -30px;
+  bottom: -20px;
   font-family: "Noto Sans KR", sans-serif;
   font-size: 140px;
   font-weight: 700;
@@ -1133,7 +1133,7 @@ body {
 .tag-dot {
   width: 7px;
   height: 7px;
-  background: #a8eacc;
+  background: #FDE047;
   border-radius: 50%;
   animation: blink 2s infinite;
 }
@@ -1431,4 +1431,323 @@ body {
 }
 .ondoku-feat-text strong {
   color: var(--teal-mid);
+}
+
+/* HOW TO PRACTICE (steps) */
+.ondoku-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.ondoku-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 20px 0;
+  position: relative;
+}
+.ondoku-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 54px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal-pale), transparent);
+}
+.ondoku-step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: "Noto Serif JP", serif;
+  box-shadow: 0 3px 12px rgba(42, 127, 116, 0.3);
+}
+.ondoku-step-body {
+  flex: 1;
+  padding-top: 8px;
+}
+.ondoku-step-body h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--teal-mid);
+}
+.ondoku-step-body p {
+  font-size: 13px;
+  color: #555;
+  font-weight: 300;
+  line-height: 1.75;
+}
+.ondoku-step-body .ondoku-tip {
+  display: inline-block;
+  margin-top: 6px;
+  background: var(--teal-pale);
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* WEEKLY FLOW */
+.ondoku-flow-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 500px) {
+  .ondoku-flow-cards {
+    grid-template-columns: 1fr;
+  }
+}
+.ondoku-flow-card {
+  background: white;
+  border: 1px solid #E0D8CC;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.ondoku-flow-card .ondoku-flow-day {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--teal);
+  margin-bottom: 6px;
+}
+.ondoku-flow-card .ondoku-flow-action {
+  font-size: 13px;
+  font-weight: 500;
+}
+.ondoku-flow-card p {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 4px;
+  font-weight: 300;
+}
+
+/* CURRICULUM */
+.ondoku-curr-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.ondoku-curr-tab {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1.5px solid #E0D8CC;
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--gray);
+  font-family: "Noto Sans JP", sans-serif;
+}
+.ondoku-curr-tab.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+.ondoku-curr-panel {
+  display: none;
+}
+.ondoku-curr-panel.active {
+  display: block;
+}
+.ondoku-curr-item {
+  background: white;
+  border: 1px solid #E0D8CC;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 10px;
+}
+.ondoku-curr-item .ondoku-item-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.ondoku-curr-item .ondoku-num-badge {
+  background: var(--teal-pale);
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.ondoku-curr-item .ondoku-grammar {
+  font-size: 14px;
+  font-weight: 700;
+}
+.ondoku-curr-item .ondoku-meaning {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+.ondoku-curr-item .ondoku-example {
+  background: #F0F8F6;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: "Noto Sans KR", sans-serif;
+  color: var(--teal-mid);
+  margin-bottom: 6px;
+}
+.ondoku-curr-item .ondoku-task {
+  font-size: 12px;
+  color: #555;
+  padding: 0 2px;
+}
+.ondoku-curr-item .ondoku-pron-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #C05840;
+  background: #FAEAE6;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* DETAILS (grid rows) */
+.ondoku-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ondoku-detail-row {
+  background: white;
+  border: 1px solid #E0D8CC;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 16px;
+}
+.ondoku-detail-row .ondoku-detail-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  padding-top: 1px;
+}
+.ondoku-detail-row .ondoku-detail-value {
+  font-size: 13.5px;
+}
+.ondoku-detail-badge {
+  background: var(--teal-pale);
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  margin-left: 4px;
+}
+
+/* PRICE */
+.ondoku-price-section {
+  background: white;
+  border: 1px solid #E0D8CC;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.ondoku-price-header {
+  background: var(--teal);
+  padding: 18px 24px;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+}
+.ondoku-price-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.ondoku-price-col {
+  padding: 24px;
+  border-right: 1px solid #E0D8CC;
+  text-align: center;
+}
+.ondoku-price-col:last-child {
+  border-right: none;
+}
+.ondoku-price-col .ondoku-price-lv {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+.ondoku-price-col .ondoku-price-amount {
+  font-family: "Noto Serif JP", serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #2C2C2E;
+  margin-bottom: 2px;
+}
+.ondoku-price-col .ondoku-price-amount span {
+  font-size: 14px;
+  font-weight: 300;
+}
+.ondoku-price-col .ondoku-price-per {
+  font-size: 11px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+.ondoku-price-col .ondoku-trial-badge {
+  display: inline-block;
+  background: var(--gold-pale);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.ondoku-price-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.ondoku-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--teal);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 18px rgba(42, 127, 116, 0.3);
+  transition: background 0.2s;
+  letter-spacing: 0.03em;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ondoku-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  color: var(--teal);
+  border: 1.5px solid #E0D8CC;
+  padding: 15px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  font-family: inherit;
 }

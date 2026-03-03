@@ -954,220 +954,246 @@ export default function OndokuPage() {
                     </div>
                   </section>
 
-                  {/* 授業について・詳細・カリキュラムは従来どおり */}
-                  <div className="bg-white rounded-lg border-t-4 border-t-[#1e3a5f] border border-gray-200 shadow-md overflow-hidden">
-                    <div className="p-6 space-y-0">
-                      <div className="px-4 py-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700 space-y-4">
-                        <h3 className="font-semibold text-[#1e3a5f] text-base">授業について</h3>
-                        <div>
-                          <p className="font-medium text-[#1e3a5f] mb-1">★音読とは?</p>
-                          <p>音読とは、文字を声に出して読むことです。日々、語彙・文法・表現・発音など多くの知識をインプットしているのに、会話の場面ではなかなかアウトプットできない…そんな経験はありませんか？音読は、アウトプットの練習に最適。実際の会話で話せない・聞き取れないといった悩みを解消する近道です。</p>
-                        </div>
-                        <div>
-                          <p className="font-bold text-[#1e3a5f] mb-1">3ヶ月で上達! ご自宅で発音矯正&音読レッスン!</p>
-                          <p>通学が難しくても、韓国語で会話がしたい方へ。会話には語彙・文法の基礎が不可欠。そして、覚えた表現は正しい発音・抑揚で練習してこそ、相手に伝わります。</p>
-                        </div>
-                        <div>
-                          <p className="font-medium text-[#1e3a5f] mb-1">≪語彙・文型・表現 パターンを覚え + 発音・抑揚を自然に≫</p>
-                          <p>この2点を重視し、ご自宅で会話練習ができる講座を作りました。ミリネが厳選した課題文をしっかり音読して身につければ、リスニング・会話力・韓国語力の向上は間違いありません。</p>
-                        </div>
-                        <div>
-                          <p className="font-medium text-[#1e3a5f] mb-1">【音読トレーニングの方法】</p>
-                          <ul className="space-y-2 list-none">
-                            <li>❶ 文章の把握：まず、課題を日本語に訳して意味を把握します。</li>
-                            <li>❷ 文章を見ながら音読15回、スムーズに言えるようになるまで回数は調整してください。記録シートの作成をお勧めします。</li>
-                            <li>❸ 文章を見ないで音をたよりに音読15回（次週にネイティブの録音ファイルをお送りします）</li>
-                            <li>❹ シャドーイングの練習15回</li>
-                          </ul>
+                  {/* HOW TO PRACTICE */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">HOW TO PRACTICE</div>
+                    <div className="ondoku-steps">
+                      <div className="ondoku-step">
+                        <div className="ondoku-step-num">1</div>
+                        <div className="ondoku-step-body">
+                          <h4>文章の把握</h4>
+                          <p>まず課題文を日本語に訳して、意味をしっかり把握します。</p>
                         </div>
                       </div>
-                      <div className="overflow-hidden mt-4">
-                        <div className="px-4 py-2.5 bg-[#1e3a5f]">
-                          <h3 className="font-semibold text-white text-sm">詳細</h3>
-                        </div>
-                        <div className="bg-white text-sm">
-                          {[
-                            { label: "対象", content: "初中級 / 中上級 (レベルに合わせて選択可能)" },
-                            { label: "目標", content: <>❶会話パターンを覚える<br />❷発音・抑揚の矯正<br />❸音読トレーニングで話すスピードも速くなり → 会話力が上がる事</> },
-                            { label: "授業の流れ", content: <>❶毎週月曜日：課題をメールにて送信<br />❷課題の勉強、読みの練習後、スマホなどで録音<br />❸翌週の月曜日21時までに録音ファイルを<a href="mailto:ondoku@kaonnuri.com" className="text-[#1e3a5f] hover:underline font-medium">ondoku@kaonnuri.com</a>に提出<br />❹毎週金曜日：先生の解説文及び模範発音録音ファイルをメールにて送信</> },
-                            { label: "日程", content: "4月3日(金)から10週間" },
-                            { label: "教室", content: "オンライン" },
-                            { label: "募集期間", content: "～4月1日(水)" },
-                            { label: "テキスト", content: "ミリネ独自のテキスト(PDF)※事前にメールにてお送りします。" },
-                          ].map((row, i) => (
-                            <div key={row.label} className={`flex flex-row border-b border-gray-300 last:border-b-0 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-                              <div className="w-24 md:w-28 shrink-0 px-3 py-2.5 bg-gray-200 font-medium text-gray-800 border-r border-gray-300 text-xs md:text-sm">{row.label}</div>
-                              <div className="flex-1 min-w-0 px-3 py-2.5 text-gray-700 text-xs md:text-sm">{row.content}</div>
-                            </div>
-                          ))}
+                      <div className="ondoku-step">
+                        <div className="ondoku-step-num">2</div>
+                        <div className="ondoku-step-body">
+                          <h4>文章を見ながら音読 × 15回</h4>
+                          <p>スムーズに言えるようになるまで回数を調整してください。記録シートの作成をおすすめします。</p>
+                          <span className="ondoku-tip">📝 記録シート推奨</span>
                         </div>
                       </div>
-                      <div className="mt-4 overflow-hidden border border-gray-200 rounded-lg">
-                        <div className="flex border-b border-gray-200">
-                          <button
-                            type="button"
-                            onClick={() => setLevelDetailTab("chujokyu")}
-                            className={`flex-1 px-4 py-3 text-sm font-medium ${levelDetailTab === "chujokyu" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-                          >
-                            初中級
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setLevelDetailTab("chuujokyu")}
-                            className={`flex-1 px-4 py-3 text-sm font-medium border-l border-gray-200 ${levelDetailTab === "chuujokyu" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-                          >
-                            中上級
-                          </button>
-                        </div>
-                        <div className="p-4 md:p-5 bg-white text-sm text-gray-700">
-                          {levelDetailTab === "chujokyu" ? (
-                            <div className="space-y-5">
-                              <div>
-                                <h4 className="font-bold text-[#1e3a5f] text-base mb-2 border-b-2 border-red-500 pb-1 inline-block">初中級</h4>
-                                <p className="mt-2">1回につき、8個の課題が出ます。全10回コースで会話に必要な文型、表現をたくさん覚えられます。</p>
-                                <p className="mt-1 text-gray-600">(9回目と10回目は、1-8回目で実施した内容からの出題となります。9・10回目で復習することで、発音の改善を実感できます。)</p>
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-gray-800 mb-3">課題</h4>
-                                <ul className="space-y-4">
-                                  <li>
-                                    <p className="font-medium">① <code className="bg-gray-100 px-1 rounded">-아/어지다</code>：形容詞の自然な変化を表す</p>
-                                    <p className="mt-1 text-gray-600">例) 날씨가 좋아졌어요, 얼굴이 예뻐졌어요.</p>
-                                    <p className="mt-1">課題：겨울이 가까워지면서 해가 짧아지고 추워졌어요。</p>
-                                    <p className="mt-1 text-blue-600">※発音ポイント：複合母音、二重バッチム、濃音、激音</p>
-                                  </li>
-                                  <li>
-                                    <p className="font-medium">② <code className="bg-gray-100 px-1 rounded">-(으)ㄹ 줄 알다</code>：(習って)することができる、する方法を知っている</p>
-                                    <p className="mt-1 text-gray-600">例) 수영할 줄 알아요?</p>
-                                    <p className="mt-1">課題：한국 사람들은 모두 김치를 담글 줄 알아요?</p>
-                                    <p className="mt-1 text-blue-600">※発音ポイント：ㄹの発音、連音</p>
-                                  </li>
-                                  <li>
-                                    <p className="font-medium">③ <code className="bg-gray-100 px-1 rounded">-(으)ㄹ 줄 모르다</code>：(習って)できない、する方法を知らない</p>
-                                    <p className="mt-1 text-gray-600">例) 저는 영어를 할 줄 몰라요。</p>
-                                    <p className="mt-1">課題：저는 면허가 없어요。運転할 줄 모릅니다。</p>
-                                    <p className="mt-1 text-blue-600">※発音ポイント：ㅎの発音、二重バッチム、鼻音化</p>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex justify-center">
-                              <img src="/ondoku-chuujokyu.png" alt="中級～上級 音読トレーニングの詳細" className="max-w-full h-auto" />
-                            </div>
-                          )}
+                      <div className="ondoku-step">
+                        <div className="ondoku-step-num">3</div>
+                        <div className="ondoku-step-body">
+                          <h4>文章を見ないで音読 × 15回</h4>
+                          <p>翌週にネイティブの録音ファイルをお送りします。音だけを頼りに練習します。</p>
+                          <span className="ondoku-tip">🎧 ネイティブ音声を使用</span>
                         </div>
                       </div>
-                      <div id="trial-form-section" className="mt-6 pt-6 border-t-2 border-[#8b6914]">
-                        <div className="mb-6 py-5 px-6 bg-[#faf6eb] border-b-2 border-[#8b6914] rounded-lg">
-                          <p className="text-center text-sm md:text-base text-[#5c4a1a] mb-1">お試し１回料金</p>
-                          <p className="text-center text-lg md:text-xl font-bold text-[#5c4a1a]">
-                            初中級: 1,800円 / 中上級: 2,300円
-                          </p>
-                        </div>
-                        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                          <div className="flex">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (trialActiveTab === "trial" && showTrialModal) {
-                                  setShowTrialModal(false);
-                                } else {
-                                  setTrialActiveTab("trial");
-                                  setShowTrialModal(true);
-                                  setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" });
-                                  setTrialSuccess(false);
-                                  setTrialError(null);
-                                }
-                              }}
-                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-                            >
-                              <span>体験申込</span>
-                              {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (trialActiveTab === "course" && showTrialModal) {
-                                  setShowTrialModal(false);
-                                } else {
-                                  setTrialActiveTab("course");
-                                  setShowTrialModal(true);
-                                  setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" });
-                                  setTrialSuccess(false);
-                                  setTrialError(null);
-                                }
-                              }}
-                              className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-                            >
-                              <span>講座申込</span>
-                              {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
-                            </button>
-                          </div>
-                          {showTrialModal && (
-                            <div className="p-6 border-t border-gray-200 relative">
-                              {trialError && (
-                                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                                  {trialError}
-                                  <button type="button" onClick={() => setTrialError(null)} className="ml-2 underline">閉じる</button>
-                                </div>
-                              )}
-                              {trialSuccess ? (
-                                <div className="text-center py-8">
-                                  <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
-                                  <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
-                                </div>
-                              ) : (
-                                <form onSubmit={handleTrialSubmit} className="space-y-4 max-w-xl mx-auto">
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">お名前(*必須)</label>
-                                    <input type="text" value={trialForm.name} onChange={(e) => setTrialForm((f) => ({ ...f, name: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="お名前" required />
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ふりがな(*必須)</label>
-                                    <input type="text" value={trialForm.furigana} onChange={(e) => setTrialForm((f) => ({ ...f, furigana: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="ふりがな" required />
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">韓国語レベル</label>
-                                    <select value={trialForm.koreanLevel} onChange={(e) => setTrialForm((f) => ({ ...f, koreanLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
-                                      {KOREAN_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス(*必須)</label>
-                                    <p className="text-xs text-gray-500 mb-1">☆携帯メールの場合は返信のため、パソコン受信設定のチェックをお願いします。</p>
-                                    <input type="email" value={trialForm.email} onChange={(e) => setTrialForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="メールアドレスを入力" required />
-                                  </div>
-                                  <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
-                                    {trialSubmitting ? "送信中..." : "送信"}
-                                  </button>
-                                </form>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-6 pt-4 border-t-2 border-[#8b6914]">
-                        <h3 className="font-semibold text-[#8b6914] text-base mb-3">授業料</h3>
-                        <div className="border border-gray-300 rounded-lg overflow-hidden">
-                          <table className="w-full border-collapse text-sm">
-                            <thead>
-                              <tr className="bg-[#87ceeb]">
-                                <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">レベル</th>
-                                <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">1回当たり</th>
-                                <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">回数</th>
-                                <th className="py-2 px-4 text-left font-medium text-gray-800 border-b-2 border-[#1e3a5f]">税込</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr className="bg-white"><td className="py-3 px-4 font-semibold text-gray-800">初中級</td><td className="py-3 px-4">2,180円</td><td className="py-3 px-4">10回</td><td className="py-3 px-4">23,980円</td></tr>
-                              <tr className="bg-gray-50"><td className="py-3 px-4 font-semibold text-gray-800">中級-上級</td><td className="py-3 px-4">2,720円</td><td className="py-3 px-4">10回</td><td className="py-3 px-4">29,920円</td></tr>
-                            </tbody>
-                          </table>
+                      <div className="ondoku-step">
+                        <div className="ondoku-step-num">4</div>
+                        <div className="ondoku-step-body">
+                          <h4>シャドーイング × 15回</h4>
+                          <p>ネイティブ音声を追いかけながら同時に発声。発音・抑揚・スピードを体に染み込ませます。</p>
+                          <span className="ondoku-tip">✨ 仕上げの練習</span>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </section>
+
+                  {/* WEEKLY FLOW */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">WEEKLY FLOW</div>
+                    <div className="ondoku-flow-cards">
+                      <div className="ondoku-flow-card">
+                        <div className="ondoku-flow-day">📬 月曜日</div>
+                        <div className="ondoku-flow-action">課題をメールで送信</div>
+                        <p>テーマ文と文型の課題が届きます</p>
+                      </div>
+                      <div className="ondoku-flow-card">
+                        <div className="ondoku-flow-day">✏️ 月〜日（自習）</div>
+                        <div className="ondoku-flow-action">課題を練習・録音</div>
+                        <p>スマホなどで録音してください</p>
+                      </div>
+                      <div className="ondoku-flow-card">
+                        <div className="ondoku-flow-day">📤 翌週月曜 21時まで</div>
+                        <div className="ondoku-flow-action">録音ファイルを提出</div>
+                        <p><a href="mailto:ondoku@kaonnuri.com" className="text-[var(--teal)] font-medium hover:underline">ondoku@kaonnuri.com</a> へ</p>
+                      </div>
+                      <div className="ondoku-flow-card">
+                        <div className="ondoku-flow-day">📩 金曜日</div>
+                        <div className="ondoku-flow-action">添削 ＋ 模範音声が届く</div>
+                        <p>先生の解説文と模範発音録音ファイルをメール送信</p>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* CURRICULUM */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">CURRICULUM</div>
+                    <div className="ondoku-curr-tabs">
+                      <button type="button" onClick={() => setLevelDetailTab("chujokyu")} className={`ondoku-curr-tab ${levelDetailTab === "chujokyu" ? "active" : ""}`}>初中級</button>
+                      <button type="button" onClick={() => setLevelDetailTab("chuujokyu")} className={`ondoku-curr-tab ${levelDetailTab === "chuujokyu" ? "active" : ""}`}>中〜上級</button>
+                    </div>
+                    <div className={`ondoku-curr-panel ${levelDetailTab === "chujokyu" ? "active" : ""}`}>
+                      <div className="ondoku-curr-item">
+                        <div className="ondoku-item-head">
+                          <span className="ondoku-num-badge">① 文型</span>
+                          <div>
+                            <div className="ondoku-grammar">-아/어지다</div>
+                            <div className="ondoku-meaning">形容詞の自然な変化を表す</div>
+                          </div>
+                        </div>
+                        <div className="ondoku-example">날씨가 좋아졌어요. ／ 얼굴이 예뻐졌어요.</div>
+                        <div className="ondoku-task">課題：겨울이 가까워지면서 해가 짧아지고 추워졌어요.</div>
+                        <div className="ondoku-pron-tip">🔊 発音ポイント：複合母音・二重バッチム・濃音・激音</div>
+                      </div>
+                      <div className="ondoku-curr-item">
+                        <div className="ondoku-item-head">
+                          <span className="ondoku-num-badge">② 文型</span>
+                          <div>
+                            <div className="ondoku-grammar">-(으)ㄹ 줄 알다</div>
+                            <div className="ondoku-meaning">（習って）できる・方法を知っている</div>
+                          </div>
+                        </div>
+                        <div className="ondoku-example">수영할 줄 알아요?</div>
+                        <div className="ondoku-task">課題：한국 사람들은 모두 김치를 담글 줄 알아요?</div>
+                        <div className="ondoku-pron-tip">🔊 発音ポイント：ㄹの発音・連音</div>
+                      </div>
+                      <div className="ondoku-curr-item">
+                        <div className="ondoku-item-head">
+                          <span className="ondoku-num-badge">③ 文型</span>
+                          <div>
+                            <div className="ondoku-grammar">-(으)ㄹ 줄 모르다</div>
+                            <div className="ondoku-meaning">（習って）できない・方法を知らない</div>
+                          </div>
+                        </div>
+                        <div className="ondoku-example">저는 영어를 할 줄 몰라요.</div>
+                        <div className="ondoku-task">課題：저는 면허가 없어요. 운전할 줄 모릅니다.</div>
+                        <div className="ondoku-pron-tip">🔊 発音ポイント：ㅎの発音・二重バッチム・鼻音化</div>
+                      </div>
+                    </div>
+                    <div className={`ondoku-curr-panel ${levelDetailTab === "chuujokyu" ? "active" : ""}`}>
+                      <div className="ondoku-curr-item">
+                        <div className="ondoku-item-head">
+                          <span className="ondoku-num-badge">中上級</span>
+                          <div>
+                            <div className="ondoku-grammar">中〜上級コース</div>
+                            <div className="ondoku-meaning">より高度な文型・表現・ニュアンスを扱います</div>
+                          </div>
+                        </div>
+                        <div className="ondoku-example">자세な内容はお申込み後にご案内いたします。</div>
+                        <div className="ondoku-task">目安：TOPIK 3〜6級レベルの方に対応しています。</div>
+                        <div className="flex justify-center mt-4">
+                          <img src="/ondoku-chuujokyu.png" alt="中級～上級 音読トレーニングの詳細" className="max-w-full h-auto" />
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* DETAILS */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">DETAILS</div>
+                    <div className="ondoku-detail-list">
+                      <div className="ondoku-detail-row">
+                        <div className="ondoku-detail-label">対象</div>
+                        <div className="ondoku-detail-value">初中級 ／ 中上級 <span className="ondoku-detail-badge">レベル別に選択可</span></div>
+                      </div>
+                      <div className="ondoku-detail-row">
+                        <div className="ondoku-detail-label">日程</div>
+                        <div className="ondoku-detail-value">4月3日（金）から <span className="ondoku-detail-badge">10週間</span></div>
+                      </div>
+                      <div className="ondoku-detail-row">
+                        <div className="ondoku-detail-label">募集期間</div>
+                        <div className="ondoku-detail-value">〜 2026年4月1日（水）</div>
+                      </div>
+                      <div className="ondoku-detail-row">
+                        <div className="ondoku-detail-label">テキスト</div>
+                        <div className="ondoku-detail-value">ミリネ独自テキスト（PDF）※事前にメールでお送りします</div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* PRICE */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">PRICE</div>
+                    <div className="ondoku-price-section">
+                      <div className="ondoku-price-header">授業料（税込）</div>
+                      <div className="ondoku-price-grid">
+                        <div className="ondoku-price-col">
+                          <div className="ondoku-price-lv">初中級</div>
+                          <div className="ondoku-price-amount">23,980<span>円</span></div>
+                          <div className="ondoku-price-per">10回 ／ 1回あたり 2,180円</div>
+                          <div className="ondoku-trial-badge">体験 1,800円</div>
+                        </div>
+                        <div className="ondoku-price-col">
+                          <div className="ondoku-price-lv">中〜上級</div>
+                          <div className="ondoku-price-amount">29,920<span>円</span></div>
+                          <div className="ondoku-price-per">10回 ／ 1回あたり 2,720円</div>
+                          <div className="ondoku-trial-badge">体験 2,300円</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ondoku-price-actions">
+                      <button
+                        type="button"
+                        onClick={() => { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); }}
+                        className="ondoku-btn-primary"
+                      >
+                        体験申込 →
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); }}
+                        className="ondoku-btn-secondary"
+                      >
+                        講座申込
+                      </button>
+                    </div>
+                  </section>
+
+                  {/* Trial modal (体験申込/講座申込) */}
+                  {showTrialModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" aria-modal="true" role="dialog">
+                      <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-lg w-full max-h-[90vh] overflow-auto">
+                        <div className="flex border-b border-gray-200">
+                          <button type="button" onClick={() => setTrialActiveTab("trial")} className={`flex-1 px-6 py-4 font-medium ${trialActiveTab === "trial" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700"}`}>体験申込</button>
+                          <button type="button" onClick={() => setTrialActiveTab("course")} className={`flex-1 px-6 py-4 font-medium border-l border-gray-200 ${trialActiveTab === "course" ? "bg-[#1e3a5f] text-white" : "bg-gray-100 text-gray-700"}`}>講座申込</button>
+                          <button type="button" onClick={() => setShowTrialModal(false)} className="p-4 text-gray-500 hover:text-gray-700" aria-label="閉じる">×</button>
+                        </div>
+                        <div className="p-6">
+                          {trialError && (
+                            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                              {trialError}
+                              <button type="button" onClick={() => setTrialError(null)} className="ml-2 underline">閉じる</button>
+                            </div>
+                          )}
+                          {trialSuccess ? (
+                            <div className="text-center py-8">
+                              <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
+                              <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
+                            </div>
+                          ) : (
+                            <form onSubmit={handleTrialSubmit} className="space-y-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">お名前(*必須)</label>
+                                <input type="text" value={trialForm.name} onChange={(e) => setTrialForm((f) => ({ ...f, name: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="お名前" required />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">ふりがな(*必須)</label>
+                                <input type="text" value={trialForm.furigana} onChange={(e) => setTrialForm((f) => ({ ...f, furigana: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="ふりがな" required />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">韓国語レベル</label>
+                                <select value={trialForm.koreanLevel} onChange={(e) => setTrialForm((f) => ({ ...f, koreanLevel: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2">
+                                  {KOREAN_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス(*必須)</label>
+                                <p className="text-xs text-gray-500 mb-1">☆携帯メールの場合は返信のため、パソコン受信設定のチェックをお願いします。</p>
+                                <input type="email" value={trialForm.email} onChange={(e) => setTrialForm((f) => ({ ...f, email: e.target.value }))} className="w-full border border-gray-300 rounded px-3 py-2" placeholder="メールアドレスを入力" required />
+                              </div>
+                              <button type="submit" disabled={trialSubmitting} className="w-full py-3 bg-[#1a4d2e] text-white rounded-lg hover:bg-[#2d6a4a] disabled:opacity-50 font-medium">
+                                {trialSubmitting ? "送信中..." : "送信"}
+                              </button>
+                            </form>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
