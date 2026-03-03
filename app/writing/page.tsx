@@ -696,7 +696,7 @@ export default function WritingPage() {
       )}
 
       {!embedded && (
-        <header className="bg-[#1a4d2e] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
+        <header className="bg-[#146382] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
           <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
             <button
               type="button"
@@ -708,7 +708,9 @@ export default function WritingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">ミリネ韓国語教室 作文講座</h1>
+            <h1 className="text-2xl md:text-[2.3rem] font-bold tracking-[0.15em] text-center font-['Noto_Serif_JP']">
+              ミリネ韓国語教室 作文講座
+            </h1>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {user && !isAdmin && (
                 <button
@@ -902,8 +904,8 @@ export default function WritingPage() {
                     <div className="p-6 space-y-6 md:space-y-8">
                       {/* FEATURES */}
                       <section aria-labelledby="features-heading" className="space-y-3">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#3D6B5A] uppercase">
-                          <span className="h-[2px] w-4 rounded-full bg-[#3D6B5A]" />
+                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
+                          <span className="h-[2px] w-4 rounded-full bg-[#146382]" />
                           <span id="features-heading">FEATURES</span>
                         </div>
                         <div className="space-y-3">
@@ -976,8 +978,8 @@ export default function WritingPage() {
 
                       {/* DETAILS */}
                       <section aria-labelledby="details-heading" className="space-y-3">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#3D6B5A] uppercase">
-                          <span className="h-[2px] w-4 rounded-full bg-[#3D6B5A]" />
+                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
+                          <span className="h-[2px] w-4 rounded-full bg-[#146382]" />
                           <span id="details-heading">DETAILS</span>
                         </div>
                         <div className="space-y-2">
@@ -1080,8 +1082,8 @@ export default function WritingPage() {
                       </section>
                       {/* SAMPLE / 体験例 */}
                       <section aria-labelledby="sample-heading" className="pt-4 border-t border-[#e5dfd4] space-y-4">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#3D6B5A] uppercase">
-                          <span className="h-[2px] w-4 rounded-full bg-[#3D6B5A]" />
+                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
+                          <span className="h-[2px] w-4 rounded-full bg-[#146382]" />
                           <span id="sample-heading">SAMPLE</span>
                         </div>
                         <div className="space-y-4">
