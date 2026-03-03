@@ -809,11 +809,11 @@ export default function OndokuPage() {
                   <section className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#2A7F74] via-[#1D6B61] to-[#0E4A42] px-6 py-8 md:px-10 md:py-10 text-white">
                     {/* 배경 텍스트 */}
                     <div className="pointer-events-none absolute inset-0">
-                      <div className="absolute left-4 top-0 md:left-6 md:top-4 text-[64px] md:text-[96px] font-bold tracking-[0.18em] text-white/5 select-none">
+                      <div className="absolute right-4 top-0 md:right-6 md:top-4 text-[64px] md:text-[96px] font-bold tracking-[0.18em] text-white/5 select-none">
                         미리내
                       </div>
                       <div className="absolute right-4 bottom-2 md:right-6 md:bottom-4 text-[56px] md:text-[90px] font-bold tracking-[0.18em] text-white/4 select-none">
-                        音読トレーニング
+                        音読
                       </div>
                     </div>
                     <div
