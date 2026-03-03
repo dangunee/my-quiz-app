@@ -809,11 +809,11 @@ export default function OndokuPage() {
                   <section className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#2A7F74] via-[#1D6B61] to-[#0E4A42] px-6 py-8 md:px-10 md:py-10 text-white">
                     {/* 배경 텍스트 */}
                     <div className="pointer-events-none absolute inset-0">
-                      <div className="absolute -left-6 -top-10 text-[90px] md:text-[120px] font-bold tracking-[0.18em] text-white/5 select-none">
+                      <div className="absolute left-4 top-0 md:left-6 md:top-4 text-[64px] md:text-[96px] font-bold tracking-[0.18em] text-white/5 select-none">
                         미리내
                       </div>
-                      <div className="absolute -right-8 -bottom-10 text-[70px] md:text-[110px] font-bold tracking-[0.18em] text-white/4 select-none">
-                        音読講座
+                      <div className="absolute right-4 bottom-2 md:right-6 md:bottom-4 text-[56px] md:text-[90px] font-bold tracking-[0.18em] text-white/4 select-none">
+                        音読トレーニング
                       </div>
                     </div>
                     <div
@@ -843,19 +843,28 @@ export default function OndokuPage() {
                       <div className="mt-5 flex items-center gap-3">
                         <div className="flex items-end gap-[3px]">
                           {[
-                            10, 14, 18, 24, 30, 38, 46, 54, 60, 66,
-                            66, 60, 54, 46, 38, 30, 24, 18, 14, 10,
-                          ].map((h, i) => (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <div
-                              key={i}
-                              className="wave-bar w-1 rounded-full bg-[#7FFFD4] animate-[wave_1.4s_ease-in-out_infinite]"
-                              style={{
-                                height: `${h}px`,
-                                animationDelay: `${(i % 5) * 0.08}s`,
-                              }}
-                            />
-                          ))}
+                            10, 16, 22, 30, 38, 48, 60, 72, 82, 90,
+                            90, 82, 72, 60, 48, 38, 30, 22, 16, 10,
+                          ].map((h, i, arr) => {
+                            const center = (arr.length - 1) / 2;
+                            const distance = Math.abs(i - center);
+                            const opacity = 0.35 + (1 - distance / center) * 0.55; // 가운데 진하게, 양끝 옅게
+                            const delay = distance * 0.06; // 가운데에서 바깥으로 퍼지는 느낌
+
+                            return (
+                              // eslint-disable-next-line react/no-array-index-key
+                              <div
+                                key={i}
+                                className="wave-bar w-[3px] md:w-1 rounded-full animate-[wave_1.4s_ease-in-out_infinite]"
+                                style={{
+                                  height: `${h}px`,
+                                  backgroundColor: "#7FFFD4",
+                                  opacity,
+                                  animationDelay: `${delay}s`,
+                                }}
+                              />
+                            );
+                          })}
                         </div>
                         <span className="text-[11px] text-white/60 tracking-[0.12em]">
                           발음 교정 중…
