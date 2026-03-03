@@ -915,7 +915,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* ABOUT (音読とは？) — デザインHTMLどおり */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">ABOUT</div>
                     <div className="ondoku-intro">
                       <h3>
@@ -938,7 +938,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* FEATURES — デザインHTMLどおり */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">FEATURES</div>
                     <div className="ondoku-features">
                       <div className="ondoku-feat-card">
@@ -965,7 +965,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* HOW TO PRACTICE */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">HOW TO PRACTICE</div>
                     <div className="rounded-2xl border border-[#E0D8CC]/70 bg-white/90 shadow-sm px-5 py-6 md:px-8 md:py-8">
                     <div className="ondoku-steps">
@@ -1005,7 +1005,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* WEEKLY FLOW */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">WEEKLY FLOW</div>
                     <div className="rounded-2xl border border-[#E0D8CC]/70 bg-white/90 shadow-sm p-5 md:p-8">
                     <div className="ondoku-flow-cards">
@@ -1034,7 +1034,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* CURRICULUM */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">CURRICULUM</div>
                     <div className="rounded-2xl border border-[#E0D8CC]/70 bg-[#f6faf9] shadow-sm p-5 md:p-8">
                     <div className="ondoku-curr-tabs">
@@ -1099,7 +1099,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* DETAILS */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">DETAILS</div>
                     <div className="ondoku-detail-list">
                       <div className="ondoku-detail-row">
@@ -1122,7 +1122,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* PRICE */}
-                  <section className="mb-10">
+                  <section className="ondoku-section">
                     <div className="ondoku-sec-label">PRICE</div>
                     <div className="ondoku-price-section">
                       <div className="ondoku-price-header">授業料（税込）</div>
