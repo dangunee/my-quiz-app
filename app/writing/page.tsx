@@ -750,15 +750,16 @@ export default function WritingPage() {
               </div>
             )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
-              <nav className="px-4 md:px-6 py-2">
-                <div
-                  className={
-                    embedded
-                      ? "flex w-full items-center gap-2"
-                      : "flex w-full items-center gap-2 mx-auto md:w-4/5 max-w-5xl md:max-w-6xl"
-                  }
-                >
-                  <div className="flex flex-1 overflow-x-auto">
+              <div
+                className={
+                  embedded
+                    ? "w-full"
+                    : "w-full md:w-4/5 mx-auto max-w-5xl md:max-w-6xl"
+                }
+              >
+                <nav className="px-4 md:px-6 py-2">
+                  <div className="flex w-full items-center gap-2">
+                    <div className="flex flex-1 overflow-x-auto">
                     {TABS.map((tab) => (
                       <button
                         key={tab.id}
@@ -772,25 +773,26 @@ export default function WritingPage() {
                         {tab.label}
                       </button>
                     ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setDesktopSidebarOpen((v) => !v)}
-                    className="hidden md:inline-flex items-center gap-1 rounded-lg border border-[#e5dfd4] bg-[#f5f0e6] px-3 py-2 text-xs font-medium text-gray-700 hover:bg-[#ebe5d8]"
-                    aria-label="メニューを開く"
-                  >
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setDesktopSidebarOpen((v) => !v)}
+                      className="hidden md:inline-flex items-center gap-1 rounded-lg border border-[#e5dfd4] bg-[#f5f0e6] px-3 py-2 text-xs font-medium text-gray-700 hover:bg-[#ebe5d8]"
+                      aria-label="メニューを開く"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <span>メニュー</span>
-                  </button>
-                </div>
-              </nav>
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                      <span>メニュー</span>
+                    </button>
+                  </div>
+                </nav>
+              </div>
             </div>
 
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
