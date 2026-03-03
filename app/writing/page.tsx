@@ -884,204 +884,96 @@ export default function WritingPage() {
                     </div>
                   </section>
 
-                  {/* MAIN CONTENT CARD */}
-                  <div className="overflow-hidden rounded-2xl border border-[#E2D9CC] bg-white shadow-sm">
-                    <div
-                      id="experience-details"
-                      className="border-b border-[#E2D9CC] bg-[#F5F0E8] px-6 py-4"
-                    >
-                      <h3 className="text-base md:text-lg font-bold text-[#2C2C2E]">
-                        メールで作文トレーニング
-                      </h3>
-                      <p className="mt-1 text-xs md:text-sm text-[#8E8E93]">
-                        このページでは、コースの特徴・詳細・体験例・授業料・生徒の声をご紹介します。
-                      </p>
-                    </div>
-                    <div className="p-6 space-y-6 md:space-y-8">
-                      {/* FEATURES */}
-                      <section aria-labelledby="features-heading" className="space-y-3">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
-                          <span className="h-[2px] w-4 rounded-full bg-[#146382]" />
-                          <span id="features-heading">FEATURES</span>
+                  {/* MAIN CONTENT CARD — ABOUT から design HTML 準拠 */}
+                  <div id="experience-details" className="rounded-2xl border border-[#E0D8CC] bg-[#FAF8F3] p-6 md:p-8 shadow-sm">
+                    {/* ABOUT */}
+                    <section className="sakubun-section">
+                      <div className="sakubun-sec-label">ABOUT</div>
+                      <div className="sakubun-intro">
+                        <h3>
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: "var(--teal)" }}>
+                            <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                          </svg>
+                          メールで作文トレーニング
+                        </h3>
+                        <p>このページでは、コースの特徴・詳細・体験例・授業料・生徒の声をご紹介します。</p>
+                        <p style={{ marginTop: 10 }}>書くたびに、<strong style={{ color: "var(--teal-mid)" }}>韓国語が自分のものになる</strong>。300〜500字の作文に添削＋ネイティブ比較文＋模範文まで届く、週1回ペースの講座です。</p>
+                        <div className="sakubun-highlight-box">
+                          ≪ 毎週テーマで作文にチャレンジ ＋ 添削で表現力アップ ≫<br />
+                          体験申込・講座詳細は下記からどうぞ。
                         </div>
-                        <div className="space-y-3">
-                          {[
-                            {
-                              num: "1",
-                              accent: "自然な韓国語に直して",
-                              rest: "もらえます",
-                              bar: "from-[#3D6B5A] to-[#6A9080]",
-                              badge: "bg-[#E6F0EC] text-[#3D6B5A]",
-                            },
-                            {
-                              num: "2",
-                              accent: "表現力が着実にアップ",
-                              rest: "します",
-                              bar: "from-[#B8963E] to-[#F2C86A]",
-                              badge: "bg-[#FBF4E3] text-[#B8963E]",
-                            },
-                            {
-                              num: "3",
-                              accent: "厳選された文型を必ず使用",
-                              rest: "するよう出題。文法が体に染み込みます",
-                              bar: "from-[#B85040] to-[#E58A73]",
-                              badge: "bg-[#FAEAE6] text-[#B85040]",
-                            },
-                            {
-                              num: "4",
-                              accent: "3点セットで届く",
-                              rest: "から、読解力も同時に向上します",
-                              bar: "from-[#6A7AAA] to-[#A3B0E8]",
-                              badge: "bg-[#EEF0FA] text-[#5A6AAA]",
-                            },
-                          ].map((item, idx) => (
-                            <div
-                              key={item.num}
-                              className="relative flex items-start gap-4 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-5 py-4 shadow-sm"
-                            >
-                              <div
-                                className={`absolute inset-y-0 left-0 w-1 bg-gradient-to-b ${item.bar}`}
-                              />
-                              <div className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-[13px] font-semibold font-['Noto_Serif_JP'] bg-white shadow-sm">
-                                <span
-                                  className={`inline-flex h-full w-full items-center justify-center rounded-full border text-[13px] font-semibold font-['Noto_Serif_JP'] ${
-                                    idx === 0
-                                      ? "bg-[#E6F0EC] text-[#3D6B5A] border-[#D0E0D8]"
-                                      : idx === 1
-                                      ? "bg-[#FBF4E3] text-[#B8963E] border-[#EAD9B4]"
-                                      : idx === 2
-                                      ? "bg-[#FAEAE6] text-[#B85040] border-[#F0C2B4]"
-                                      : "bg-[#EEF0FA] text-[#5A6AAA] border-[#D6DAF1]"
-                                  }`}
-                                >
-                                  {item.num}
-                                </span>
-                              </div>
-                              <p className="relative z-10 mt-1 text-[13px] md:text-[14px] leading-relaxed text-[#1F2933] font-medium">
-                                {idx === 0 && "自分の書いた文章を"}
-                                {idx === 1 && "毎週違うテーマで作文にチャレンジ。"}
-                                {idx === 2 && "課題は"}
-                                {idx === 3 && "添削 ＋ ネイティブ比較文 ＋ 模範文の"}
-                                <span className="font-semibold text-[#2E5244]">
-                                  {item.accent}
-                                </span>
-                                {item.rest}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
+                      </div>
+                    </section>
 
-                      {/* DETAILS */}
-                      <section aria-labelledby="details-heading" className="space-y-3">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
-                          <span className="h-[2px] w-4 rounded-full bg-[#146382]" />
-                          <span id="details-heading">DETAILS</span>
+                    {/* FEATURES */}
+                    <section aria-labelledby="features-heading" className="sakubun-section">
+                      <div className="sakubun-sec-label" id="features-heading">FEATURES</div>
+                      <div className="sakubun-features">
+                        <div className="sakubun-feat-card">
+                          <div className="sakubun-feat-icon">✏️</div>
+                          <div className="sakubun-feat-text">自分の書いた文章を<strong>自然な韓国語に直して</strong>もらえます</div>
                         </div>
-                        <div className="space-y-2">
-                          {/* 特徴 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              特徴
-                            </div>
-                            <div className="text-[#1F2933] leading-relaxed font-medium">
-                              毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。
-                            </div>
-                          </div>
-                          {/* 対象 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              対象
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2 text-[#1F2933] font-medium">
-                              <span>初・中・上級</span>
-                              <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[11px] font-semibold text-[#3D6B5A]">
-                                レベル区別なし
-                              </span>
-                            </div>
-                          </div>
-                          {/* 目標 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              目標
-                            </div>
-                            <div className="text-[#1F2933] leading-relaxed font-medium">
-                              語彙・文型を増やし、自然な韓国語の表現を身につける
-                            </div>
-                          </div>
-                          {/* 授業の流れ */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              授業の流れ
-                            </div>
-                            <div className="space-y-1">
-                              <div className="flex flex-wrap items-center gap-2 text-[12px] md:text-[13px] font-medium text-[#1F2933]">
-                                <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[12px] font-medium text-[#3D6B5A]">
-                                  📬 金曜 テーマ送付
-                                </span>
-                                <span className="text-[#8E8E93] text-[11px]">→</span>
-                                <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[12px] font-medium text-[#3D6B5A]">
-                                  ✏️ 月曜夜9時までに提出
-                                </span>
-                                <span className="text-[#8E8E93] text-[11px]">→</span>
-                                <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[12px] font-medium text-[#3D6B5A]">
-                                  📝 添削返送
-                                </span>
-                              </div>
-                              <p className="mt-1 text-[11px] text-[#4B5563]">
-                                送付先：
-                                <a
-                                  href="mailto:sakubun@kaonnuri.com"
-                                  className="text-[#3D6B5A] font-medium hover:underline"
-                                >
-                                  sakubun@kaonnuri.com
-                                </a>
-                              </p>
-                            </div>
-                          </div>
-                          {/* 日程 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              日程
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2 text-[#1F2933] font-medium">
-                              <span>4月4日（金）から</span>
-                              <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[11px] font-semibold text-[#3D6B5A]">
-                                10週間
-                              </span>
-                            </div>
-                          </div>
-                          {/* 教室 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              教室
-                            </div>
-                            <div className="text-[#1F2933] font-medium">オンライン（メール）</div>
-                          </div>
-                          {/* 募集期間 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              募集期間
-                            </div>
-                            <div className="text-[#1F2933] font-medium">〜 2026年4月3日（木）</div>
-                          </div>
-                          {/* テキスト */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
-                            <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
-                              テキスト
-                            </div>
-                            <div className="text-[#1F2933] font-medium">
-                              ミリネ独自テキスト（PDF）※事前にメールでお送りします
-                            </div>
+                        <div className="sakubun-feat-card">
+                          <div className="sakubun-feat-icon">📖</div>
+                          <div className="sakubun-feat-text">毎週違うテーマで作文にチャレンジ。<strong>表現力が着実にアップ</strong>します</div>
+                        </div>
+                        <div className="sakubun-feat-card">
+                          <div className="sakubun-feat-icon">📝</div>
+                          <div className="sakubun-feat-text">課題は<strong>厳選された文型を必ず使用</strong>するよう出題。文法が体に染み込みます</div>
+                        </div>
+                        <div className="sakubun-feat-card">
+                          <div className="sakubun-feat-icon">📚</div>
+                          <div className="sakubun-feat-text"><strong>添削 ＋ ネイティブ比較文 ＋ 模範文</strong>の3点セットで届くから、読解力も同時に向上します</div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* DETAILS */}
+                    <section aria-labelledby="details-heading" className="sakubun-section">
+                      <div className="sakubun-sec-label" id="details-heading">DETAILS</div>
+                      <div className="sakubun-detail-list">
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">特徴</div>
+                          <div className="sakubun-detail-value">毎週テーマで作文にチャレンジ。ネイティブ添削＋模範文で表現力UP。TOPIK対策にも最適。</div>
+                        </div>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">対象</div>
+                          <div className="sakubun-detail-value">初・中・上級 <span className="sakubun-detail-badge">レベル区別なし</span></div>
+                        </div>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">目標</div>
+                          <div className="sakubun-detail-value">語彙・文型を増やし、自然な韓国語の表現を身につける</div>
+                        </div>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">授業の流れ</div>
+                          <div className="sakubun-detail-value">
+                            📬 金曜 テーマ送付 → ✏️ 月曜夜9時までに提出 → 📝 添削返送<br />
+                            <span className="text-[#555] text-xs mt-1">送付先：<a href="mailto:sakubun@kaonnuri.com" className="text-[var(--teal)] font-medium hover:underline">sakubun@kaonnuri.com</a></span>
                           </div>
                         </div>
-                      </section>
-                      {/* SAMPLE / 体験例 */}
-                      <section aria-labelledby="sample-heading" className="pt-4 border-t border-[#e5dfd4] space-y-4">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] text-[#146382] uppercase">
-                          <span className="h-[2px] w-4 rounded-full bg-[#146382]" />
-                          <span id="sample-heading">SAMPLE</span>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">日程</div>
+                          <div className="sakubun-detail-value">4月4日（金）から <span className="sakubun-detail-badge">10週間</span></div>
                         </div>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">教室</div>
+                          <div className="sakubun-detail-value">オンライン（メール）</div>
+                        </div>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">募集期間</div>
+                          <div className="sakubun-detail-value">〜 2026年4月3日（木）</div>
+                        </div>
+                        <div className="sakubun-detail-row">
+                          <div className="sakubun-detail-label">テキスト</div>
+                          <div className="sakubun-detail-value">ミリネ独自テキスト（PDF）※事前にメールでお送りします</div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <div className="space-y-6 md:space-y-8">
+                      {/* SAMPLE / 体験例 — 中上級 画像はそのまま */}
+                      <section aria-labelledby="sample-heading" className="sakubun-section">
+                        <div className="sakubun-sec-label" id="sample-heading">SAMPLE</div>
                         <div className="space-y-4">
                           {/* THEME EXAMPLE 1 */}
                           <div className="overflow-hidden rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3]">
