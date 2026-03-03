@@ -819,10 +819,10 @@ export default function OndokuPage() {
                   <section className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#2A7F74] via-[#1D6B61] to-[#0E4A42] px-6 py-8 md:px-10 md:py-10 text-white">
                     {/* 배경 텍스트 — 작문 페이지처럼 큰 사이즈 */}
                     <div className="pointer-events-none absolute inset-0">
-                      <div className="absolute right-6 top-0 md:right-10 md:top-2 text-[120px] md:text-[180px] font-bold tracking-tight text-white/5 select-none font-['Noto_Sans_KR',sans-serif]">
+                      <div className="absolute right-0 top-0 text-[120px] md:text-[180px] font-bold tracking-tight text-white/5 select-none font-['Noto_Sans_KR',sans-serif] leading-none" style={{ paddingRight: 'clamp(8px, 1.5vw, 16px)', paddingTop: 'clamp(4px, 0.5vw, 8px)' }}>
                         미리내
                       </div>
-                      <div className="absolute right-4 bottom-2 md:right-6 md:bottom-4 text-[100px] md:text-[140px] font-bold tracking-[0.18em] text-white/5 select-none font-['Noto_Serif_JP',serif]">
+                      <div className="absolute right-0 bottom-0 text-[100px] md:text-[140px] font-bold tracking-tight text-white/5 select-none font-['Noto_Serif_JP',serif] leading-none" style={{ paddingRight: 'clamp(8px, 1.5vw, 16px)', paddingBottom: 'clamp(4px, 0.5vw, 8px)' }}>
                         音読
                       </div>
                     </div>
