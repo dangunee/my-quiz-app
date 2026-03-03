@@ -805,10 +805,94 @@ export default function OndokuPage() {
             <div className="flex-1 overflow-auto px-0 py-4 pb-24 md:px-6 md:py-6 md:pb-6">
               {activeTab === "experience" && (
                 <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
+                  {/* 새 히어로 섹션 */}
+                  <section className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#2A7F74] via-[#1D6B61] to-[#0E4A42] px-6 py-8 md:px-10 md:py-10 text-white">
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-10 mix-blend-soft-light"
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px)",
+                        backgroundSize: "32px 32px",
+                      }}
+                    />
+                    <div className="relative z-10 max-w-2xl">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[11px] font-semibold tracking-[0.18em]">
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-[#7FFFD4]" />
+                        <span>オンライン完結・メール添削</span>
+                      </div>
+                      <h2 className="mt-4 text-2xl md:text-4xl font-bold leading-snug tracking-[0.03em] font-['Noto_Serif_JP',ui-serif]">
+                        声に出すことで、
+                        <br />
+                        韓国語は
+                        <span className="text-[#7FFFD4]"> もっと動き出す</span>。
+                      </h2>
+                      <p className="mt-4 max-w-xl text-sm md:text-base text-white/80 leading-relaxed">
+                        音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！
+                        <br className="hidden sm:block" />
+                        週1回・10週間で、話せる韓国語を手に入れる。
+                      </p>
+                      <div className="mt-5 flex items-center gap-3">
+                        <div className="flex items-end gap-[3px]">
+                          {Array.from({ length: 20 }).map((_, i) => (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <div
+                              key={i}
+                              className="w-1 rounded-full bg-white/70 animate-[wave_1.4s_ease-in-out_infinite]"
+                              style={{
+                                height: `${8 + (i % 7) * 6}px`,
+                                animationDelay: `${(i % 5) * 0.08}s`,
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[11px] text-white/60 tracking-[0.12em]">
+                          발음 교정 중…
+                        </span>
+                      </div>
+                      <div className="mt-6 flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setShowTrialModal(true)}
+                          className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#1D6B61] shadow-lg shadow-black/20 hover:-translate-y-0.5 hover:shadow-2xl transition"
+                        >
+                          体験申込（1,800円〜） →
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("writing")}
+                          className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-medium text-white hover:bg-white/20 transition"
+                        >
+                          講座詳細を見る
+                        </button>
+                      </div>
+                      <div className="mt-6 flex flex-wrap gap-3 text-xs">
+                        <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-2">
+                          <div className="mb-1 text-[10px] font-semibold text-white/70">初中級</div>
+                          <div className="text-lg font-semibold tracking-wide">
+                            23,980
+                            <span className="text-[11px] font-normal">円 / 10回</span>
+                          </div>
+                          <div className="mt-1 text-[10px] text-[#7FFFD4]">体験 1,800円</div>
+                        </div>
+                        <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-2">
+                          <div className="mb-1 text-[10px] font-semibold text-white/70">中〜上級</div>
+                          <div className="text-lg font-semibold tracking-wide">
+                            29,920
+                            <span className="text-[11px] font-normal">円 / 10回</span>
+                          </div>
+                          <div className="mt-1 text-[10px] text-[#7FFFD4]">体験 2,300円</div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* 기존 카드 (특徴/詳細 등)는 그대로 유지 */}
                   <div className="bg-white rounded-lg border-t-4 border-t-[#1e3a5f] border border-gray-200 shadow-md overflow-hidden">
                     <div className="bg-[#1a4d2e] px-6 py-5">
                       <h2 className="text-lg md:text-xl font-bold text-white">オンラインで音読トレーニング</h2>
-                      <p className="text-white/95 text-sm mt-1">音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！会話力アップを図ります</p>
+                      <p className="text-white/95 text-sm mt-1">
+                        音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！会話力アップを図ります
+                      </p>
                     </div>
                     <div className="p-6 space-y-0">
                       <div className="overflow-hidden">

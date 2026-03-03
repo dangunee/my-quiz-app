@@ -711,7 +711,7 @@ export default function WritingPage() {
             <div className="flex items-center justify-center">
               <span className="sr-only">ミリネ韓国語教室 作文講座</span>
               <img
-                src="/writing-title-lockup.png"
+                src="/writing-title-lockup-v2.png"
                 alt=""
                 className="h-10 md:h-12 object-contain"
               />
