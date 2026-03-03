@@ -925,12 +925,7 @@ body {
 
 /* Writing hero (landing) */
 .hero {
-  background: linear-gradient(
-    140deg,
-    var(--sage) 0%,
-    var(--sage-mid) 60%,
-    #1c3328 100%
-  );
+  background: #fc9803;
   padding: 56px 24px 72px;
   position: relative;
   overflow: hidden;
@@ -944,7 +939,21 @@ body {
   font-family: "Noto Sans KR", sans-serif;
   font-size: 180px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.hero::after {
+  content: "글쓰기";
+  position: absolute;
+  right: 20px;
+  bottom: 40px;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 140px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.1);
   pointer-events: none;
   user-select: none;
   line-height: 1;
