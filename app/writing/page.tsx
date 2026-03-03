@@ -697,7 +697,7 @@ export default function WritingPage() {
 
       {!embedded && (
         <header className="bg-[#146382] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
-          <div className="w-full max-w-5xl md:max-w-6xl mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
+          <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
