@@ -735,7 +735,7 @@ export default function OndokuPage() {
       )}
 
       {!embedded && (
-        <header className="bg-[#146382] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
+        <header className="bg-[#1D6B61] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
           <div className="w-full md:w-4/5 max-w-5xl md:max-w-6xl mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem] relative">
             <button
               type="button"
@@ -967,6 +967,7 @@ export default function OndokuPage() {
                   {/* HOW TO PRACTICE */}
                   <section className="mb-10">
                     <div className="ondoku-sec-label">HOW TO PRACTICE</div>
+                    <div className="rounded-2xl border border-[#E0D8CC]/70 bg-white/90 shadow-sm px-5 py-6 md:px-8 md:py-8">
                     <div className="ondoku-steps">
                       <div className="ondoku-step">
                         <div className="ondoku-step-num">1</div>
@@ -1000,11 +1001,13 @@ export default function OndokuPage() {
                         </div>
                       </div>
                     </div>
+                    </div>
                   </section>
 
                   {/* WEEKLY FLOW */}
                   <section className="mb-10">
                     <div className="ondoku-sec-label">WEEKLY FLOW</div>
+                    <div className="rounded-2xl border border-[#E0D8CC]/70 bg-white/90 shadow-sm p-5 md:p-8">
                     <div className="ondoku-flow-cards">
                       <div className="ondoku-flow-card">
                         <div className="ondoku-flow-day">📬 月曜日</div>
@@ -1027,11 +1030,13 @@ export default function OndokuPage() {
                         <p>先生の解説文と模範発音録音ファイルをメール送信</p>
                       </div>
                     </div>
+                    </div>
                   </section>
 
                   {/* CURRICULUM */}
                   <section className="mb-10">
                     <div className="ondoku-sec-label">CURRICULUM</div>
+                    <div className="rounded-2xl border border-[#E0D8CC]/70 bg-[#f6faf9] shadow-sm p-5 md:p-8">
                     <div className="ondoku-curr-tabs">
                       <button type="button" onClick={() => setLevelDetailTab("chujokyu")} className={`ondoku-curr-tab ${levelDetailTab === "chujokyu" ? "active" : ""}`}>初中級</button>
                       <button type="button" onClick={() => setLevelDetailTab("chuujokyu")} className={`ondoku-curr-tab ${levelDetailTab === "chuujokyu" ? "active" : ""}`}>中〜上級</button>
@@ -1089,6 +1094,7 @@ export default function OndokuPage() {
                           <img src="/ondoku-chuujokyu.png" alt="中級～上級 音読トレーニングの詳細" className="max-w-full h-auto" />
                         </div>
                       </div>
+                    </div>
                     </div>
                   </section>
 
