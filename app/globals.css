@@ -961,11 +961,10 @@ body {
 
 .hero-bg-mirinae {
   position: absolute;
-  left: 24px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: -10px;
+  top: -20px;
   font-family: "Noto Sans KR", sans-serif;
-  font-size: 120px;
+  font-size: 180px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.08);
   pointer-events: none;
