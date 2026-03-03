@@ -1430,7 +1430,7 @@ body {
 .ondoku-feat-card:nth-child(5) .ondoku-feat-icon { background: #F0EEF8; }
 
 .ondoku-feat-text {
-  font-size: 13.5px;
+  font-size: 15px;
   padding-top: 8px;
   line-height: 1.75;
 }
@@ -1480,13 +1480,13 @@ body {
   padding-top: 8px;
 }
 .ondoku-step-body h4 {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 6px;
   color: var(--teal-mid);
 }
 .ondoku-step-body p {
-  font-size: 13px;
+  font-size: 15px;
   color: #555;
   font-weight: 300;
   line-height: 1.75;
@@ -1496,7 +1496,7 @@ body {
   margin-top: 6px;
   background: var(--teal-pale);
   color: var(--teal);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 20px;
@@ -1520,18 +1520,18 @@ body {
   padding: 18px 20px;
 }
 .ondoku-flow-card .ondoku-flow-day {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--teal);
   margin-bottom: 6px;
 }
 .ondoku-flow-card .ondoku-flow-action {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
 }
 .ondoku-flow-card p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--gray);
   margin-top: 4px;
   font-weight: 300;
@@ -1561,6 +1561,16 @@ body {
   border-color: var(--teal);
   color: white;
 }
+.ondoku-curr-tab:not(.active):hover {
+  background: var(--teal-pale);
+  border-color: var(--teal);
+  color: var(--teal-mid);
+}
+.ondoku-curr-tab.active:hover {
+  background: var(--teal-mid);
+  border-color: var(--teal-mid);
+  color: white;
+}
 .ondoku-curr-panel {
   display: none;
 }
@@ -1583,7 +1593,7 @@ body {
 .ondoku-curr-item .ondoku-num-badge {
   background: var(--teal-pale);
   color: var(--teal);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 20px;
@@ -1591,11 +1601,11 @@ body {
   margin-top: 1px;
 }
 .ondoku-curr-item .ondoku-grammar {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 }
 .ondoku-curr-item .ondoku-meaning {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--gray);
   margin-top: 2px;
 }
@@ -1603,13 +1613,13 @@ body {
   background: #F0F8F6;
   border-radius: 8px;
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 15px;
   font-family: "Noto Sans KR", sans-serif;
   color: var(--teal-mid);
   margin-bottom: 6px;
 }
 .ondoku-curr-item .ondoku-task {
-  font-size: 12px;
+  font-size: 14px;
   color: #555;
   padding: 0 2px;
 }
@@ -1618,7 +1628,7 @@ body {
   align-items: center;
   gap: 4px;
   margin-top: 6px;
-  font-size: 11px;
+  font-size: 12px;
   color: #C05840;
   background: #FAEAE6;
   padding: 3px 10px;
@@ -1641,18 +1651,18 @@ body {
   gap: 16px;
 }
 .ondoku-detail-row .ondoku-detail-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--teal);
   padding-top: 1px;
 }
 .ondoku-detail-row .ondoku-detail-value {
-  font-size: 13.5px;
+  font-size: 15px;
 }
 .ondoku-detail-badge {
   background: var(--teal-pale);
   color: var(--teal);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 2px 10px;
   border-radius: 20px;
@@ -1741,6 +1751,9 @@ body {
   cursor: pointer;
   font-family: inherit;
 }
+.ondoku-btn-primary:hover {
+  background: var(--teal-mid);
+}
 .ondoku-btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -1752,7 +1765,12 @@ body {
   border-radius: 10px;
   font-size: 14px;
   text-decoration: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
   cursor: pointer;
   font-family: inherit;
+}
+.ondoku-btn-secondary:hover {
+  background: var(--teal-pale);
+  border-color: var(--teal);
+  color: var(--teal-mid);
 }
