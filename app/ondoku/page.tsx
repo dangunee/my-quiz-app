@@ -915,7 +915,7 @@ export default function OndokuPage() {
                   </section>
 
                   {/* ABOUT ～ PRICE をひとまとめ（연한 베이지 컨테이너） */}
-                  <div className="rounded-2xl bg-[#F5F0E6] px-4 py-6 md:px-8 md:py-8">
+                  <div className="rounded-2xl bg-[#E0F2F1] px-4 py-6 md:px-8 md:py-8">
                   {/* ABOUT (音読とは？) — デザインHTMLどおり */}
                   <section className="ondoku-section">
                     <div className="ondoku-sec-label">ABOUT</div>
