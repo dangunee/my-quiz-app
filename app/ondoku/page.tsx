@@ -817,12 +817,12 @@ export default function OndokuPage() {
                 <div className="max-w-3xl md:max-w-[52.75rem] w-full mx-auto">
                   {/* 새 히어로 섹션 */}
                   <section className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#2A7F74] via-[#1D6B61] to-[#0E4A42] px-6 py-8 md:px-10 md:py-10 text-white">
-                    {/* 배경 텍스트 */}
+                    {/* 배경 텍스트 — 작문 페이지처럼 큰 사이즈 */}
                     <div className="pointer-events-none absolute inset-0">
-                      <div className="absolute right-4 top-0 md:right-6 md:top-4 text-[64px] md:text-[96px] font-bold tracking-[0.18em] text-white/5 select-none">
+                      <div className="absolute right-4 top-0 md:right-6 md:top-4 text-[120px] md:text-[180px] font-bold tracking-[0.18em] text-white/5 select-none font-['Noto_Sans_KR',sans-serif]">
                         미리내
                       </div>
-                      <div className="absolute right-4 bottom-2 md:right-6 md:bottom-4 text-[56px] md:text-[90px] font-bold tracking-[0.18em] text-white/4 select-none">
+                      <div className="absolute right-4 bottom-2 md:right-6 md:bottom-4 text-[100px] md:text-[140px] font-bold tracking-[0.18em] text-white/5 select-none font-['Noto_Serif_JP',serif]">
                         音読
                       </div>
                     </div>
