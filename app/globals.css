@@ -1062,9 +1062,9 @@ body {
 }
 
 .hero::after {
-  content: "글쓰기";
+  content: "작문";
   position: absolute;
-  right: 24px;
+  left: 24px;
   bottom: 24px;
   font-family: "Noto Sans KR", sans-serif;
   font-size: 140px;
@@ -1073,6 +1073,7 @@ body {
   pointer-events: none;
   user-select: none;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .hero-bg-mirinae {

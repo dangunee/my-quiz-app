@@ -1460,8 +1460,8 @@ export default function WritingPage() {
                         </div>
                       </section>
                       <div className="pt-6">
-                        <div className="overflow-hidden rounded-3xl border border-[#d7e5db] bg-[#f6fbf8] shadow-sm">
-                          <div className="px-5 py-3 bg-[#1a4d2e] rounded-t-3xl">
+                        <div className="overflow-hidden rounded-3xl border border-[#b8d4dc] bg-[#f0f7f9] shadow-sm">
+                          <div className="px-5 py-3 bg-[#146382] rounded-t-3xl">
                             <h3 className="font-semibold text-white text-sm md:text-base">
                               まずは体験から!
                             </h3>
@@ -1475,21 +1475,21 @@ export default function WritingPage() {
                             ].map((row, i) => (
                               <div
                                 key={row.label}
-                                className="flex flex-row border-b border-[#e0ece3] last:border-b-0"
+                                className="flex flex-row border-b border-[#d4e4e8] last:border-b-0"
                               >
-                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#eef4f0] font-medium text-[#1a4d2e] border-r border-[#e0ece3] text-xs md:text-sm">
+                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#e2eef2] font-medium text-[#146382] border-r border-[#d4e4e8] text-xs md:text-sm">
                                   {row.label}
                                 </div>
                                 <div
                                   className={`flex-1 min-w-0 px-3 md:px-4 py-3 text-gray-800 text-xs md:text-sm font-semibold ${
-                                    i % 2 === 0 ? "bg-white" : "bg-[#f9fcfa]"
+                                    i % 2 === 0 ? "bg-white" : "bg-[#f4f9fb]"
                                   }`}
                                 >
                                   {row.content}
                                 </div>
                               </div>
                             ))}
-                            <div className="px-3 md:px-4 py-3 bg-[#1a4d2e] text-white text-xs md:text-sm font-semibold text-center">
+                            <div className="px-3 md:px-4 py-3 bg-[#146382] text-white text-xs md:text-sm font-semibold text-center">
                               1回お試し 1,800円
                             </div>
                           </div>
@@ -1515,11 +1515,11 @@ export default function WritingPage() {
                       <div id="trial-form-section" className="pt-4">
                         <div className="bg-white rounded-xl border border-[#e5dfd4] overflow-hidden">
                           <div className="flex">
-                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                            <button type="button" onClick={() => { if (trialActiveTab === "trial" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("trial"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between ${trialActiveTab === "trial" ? "bg-[#146382] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
                               <span>体験申込</span>
                               {trialActiveTab === "trial" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
-                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#1a4d2e] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
+                            <button type="button" onClick={() => { if (trialActiveTab === "course" && showTrialModal) { setShowTrialModal(false); } else { setTrialActiveTab("course"); setShowTrialModal(true); setTrialForm({ name: "", furigana: "", koreanLevel: "選択してください", email: "" }); setTrialSuccess(false); setTrialError(null); } }} className={`flex-1 px-6 py-4 font-medium flex items-center justify-between border-l border-[#e5dfd4] ${trialActiveTab === "course" ? "bg-[#146382] text-white" : "bg-[#f5f0e6] text-gray-700 hover:bg-[#ebe5d8]"}`}>
                               <span>講座申込</span>
                               {trialActiveTab === "course" && <span className="text-white/80">{showTrialModal ? "▲" : "▼"}</span>}
                             </button>
@@ -1538,7 +1538,7 @@ export default function WritingPage() {
                               )}
                               {trialSuccess ? (
                                 <div className="text-center py-8">
-                                  <p className="text-lg font-bold text-[#1a4d2e] mb-2">送信が完了しました</p>
+                                  <p className="text-lg font-bold text-[#146382] mb-2">送信が完了しました</p>
                                   <p className="text-gray-600 text-sm">mirinae@kaonnuri.com 宛に送信しました。ご確認の上、ご連絡いたします。</p>
                                 </div>
                               ) : (
@@ -1625,7 +1625,7 @@ export default function WritingPage() {
                                   <button
                                     type="submit"
                                     disabled={trialSubmitting}
-                                    className="mt-2 w-full rounded-xl bg-[#1a4d2e] py-3.5 text-sm md:text-base font-semibold text-white shadow-[0_10px_25px_rgba(12,95,54,0.35)] hover:bg-[#154024] disabled:opacity-50 transition"
+                                    className="mt-2 w-full rounded-xl bg-[#146382] py-3.5 text-sm md:text-base font-semibold text-white shadow-[0_10px_25px_rgba(20,99,130,0.35)] hover:bg-[#0f4b63] disabled:opacity-50 transition"
                                   >
                                     {trialSubmitting ? "送信中..." : "送信する →"}
                                   </button>
