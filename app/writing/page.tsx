@@ -713,7 +713,7 @@ export default function WritingPage() {
               <img
                 src="/writing-title-lockup.png"
                 alt=""
-                className="h-8 md:h-10 object-contain"
+                className="h-10 md:h-12 object-contain"
               />
             </div>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
