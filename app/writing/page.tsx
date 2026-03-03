@@ -708,12 +708,14 @@ export default function WritingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1
-              className="text-2xl md:text-[2.3rem] font-bold tracking-[0.15em] text-center"
-              style={{ fontFamily: '"Tsukushi Mincho", "Noto Serif JP", serif' }}
-            >
-              ミリネ韓国語教室 作文講座
-            </h1>
+            <div className="flex items-center justify-center">
+              <span className="sr-only">ミリネ韓国語教室 作文講座</span>
+              <img
+                src="/writing-title-lockup.png"
+                alt=""
+                className="h-8 md:h-10 object-contain"
+              />
+            </div>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {user && !isAdmin && (
                 <button
