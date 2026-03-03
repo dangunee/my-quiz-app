@@ -1061,20 +1061,6 @@ body {
   overflow: hidden;
 }
 
-.hero::before {
-  content: "작문";
-  position: absolute;
-  right: -10px;
-  top: -20px;
-  font-family: "Noto Sans KR", sans-serif;
-  font-size: 180px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.12);
-  pointer-events: none;
-  user-select: none;
-  line-height: 1;
-}
-
 .hero::after {
   content: "글쓰기";
   position: absolute;
