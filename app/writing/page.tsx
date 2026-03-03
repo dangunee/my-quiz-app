@@ -1353,7 +1353,7 @@ export default function WritingPage() {
                       </section>
                       <div className="pt-6">
                         <div className="overflow-hidden rounded-3xl border border-[#d7e5db] bg-[#f6fbf8] shadow-sm">
-                          <div className="px-5 py-3 bg-[#1a4d2e] rounded-t-3xl">
+                          <div className="px-5 py-3 bg-[#146382] rounded-t-3xl">
                             <h3 className="font-semibold text-white text-sm md:text-base">
                               まずは体験から!
                             </h3>
@@ -1369,7 +1369,7 @@ export default function WritingPage() {
                                 key={row.label}
                                 className="flex flex-row border-b border-[#e0ece3] last:border-b-0"
                               >
-                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#eef4f0] font-medium text-[#1a4d2e] border-r border-[#e0ece3] text-xs md:text-sm">
+                                <div className="w-28 md:w-40 shrink-0 px-3 md:px-4 py-3 bg-[#eef4f0] font-medium text-[#146382] border-r border-[#e0ece3] text-xs md:text-sm">
                                   {row.label}
                                 </div>
                                 <div
@@ -1381,7 +1381,7 @@ export default function WritingPage() {
                                 </div>
                               </div>
                             ))}
-                            <div className="px-3 md:px-4 py-3 bg-[#1a4d2e] text-white text-xs md:text-sm font-semibold text-center">
+                            <div className="px-3 md:px-4 py-3 bg-[#146382] text-white text-xs md:text-sm font-semibold text-center">
                               1回お試し 1,800円
                             </div>
                           </div>
