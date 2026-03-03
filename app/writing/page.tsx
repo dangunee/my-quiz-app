@@ -803,6 +803,7 @@ export default function WritingPage() {
                   {/* HERO (match static design) */}
                   <section className="hero relative rounded-2xl mb-8">
                     <div className="hero-dots" />
+                    <span className="hero-bg-mirinae" aria-hidden="true">미리내</span>
                     <div className="hero-inner">
                       <div className="hero-tag">
                         <span className="tag-dot" />

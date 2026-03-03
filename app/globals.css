@@ -959,6 +959,21 @@ body {
   line-height: 1;
 }
 
+.hero-bg-mirinae {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 120px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  z-index: 1;
+}
+
 .hero-dots {
   position: absolute;
   inset: 0;
