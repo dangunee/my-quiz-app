@@ -257,6 +257,22 @@ body {
   }
 }
 
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.45);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleY(1.05);
+    opacity: 1;
+  }
+}
+
+.wave-bar {
+  transform-origin: bottom;
+}
+
 .result-badge {
   display: inline-block;
   padding: 0.35rem 1rem;

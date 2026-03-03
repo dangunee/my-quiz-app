@@ -833,13 +833,16 @@ export default function OndokuPage() {
                       </p>
                       <div className="mt-5 flex items-center gap-3">
                         <div className="flex items-end gap-[3px]">
-                          {Array.from({ length: 20 }).map((_, i) => (
+                          {[
+                            10, 14, 18, 24, 30, 38, 46, 54, 60, 66,
+                            66, 60, 54, 46, 38, 30, 24, 18, 14, 10,
+                          ].map((h, i) => (
                             // eslint-disable-next-line react/no-array-index-key
                             <div
                               key={i}
-                              className="w-1 rounded-full bg-white/70 animate-[wave_1.4s_ease-in-out_infinite]"
+                              className="wave-bar w-1 rounded-full bg-[#7FFFD4] animate-[wave_1.4s_ease-in-out_infinite]"
                               style={{
-                                height: `${8 + (i % 7) * 6}px`,
+                                height: `${h}px`,
                                 animationDelay: `${(i % 5) * 0.08}s`,
                               }}
                             />
