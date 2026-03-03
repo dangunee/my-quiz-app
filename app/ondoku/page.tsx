@@ -967,7 +967,6 @@ export default function OndokuPage() {
                   {/* HOW TO PRACTICE */}
                   <section className="ondoku-section">
                     <div className="ondoku-sec-label">HOW TO PRACTICE</div>
-                    <div className="rounded-2xl border border-[#E0D8CC]/70 bg-white/90 shadow-sm px-5 py-6 md:px-8 md:py-8">
                     <div className="ondoku-steps">
                       <div className="ondoku-step">
                         <div className="ondoku-step-num">1</div>
@@ -1001,13 +1000,11 @@ export default function OndokuPage() {
                         </div>
                       </div>
                     </div>
-                    </div>
                   </section>
 
                   {/* WEEKLY FLOW */}
                   <section className="ondoku-section">
                     <div className="ondoku-sec-label">WEEKLY FLOW</div>
-                    <div className="rounded-2xl border border-[#E0D8CC]/70 bg-white/90 shadow-sm p-5 md:p-8">
                     <div className="ondoku-flow-cards">
                       <div className="ondoku-flow-card">
                         <div className="ondoku-flow-day">📬 月曜日</div>
@@ -1022,14 +1019,21 @@ export default function OndokuPage() {
                       <div className="ondoku-flow-card">
                         <div className="ondoku-flow-day">📤 翌週月曜 21時まで</div>
                         <div className="ondoku-flow-action">録音ファイルを提出</div>
-                        <p><a href="mailto:ondoku@kaonnuri.com" className="text-[var(--teal)] font-medium hover:underline">ondoku@kaonnuri.com</a> へ</p>
+                        <p>
+                          <a
+                            href="mailto:ondoku@kaonnuri.com"
+                            className="text-[var(--teal)] font-medium hover:underline"
+                          >
+                            ondoku@kaonnuri.com
+                          </a>{" "}
+                          へ
+                        </p>
                       </div>
                       <div className="ondoku-flow-card">
                         <div className="ondoku-flow-day">📩 金曜日</div>
                         <div className="ondoku-flow-action">添削 ＋ 模範音声が届く</div>
                         <p>先生の解説文と模範発音録音ファイルをメール送信</p>
                       </div>
-                    </div>
                     </div>
                   </section>
 
