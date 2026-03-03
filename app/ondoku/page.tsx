@@ -904,35 +904,60 @@ export default function OndokuPage() {
                     </div>
                   </section>
 
-                  {/* 기존 카드 (특徴/詳細 등)는 그대로 유지 */}
-                  <div className="bg-white rounded-lg border-t-4 border-t-[#1e3a5f] border border-gray-200 shadow-md overflow-hidden">
-                    <div className="bg-[#1a4d2e] px-6 py-5">
-                      <h2 className="text-lg md:text-xl font-bold text-white">オンラインで音読トレーニング</h2>
-                      <p className="text-white/95 text-sm mt-1">
-                        音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！会話力アップを図ります
-                      </p>
-                    </div>
-                    <div className="p-6 space-y-0">
-                      <div className="overflow-hidden">
-                        <div className="px-4 py-2.5 bg-[#1e3a5f]">
-                          <h3 className="font-semibold text-white text-sm">特徴</h3>
-                        </div>
-                        <div className="bg-white text-sm divide-y divide-gray-200">
-                          {[
-                            { label: "◎", content: "音読を通して声に出して言うのに自信が付きます" },
-                            { label: "①", content: "課題をすることで、語彙・文型・表現 パターンを覚えます" },
-                            { label: "③", content: "ネイティブ添削文と模範音声で受講生の問題点を改善します" },
-                            { label: "④", content: "音読トレーニングで話すスピードも速くなり、会話力アップを図ります" },
-                            { label: "⑤", content: "週１回ペースで１０週間レベルアップ出来ます" },
-                          ].map((row) => (
-                            <div key={row.label} className="flex gap-3 px-4 py-3 text-gray-700">
-                              <span className="text-[#1e3a5f] font-medium shrink-0">{row.label}</span>
-                              <span>{row.content}</span>
-                            </div>
-                          ))}
-                        </div>
+                  {/* ABOUT (音読とは？) — デザインHTMLどおり */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">ABOUT</div>
+                    <div className="ondoku-intro">
+                      <h3>
+                        <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" style={{ color: "var(--teal)" }}>
+                          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                          <line x1={12} y1={19} x2={12} y2={23} />
+                          <line x1={8} y1={23} x2={16} y2={23} />
+                        </svg>
+                        音読とは？
+                      </h3>
+                      <p>文字を声に出して読むこと。日々、語彙・文法・表現・発音などをインプットしているのに、会話の場面ではなかなかアウトプットできない…そんな経験はありませんか？</p>
+                      <p style={{ marginTop: 10 }}>音読は、<strong style={{ color: "var(--teal-mid)" }}>アウトプットの練習に最適</strong>。実際の会話で話せない・聞き取れないといった悩みを解消する近道です。</p>
+                      <div className="highlight-box">
+                        ≪ 語彙・文型・表現パターンを覚える ＋ 発音・抑揚を自然に身につける ≫
+                        <br />
+                        この2点を重視し、ご自宅で会話練習ができる講座を作りました。
                       </div>
-                      <div className="mt-4 px-4 py-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700 space-y-4">
+                    </div>
+                  </section>
+
+                  {/* FEATURES — デザインHTMLどおり */}
+                  <section className="mb-10">
+                    <div className="ondoku-sec-label">FEATURES</div>
+                    <div className="ondoku-features">
+                      <div className="ondoku-feat-card">
+                        <div className="ondoku-feat-icon">🗣</div>
+                        <div className="ondoku-feat-text">音読を通して<strong>声に出して言うのに自信</strong>が付きます</div>
+                      </div>
+                      <div className="ondoku-feat-card">
+                        <div className="ondoku-feat-icon">📖</div>
+                        <div className="ondoku-feat-text">課題をこなすことで<strong>語彙・文型・表現パターン</strong>を自然に覚えます</div>
+                      </div>
+                      <div className="ondoku-feat-card">
+                        <div className="ondoku-feat-icon">🎙</div>
+                        <div className="ondoku-feat-text"><strong>ネイティブ添削文と模範音声</strong>で、あなた固有の発音の問題点を改善します</div>
+                      </div>
+                      <div className="ondoku-feat-card">
+                        <div className="ondoku-feat-icon">⚡</div>
+                        <div className="ondoku-feat-text">音読トレーニングで<strong>話すスピードも速くなり</strong>、そのまま会話力アップにつながります</div>
+                      </div>
+                      <div className="ondoku-feat-card">
+                        <div className="ondoku-feat-icon">📅</div>
+                        <div className="ondoku-feat-text"><strong>週1回ペースで10週間</strong>。無理なく続けながら確実にレベルアップできます</div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* 授業について・詳細・カリキュラムは従来どおり */}
+                  <div className="bg-white rounded-lg border-t-4 border-t-[#1e3a5f] border border-gray-200 shadow-md overflow-hidden">
+                    <div className="p-6 space-y-0">
+                      <div className="px-4 py-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700 space-y-4">
                         <h3 className="font-semibold text-[#1e3a5f] text-base">授業について</h3>
                         <div>
                           <p className="font-medium text-[#1e3a5f] mb-1">★音読とは?</p>

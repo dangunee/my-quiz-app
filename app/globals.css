@@ -1315,3 +1315,134 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ══ Ondoku landing: ABOUT + FEATURES (design HTML) ══ */
+.ondoku-sec-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--teal);
+  margin-bottom: 18px;
+}
+.ondoku-sec-label::before {
+  content: "";
+  width: 18px;
+  height: 2px;
+  background: var(--teal);
+}
+
+.ondoku-intro {
+  background: white;
+  border-radius: 20px;
+  padding: 32px 36px;
+  border: 1px solid #E0D8CC;
+  position: relative;
+  overflow: hidden;
+}
+.ondoku-intro::before {
+  content: "音読";
+  position: absolute;
+  right: -8px;
+  bottom: -20px;
+  font-family: "Noto Serif JP", serif;
+  font-size: 100px;
+  font-weight: 700;
+  color: var(--teal-pale);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+.ondoku-intro h3 {
+  font-family: "Noto Serif JP", serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--teal-mid);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ondoku-intro p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.9;
+  font-weight: 300;
+  position: relative;
+  z-index: 1;
+}
+.ondoku-intro .highlight-box {
+  background: var(--teal-pale);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-top: 18px;
+  font-size: 13.5px;
+  color: var(--teal-mid);
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+
+.ondoku-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ondoku-feat-card {
+  background: white;
+  border: 1px solid #E0D8CC;
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: transform 0.18s, box-shadow 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.ondoku-feat-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.07);
+}
+.ondoku-feat-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+}
+.ondoku-feat-card:nth-child(1)::before { background: var(--teal); }
+.ondoku-feat-card:nth-child(2)::before { background: var(--gold); }
+.ondoku-feat-card:nth-child(3)::before { background: #C05840; }
+.ondoku-feat-card:nth-child(4)::before { background: #5A7080; }
+.ondoku-feat-card:nth-child(5)::before { background: #7B6AA0; }
+
+.ondoku-feat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.ondoku-feat-card:nth-child(1) .ondoku-feat-icon { background: var(--teal-pale); }
+.ondoku-feat-card:nth-child(2) .ondoku-feat-icon { background: var(--gold-pale); }
+.ondoku-feat-card:nth-child(3) .ondoku-feat-icon { background: #FAEAE6; }
+.ondoku-feat-card:nth-child(4) .ondoku-feat-icon { background: #EEF2F5; }
+.ondoku-feat-card:nth-child(5) .ondoku-feat-icon { background: #F0EEF8; }
+
+.ondoku-feat-text {
+  font-size: 13.5px;
+  padding-top: 8px;
+  line-height: 1.75;
+}
+.ondoku-feat-text strong {
+  color: var(--teal-mid);
+}
