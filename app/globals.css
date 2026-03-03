@@ -1077,7 +1077,7 @@ body {
 
 .hero-bg-mirinae {
   position: absolute;
-  left: -10px;
+  right: -10px;
   top: -20px;
   font-family: "Noto Sans KR", sans-serif;
   font-size: 180px;
