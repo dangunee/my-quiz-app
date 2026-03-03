@@ -1772,7 +1772,6 @@ export default function WritingPage() {
 
               {activeTab === "writing" && (
                 <div className="px-4 md:px-0 mx-auto max-w-3xl w-full">
-                  <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
                   <div className="mb-6 md:mb-8">
                     <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">課題例掲示板</h2>
                     <div className="bg-white rounded-xl border border-[#e5dfd4] shadow-sm overflow-hidden">
@@ -1919,7 +1918,7 @@ export default function WritingPage() {
                     </div>
                   </div>
 
-                  <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">マイページ</h2>
+                  <h2 id="mypage-section" className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6 mt-8">マイページ</h2>
 
                   {isAdmin && !user ? (
                     <div className="p-6 rounded-xl border border-[#e5dfd4] bg-[#f0fdf4] text-center">
@@ -2041,7 +2040,6 @@ export default function WritingPage() {
                       </div>
                     </div>
                   ) : null}
-                  </div>
                 </div>
               )}
 
