@@ -980,7 +980,7 @@ export default function WritingPage() {
                         </div>
                         <div className="space-y-2">
                           {/* 特徴 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               特徴
                             </div>
@@ -989,7 +989,7 @@ export default function WritingPage() {
                             </div>
                           </div>
                           {/* 対象 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               対象
                             </div>
@@ -1001,7 +1001,7 @@ export default function WritingPage() {
                             </div>
                           </div>
                           {/* 目標 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               目標
                             </div>
@@ -1010,7 +1010,7 @@ export default function WritingPage() {
                             </div>
                           </div>
                           {/* 授業の流れ */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               授業の流れ
                             </div>
@@ -1040,7 +1040,7 @@ export default function WritingPage() {
                             </div>
                           </div>
                           {/* 日程 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               日程
                             </div>
@@ -1052,21 +1052,21 @@ export default function WritingPage() {
                             </div>
                           </div>
                           {/* 教室 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               教室
                             </div>
                             <div className="text-[#1F2933] font-medium">オンライン（メール）</div>
                           </div>
                           {/* 募集期間 */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               募集期間
                             </div>
                             <div className="text-[#1F2933] font-medium">〜 2026年4月3日（木）</div>
                           </div>
                           {/* テキスト */}
-                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-white px-4 py-3 text-[13px] md:text-[14px]">
+                          <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               テキスト
                             </div>
