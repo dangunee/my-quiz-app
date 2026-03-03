@@ -697,7 +697,7 @@ export default function WritingPage() {
 
       {!embedded && (
         <header className="bg-[#146382] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
-          <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
+          <div className="w-full md:w-4/5 max-w-5xl md:max-w-6xl mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem]">
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
@@ -708,7 +708,7 @@ export default function WritingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-center">
+            <h1 className="text-3xl md:text-[2.7rem] font-bold tracking-[0.18em] text-center">
               ミリネ韓国語教室 作文講座
             </h1>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -755,7 +755,7 @@ export default function WritingPage() {
                   className={
                     embedded
                       ? "flex w-full items-center gap-2"
-                      : "flex w-full items-center gap-2 mx-auto max-w-5xl md:max-w-6xl"
+                      : "flex w-full items-center gap-2 mx-auto md:w-4/5 max-w-5xl md:max-w-6xl"
                   }
                 >
                   <div className="flex flex-1 overflow-x-auto">
@@ -765,7 +765,7 @@ export default function WritingPage() {
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex-1 min-w-0 py-3 px-2 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
                           activeTab === tab.id
-                            ? "border-[#1a4d2e] text-[#1a4d2e]"
+                            ? "border-[#146382] text-[#146382]"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
