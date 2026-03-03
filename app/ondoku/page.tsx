@@ -38,8 +38,8 @@ type TabId = "experience" | "assignment" | "writing";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "experience", label: "音読トレーニング" },
-  { id: "assignment", label: "音読課題" },
   { id: "writing", label: "課題提出" },
+  { id: "assignment", label: "音読課題" },
 ];
 
 const PERIOD_LABELS = ["1期", "2期", "3期", "4期"] as const;
@@ -735,17 +735,27 @@ export default function OndokuPage() {
       )}
 
       {!embedded && (
-        <header className="relative bg-white border-b border-gray-200 py-4 md:py-5 px-4 md:px-6 shadow-sm">
-          <div className="max-w-4xl md:max-w-[75rem] mx-auto flex items-center justify-between min-h-[2.5rem] gap-4">
-            <h1 className="text-xl md:text-2xl font-bold text-gray-800 tracking-wide">
-              オンラインで音読トレーニング
+        <header className="bg-[#146382] text-white py-4 md:py-6 px-4 md:px-6 shadow-lg relative">
+          <div className="w-full md:w-4/5 max-w-5xl md:max-w-6xl mx-auto flex items-center justify-center min-h-[2.5rem] md:min-h-[2.5rem] relative">
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="md:hidden absolute left-4 shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30"
+              aria-label="メニューを開く"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h1 className="text-3xl md:text-[2.7rem] font-bold tracking-[0.18em] text-center text-white">
+              ミリネ韓国語教室 音読講座
             </h1>
-            <div className="flex items-center gap-2">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {user && (
                 <button
                   type="button"
                   onClick={() => setMenuOpen(true)}
-                  className="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-lg transition-colors"
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-colors"
                 >
                   {user.name || user.username || user.email || "-"}様
                 </button>
@@ -761,7 +771,7 @@ export default function OndokuPage() {
               <button
                 type="button"
                 onClick={() => setMenuOpen(true)}
-                className="h-10 w-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className="h-10 w-10 flex items-center justify-center rounded-lg bg-white/20 text-white hover:bg-white/30"
                 aria-label="メニューを開く"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
