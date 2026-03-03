@@ -743,12 +743,6 @@ export default function WritingPage() {
           }
         >
           <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            {isAdmin && !user && (
-              <div className="px-4 md:px-6 py-2 bg-[#f0fdf4] border-b border-[#e5dfd4] text-sm shrink-0">
-                <span className="text-gray-600">管理者モード：</span>
-                <span className="font-medium text-gray-800">全生徒の提出を表示</span>
-              </div>
-            )}
             <div className="bg-white border-b border-[#e5dfd4] shadow-sm shrink-0">
               <div
                 className={
