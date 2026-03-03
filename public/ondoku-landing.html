@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音読トレーニング | ミリネ韓国語教室</title>
+    <!-- NOTE: このHTMLは /ondoku のランディング専用。React とは分離された静的ページです。 -->
+    <!-- 원본 디자인에서 버튼/링크는 상위 /ondoku 탭으로 이동하도록 경로만 수정 -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+KR:wght@400;700&display=swap");
+
+      :root {
+        --ink: #2c2c2e;
+        --teal: #2a7f74;
+        --teal-mid: #1d6b61;
+        --teal-pale: #e6f4f2;
+        --teal-mist: #f0f8f6;
+        --gold: #b8963e;
+        --gold-pale: #fbf4e3;
+        --rust: #c05840;
+        --cream: #faf8f3;
+        --border: #e0d8cc;
+        --gray: #8e8e93;
+        --white: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Noto Sans JP", sans-serif;
+        background: var(--cream);
+        color: var(--ink);
+        line-height: 1.7;
+      }
+
+      .site-header {
+        background: var(--teal-mid);
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+      .site-header .logo {
+        font-family: "Noto Serif JP", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+        letter-spacing: 0.04em;
+      }
+      .site-header .logo span {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-left: 8px;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 300;
+      }
+      .header-nav {
+        display: flex;
+        gap: 4px;
+      }
+      .header-nav a {
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background 0.15s;
+      }
+      .header-nav a:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+      }
+      .header-nav a.active {
+        background: rgba(255, 255, 255, 0.18);
+        color: white;
+        font-weight: 700;
+      }
+
+      .hero {
+        background: linear-gradient(140deg, var(--teal) 0%, var(--teal-mid) 55%, #0e4a42 100%);
+        padding: 64px 24px 80px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-inner {
+        max-width: 780px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 20px;
+        padding: 5px 16px;
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.88);
+        letter-spacing: 1.5px;
+        margin-bottom: 20px;
+      }
+      .hero-tag-dot {
+        width: 7px;
+        height: 7px;
+        background: #7fffd4;
+        border-radius: 999px;
+      }
+
+      .hero h1 {
+        font-family: "Noto Serif JP", serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: white;
+        line-height: 1.3;
+        letter-spacing: 0.03em;
+        margin-bottom: 16px;
+      }
+      .hero h1 em {
+        font-style: normal;
+        color: #7fffd4;
+      }
+      .hero-sub {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.72);
+        font-weight: 300;
+        max-width: 520px;
+        margin-bottom: 28px;
+        line-height: 1.8;
+      }
+
+      .waveform {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 28px;
+      }
+      .waveform .bar {
+        width: 4px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.5);
+        animation: waveDance 1.4s ease-in-out infinite;
+      }
+      .waveform-label {
+        margin-left: 12px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 1px;
+      }
+
+      @keyframes waveDance {
+        0%,
+        100% {
+          transform: scaleY(1);
+        }
+        50% {
+          transform: scaleY(0.55);
+        }
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .btn-main,
+      .btn-sub {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 10px;
+        font-size: 14px;
+        text-decoration: none;
+      }
+      .btn-main {
+        background: white;
+        color: var(--teal-mid);
+        padding: 14px 30px;
+        font-weight: 700;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+      .btn-sub {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        color: white;
+        padding: 14px 24px;
+        font-weight: 500;
+      }
+
+      .price-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+      }
+      .price-chip {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 10px 18px;
+        color: white;
+      }
+      .price-chip .level {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 3px;
+        font-weight: 500;
+      }
+      .price-chip .price {
+        font-size: 18px;
+        font-weight: 700;
+        font-family: "Noto Serif JP", serif;
+      }
+      .price-chip .price span {
+        font-size: 11px;
+        font-weight: 300;
+      }
+      .price-chip .trial {
+        font-size: 10px;
+        color: #7fffd4;
+        margin-top: 2px;
+      }
+
+      .page-body {
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 52px 24px 80px;
+        display: grid;
+        grid-template-columns: 1fr 210px;
+        gap: 40px;
+        align-items: flex-start;
+      }
+      @media (max-width: 740px) {
+        .page-body {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .sec-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--teal);
+        margin-bottom: 18px;
+      }
+      .sec-label::before {
+        content: "";
+        width: 18px;
+        height: 2px;
+        background: var(--teal);
+      }
+
+      .section {
+        margin-bottom: 48px;
+      }
+
+      .ondoku-intro {
+        background: white;
+        border-radius: 20px;
+        padding: 32px 36px;
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+      .ondoku-intro::before {
+        content: "音読";
+        position: absolute;
+        right: -8px;
+        bottom: -20px;
+        font-family: "Noto Serif JP", serif;
+        font-size: 100px;
+        font-weight: 700;
+        color: var(--teal-pale);
+        pointer-events: none;
+        user-select: none;
+        line-height: 1;
+      }
+      .ondoku-intro h3 {
+        font-family: "Noto Serif JP", serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--teal-mid);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .ondoku-intro p {
+        font-size: 14px;
+        color: #444;
+        line-height: 1.9;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
+      }
+      .ondoku-intro .highlight-box {
+        background: var(--teal-pale);
+        border-left: 3px solid var(--teal);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 18px;
+        margin-top: 18px;
+        font-size: 13.5px;
+        color: var(--teal-mid);
+        font-weight: 500;
+        position: relative;
+        z-index: 1;
+      }
+
+      .features {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .feat-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px 22px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        position: relative;
+        overflow: hidden;
+      }
+      .feat-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+      }
+      .feat-card:nth-child(1)::before {
+        background: var(--teal);
+      }
+      .feat-card:nth-child(2)::before {
+        background: var(--gold);
+      }
+      .feat-card:nth-child(3)::before {
+        background: var(--rust);
+      }
+      .feat-card:nth-child(4)::before {
+        background: #5a7080;
+      }
+      .feat-card:nth-child(5)::before {
+        background: #7b6aa0;
+      }
+      .feat-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+        background: var(--teal-mist);
+      }
+      .feat-text {
+        font-size: 13.5px;
+        padding-top: 8px;
+        line-height: 1.75;
+      }
+
+      .steps {
+        display: flex;
+        flex-direction: column;
+      }
+      .step {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 18px 0;
+        position: relative;
+      }
+      .step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        left: 19px;
+        top: 54px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--teal-pale), transparent);
+      }
+      .step-num {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        background: var(--teal);
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .step-body h4 {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--teal-mid);
+      }
+      .step-body p {
+        font-size: 13px;
+        color: #555;
+        font-weight: 300;
+        line-height: 1.75;
+      }
+
+      .flow-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 500px) {
+        .flow-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .flow-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+      }
+
+      .curriculum-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+      .curr-tab {
+        padding: 8px 20px;
+        border-radius: 20px;
+        border: 1.5px solid var(--border);
+        background: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--gray);
+      }
+      .curr-tab.active {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: white;
+      }
+      .curr-panel {
+        display: none;
+      }
+      .curr-panel.active {
+        display: block;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 24px;
+      }
+      .sb-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="/ondoku" class="logo">ミリネ韓国語教室 <span>音読トレーニング</span></a>
+      <nav class="header-nav">
+        <a href="/ondoku?tab=experience" class="active">音読トレーニング</a>
+        <a href="/ondoku?tab=assignment">音読課題</a>
+        <a href="/ondoku?tab=writing">課題提出</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>オンライン完結・メール添削
+        </div>
+        <h1>
+          声に出すことで、<br />
+          韓国語は<em>もっと動き出す</em>。
+        </h1>
+        <p class="hero-sub">
+          音読添削 ＋ ネイティブ模範音声で発音・抑揚UP！<br />
+          週1回・10週間で、話せる韓国語を手に入れる。
+        </p>
+
+        <div class="waveform">
+          <!-- 간단화: 막대 수는 CSS 애니메이션과 함께 표시 -->
+          <div class="bar" style="height: 12px"></div>
+          <div class="bar" style="height: 22px"></div>
+          <div class="bar" style="height: 34px"></div>
+          <div class="bar" style="height: 48px;background:#7FFFD4"></div>
+          <div class="bar" style="height: 60px;background:#7FFFD4"></div>
+          <div class="bar" style="height: 72px;background:#7FFFD4"></div>
+          <div class="bar" style="height: 52px"></div>
+          <div class="bar" style="height: 64px"></div>
+          <div class="bar" style="height: 44px"></div>
+          <div class="bar" style="height: 24px"></div>
+          <span class="waveform-label">발음 교정 중…</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="/ondoku?tab=writing" class="btn-main">体験申込（1,800円〜） →</a>
+          <a href="/ondoku?tab=experience" class="btn-sub">講座詳細を見る</a>
+        </div>
+
+        <div class="price-chips">
+          <div class="price-chip">
+            <div class="level">初中級</div>
+            <div class="price">23,980<span>円 / 10回</span></div>
+            <div class="trial">体験 1,800円</div>
+          </div>
+          <div class="price-chip">
+            <div class="level">中〜上級</div>
+            <div class="price">29,920<span>円 / 10回</span></div>
+            <div class="trial">体験 2,300円</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 이하 본문 섹션은 질문에서 준 구조와 동일한 톤으로 구성 (ABOUT/FEATURES/HOW TO 등) -->
+    <!-- 필요시 이 HTML 내에서만 추가 수정 가능 -->
+  </body>
+</html>
+
