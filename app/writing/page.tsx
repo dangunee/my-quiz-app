@@ -805,7 +805,7 @@ export default function WritingPage() {
                     <div className="hero-inner">
                       <div className="hero-tag">
                         <span className="tag-dot" />
-                        メール添削コース · 10週間
+                        メール添削コース · <span className="bg-[#FDE047] text-[#146382] px-1 rounded">10</span>週間
                       </div>
                       <h1>
                         書くたびに、
