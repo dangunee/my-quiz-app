@@ -122,7 +122,7 @@ function DailyLifeContent() {
               </button>
               {expandedTitle === title && (
                 <div className="border-t border-gray-200 bg-gray-50 overflow-hidden">
-                  <div className="max-h-[500px] overflow-y-auto p-4">
+                  <div className="seikatsu-content max-h-[500px] overflow-y-auto p-4">
                     {loading ? (
                       <p className="text-center text-gray-500 py-8">読み込み中...</p>
                     ) : error ? (

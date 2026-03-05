@@ -196,6 +196,7 @@ export default function AdminPage() {
   const [qnaEditLoading, setQnaEditLoading] = useState(false);
   const [qnaEditMode, setQnaEditMode] = useState<"edit" | "visual" | "html">("edit");
   const [qnaSaveLoading, setQnaSaveLoading] = useState(false);
+  const [qnaIsNewMode, setQnaIsNewMode] = useState(false);
   const [dbEditSubTab, setDbEditSubTab] = useState<"qna" | "seikatsu">("qna");
   const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
   const [seikatsuListLoading, setSeikatsuListLoading] = useState(false);
@@ -204,6 +205,7 @@ export default function AdminPage() {
   const [seikatsuEditLoading, setSeikatsuEditLoading] = useState(false);
   const [seikatsuEditMode, setSeikatsuEditMode] = useState<"edit" | "visual" | "html">("edit");
   const [seikatsuSaveLoading, setSeikatsuSaveLoading] = useState(false);
+  const [seikatsuIsNewMode, setSeikatsuIsNewMode] = useState(false);
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
   const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
@@ -488,9 +490,10 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!qnaSelectedId || !authKey) {
-      setQnaEditData(null);
+      if (!qnaIsNewMode) setQnaEditData(null);
       return;
     }
+    if (qnaIsNewMode) return;
     setQnaEditLoading(true);
     fetch(`/api/admin/qna/${qnaSelectedId}`, { headers: { Authorization: `Bearer ${authKey}` } })
       .then((r) => r.json())
@@ -500,13 +503,14 @@ export default function AdminPage() {
       })
       .catch(() => setQnaEditData(null))
       .finally(() => setQnaEditLoading(false));
-  }, [qnaSelectedId, authKey]);
+  }, [qnaSelectedId, authKey, qnaIsNewMode]);
 
   useEffect(() => {
     if (!seikatsuSelectedTitle || !authKey) {
-      setSeikatsuEditData(null);
+      if (!seikatsuIsNewMode) setSeikatsuEditData(null);
       return;
     }
+    if (seikatsuIsNewMode) return;
     setSeikatsuEditLoading(true);
     fetch(`/api/admin/seikatsu?title=${encodeURIComponent(seikatsuSelectedTitle)}`, {
       headers: { Authorization: `Bearer ${authKey}` },
@@ -518,47 +522,87 @@ export default function AdminPage() {
       })
       .catch(() => setSeikatsuEditData(null))
       .finally(() => setSeikatsuEditLoading(false));
-  }, [seikatsuSelectedTitle, authKey]);
+  }, [seikatsuSelectedTitle, authKey, seikatsuIsNewMode]);
 
   const handleSaveQna = async () => {
-    if (!qnaSelectedId || !qnaEditData || !authKey) return;
+    if (!qnaEditData || !authKey) return;
+    if (!qnaIsNewMode && !qnaSelectedId) return;
     setQnaSaveLoading(true);
     try {
-      const res = await fetch(`/api/admin/qna/${qnaSelectedId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-        body: JSON.stringify(qnaEditData),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "保存に失敗しました");
-      alert("保存しました");
+      if (qnaIsNewMode) {
+        const res = await fetch("/api/admin/qna", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+          body: JSON.stringify(qnaEditData),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "保存に失敗しました");
+        alert("追加しました");
+        setQnaIsNewMode(false);
+        setQnaEditData(null);
+        setQnaListLoading(true);
+        const listRes = await fetch("/api/kotae-list");
+        const listData = await listRes.json();
+        setQnaList(Array.isArray(listData) ? listData : []);
+        if (data?.id) setQnaSelectedId(data.id);
+      } else {
+        const res = await fetch(`/api/admin/qna/${qnaSelectedId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+          body: JSON.stringify(qnaEditData),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "保存に失敗しました");
+        alert("保存しました");
+      }
     } catch (e) {
       alert(e instanceof Error ? e.message : "保存に失敗しました");
     } finally {
       setQnaSaveLoading(false);
+      setQnaListLoading(false);
     }
   };
 
   const handleSaveSeikatsu = async () => {
-    if (!seikatsuSelectedTitle || !seikatsuEditData || !authKey) return;
+    if (!seikatsuEditData || !authKey) return;
+    if (!seikatsuIsNewMode && !seikatsuSelectedTitle) return;
     setSeikatsuSaveLoading(true);
     try {
-      const res = await fetch("/api/admin/seikatsu", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-        body: JSON.stringify({
-          title: seikatsuSelectedTitle,
-          content: seikatsuEditData.content,
-          url: seikatsuEditData.url,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "保存に失敗しました");
-      alert("保存しました");
+      if (seikatsuIsNewMode) {
+        const res = await fetch("/api/admin/seikatsu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+          body: JSON.stringify(seikatsuEditData),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "保存に失敗しました");
+        alert("追加しました");
+        setSeikatsuIsNewMode(false);
+        setSeikatsuEditData(null);
+        setSeikatsuListLoading(true);
+        const listRes = await fetch("/api/dailylife-list");
+        const listData = await listRes.json();
+        setSeikatsuList(Array.isArray(listData) ? listData : []);
+        if (data?.title) setSeikatsuSelectedTitle(data.title);
+      } else {
+        const res = await fetch("/api/admin/seikatsu", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+          body: JSON.stringify({
+            title: seikatsuSelectedTitle,
+            content: seikatsuEditData.content,
+            url: seikatsuEditData.url,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "保存に失敗しました");
+        alert("保存しました");
+      }
     } catch (e) {
       alert(e instanceof Error ? e.message : "保存に失敗しました");
     } finally {
       setSeikatsuSaveLoading(false);
+      setSeikatsuListLoading(false);
     }
   };
 
@@ -1700,16 +1744,22 @@ export default function AdminPage() {
             <div className="flex gap-2 mb-4">
               <button
                 type="button"
-                onClick={() => setDbEditSubTab("qna")}
+                onClick={() => {
+                  setDbEditSubTab("qna");
+                  setSeikatsuIsNewMode(false);
+                }}
                 className={`px-4 py-2 rounded text-sm font-medium ${
                   dbEditSubTab === "qna" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                &lt;큐앤에이&gt;
+                &lt;Q&amp;A&gt;
               </button>
               <button
                 type="button"
-                onClick={() => setDbEditSubTab("seikatsu")}
+                onClick={() => {
+                  setDbEditSubTab("seikatsu");
+                  setQnaIsNewMode(false);
+                }}
                 className={`px-4 py-2 rounded text-sm font-medium ${
                   dbEditSubTab === "seikatsu" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
@@ -1720,7 +1770,20 @@ export default function AdminPage() {
             {dbEditSubTab === "qna" ? (
               <div className="flex gap-6 min-h-[500px]">
                 <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
-                  <div className="p-3 bg-gray-50 border-b font-medium">질문 목록</div>
+                  <div className="p-3 bg-gray-50 border-b flex items-center justify-between gap-2">
+                    <span className="font-medium">질문 목록</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQnaIsNewMode(true);
+                        setQnaSelectedId(null);
+                        setQnaEditData({ title: "", content: "", url: "" });
+                      }}
+                      className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      새글 추가
+                    </button>
+                  </div>
                   <ul className="max-h-[480px] overflow-y-auto">
                     {qnaListLoading ? (
                       <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
@@ -1731,7 +1794,10 @@ export default function AdminPage() {
                         <li key={item.id}>
                           <button
                             type="button"
-                            onClick={() => setQnaSelectedId(item.id)}
+                            onClick={() => {
+                              setQnaIsNewMode(false);
+                              setQnaSelectedId(item.id);
+                            }}
                             className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
                               qnaSelectedId === item.id ? "bg-red-50 border-l-4 border-l-red-600" : ""
                             }`}
@@ -1744,12 +1810,24 @@ export default function AdminPage() {
                   </ul>
                 </div>
                 <div className="flex-1 min-w-0">
-                  {!qnaSelectedId ? (
+                  {!qnaSelectedId && !qnaIsNewMode ? (
                     <p className="text-gray-500 py-8">목록에서 질문을 선택하세요</p>
-                  ) : qnaEditLoading ? (
+                  ) : qnaEditLoading && !qnaIsNewMode ? (
                     <p className="text-gray-500 py-8">読み込み中...</p>
-                  ) : qnaEditData ? (
+                  ) : (qnaSelectedId || qnaIsNewMode) && qnaEditData ? (
                     <div className="space-y-4">
+                      {qnaIsNewMode && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setQnaIsNewMode(false);
+                            setQnaEditData(null);
+                          }}
+                          className="text-sm text-gray-500 hover:text-gray-700"
+                        >
+                          ← 목록으로
+                        </button>
+                      )}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
                         <input
@@ -1805,7 +1883,20 @@ export default function AdminPage() {
             ) : (
               <div className="flex gap-6 min-h-[500px]">
                 <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
-                  <div className="p-3 bg-gray-50 border-b font-medium">記事 목록</div>
+                  <div className="p-3 bg-gray-50 border-b flex items-center justify-between gap-2">
+                    <span className="font-medium">記事 목록</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSeikatsuIsNewMode(true);
+                        setSeikatsuSelectedTitle(null);
+                        setSeikatsuEditData({ title: "", content: "", url: "" });
+                      }}
+                      className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      새글 추가
+                    </button>
+                  </div>
                   <ul className="max-h-[480px] overflow-y-auto">
                     {seikatsuListLoading ? (
                       <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
@@ -1816,7 +1907,10 @@ export default function AdminPage() {
                         <li key={title}>
                           <button
                             type="button"
-                            onClick={() => setSeikatsuSelectedTitle(title)}
+                            onClick={() => {
+                              setSeikatsuIsNewMode(false);
+                              setSeikatsuSelectedTitle(title);
+                            }}
                             className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
                               seikatsuSelectedTitle === title ? "bg-red-50 border-l-4 border-l-red-600" : ""
                             }`}
@@ -1829,15 +1923,33 @@ export default function AdminPage() {
                   </ul>
                 </div>
                 <div className="flex-1 min-w-0">
-                  {!seikatsuSelectedTitle ? (
+                  {!seikatsuSelectedTitle && !seikatsuIsNewMode ? (
                     <p className="text-gray-500 py-8">목록에서 글을 선택하세요</p>
-                  ) : seikatsuEditLoading ? (
+                  ) : seikatsuEditLoading && !seikatsuIsNewMode ? (
                     <p className="text-gray-500 py-8">読み込み中...</p>
-                  ) : seikatsuEditData ? (
+                  ) : (seikatsuSelectedTitle || seikatsuIsNewMode) && seikatsuEditData ? (
                     <div className="space-y-4">
+                      {seikatsuIsNewMode && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSeikatsuIsNewMode(false);
+                            setSeikatsuEditData(null);
+                          }}
+                          className="text-sm text-gray-500 hover:text-gray-700"
+                        >
+                          ← 목록으로
+                        </button>
+                      )}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
-                        <input type="text" value={seikatsuEditData.title} readOnly className="w-full px-3 py-2 border rounded text-sm bg-gray-50" />
+                        <input
+                          type="text"
+                          value={seikatsuEditData.title}
+                          onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, title: e.target.value } : null)}
+                          className={`w-full px-3 py-2 border rounded text-sm ${seikatsuIsNewMode ? "" : "bg-gray-50"}`}
+                          readOnly={!seikatsuIsNewMode}
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>

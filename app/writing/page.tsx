@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { fetchWithAuth, getStoredToken, getStoredUser, clearStoredSession } from "../../lib/auth";
 import { LoginModal } from "../../components/LoginModal";
 import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
@@ -114,6 +115,7 @@ const TABS: { id: TabId; label: string }[] = [
 ];
 
 export default function WritingPage() {
+  const searchParams = useSearchParams();
   const { redirectPath } = useWritingBase();
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -174,7 +176,15 @@ export default function WritingPage() {
   const [emailModalSending, setEmailModalSending] = useState(false);
   const [embedded, setEmbedded] = useState(false);
 
-  // iframe 임베드(통신講座ページ 등)일 때 상단 헤더를 숨기기 위한 플래그
+  // URL ?tab=topik 등으로 진입 시 해당 탭 열기 (메인 사이트 通信講座 → TOPIK Training 링크용)
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "topik" || tab === "writing" || tab === "experience") {
+      setActiveTab(tab as TabId);
+    }
+  }, [searchParams]);
+
+  // iframe 임베드(통신講座 페이지 등)일 때 상단 헤더를 숨기기 위한 플래그
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);

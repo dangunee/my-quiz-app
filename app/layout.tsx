@@ -69,11 +69,13 @@ const WRITING_METADATA: Metadata = {
     title: "韓国語作文トレーニング｜東京・新宿の韓国語教室ミリネ",
     description:
       "東京・新宿の韓国語教室。韓国語レッスン　作文、TOPIK作文。個人レッスン、グループレッスン、発音矯正。",
+    images: [{ url: `${WRITING_URL}/og-writing.png`, width: 1200, height: 630, alt: "韓国語作文トレーニング" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "韓国語作文トレーニング｜東京・新宿の韓国語教室ミリネ",
     description: "韓国語レッスン　作文、TOPIK作文。東京・新宿の韓国語教室。",
+    images: [`${WRITING_URL}/og-writing.png`],
   },
   alternates: { canonical: WRITING_URL },
   robots: { index: true, follow: true },
@@ -106,11 +108,13 @@ const ONDOKU_METADATA: Metadata = {
     title: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
     description:
       "東京・新宿の韓国語教室。オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
+    images: [{ url: `${ONDOKU_URL}/og-ondoku.png`, width: 1200, height: 630, alt: "ミリネ韓国語音読トレーニング" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
     description: "オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
+    images: [`${ONDOKU_URL}/og-ondoku.png`],
   },
   alternates: { canonical: ONDOKU_URL },
   robots: { index: true, follow: true },

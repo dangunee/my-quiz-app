@@ -624,7 +624,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                     className="block w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--primary)]/10 transition"
                     style={{ color: "var(--foreground)" }}
                   >
-                    Q&A (큐앤에이)
+                    Q＆A
                   </button>
                   <button
                     type="button"
@@ -701,7 +701,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
               className="landing-card overflow-hidden text-left h-full flex flex-col"
             >
               <div className="landing-card-header text-white" style={{ background: "var(--primary)", opacity: 0.9 }}>
-                Q&A (큐앤에이)
+                Q＆A
               </div>
               <div className="p-4 flex-1 flex flex-col">
                 <p className="text-sm mb-3" style={{ color: "var(--text-muted)" }}>
@@ -1065,7 +1065,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                     </button>
                     {expandedSeikatsuTitle === title && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
-                        <div className="max-h-[500px] overflow-y-auto p-4">
+                        <div className="seikatsu-content max-h-[500px] overflow-y-auto p-4">
                           {seikatsuLoading ? (
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
                           ) : seikatsuError ? (

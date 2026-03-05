@@ -994,6 +994,13 @@ body {
   font-weight: 600;
 }
 
+/* 생활한국어: 콘텐츠 내 모든 테두리 제거 */
+.seikatsu-content .kotae-blog-content,
+.seikatsu-content .kotae-blog-content * {
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* Q&A Rich Editor placeholder */
 .qna-rich-editor:empty::before {
   content: attr(data-placeholder);
