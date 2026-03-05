@@ -41,7 +41,8 @@ export function wrapHtmlForIframe(html: string): string {
   if (!html || typeof html !== "string") return "";
   const trimmed = html.trim();
   if (!trimmed) return "";
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>${trimmed}</body></html>`;
+  const fullWidthStyle = `<style>html,body{width:100%!important;max-width:none!important;margin:0;padding:0;box-sizing:border-box}body>*{max-width:none!important;width:100%!important;box-sizing:border-box}</style>`;
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${fullWidthStyle}</head><body>${trimmed}</body></html>`;
 }
 
 /**
