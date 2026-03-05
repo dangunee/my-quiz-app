@@ -1011,7 +1011,13 @@ body {
   box-shadow: none !important;
 }
 
-/* Q&A Rich Editor placeholder */
+/* Q&A Rich Editor: 貼り付けHTMLの横オーバーフローをエディタ内に閉じ込める */
+.qna-rich-editor {
+  overflow-x: auto !important;
+  overflow-y: auto;
+  max-width: 100%;
+}
+
 .qna-rich-editor:empty::before {
   content: attr(data-placeholder);
   color: #9ca3af;

@@ -58,8 +58,8 @@ export function RichTextEditor({ value, onChange, placeholder, className = "", m
   );
 
   return (
-    <div className={`border rounded overflow-hidden bg-white ${className}`}>
-      <div className="flex flex-wrap items-center gap-0.5 p-1.5 bg-gray-100 border-b">
+    <div className={`border rounded overflow-auto bg-white max-w-full min-w-0 ${className}`}>
+      <div className="flex flex-wrap items-center gap-0.5 p-1.5 bg-gray-100 border-b shrink-0">
         <ToolbarButton onClick={() => execCmd("undo")} title="실행 취소">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
         </ToolbarButton>
@@ -113,7 +113,7 @@ export function RichTextEditor({ value, onChange, placeholder, className = "", m
         onInput={handleInput}
         onPaste={handlePaste}
         data-placeholder={placeholder}
-        className="qna-rich-editor kotae-blog-content p-3 text-sm text-gray-800 overflow-y-auto outline-none min-h-[200px]"
+        className="qna-rich-editor kotae-blog-content p-3 text-sm text-gray-800 overflow-auto outline-none min-h-[200px] max-w-full"
         style={{ minHeight }}
         suppressContentEditableWarning
       />
