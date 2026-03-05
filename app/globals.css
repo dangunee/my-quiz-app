@@ -76,6 +76,11 @@ body {
   animation: fadeIn 0.4s ease;
 }
 
+/* 単一記事表示時は全幅（globals.cssがTailwindより後なのでここで上書き） */
+.quiz-container.quiz-container--single {
+  max-width: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

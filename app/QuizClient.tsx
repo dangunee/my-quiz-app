@@ -886,7 +886,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
       <div className={`flex-1 flex flex-col min-h-0 min-w-0 w-full max-w-full mx-auto px-0 md:px-4 ${kotaeSingleViewId ? "" : "md:max-w-4xl"}`}>
       <div className={`flex-1 flex flex-col min-h-0 md:flex-row md:justify-center md:gap-4 min-w-0 w-full ${kotaeSingleViewId ? "md:items-stretch" : "md:items-start"}`}>
         {desktopMenu}
-        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? `max-w-full rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200 ${kotaeSingleViewId ? "md:max-w-full" : "md:max-w-[520px]"}` : ""} ${kotaeSingleViewId ? "min-h-[calc(100dvh-6rem)] md:h-full" : ""}`}>
+        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${kotaeSingleViewId ? "quiz-container--single" : ""} ${activeTab === "qna" || activeTab === "dailylife" ? `max-w-full rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200 ${kotaeSingleViewId ? "" : "md:max-w-[520px]"}` : ""} ${kotaeSingleViewId ? "min-h-[calc(100dvh-6rem)] md:h-full" : ""}`}>
         <div className="flex items-center gap-2 p-2 md:p-3 bg-gray-50">
           {desktopMenuToggle}
           <button
