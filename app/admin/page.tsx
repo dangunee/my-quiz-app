@@ -206,6 +206,8 @@ export default function AdminPage() {
   const [seikatsuEditMode, setSeikatsuEditMode] = useState<"edit" | "visual" | "html">("edit");
   const [seikatsuSaveLoading, setSeikatsuSaveLoading] = useState(false);
   const [seikatsuIsNewMode, setSeikatsuIsNewMode] = useState(false);
+  const [qnaCheckedIds, setQnaCheckedIds] = useState<Set<number>>(new Set());
+  const [seikatsuCheckedTitles, setSeikatsuCheckedTitles] = useState<Set<string>>(new Set());
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
   const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
@@ -538,6 +540,7 @@ export default function AdminPage() {
         setQnaSelectedId(null);
         setQnaEditData(null);
       }
+      setQnaCheckedIds((prev) => { const s = new Set(prev); s.delete(id); return s; });
       alert("삭제했습니다");
     } catch (e) {
       alert(e instanceof Error ? e.message : "삭제에 실패했습니다");
@@ -558,7 +561,60 @@ export default function AdminPage() {
         setSeikatsuSelectedTitle(null);
         setSeikatsuEditData(null);
       }
+      setSeikatsuCheckedTitles((prev) => { const s = new Set(prev); s.delete(title); return s; });
       alert("삭제했습니다");
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "삭제에 실패했습니다");
+    }
+  };
+
+  const handleBulkDeleteQna = async () => {
+    const ids = qnaCheckedIds;
+    if (!authKey || ids.size === 0 || !confirm(`선택한 ${ids.size}건을 삭제하시겠습니까?`)) return;
+    try {
+      for (const id of ids) {
+        const res = await fetch(`/api/admin/qna/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${authKey}` },
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "삭제에 실패했습니다");
+        }
+      }
+      setQnaList((prev) => prev.filter((i) => !ids.has(i.id)));
+      if (qnaSelectedId && ids.has(qnaSelectedId)) {
+        setQnaSelectedId(null);
+        setQnaEditData(null);
+      }
+      setQnaCheckedIds(new Set());
+      alert(`${ids.size}건 삭제했습니다`);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "삭제에 실패했습니다");
+    }
+  };
+
+  const handleBulkDeleteSeikatsu = async () => {
+    const titles = seikatsuCheckedTitles;
+    if (!authKey || titles.size === 0 || !confirm(`선택한 ${titles.size}건을 삭제하시겠습니까?`)) return;
+    try {
+      for (const title of titles) {
+        const res = await fetch(`/api/admin/seikatsu?title=${encodeURIComponent(title)}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${authKey}` },
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "삭제에 실패했습니다");
+        }
+      }
+      setSeikatsuList((prev) => prev.filter((t) => !titles.has(t)));
+      if (seikatsuSelectedTitle && titles.has(seikatsuSelectedTitle)) {
+        setSeikatsuSelectedTitle(null);
+        setSeikatsuEditData(null);
+      }
+      setSeikatsuCheckedTitles(new Set());
+      alert(`${titles.size}건 삭제했습니다`);
     } catch (e) {
       alert(e instanceof Error ? e.message : "삭제에 실패했습니다");
     }
@@ -1812,17 +1868,28 @@ export default function AdminPage() {
                 <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
                   <div className="p-3 bg-gray-50 border-b flex items-center justify-between gap-2">
                     <span className="font-medium">질문 목록</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setQnaIsNewMode(true);
-                        setQnaSelectedId(null);
-                        setQnaEditData({ title: "", content: "", url: "" });
-                      }}
-                      className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
-                    >
-                      새글 추가
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQnaIsNewMode(true);
+                          setQnaSelectedId(null);
+                          setQnaEditData({ title: "", content: "", url: "" });
+                        }}
+                        className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        새글
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleBulkDeleteQna}
+                        disabled={qnaCheckedIds.size === 0}
+                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                        title="선택 삭제"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    </div>
                   </div>
                   <ul className="max-h-[420px] overflow-y-auto">
                     {qnaListLoading ? (
@@ -1832,13 +1899,28 @@ export default function AdminPage() {
                     ) : (
                       qnaList.map((item) => (
                         <li key={item.id} className="flex items-center border-b group">
+                          <input
+                            type="checkbox"
+                            checked={qnaCheckedIds.has(item.id)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              setQnaCheckedIds((prev) => {
+                                const s = new Set(prev);
+                                if (s.has(item.id)) s.delete(item.id);
+                                else s.add(item.id);
+                                return s;
+                              });
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="shrink-0 m-2"
+                          />
                           <button
                             type="button"
                             onClick={() => {
                               setQnaIsNewMode(false);
                               setQnaSelectedId(item.id);
                             }}
-                            className={`flex-1 min-w-0 text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+                            className={`flex-1 min-w-0 text-left px-2 py-3 text-sm hover:bg-gray-50 ${
                               qnaSelectedId === item.id ? "bg-red-50 border-l-4 border-l-red-600" : ""
                             }`}
                           >
@@ -1946,17 +2028,28 @@ export default function AdminPage() {
                 <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
                   <div className="p-3 bg-gray-50 border-b flex items-center justify-between gap-2">
                     <span className="font-medium">記事 목록</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSeikatsuIsNewMode(true);
-                        setSeikatsuSelectedTitle(null);
-                        setSeikatsuEditData({ title: "", content: "", url: "" });
-                      }}
-                      className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
-                    >
-                      새글 추가
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSeikatsuIsNewMode(true);
+                          setSeikatsuSelectedTitle(null);
+                          setSeikatsuEditData({ title: "", content: "", url: "" });
+                        }}
+                        className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        새글
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleBulkDeleteSeikatsu}
+                        disabled={seikatsuCheckedTitles.size === 0}
+                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                        title="선택 삭제"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    </div>
                   </div>
                   <ul className="max-h-[420px] overflow-y-auto">
                     {seikatsuListLoading ? (
@@ -1966,13 +2059,28 @@ export default function AdminPage() {
                     ) : (
                       seikatsuList.map((title) => (
                         <li key={title} className="flex items-center border-b group">
+                          <input
+                            type="checkbox"
+                            checked={seikatsuCheckedTitles.has(title)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              setSeikatsuCheckedTitles((prev) => {
+                                const s = new Set(prev);
+                                if (s.has(title)) s.delete(title);
+                                else s.add(title);
+                                return s;
+                              });
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="shrink-0 m-2"
+                          />
                           <button
                             type="button"
                             onClick={() => {
                               setSeikatsuIsNewMode(false);
                               setSeikatsuSelectedTitle(title);
                             }}
-                            className={`flex-1 min-w-0 text-left px-4 py-3 text-sm hover:bg-gray-50 ${
+                            className={`flex-1 min-w-0 text-left px-2 py-3 text-sm hover:bg-gray-50 ${
                               seikatsuSelectedTitle === title ? "bg-red-50 border-l-4 border-l-red-600" : ""
                             }`}
                           >
