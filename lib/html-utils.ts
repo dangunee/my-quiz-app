@@ -50,76 +50,21 @@ export function wrapHtmlForIframe(html: string): string {
 }
 
 /**
- * EDITモード用: script/audio/オーディオプレイヤー全体を一時的に取り除き、編集可能な部分だけ返す。
- * オーディオプレイヤーは<audio>の前後の関連div（controls, progress等）も含めてブロックごと抽出。
+ * EDITモード用: script/audioを一時的に取り除き、編集可能な部分だけ返す。
+ * 取り除いた部分はプレースホルダに置換し、preservedに格納。保存時にmergeForSaveで復元。
  */
-function extractBlockContainingAudio(html: string): { before: string; block: string; after: string } | null {
-  const audioMatch = html.match(/<audio[\s\S]*?<\/audio>|<audio[^>]*\/\s*>/i);
-  if (!audioMatch) return null;
-  const audioStart = html.indexOf(audioMatch[0]);
-  const audioEnd = audioStart + audioMatch[0].length;
-  // <audio>の前の直近の<div, <figure, <section>からブロック開始を探す
-  let blockStart = audioStart;
-  const beforeAudio = html.substring(0, audioStart);
-  const openTagMatch = beforeAudio.match(/<(div|figure|section)(\s[^>]*)?>[\s\S]*$/i);
-  if (openTagMatch) {
-    const tagName = openTagMatch[1].toLowerCase();
-    const lastOpen = beforeAudio.lastIndexOf(`<${tagName}`);
-    if (lastOpen >= 0) {
-      const fragment = html.substring(lastOpen);
-      let depth = 1;
-      let pos = fragment.indexOf(">") + 1;
-      const closeTag = `</${tagName}>`;
-      while (depth > 0 && pos < fragment.length) {
-        const nextClose = fragment.indexOf(closeTag, pos);
-        if (nextClose < 0) break;
-        const nextOpen = fragment.indexOf(`<${tagName}`, pos);
-        if (nextOpen >= 0 && nextOpen < nextClose) {
-          depth++;
-          pos = nextOpen + tagName.length + 2;
-        } else {
-          depth--;
-          if (depth === 0) {
-            blockStart = lastOpen;
-            const blockEnd = lastOpen + nextClose + closeTag.length;
-            return {
-              before: html.substring(0, blockStart),
-              block: html.substring(blockStart, blockEnd),
-              after: html.substring(blockEnd),
-            };
-          }
-          pos = nextClose + closeTag.length;
-        }
-      }
-    }
-  }
-  return null;
-}
-
 export function extractForEdit(html: string): { editable: string; preserved: string[] } {
   const preserved: string[] = [];
   const placeholder = (idx: number) => `<div contenteditable="false" data-edit-ph="${idx}" style="background:#f0f0f0;padding:4px 8px;margin:4px 0;font-size:12px;color:#666;">[音声・スクリプト ${idx + 1}]</div>`;
   let editable = html;
-
   editable = editable.replace(/<script[\s\S]*?<\/script>/gi, (m) => {
     preserved.push(m);
     return placeholder(preserved.length - 1);
   });
-
-  // オーディオブロック全体を抽出（<audio>単体より親のdiv/figure/sectionごと）
-  let extracted = extractBlockContainingAudio(editable);
-  while (extracted) {
-    preserved.push(extracted.block);
-    editable = extracted.before + placeholder(preserved.length - 1) + extracted.after;
-    extracted = extractBlockContainingAudio(editable);
-  }
-
-  // 上記で拾えなかった単体の<audio>
   editable = editable.replace(/<audio[\s\S]*?<\/audio>|<audio[^>]*\/\s*>/gi, (m) => {
     preserved.push(m);
     return placeholder(preserved.length - 1);
   });
-
   return { editable, preserved };
 }
 

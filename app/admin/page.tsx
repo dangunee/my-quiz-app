@@ -2132,7 +2132,16 @@ export default function AdminPage() {
                         {qnaEditMode === "edit" ? (
                           <RichTextEditor value={qnaEditData.content} onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
                         ) : (
-                          <textarea value={qnaEditData.content} onChange={(e) => setQnaEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
+                          <textarea value={qnaPreservedBlocks.length > 0 ? mergeForSave(qnaEditData.content, qnaPreservedBlocks) : qnaEditData.content} onChange={(e) => {
+                            const val = e.target.value;
+                            if (qnaPreservedBlocks.length > 0) {
+                              const { editable, preserved } = extractForEdit(val);
+                              setQnaEditData((d) => d ? { ...d, content: editable } : null);
+                              setQnaPreservedBlocks(preserved);
+                            } else {
+                              setQnaEditData((d) => d ? { ...d, content: val } : null);
+                            }
+                          }} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         )}
                       </div>
                       <div className="flex items-center gap-2">
@@ -2334,7 +2343,16 @@ export default function AdminPage() {
                         {seikatsuEditMode === "edit" ? (
                           <RichTextEditor value={seikatsuEditData.content} onChange={(html) => setSeikatsuEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
                         ) : (
-                          <textarea value={seikatsuEditData.content} onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
+                          <textarea value={seikatsuPreservedBlocks.length > 0 ? mergeForSave(seikatsuEditData.content, seikatsuPreservedBlocks) : seikatsuEditData.content} onChange={(e) => {
+                            const val = e.target.value;
+                            if (seikatsuPreservedBlocks.length > 0) {
+                              const { editable, preserved } = extractForEdit(val);
+                              setSeikatsuEditData((d) => d ? { ...d, content: editable } : null);
+                              setSeikatsuPreservedBlocks(preserved);
+                            } else {
+                              setSeikatsuEditData((d) => d ? { ...d, content: val } : null);
+                            }
+                          }} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         )}
                       </div>
                       <div className="flex items-center gap-2">
