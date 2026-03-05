@@ -24,7 +24,7 @@ Vercel 프로젝트 설정 → Environment Variables에 추가:
 
 ## 3. 관리자 페이지 사용
 
-1. `https://writing.mirinae.jp/admin` 또는 `https://apps.mirinae.jp/admin` 접속
+1. `https://apps.mirinae.jp/admin` 접속 (writing.mirinae.jp → apps.mirinae.jp/writing 리다이렉트)
 2. `ADMIN_SECRET`에 설정한 값 입력 후 로그인
 3. 각 문제의 "수정" 버튼으로 설명 편집 후 "저장"
 

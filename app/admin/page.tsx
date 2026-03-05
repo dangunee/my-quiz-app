@@ -931,8 +931,8 @@ export default function AdminPage() {
                 ["quiz", "sync", "qnaEdit"].includes(activeTab)
                   ? "https://apps.mirinae.jp/quiz"
                   : ["ondokuKadai", "ondoku"].includes(activeTab)
-                    ? "https://ondoku.mirinae.jp"
-                    : "https://writing.mirinae.jp"
+                    ? "https://apps.mirinae.jp/ondoku"
+                    : "https://apps.mirinae.jp/writing"
               }
               className="text-sm text-gray-600 hover:text-gray-800"
             >

@@ -20,15 +20,17 @@ function useWritingBase() {
   const [base, setBase] = useState({
     adminPath: "/admin",
     redirectPath: "/writing",
-    quizLink: "/",
+    quizLink: "/quiz",
   });
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isWriting = window.location.hostname === WRITING_HOST;
+      const isWriting =
+        window.location.hostname === WRITING_HOST ||
+        window.location.pathname.startsWith("/writing");
       setBase({
         adminPath: "/admin",
-        redirectPath: isWriting ? "/" : "/writing",
-        quizLink: isWriting ? "https://apps.mirinae.jp/quiz" : "/quiz",
+        redirectPath: isWriting ? "/writing" : "/writing",
+        quizLink: "/quiz",
       });
     }
   }, []);

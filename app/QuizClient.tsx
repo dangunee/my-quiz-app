@@ -526,8 +526,8 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   };
 
   const rightMenuLinks = [
-    { label: "作文トレ", href: "https://writing.mirinae.jp", external: true },
-    { label: "音読トレ", href: "https://ondoku.mirinae.jp", external: true },
+    { label: "作文トレ", href: "https://apps.mirinae.jp/writing", external: true },
+    { label: "音読トレ", href: "https://apps.mirinae.jp/ondoku", external: true },
     { label: "生活韓国語", href: "/dailylife", external: false },
     { label: "初級クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "変則活用", href: "https://mirinae.jp", external: true },
@@ -1382,11 +1382,11 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
         </>
         )}
         <section className="quiz-bottom-nav flex flex-nowrap gap-3 justify-center items-center py-4 px-4 border-t shrink-0 overflow-x-auto" style={{ borderColor: "var(--border)", backgroundColor: "var(--background)" }}>
-          <a href="https://writing.mirinae.jp" target="_blank" rel="noopener noreferrer" className="quiz-bottom-link flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+          <a href="https://apps.mirinae.jp/writing" target="_blank" rel="noopener noreferrer" className="quiz-bottom-link flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
             作文
           </a>
-          <a href="https://ondoku.mirinae.jp" target="_blank" rel="noopener noreferrer" className="quiz-bottom-link flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
+          <a href="https://apps.mirinae.jp/ondoku" target="_blank" rel="noopener noreferrer" className="quiz-bottom-link flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
             音読
           </a>

@@ -40,7 +40,7 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
-        const regSource = typeof window !== "undefined" && window.location.hostname === "writing.mirinae.jp" ? "WRITING" : window.location.hostname === "ondoku.mirinae.jp" ? "ONDOKU" : "QUIZ";
+        const regSource = typeof window !== "undefined" && (window.location.hostname === "writing.mirinae.jp" || window.location.pathname.startsWith("/writing")) ? "WRITING" : (window.location.hostname === "ondoku.mirinae.jp" || window.location.pathname.startsWith("/ondoku")) ? "ONDOKU" : "QUIZ";
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -102,10 +102,10 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**:
 
 Vercel → **Settings** → **Domains**:
 
-- `apps.mirinae.jp` (퀴즈: /quiz)
-- `quiz.mirinae.jp` (apps.mirinae.jp로 리다이렉트)
-- `writing.mirinae.jp`
-- `ondoku.mirinae.jp`
+- `apps.mirinae.jp` (퀴즈 /quiz, 作文 /writing, 音読 /ondoku)
+- `quiz.mirinae.jp` → apps.mirinae.jp 리다이렉트
+- `writing.mirinae.jp` → apps.mirinae.jp/writing 리다이렉트
+- `ondoku.mirinae.jp` → apps.mirinae.jp/ondoku 리다이렉트
 
 ---
 

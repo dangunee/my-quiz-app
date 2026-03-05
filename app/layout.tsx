@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 
-const QUIZ_URL = "https://apps.mirinae.jp/quiz";
-const WRITING_URL = "https://writing.mirinae.jp";
-const ONDOKU_URL = "https://ondoku.mirinae.jp";
+const APPS_BASE = "https://apps.mirinae.jp";
+const QUIZ_URL = `${APPS_BASE}/quiz`;
+const WRITING_URL = `${APPS_BASE}/writing`;
+const ONDOKU_URL = `${APPS_BASE}/ondoku`;
 
 const QUIZ_METADATA: Metadata = {
   title: {
@@ -69,13 +70,13 @@ const WRITING_METADATA: Metadata = {
     title: "韓国語作文トレーニング｜東京・新宿の韓国語教室ミリネ",
     description:
       "東京・新宿の韓国語教室。韓国語レッスン　作文、TOPIK作文。個人レッスン、グループレッスン、発音矯正。",
-    images: [{ url: `${WRITING_URL}/og-writing.png`, width: 1200, height: 630, alt: "韓国語作文トレーニング" }],
+    images: [{ url: `${APPS_BASE}/og-writing.png`, width: 1200, height: 630, alt: "韓国語作文トレーニング" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "韓国語作文トレーニング｜東京・新宿の韓国語教室ミリネ",
     description: "韓国語レッスン　作文、TOPIK作文。東京・新宿の韓国語教室。",
-    images: [`${WRITING_URL}/og-writing.png`],
+    images: [`${APPS_BASE}/og-writing.png`],
   },
   alternates: { canonical: WRITING_URL },
   robots: { index: true, follow: true },
@@ -108,13 +109,13 @@ const ONDOKU_METADATA: Metadata = {
     title: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
     description:
       "東京・新宿の韓国語教室。オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
-    images: [{ url: `${ONDOKU_URL}/og-ondoku.png`, width: 1200, height: 630, alt: "ミリネ韓国語音読トレーニング" }],
+    images: [{ url: `${APPS_BASE}/og-ondoku.png`, width: 1200, height: 630, alt: "ミリネ韓国語音読トレーニング" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ミリネ韓国語音読トレーニング｜東京・新宿の韓国語教室",
     description: "オンラインで音読トレーニング。ネイティブ添削＋模範音声で発音・抑揚UP。",
-    images: [`${ONDOKU_URL}/og-ondoku.png`],
+    images: [`${APPS_BASE}/og-ondoku.png`],
   },
   alternates: { canonical: ONDOKU_URL },
   robots: { index: true, follow: true },
@@ -130,11 +131,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const isWriting =
     host.includes("writing.mirinae.jp") ||
     host.includes("www.writing.mirinae.jp") ||
-    (host.includes("localhost") && pathname.startsWith("/writing"));
+    pathname.startsWith("/writing");
   const isOndoku =
     host.includes("ondoku.mirinae.jp") ||
     host.includes("www.ondoku.mirinae.jp") ||
-    (host.includes("localhost") && pathname.startsWith("/ondoku"));
+    pathname.startsWith("/ondoku");
   if (isWriting) return WRITING_METADATA;
   if (isOndoku) return ONDOKU_METADATA;
   return QUIZ_METADATA;
@@ -204,12 +205,15 @@ export default async function RootLayout({
     headersList.get("x-forwarded-host") ||
     headersList.get("host") ||
     "";
+  const pathname = headersList.get("x-pathname") || "";
   const isWriting =
     host.includes("writing.mirinae.jp") ||
-    host.includes("www.writing.mirinae.jp");
+    host.includes("www.writing.mirinae.jp") ||
+    pathname.startsWith("/writing");
   const isOndoku =
     host.includes("ondoku.mirinae.jp") ||
-    host.includes("www.ondoku.mirinae.jp");
+    host.includes("www.ondoku.mirinae.jp") ||
+    pathname.startsWith("/ondoku");
   const jsonLd = isWriting ? WRITING_JSON_LD : isOndoku ? ONDOKU_JSON_LD : QUIZ_JSON_LD;
 
   return (

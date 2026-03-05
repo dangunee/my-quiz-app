@@ -13,8 +13,8 @@ const PREFECTURES = [
 
 function getRegistrationSource(): "QUIZ" | "WRITING" | "ONDOKU" {
   if (typeof window === "undefined") return "QUIZ";
-  if (window.location.hostname === "writing.mirinae.jp") return "WRITING";
-  if (window.location.hostname === "ondoku.mirinae.jp") return "ONDOKU";
+  if (window.location.hostname === "writing.mirinae.jp" || window.location.pathname.startsWith("/writing")) return "WRITING";
+  if (window.location.hostname === "ondoku.mirinae.jp" || window.location.pathname.startsWith("/ondoku")) return "ONDOKU";
   return "QUIZ";
 }
 

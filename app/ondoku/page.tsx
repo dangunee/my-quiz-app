@@ -19,15 +19,14 @@ function useOndokuBase() {
   const [base, setBase] = useState({
     adminPath: "/admin",
     redirectPath: "/ondoku",
-    quizLink: "/",
+    quizLink: "/quiz",
   });
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const isOndoku = window.location.hostname === ONDOKU_HOST;
       setBase({
         adminPath: "/admin",
-        redirectPath: isOndoku ? "/" : "/ondoku",
-        quizLink: isOndoku ? "https://apps.mirinae.jp/quiz" : "/quiz",
+        redirectPath: "/ondoku",
+        quizLink: "/quiz",
       });
     }
   }, []);
