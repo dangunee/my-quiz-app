@@ -994,6 +994,14 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                 </button>
               </div>
             </div>
+            {(() => {
+              const item = filteredKotae.find((i) => i.id === kotaeSingleViewId);
+              return item?.title ? (
+                <div className="shrink-0 px-4 py-3 text-white font-semibold text-base" style={{ background: "var(--primary)" }}>
+                  {item.title}
+                </div>
+              ) : null;
+            })()}
             <div className="flex-1 min-h-0 overflow-y-auto px-0 py-4 md:px-4">
               {kotaeLoading ? (
                 <p className="text-center text-gray-500 py-8">読み込み中...</p>
@@ -1093,6 +1101,9 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                     </div>
                     {expandedKotaeId === item.id && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
+                        <div className="shrink-0 px-4 py-3 text-white font-semibold text-base" style={{ background: "var(--primary)" }}>
+                          {item.title}
+                        </div>
                         <div className="min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
                           {kotaeLoading ? (
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
@@ -1224,6 +1235,9 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                     </div>
                     {expandedSeikatsuTitle === title && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
+                        <div className="shrink-0 px-4 py-3 text-white font-semibold text-base" style={{ background: "var(--primary)" }}>
+                          {title}
+                        </div>
                         <div className="seikatsu-content min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
                           {seikatsuLoading ? (
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
