@@ -113,7 +113,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondokuKadai" | "ondoku" | "writingVisibility">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "users" | "analytics" | "submissions" | "kadai" | "ondokuKadai" | "ondoku" | "writingVisibility" | "sync">("quiz");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [writingLoading, setWritingLoading] = useState(false);
   const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
@@ -186,6 +186,8 @@ export default function AdminPage() {
   const [kadaiEditForm, setKadaiEditForm] = useState({ title: "", topic: "", theme: "", question: "", grammarNote: "", patterns: [] as { pattern: string; example: string }[], modelEssay: "" });
   const [kadaiSaving, setKadaiSaving] = useState(false);
   const [analyticsDays, setAnalyticsDays] = useState(30);
+  const [syncQnaLoading, setSyncQnaLoading] = useState(false);
+  const [syncSeikatsuLoading, setSyncSeikatsuLoading] = useState(false);
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
   const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
@@ -753,11 +755,17 @@ export default function AdminPage() {
           >
             音読提出
           </button>
+          <button
+            onClick={() => setActiveTab("sync")}
+            className={`px-4 py-2 rounded font-medium ${activeTab === "sync" ? "bg-red-600 text-white" : "bg-white"}`}
+          >
+            DB 동기화
+          </button>
           </div>
           <div className="flex items-center gap-3">
             <Link
               href={
-                activeTab === "quiz"
+                activeTab === "quiz" || activeTab === "sync"
                   ? "https://quiz.mirinae.jp"
                   : ["ondokuKadai", "ondoku"].includes(activeTab)
                     ? "https://ondoku.mirinae.jp"
@@ -1507,6 +1515,63 @@ export default function AdminPage() {
             ) : (
               <p className="text-gray-500">データを読み込んでください。</p>
             )}
+          </div>
+        )}
+
+        {activeTab === "sync" && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h1 className="text-2xl font-bold mb-4">DB 동기화</h1>
+            <p className="text-sm text-gray-600 mb-6">
+              블로그(mirinae.jp)에서 데이터를 가져와 Supabase에 동기화합니다.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button
+                type="button"
+                disabled={syncQnaLoading}
+                onClick={async () => {
+                  setSyncQnaLoading(true);
+                  try {
+                    const res = await fetch("/api/admin/sync-qna", {
+                      method: "POST",
+                      headers: { Authorization: `Bearer ${authKey}` },
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Sync failed");
+                    alert(`Q&A 동기화 완료: ${data.count}건`);
+                  } catch (e) {
+                    alert(e instanceof Error ? e.message : "동기화 실패");
+                  } finally {
+                    setSyncQnaLoading(false);
+                  }
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
+              >
+                {syncQnaLoading ? "동기화 중..." : "Q&A 동기화 (cat=7)"}
+              </button>
+              <button
+                type="button"
+                disabled={syncSeikatsuLoading}
+                onClick={async () => {
+                  setSyncSeikatsuLoading(true);
+                  try {
+                    const res = await fetch("/api/admin/sync-seikatsu", {
+                      method: "POST",
+                      headers: { Authorization: `Bearer ${authKey}` },
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Sync failed");
+                    alert(`生活韓国語 동기화 완료: ${data.count}건`);
+                  } catch (e) {
+                    alert(e instanceof Error ? e.message : "동기화 실패");
+                  } finally {
+                    setSyncSeikatsuLoading(false);
+                  }
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
+              >
+                {syncSeikatsuLoading ? "동기화 중..." : "生活韓国語 동기화 (cat=2)"}
+              </button>
+            </div>
           </div>
         )}
 
