@@ -44,8 +44,16 @@ export function middleware(request: NextRequest) {
 
   // apps.mirinae.jp: root → /quiz
   const isAppsHost = host === APPS_HOST || host === `www.${APPS_HOST}`;
-  if (isAppsHost && (pathname === "/" || pathname === "")) {
-    return NextResponse.redirect(new URL("/quiz", request.url), 302);
+  if (isAppsHost) {
+    if (pathname === "/" || pathname === "") {
+      return NextResponse.redirect(new URL("/quiz", request.url), 302);
+    }
+    // /quiz?tab=qna → /qna, /quiz?tab=dailylife → /dailylife
+    if (pathname === "/quiz") {
+      const tab = request.nextUrl.searchParams.get("tab");
+      if (tab === "qna") return NextResponse.redirect(new URL("/qna", request.url), 302);
+      if (tab === "dailylife") return NextResponse.redirect(new URL("/dailylife", request.url), 302);
+    }
   }
 
   // quiz.mirinae.jp: 전체 → apps.mirinae.jp (기존 링크 호환)

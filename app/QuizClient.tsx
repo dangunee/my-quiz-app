@@ -43,9 +43,10 @@ const QUIZ_BASE = "/quiz";
 
 interface QuizClientProps {
   initialShowLanding?: boolean;
+  initialTab?: "quiz" | "qna" | "dailylife";
 }
 
-export default function QuizClient({ initialShowLanding = true }: QuizClientProps) {
+export default function QuizClient({ initialShowLanding = true, initialTab }: QuizClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -65,7 +66,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const [hasPaid, setHasPaid] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"quiz" | "qna" | "dailylife">("quiz");
+  const [activeTab, setActiveTab] = useState<"quiz" | "qna" | "dailylife">(initialTab ?? "quiz");
   const [showLanding, setShowLanding] = useState(initialShowLanding);
   const [landingNavDropdownOpen, setLandingNavDropdownOpen] = useState(false);
   const [quizSearch, setQuizSearch] = useState("");
@@ -245,7 +246,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
 
   const handleStartFromLanding = (tab: "quiz" | "qna" | "dailylife") => {
     if (pathname === "/main.html") {
-      router.push(`${QUIZ_BASE}?tab=${tab}`);
+      router.push(tab === "quiz" ? QUIZ_BASE : tab === "qna" ? "/qna" : "/dailylife");
     } else {
       setShowLanding(false);
       setActiveTab(tab);
@@ -260,7 +261,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     } else if (tab === "kotae") {
       setActiveTab("qna");
       setShowLanding(false);
-      router.replace(`${QUIZ_BASE}?tab=qna`, { scroll: false });
+      router.replace("/qna", { scroll: false });
     }
   }, [searchParams]);
 
@@ -884,7 +885,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("qna"); router.replace(`${QUIZ_BASE}?tab=qna`); }}
+            onClick={() => { setActiveTab("qna"); router.replace("/qna"); }}
             className={`quiz-tab-btn flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "qna"
                 ? "text-white"
@@ -896,7 +897,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("dailylife"); router.replace(`${QUIZ_BASE}?tab=dailylife`); }}
+            onClick={() => { setActiveTab("dailylife"); router.replace("/dailylife"); }}
             className={`quiz-tab-btn flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "dailylife"
                 ? "text-white"
