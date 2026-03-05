@@ -229,12 +229,8 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
     (kotaePage + 1) * KOTAE_PAGE_SIZE
   );
 
-  // 단일 글 보기: URL에 ?id= 있으면 해당 글만 표시 (목록 숨김)
-  const kotaeSingleViewId = kotaeIdFromUrl ? (() => {
-    const id = parseInt(kotaeIdFromUrl, 10);
-    if (isNaN(id)) return null;
-    return kotaeList.some((i) => i.id === id) ? id : null;
-  })() : null;
+  // 단일 글 보기: URL에 ?id= 있으면 해당 글만 표시 (목록 숨김) - 리스트 로드 전에도 즉시 표시
+  const kotaeSingleViewId = kotaeIdFromUrl && /^\d+$/.test(kotaeIdFromUrl) ? parseInt(kotaeIdFromUrl, 10) : null;
   const kotaeSingleViewIdx = kotaeSingleViewId != null ? filteredKotae.findIndex((i) => i.id === kotaeSingleViewId) : -1;
   const kotaePrevItem = kotaeSingleViewIdx > 0 ? filteredKotae[kotaeSingleViewIdx - 1] : null;
   const kotaeNextItem = kotaeSingleViewIdx >= 0 && kotaeSingleViewIdx < filteredKotae.length - 1 ? filteredKotae[kotaeSingleViewIdx + 1] : null;
@@ -318,25 +314,22 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
     }
   }, [landingNavDropdownOpen]);
 
-  // /qna?id=xxx: 리스트에서 해당 글 자동 펼침
+  // /qna?id=xxx: 해당 글만 표시, expandedKotaeId 즉시 설정 (리스트 로드 대기 없이)
   const kotaeIdFromUrl = searchParams.get("id");
   useEffect(() => {
-    if (activeTab !== "qna" || !kotaeIdFromUrl || kotaeListLoading) return;
+    if (activeTab !== "qna" || !kotaeIdFromUrl) return;
     const id = parseInt(kotaeIdFromUrl, 10);
     if (isNaN(id)) return;
-    const idx = kotaeList.findIndex((i) => i.id === id);
-    if (idx < 0) return;
     setExpandedKotaeId(id);
-    setKotaePage(Math.floor(idx / KOTAE_PAGE_SIZE));
+    if (!kotaeListLoading) {
+      const idx = kotaeList.findIndex((i) => i.id === id);
+      if (idx >= 0) setKotaePage(Math.floor(idx / KOTAE_PAGE_SIZE));
+    }
   }, [activeTab, kotaeIdFromUrl, kotaeList, kotaeListLoading]);
 
   useEffect(() => {
     const idParam = searchParams.get("id");
-    if (idParam) {
-      const id = parseInt(idParam, 10);
-      const idx = kotaeList.findIndex((i) => i.id === id);
-      if (idx >= 0) return; // URL에 id가 있고 리스트에 있으면 펼침 유지 (공유 링크용)
-    }
+    if (idParam && /^\d+$/.test(idParam)) return; // URL에 id가 있으면 펼침 유지 (공유 링크용)
     setExpandedKotaeId(null);
     setKotaeContent(null);
     setKotaeError(null);
@@ -893,7 +886,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
       <div className="flex-1 flex flex-col min-h-0 min-w-0 w-full max-w-full md:max-w-4xl mx-auto px-0 md:px-4">
       <div className="flex-1 flex flex-col min-h-0 md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
-        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""}`}>
+        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""} ${kotaeSingleViewId ? "min-h-[calc(100dvh-6rem)]" : ""}`}>
         <div className="flex items-center gap-2 p-2 md:p-3 bg-gray-50">
           {desktopMenuToggle}
           <button
@@ -969,7 +962,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </button>
         </div>
         {activeTab === "qna" ? kotaeSingleViewId ? (
-          <div className="kotae-single flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div className="kotae-single flex flex-col flex-1 min-h-0 overflow-hidden w-full" style={{ minHeight: "calc(100dvh - 7rem)" }}>
             <div className="shrink-0 flex items-center justify-between gap-2 px-2 md:px-4 py-3 border-b bg-white" style={{ borderColor: "var(--border)" }}>
               <button type="button" onClick={() => router.replace("/qna")} className="flex items-center gap-1 text-sm text-gray-600 hover:text-[var(--primary)]">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
