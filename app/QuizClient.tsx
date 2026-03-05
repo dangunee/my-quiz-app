@@ -307,11 +307,29 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
     }
   }, [landingNavDropdownOpen]);
 
+  // /qna?id=xxx: 리스트에서 해당 글 자동 펼침
+  const kotaeIdFromUrl = searchParams.get("id");
   useEffect(() => {
+    if (activeTab !== "qna" || !kotaeIdFromUrl || kotaeListLoading) return;
+    const id = parseInt(kotaeIdFromUrl, 10);
+    if (isNaN(id)) return;
+    const idx = kotaeList.findIndex((i) => i.id === id);
+    if (idx < 0) return;
+    setExpandedKotaeId(id);
+    setKotaePage(Math.floor(idx / KOTAE_PAGE_SIZE));
+  }, [activeTab, kotaeIdFromUrl, kotaeList, kotaeListLoading]);
+
+  useEffect(() => {
+    const idParam = searchParams.get("id");
+    if (idParam) {
+      const id = parseInt(idParam, 10);
+      const idx = kotaeList.findIndex((i) => i.id === id);
+      if (idx >= 0 && Math.floor(idx / KOTAE_PAGE_SIZE) === kotaePage) return;
+    }
     setExpandedKotaeId(null);
     setKotaeContent(null);
     setKotaeError(null);
-  }, [kotaePage, kotaeSearch]);
+  }, [kotaePage, kotaeSearch, searchParams, kotaeList]);
 
   useEffect(() => {
     setExpandedSeikatsuTitle(null);
