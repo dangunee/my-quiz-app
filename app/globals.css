@@ -994,6 +994,12 @@ body {
   font-weight: 600;
 }
 
+/* Q&A Rich Editor placeholder */
+.qna-rich-editor:empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+}
+
 /* Landing page */
 .landing-nav {
   position: sticky;

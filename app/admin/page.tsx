@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { QUIZZES } from "../quiz-data";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
@@ -193,7 +194,7 @@ export default function AdminPage() {
   const [qnaSelectedId, setQnaSelectedId] = useState<number | null>(null);
   const [qnaEditData, setQnaEditData] = useState<{ title: string; content: string; url: string } | null>(null);
   const [qnaEditLoading, setQnaEditLoading] = useState(false);
-  const [qnaEditMode, setQnaEditMode] = useState<"visual" | "html">("html");
+  const [qnaEditMode, setQnaEditMode] = useState<"edit" | "visual" | "html">("edit");
   const [qnaSaveLoading, setQnaSaveLoading] = useState(false);
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
@@ -1691,6 +1692,18 @@ export default function AdminPage() {
                         <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
                           <button
                             type="button"
+                            onClick={() => setQnaEditMode("edit")}
+                            className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${
+                              qnaEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"
+                            }`}
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                            EDIT
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setQnaEditMode("html")}
                             className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${
                               qnaEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"
@@ -1714,7 +1727,14 @@ export default function AdminPage() {
                           </button>
                         </div>
                       </div>
-                      {qnaEditMode === "html" ? (
+                      {qnaEditMode === "edit" ? (
+                        <RichTextEditor
+                          value={qnaEditData.content}
+                          onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)}
+                          placeholder="내용을 입력하세요..."
+                          minHeight="300px"
+                        />
+                      ) : qnaEditMode === "html" ? (
                         <textarea
                           value={qnaEditData.content}
                           onChange={(e) => setQnaEditData((d) => d ? { ...d, content: e.target.value } : null)}
