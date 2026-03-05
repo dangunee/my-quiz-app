@@ -79,10 +79,12 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
   const [seikatsuContent, setSeikatsuContent] = useState<{ html: string; url: string } | null>(null);
   const [seikatsuLoading, setSeikatsuLoading] = useState(false);
   const [seikatsuError, setSeikatsuError] = useState<string | null>(null);
+  const [seikatsuUrlCopied, setSeikatsuUrlCopied] = useState(false);
   const [expandedKotaeId, setExpandedKotaeId] = useState<number | null>(null);
   const [kotaeContent, setKotaeContent] = useState<{ html: string; url: string } | null>(null);
   const [kotaeLoading, setKotaeLoading] = useState(false);
   const [kotaeError, setKotaeError] = useState<string | null>(null);
+  const [kotaeUrlCopied, setKotaeUrlCopied] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -982,15 +984,33 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                             />
                           ) : null}
                         </div>
-                        {kotaeContent?.url && (
-                          <a
-                            href={kotaeContent.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block py-2 px-4 text-center text-xs text-[var(--primary)] hover:underline border-t border-gray-100"
-                          >
-                            ブログで続きを読む →
-                          </a>
+                        {expandedKotaeId && (
+                          <div className="py-3 px-4 border-t border-gray-100 bg-gray-50">
+                            <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <a
+                                href={`https://quiz.mirinae.jp/qna/${expandedKotaeId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 min-w-0 text-xs text-[var(--primary)] hover:underline truncate"
+                              >
+                                https://quiz.mirinae.jp/qna/{expandedKotaeId}
+                              </a>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  try {
+                                    await navigator.clipboard.writeText(`https://quiz.mirinae.jp/qna/${expandedKotaeId}`);
+                                    setKotaeUrlCopied(true);
+                                    setTimeout(() => setKotaeUrlCopied(false), 2000);
+                                  } catch {}
+                                }}
+                                className="px-2.5 py-1 text-xs font-medium rounded bg-[var(--primary)] text-white hover:opacity-90 shrink-0"
+                              >
+                                {kotaeUrlCopied ? "コピーしました" : "URLをコピー"}
+                              </button>
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}
@@ -1077,15 +1097,34 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                             />
                           ) : null}
                         </div>
-                        {seikatsuContent?.url && (
-                          <a
-                            href={seikatsuContent.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block py-2 px-4 text-center text-xs text-[var(--primary)] hover:underline border-t border-gray-100"
-                          >
-                            ブログで続きを読む →
-                          </a>
+                        {expandedSeikatsuTitle && (
+                          <div className="py-3 px-4 border-t border-gray-100 bg-gray-50">
+                            <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <a
+                                href={`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 min-w-0 text-xs text-[var(--primary)] hover:underline break-all"
+                              >
+                                {`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`}
+                              </a>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  try {
+                                    const url = `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`;
+                                    await navigator.clipboard.writeText(url);
+                                    setSeikatsuUrlCopied(true);
+                                    setTimeout(() => setSeikatsuUrlCopied(false), 2000);
+                                  } catch {}
+                                }}
+                                className="px-2.5 py-1 text-xs font-medium rounded bg-[var(--primary)] text-white hover:opacity-90 shrink-0"
+                              >
+                                {seikatsuUrlCopied ? "コピーしました" : "URLをコピー"}
+                              </button>
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}

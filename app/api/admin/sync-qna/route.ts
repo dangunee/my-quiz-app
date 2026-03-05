@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
           id: p.id,
           title,
           content,
-          url: p.link ?? `https://mirinae.jp/blog/?p=${p.id}`,
+          url: `https://quiz.mirinae.jp/qna/${p.id}`,
         });
       }
       if (posts.length < 100) hasMore = false;

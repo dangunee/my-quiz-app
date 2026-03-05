@@ -16,6 +16,7 @@ function DailyLifeContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [urlCopied, setUrlCopied] = useState(false);
 
   useEffect(() => {
     fetch("/api/dailylife-list")
@@ -134,15 +135,34 @@ function DailyLifeContent() {
                       />
                     ) : null}
                   </div>
-                  {content?.url && (
-                    <a
-                      href={content.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block py-2 px-4 text-center text-xs text-[#0ea5e9] hover:underline border-t border-gray-200"
-                    >
-                      ブログで続きを読む →
-                    </a>
+                  {expandedTitle && (
+                    <div className="py-3 px-4 border-t border-gray-200 bg-gray-50">
+                      <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <a
+                          href={`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 min-w-0 text-xs text-[#0ea5e9] hover:underline break-all"
+                        >
+                          {`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`}
+                        </a>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              const url = `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`;
+                              await navigator.clipboard.writeText(url);
+                              setUrlCopied(true);
+                              setTimeout(() => setUrlCopied(false), 2000);
+                            } catch {}
+                          }}
+                          className="px-2.5 py-1 text-xs font-medium rounded bg-[#0ea5e9] text-white hover:bg-[#0284c7] shrink-0"
+                        >
+                          {urlCopied ? "コピーしました" : "URLをコピー"}
+                        </button>
+                      </div>
+                    </div>
                   )}
                 </div>
               )}

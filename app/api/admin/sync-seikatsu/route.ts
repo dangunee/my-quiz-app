@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         all.push({
           title,
           content,
-          url: p.link ?? `https://mirinae.jp/blog/?p=${p.id}`,
+          url: `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(title)}`,
           wp_id: p.id,
         });
       }

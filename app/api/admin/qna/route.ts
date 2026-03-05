@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       id: newId,
       title: title.trim(),
       content: typeof content === "string" ? content : "",
-      url: typeof url === "string" && url.trim() ? url.trim() : `https://mirinae.jp/blog/?p=${newId}`,
+      url: typeof url === "string" && url.trim() ? url.trim() : `https://quiz.mirinae.jp/qna/${newId}`,
       sort_order: newSortOrder,
     })
     .select("id, title, content, url, sort_order")

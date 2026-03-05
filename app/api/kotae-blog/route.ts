@@ -43,9 +43,9 @@ export async function GET(req: NextRequest) {
 
     const rawContent = data.content ?? "";
     const html = stripFooter(rawContent);
-    const url = data.url ?? `https://mirinae.jp/blog/?p=${id}`;
+    const url = data.url ?? `https://quiz.mirinae.jp/qna/${id}`;
 
-    return NextResponse.json({ html, url });
+    return NextResponse.json({ html, url, title: data.title ?? "" });
   } catch (err) {
     console.error("[kotae-blog]", err);
     return NextResponse.json(
