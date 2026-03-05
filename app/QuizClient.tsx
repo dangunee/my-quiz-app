@@ -229,6 +229,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
     (kotaePage + 1) * KOTAE_PAGE_SIZE
   );
 
+  const kotaeIdFromUrl = searchParams.get("id");
   // 단일 글 보기: URL에 ?id= 있으면 해당 글만 표시 (목록 숨김) - 리스트 로드 전에도 즉시 표시
   const kotaeSingleViewId = kotaeIdFromUrl && /^\d+$/.test(kotaeIdFromUrl) ? parseInt(kotaeIdFromUrl, 10) : null;
   const kotaeSingleViewIdx = kotaeSingleViewId != null ? filteredKotae.findIndex((i) => i.id === kotaeSingleViewId) : -1;
@@ -315,7 +316,6 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
   }, [landingNavDropdownOpen]);
 
   // /qna?id=xxx: 해당 글만 표시, expandedKotaeId 즉시 설정 (리스트 로드 대기 없이)
-  const kotaeIdFromUrl = searchParams.get("id");
   useEffect(() => {
     if (activeTab !== "qna" || !kotaeIdFromUrl) return;
     const id = parseInt(kotaeIdFromUrl, 10);
@@ -1159,7 +1159,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
               </div>
             )}
           </div>
-        ) ) : activeTab === "dailylife" ? (
+        ) : activeTab === "dailylife" ? (
           <div className="kotae-list flex flex-col flex-1 min-h-0 overflow-hidden">
             <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">生活韓国語 (생활 한국어)</h2>
