@@ -943,7 +943,11 @@ body {
   transition: width 0.3s ease;
 }
 
+/* 사용자 HTML 격리: position:fixed/100vw 등이 페이지 레이아웃을 깨뜨리는 것 방지 */
 .kotae-blog-content {
+  contain: layout style paint;
+  overflow: auto;
+  max-width: 100%;
   font-size: 0.9rem;
   line-height: 1.7;
 }
