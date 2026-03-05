@@ -229,6 +229,16 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
     (kotaePage + 1) * KOTAE_PAGE_SIZE
   );
 
+  // 단일 글 보기: URL에 ?id= 있으면 해당 글만 표시 (목록 숨김)
+  const kotaeSingleViewId = kotaeIdFromUrl ? (() => {
+    const id = parseInt(kotaeIdFromUrl, 10);
+    if (isNaN(id)) return null;
+    return kotaeList.some((i) => i.id === id) ? id : null;
+  })() : null;
+  const kotaeSingleViewIdx = kotaeSingleViewId != null ? filteredKotae.findIndex((i) => i.id === kotaeSingleViewId) : -1;
+  const kotaePrevItem = kotaeSingleViewIdx > 0 ? filteredKotae[kotaeSingleViewIdx - 1] : null;
+  const kotaeNextItem = kotaeSingleViewIdx >= 0 && kotaeSingleViewIdx < filteredKotae.length - 1 ? filteredKotae[kotaeSingleViewIdx + 1] : null;
+
   const filteredSeikatsu = seikatsuSearch.trim()
     ? seikatsuList.filter((t) =>
         t.toLowerCase().includes(seikatsuSearch.trim().toLowerCase())
@@ -958,7 +968,80 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
             </svg>
           </button>
         </div>
-        {activeTab === "qna" ? (
+        {activeTab === "qna" ? kotaeSingleViewId ? (
+          <div className="kotae-single flex flex-col flex-1 min-h-0 overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between gap-2 px-2 md:px-4 py-3 border-b bg-white" style={{ borderColor: "var(--border)" }}>
+              <button type="button" onClick={() => router.replace("/qna")} className="flex items-center gap-1 text-sm text-gray-600 hover:text-[var(--primary)]">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                목록으로
+              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  disabled={!kotaePrevItem}
+                  onClick={() => kotaePrevItem && router.replace(`/qna?id=${kotaePrevItem.id}`)}
+                  className="p-2 rounded-lg border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+                  style={{ borderColor: "var(--border)" }}
+                  aria-label="이전 글"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <span className="text-sm text-gray-600 min-w-[4rem] text-center">
+                  {kotaeSingleViewIdx >= 0 ? `${kotaeSingleViewIdx + 1} / ${filteredKotae.length}` : "-"}
+                </span>
+                <button
+                  type="button"
+                  disabled={!kotaeNextItem}
+                  onClick={() => kotaeNextItem && router.replace(`/qna?id=${kotaeNextItem.id}`)}
+                  className="p-2 rounded-lg border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+                  style={{ borderColor: "var(--border)" }}
+                  aria-label="다음 글"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 min-h-0 overflow-y-auto px-0 py-4 md:px-4">
+              {kotaeLoading ? (
+                <p className="text-center text-gray-500 py-8">読み込み中...</p>
+              ) : kotaeError ? (
+                <p className="text-center text-red-500 py-4">{kotaeError}</p>
+              ) : kotaeContent?.html ? kotaeContent.html.includes("<script") ? (
+                <iframe
+                  srcDoc={wrapHtmlForIframe(kotaeContent.html)}
+                  title="Q&A content"
+                  className="w-full min-h-[400px] border-0 kotae-blog-content"
+                  sandbox="allow-scripts"
+                />
+              ) : (
+                <div className="kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: kotaeContent.html }} />
+              ) : null}
+            </div>
+            {kotaeSingleViewId && (
+              <div className="py-3 px-2 md:px-4 border-t shrink-0 bg-gray-50" style={{ borderColor: "var(--border)" }}>
+                <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <a href={`https://apps.mirinae.jp/qna/${kotaeSingleViewId}`} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0 text-xs text-[var(--primary)] hover:underline truncate">
+                    https://apps.mirinae.jp/qna/{kotaeSingleViewId}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(`https://apps.mirinae.jp/qna/${kotaeSingleViewId}`);
+                        setKotaeUrlCopied(true);
+                        setTimeout(() => setKotaeUrlCopied(false), 2000);
+                      } catch {}
+                    }}
+                    className="px-2.5 py-1 text-xs font-medium rounded bg-[var(--primary)] text-white hover:opacity-90 shrink-0"
+                  >
+                    {kotaeUrlCopied ? "コピーしました" : "URLをコピー"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
           <div className="kotae-list flex flex-col flex-1 min-h-0 overflow-hidden">
             <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
@@ -985,9 +1068,14 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                   <li key={item.id} className="border-b border-gray-200 last:border-b-0">
                     <button
                       type="button"
-                      onClick={() =>
-                        setExpandedKotaeId((prev) => (prev === item.id ? null : item.id))
-                      }
+                      onClick={() => {
+                        if (expandedKotaeId === item.id) {
+                          setExpandedKotaeId(null);
+                          router.replace("/qna");
+                        } else {
+                          router.replace(`/qna?id=${item.id}`);
+                        }
+                      }}
                       className="w-full text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                     >
                       <span>{item.title}</span>
@@ -1078,7 +1166,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
               </div>
             )}
           </div>
-        ) : activeTab === "dailylife" ? (
+        ) ) : activeTab === "dailylife" ? (
           <div className="kotae-list flex flex-col flex-1 min-h-0 overflow-hidden">
             <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">生活韓国語 (생활 한국어)</h2>
