@@ -246,7 +246,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
 
   const handleStartFromLanding = (tab: "quiz" | "qna" | "dailylife") => {
     if (pathname === "/main.html") {
-      router.push(tab === "quiz" ? QUIZ_BASE : tab === "qna" ? "/qna" : "/dailylife");
+      router.push(tab === "quiz" ? QUIZ_BASE : tab === "qna" ? "/qna" : `${QUIZ_BASE}?tab=dailylife`);
     } else {
       setShowLanding(false);
       setActiveTab(tab);
@@ -264,6 +264,18 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
       router.replace("/qna", { scroll: false });
     }
   }, [searchParams]);
+
+  // /quiz?tab=dailylife&title=xxx: 특정 글 자동 펼침
+  useEffect(() => {
+    if (activeTab !== "dailylife") return;
+    const title = searchParams.get("title") || searchParams.get("q");
+    if (title && seikatsuList.includes(title)) {
+      setExpandedSeikatsuTitle(title);
+      const idx = seikatsuList.indexOf(title);
+      const SEIKATSU_PAGE = 10;
+      setSeikatsuPage(Math.floor(idx / SEIKATSU_PAGE));
+    }
+  }, [activeTab, searchParams, seikatsuList]);
 
   const quizIdFromUrl = searchParams.get("quiz");
   useEffect(() => {
@@ -529,7 +541,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
   const rightMenuLinks = [
     { label: "作文トレ", href: "https://apps.mirinae.jp/writing", external: true },
     { label: "音読トレ", href: "https://apps.mirinae.jp/ondoku", external: true },
-    { label: "生活韓国語", href: "/dailylife", external: false },
+    { label: "生活韓国語", href: "/quiz?tab=dailylife", external: false },
     { label: "初級クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "変則活用", href: "https://mirinae.jp", external: true },
     { label: "初級文法", href: "https://mirinae.jp", external: true },
@@ -897,7 +909,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("dailylife"); router.replace("/dailylife"); }}
+            onClick={() => { setActiveTab("dailylife"); router.replace(`${QUIZ_BASE}?tab=dailylife`); }}
             className={`quiz-tab-btn flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "dailylife"
                 ? "text-white"
