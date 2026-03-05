@@ -880,11 +880,11 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </>,
           document.body
         )}
-      <div className="flex-1 flex flex-col min-w-0 w-full max-w-4xl mx-auto md:px-4">
+      <div className="flex-1 flex flex-col min-w-0 w-full max-w-full md:max-w-4xl mx-auto px-0 md:px-4">
       <div className="flex-1 flex flex-col md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
-        <div className="quiz-container w-full md:shrink-0">
-        <div className="flex items-center gap-2 p-3 bg-gray-50">
+        <div className={`quiz-container w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""}`}>
+        <div className="flex items-center gap-2 p-2 md:p-3 bg-gray-50">
           {desktopMenuToggle}
           <button
             type="button"
@@ -959,8 +959,8 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </button>
         </div>
         {activeTab === "qna" ? (
-          <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
-            <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
+          <div className="kotae-list flex flex-col flex-1 min-h-0 max-h-[calc(100dvh-6rem)] md:min-h-[calc(100vh-10rem)] md:max-h-[calc(100vh-6rem)] overflow-hidden">
+            <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
               <input
                 type="search"
@@ -988,7 +988,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                       onClick={() =>
                         setExpandedKotaeId((prev) => (prev === item.id ? null : item.id))
                       }
-                      className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
+                      className="w-full text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                     >
                       <span>{item.title}</span>
                       <span
@@ -1001,7 +1001,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                     </button>
                     {expandedKotaeId === item.id && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
-                        <div className="max-h-[500px] overflow-y-auto p-4">
+                        <div className="min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
                           {kotaeLoading ? (
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
                           ) : kotaeError ? (
@@ -1021,7 +1021,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                           ) : null}
                         </div>
                         {expandedKotaeId && (
-                          <div className="py-3 px-4 border-t border-gray-100 bg-gray-50">
+                          <div className="py-3 px-2 md:px-4 border-t border-gray-100 bg-gray-50">
                             <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
                             <div className="flex flex-wrap items-center gap-2">
                               <a
@@ -1079,8 +1079,8 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
             )}
           </div>
         ) : activeTab === "dailylife" ? (
-          <div className="kotae-list flex flex-col max-h-[calc(100dvh-6rem)] md:max-h-[70vh] overflow-hidden">
-            <div className="text-white shrink-0 px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
+          <div className="kotae-list flex flex-col flex-1 min-h-0 max-h-[calc(100dvh-6rem)] md:min-h-[calc(100vh-10rem)] md:max-h-[calc(100vh-6rem)] overflow-hidden">
+            <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">生活韓国語 (생활 한국어)</h2>
               <input
                 type="search"
@@ -1108,7 +1108,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                       onClick={() =>
                         setExpandedSeikatsuTitle((prev) => (prev === title ? null : title))
                       }
-                      className="w-full text-left py-3 px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
+                      className="w-full text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                     >
                       <span>{title}</span>
                       <span
@@ -1121,7 +1121,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                     </button>
                     {expandedSeikatsuTitle === title && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
-                        <div className="seikatsu-content max-h-[500px] overflow-y-auto p-4">
+                        <div className="seikatsu-content min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
                           {seikatsuLoading ? (
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
                           ) : seikatsuError ? (
@@ -1141,7 +1141,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                           ) : null}
                         </div>
                         {expandedSeikatsuTitle && (
-                          <div className="py-3 px-4 border-t border-gray-100 bg-gray-50">
+                          <div className="py-3 px-2 md:px-4 border-t border-gray-100 bg-gray-50">
                             <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
                             <div className="flex flex-wrap items-center gap-2">
                               <a

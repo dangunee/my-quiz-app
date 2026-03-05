@@ -42,6 +42,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(target.toString(), 302);
   }
 
+  // /qna/123 → /qna?id=123 (퀴즈앱 내부 Q&A 탭에서 해당 글 펼침)
+  const qnaIdMatch = pathname.match(/^\/qna\/(\d+)$/);
+  if (qnaIdMatch) {
+    const target = new URL("/qna", request.url);
+    target.searchParams.set("id", qnaIdMatch[1]);
+    return NextResponse.redirect(target.toString(), 302);
+  }
+
   // apps.mirinae.jp: root → /quiz
   const isAppsHost = host === APPS_HOST || host === `www.${APPS_HOST}`;
   if (isAppsHost) {
