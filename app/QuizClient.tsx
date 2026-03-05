@@ -884,9 +884,9 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           document.body
         )}
       <div className="flex-1 flex flex-col min-h-0 min-w-0 w-full max-w-full md:max-w-4xl mx-auto px-0 md:px-4">
-      <div className="flex-1 flex flex-col min-h-0 md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
+      <div className={`flex-1 flex flex-col min-h-0 md:flex-row md:justify-center md:gap-4 min-w-0 w-full ${kotaeSingleViewId ? "md:items-stretch" : "md:items-start"}`}>
         {desktopMenu}
-        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""} ${kotaeSingleViewId ? "min-h-[calc(100dvh-6rem)]" : ""}`}>
+        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""} ${kotaeSingleViewId ? "min-h-[calc(100dvh-6rem)] md:h-full" : ""}`}>
         <div className="flex items-center gap-2 p-2 md:p-3 bg-gray-50">
           {desktopMenuToggle}
           <button
@@ -962,11 +962,11 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </button>
         </div>
         {activeTab === "qna" ? kotaeSingleViewId ? (
-          <div className="kotae-single flex flex-col flex-1 min-h-0 overflow-hidden w-full" style={{ minHeight: "calc(100dvh - 7rem)" }}>
+          <div className="kotae-single flex flex-col flex-1 min-h-0 overflow-hidden w-full h-full" style={{ minHeight: "calc(100dvh - 7rem)" }}>
             <div className="shrink-0 flex items-center justify-between gap-2 px-2 md:px-4 py-3 border-b bg-white" style={{ borderColor: "var(--border)" }}>
               <button type="button" onClick={() => router.replace("/qna")} className="flex items-center gap-1 text-sm text-gray-600 hover:text-[var(--primary)]">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                목록으로
+                リストに戻る
               </button>
               <div className="flex items-center gap-1">
                 <button

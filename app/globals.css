@@ -43,16 +43,22 @@
   --color-foreground: var(--foreground);
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont,
     "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
 }
 
 .app-wrapper {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
