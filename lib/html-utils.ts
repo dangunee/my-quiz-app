@@ -50,12 +50,60 @@ export function wrapHtmlForIframe(html: string): string {
 }
 
 /**
- * EDITモード用: script/audioを一時的に取り除き、編集可能な部分だけ返す。
+ * EDITモード用: script/audioを含むブロックを一時的に取り除き、編集可能な部分だけ返す。
+ * オーディオプレーヤーのUI（divでラップされたコントロール等）も含めてブロックごと置換。
  * 取り除いた部分はプレースホルダに置換し、preservedに格納。保存時にmergeForSaveで復元。
  */
 export function extractForEdit(html: string): { editable: string; preserved: string[] } {
   const preserved: string[] = [];
   const placeholder = (idx: number) => `<div contenteditable="false" data-edit-ph="${idx}" style="background:#f0f0f0;padding:4px 8px;margin:4px 0;font-size:12px;color:#666;">[音声・スクリプト ${idx + 1}]</div>`;
+
+  if (typeof window === "undefined") {
+    return extractForEditRegex(html, preserved, placeholder);
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const root = doc.body;
+
+  const toReplace: { element: Element; originalHtml: string }[] = [];
+  const seen = new WeakSet<Element>();
+
+  root.querySelectorAll("audio").forEach((audio) => {
+    const block = audio.closest("div");
+    const el = block || audio;
+    if (seen.has(el)) return;
+    seen.add(el);
+    toReplace.push({ element: el, originalHtml: el.outerHTML });
+  });
+
+  root.querySelectorAll("script").forEach((script) => {
+    if (seen.has(script)) return;
+    const block = script.closest("div");
+    const el = block || script;
+    if (seen.has(el)) return;
+    seen.add(el);
+    toReplace.push({ element: el, originalHtml: el.outerHTML });
+  });
+
+  toReplace.sort((a, b) => (a.element.contains(b.element) ? 1 : b.element.contains(a.element) ? -1 : 0));
+
+  toReplace.forEach(({ element, originalHtml }) => {
+    if (!element.parentNode) return;
+    const idx = preserved.length;
+    preserved.push(originalHtml);
+    const ph = doc.createElement("div");
+    ph.setAttribute("contenteditable", "false");
+    ph.setAttribute("data-edit-ph", String(idx));
+    ph.style.cssText = "background:#f0f0f0;padding:4px 8px;margin:4px 0;font-size:12px;color:#666;";
+    ph.textContent = `[音声・スクリプト ${idx + 1}]`;
+    element.parentNode.replaceChild(ph, element);
+  });
+
+  return { editable: root.innerHTML, preserved };
+}
+
+function extractForEditRegex(html: string, preserved: string[], placeholder: (i: number) => string): { editable: string; preserved: string[] } {
   let editable = html;
   editable = editable.replace(/<script[\s\S]*?<\/script>/gi, (m) => {
     preserved.push(m);
