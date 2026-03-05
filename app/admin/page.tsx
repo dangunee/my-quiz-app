@@ -1859,7 +1859,7 @@ export default function AdminPage() {
                   {qnaSelectedId && !qnaIsNewMode && (
                     <div className="p-3 border-t">
                       <a
-                        href={qnaEditData?.url || `https://apps.mirinae.jp/qna/${qnaSelectedId}`}
+                        href={/^https?:\/\//i.test(qnaEditData?.url || "") ? qnaEditData!.url : `https://apps.mirinae.jp/qna/${qnaSelectedId}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[var(--primary)] hover:underline"
@@ -1993,7 +1993,7 @@ export default function AdminPage() {
                   {seikatsuSelectedTitle && !seikatsuIsNewMode && (
                     <div className="p-3 border-t">
                       <a
-                        href={seikatsuEditData?.url || `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(seikatsuSelectedTitle)}`}
+                        href={/^https?:\/\//i.test(seikatsuEditData?.url || "") ? seikatsuEditData!.url : `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(seikatsuSelectedTitle)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[var(--primary)] hover:underline"

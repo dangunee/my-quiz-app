@@ -32,3 +32,12 @@ export function extractBodyIfFullDocument(html: string): string {
 
   return result || trimmed;
 }
+
+/**
+ * HTML 내 긴 data: URL(Base64 이미지/오디오 등) 제거.
+ * paste 시 본문에 끼어드는 이상한 문자열 방지.
+ */
+export function stripLongDataUrls(html: string): string {
+  if (!html || typeof html !== "string") return html;
+  return html.replace(/(src|href)=["'](data:[^"']{300,})["']/gi, '$1=""');
+}

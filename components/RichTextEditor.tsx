@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useCallback } from "react";
+import { stripLongDataUrls } from "@/lib/html-utils";
 
 type RichTextEditorProps = {
   value: string;
@@ -32,6 +33,18 @@ export function RichTextEditor({ value, onChange, placeholder, className = "", m
     isInternalChange.current = true;
     onChange(el.innerHTML);
   }, [onChange]);
+
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent) => {
+      const html = e.clipboardData?.getData("text/html");
+      if (html && /data:[^"'\s]{300,}/i.test(html)) {
+        e.preventDefault();
+        document.execCommand("insertHTML", false, stripLongDataUrls(html));
+        handleInput();
+      }
+    },
+    [handleInput]
+  );
 
   const execCmd = (cmd: string, value?: string) => {
     document.execCommand(cmd, false, value);
@@ -99,6 +112,7 @@ export function RichTextEditor({ value, onChange, placeholder, className = "", m
         ref={editorRef}
         contentEditable
         onInput={handleInput}
+        onPaste={handlePaste}
         data-placeholder={placeholder}
         className="qna-rich-editor kotae-blog-content p-3 text-sm text-gray-800 overflow-y-auto outline-none min-h-[200px]"
         style={{ minHeight }}

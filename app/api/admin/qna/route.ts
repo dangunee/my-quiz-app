@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { stripLongDataUrls } from "@/lib/html-utils";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
     .insert({
       id: newId,
       title: title.trim(),
-      content: typeof content === "string" ? content : "",
+      content: stripLongDataUrls(typeof content === "string" ? content : ""),
       url: typeof url === "string" && url.trim() ? url.trim() : `https://apps.mirinae.jp/qna/${newId}`,
       sort_order: newSortOrder,
     })

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { stripLongDataUrls } from "@/lib/html-utils";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -66,7 +67,7 @@ export async function PUT(
   const supabase = createClient(supabaseUrl, supabaseKey);
   const updates: Record<string, unknown> = {};
   if (typeof title === "string") updates.title = title;
-  if (typeof content === "string") updates.content = content;
+  if (typeof content === "string") updates.content = stripLongDataUrls(content);
   if (typeof url === "string") updates.url = url;
 
   if (Object.keys(updates).length === 0) {
