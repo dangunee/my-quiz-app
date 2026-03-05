@@ -134,3 +134,30 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(data);
 }
+
+/** DELETE: 生活韓国語 글 삭제 (title로 조회) */
+export async function DELETE(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json({ error: "Supabase not configured" }, { status: 500 });
+  }
+
+  const title = req.nextUrl.searchParams.get("title");
+  if (!title || !title.trim()) {
+    return NextResponse.json({ error: "title required" }, { status: 400 });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  const { error } = await supabase
+    .from("seikatsu_items")
+    .delete()
+    .eq("title", title.trim());
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true });
+}

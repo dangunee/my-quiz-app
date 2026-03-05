@@ -524,6 +524,46 @@ export default function AdminPage() {
       .finally(() => setSeikatsuEditLoading(false));
   }, [seikatsuSelectedTitle, authKey, seikatsuIsNewMode]);
 
+  const handleDeleteQna = async (id: number) => {
+    if (!authKey || !confirm("이 글을 삭제하시겠습니까?")) return;
+    try {
+      const res = await fetch(`/api/admin/qna/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${authKey}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "삭제에 실패했습니다");
+      setQnaList((prev) => prev.filter((i) => i.id !== id));
+      if (qnaSelectedId === id) {
+        setQnaSelectedId(null);
+        setQnaEditData(null);
+      }
+      alert("삭제했습니다");
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "삭제에 실패했습니다");
+    }
+  };
+
+  const handleDeleteSeikatsu = async (title: string) => {
+    if (!authKey || !confirm("이 글을 삭제하시겠습니까?")) return;
+    try {
+      const res = await fetch(`/api/admin/seikatsu?title=${encodeURIComponent(title)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${authKey}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "삭제에 실패했습니다");
+      setSeikatsuList((prev) => prev.filter((t) => t !== title));
+      if (seikatsuSelectedTitle === title) {
+        setSeikatsuSelectedTitle(null);
+        setSeikatsuEditData(null);
+      }
+      alert("삭제했습니다");
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "삭제에 실패했습니다");
+    }
+  };
+
   const handleSaveQna = async () => {
     if (!qnaEditData || !authKey) return;
     if (!qnaIsNewMode && !qnaSelectedId) return;
@@ -1784,30 +1824,51 @@ export default function AdminPage() {
                       새글 추가
                     </button>
                   </div>
-                  <ul className="max-h-[480px] overflow-y-auto">
+                  <ul className="max-h-[420px] overflow-y-auto">
                     {qnaListLoading ? (
                       <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
                     ) : qnaList.length === 0 ? (
                       <li className="p-4 text-gray-500 text-sm">질문이 없습니다</li>
                     ) : (
                       qnaList.map((item) => (
-                        <li key={item.id}>
+                        <li key={item.id} className="flex items-center border-b group">
                           <button
                             type="button"
                             onClick={() => {
                               setQnaIsNewMode(false);
                               setQnaSelectedId(item.id);
                             }}
-                            className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
+                            className={`flex-1 min-w-0 text-left px-4 py-3 text-sm hover:bg-gray-50 ${
                               qnaSelectedId === item.id ? "bg-red-50 border-l-4 border-l-red-600" : ""
                             }`}
                           >
                             {item.title.slice(0, 50)}{item.title.length > 50 ? "…" : ""}
                           </button>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleDeleteQna(item.id); }}
+                            className="shrink-0 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                            title="삭제"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
                         </li>
                       ))
                     )}
                   </ul>
+                  {qnaSelectedId && !qnaIsNewMode && (
+                    <div className="p-3 border-t">
+                      <a
+                        href={qnaEditData?.url || `https://apps.mirinae.jp/qna/${qnaSelectedId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[var(--primary)] hover:underline"
+                      >
+                        &lt;프론트페이지&gt;
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   {!qnaSelectedId && !qnaIsNewMode ? (
@@ -1897,30 +1958,51 @@ export default function AdminPage() {
                       새글 추가
                     </button>
                   </div>
-                  <ul className="max-h-[480px] overflow-y-auto">
+                  <ul className="max-h-[420px] overflow-y-auto">
                     {seikatsuListLoading ? (
                       <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
                     ) : seikatsuList.length === 0 ? (
                       <li className="p-4 text-gray-500 text-sm">記事がありません</li>
                     ) : (
                       seikatsuList.map((title) => (
-                        <li key={title}>
+                        <li key={title} className="flex items-center border-b group">
                           <button
                             type="button"
                             onClick={() => {
                               setSeikatsuIsNewMode(false);
                               setSeikatsuSelectedTitle(title);
                             }}
-                            className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
+                            className={`flex-1 min-w-0 text-left px-4 py-3 text-sm hover:bg-gray-50 ${
                               seikatsuSelectedTitle === title ? "bg-red-50 border-l-4 border-l-red-600" : ""
                             }`}
                           >
                             {title.slice(0, 50)}{title.length > 50 ? "…" : ""}
                           </button>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleDeleteSeikatsu(title); }}
+                            className="shrink-0 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                            title="삭제"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
                         </li>
                       ))
                     )}
                   </ul>
+                  {seikatsuSelectedTitle && !seikatsuIsNewMode && (
+                    <div className="p-3 border-t">
+                      <a
+                        href={seikatsuEditData?.url || `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(seikatsuSelectedTitle)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[var(--primary)] hover:underline"
+                      >
+                        &lt;프론트페이지&gt;
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                      </a>
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   {!seikatsuSelectedTitle && !seikatsuIsNewMode ? (
