@@ -325,7 +325,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
     if (idParam) {
       const id = parseInt(idParam, 10);
       const idx = kotaeList.findIndex((i) => i.id === id);
-      if (idx >= 0 && Math.floor(idx / KOTAE_PAGE_SIZE) === kotaePage) return;
+      if (idx >= 0) return; // URL에 id가 있고 리스트에 있으면 펼침 유지 (공유 링크용)
     }
     setExpandedKotaeId(null);
     setKotaeContent(null);
@@ -880,10 +880,10 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </>,
           document.body
         )}
-      <div className="flex-1 flex flex-col min-w-0 w-full max-w-full md:max-w-4xl mx-auto px-0 md:px-4">
-      <div className="flex-1 flex flex-col md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
+      <div className="flex-1 flex flex-col min-h-0 min-w-0 w-full max-w-full md:max-w-4xl mx-auto px-0 md:px-4">
+      <div className="flex-1 flex flex-col min-h-0 md:flex-row md:items-start md:justify-center md:gap-4 min-w-0 w-full">
         {desktopMenu}
-        <div className={`quiz-container w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""}`}>
+        <div className={`quiz-container flex flex-col flex-1 min-h-0 w-full md:shrink-0 ${activeTab === "qna" || activeTab === "dailylife" ? "max-w-full md:max-w-[520px] rounded-none md:rounded-[var(--radius)] border-0 md:border md:border-gray-200" : ""}`}>
         <div className="flex items-center gap-2 p-2 md:p-3 bg-gray-50">
           {desktopMenuToggle}
           <button
@@ -959,7 +959,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           </button>
         </div>
         {activeTab === "qna" ? (
-          <div className="kotae-list flex flex-col flex-1 min-h-0 max-h-[calc(100dvh-6rem)] md:min-h-[calc(100vh-10rem)] md:max-h-[calc(100vh-6rem)] overflow-hidden">
+          <div className="kotae-list flex flex-col flex-1 min-h-0 overflow-hidden">
             <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">韓国語の微妙なニュアンス Q&A</h2>
               <input
@@ -1079,7 +1079,7 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
             )}
           </div>
         ) : activeTab === "dailylife" ? (
-          <div className="kotae-list flex flex-col flex-1 min-h-0 max-h-[calc(100dvh-6rem)] md:min-h-[calc(100vh-10rem)] md:max-h-[calc(100vh-6rem)] overflow-hidden">
+          <div className="kotae-list flex flex-col flex-1 min-h-0 overflow-hidden">
             <div className="text-white shrink-0 px-4 md:px-6 pt-3 pb-4 border-b border-white/10" style={{ background: "var(--primary)" }}>
               <h2 className="text-center font-semibold text-base mb-3">生活韓国語 (생활 한국어)</h2>
               <input
