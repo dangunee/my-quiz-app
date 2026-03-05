@@ -50,6 +50,37 @@ export function wrapHtmlForIframe(html: string): string {
 }
 
 /**
+ * EDITモード用: script/audioを一時的に取り除き、編集可能な部分だけ返す。
+ * 取り除いた部分はプレースホルダに置換し、preservedに格納。保存時にmergeForSaveで復元。
+ */
+export function extractForEdit(html: string): { editable: string; preserved: string[] } {
+  const preserved: string[] = [];
+  const placeholder = (idx: number) => `<div contenteditable="false" data-edit-ph="${idx}" style="background:#f0f0f0;padding:4px 8px;margin:4px 0;font-size:12px;color:#666;">[音声・スクリプト ${idx + 1}]</div>`;
+  let editable = html;
+  editable = editable.replace(/<script[\s\S]*?<\/script>/gi, (m) => {
+    preserved.push(m);
+    return placeholder(preserved.length - 1);
+  });
+  editable = editable.replace(/<audio[\s\S]*?<\/audio>|<audio[^>]*\/\s*>/gi, (m) => {
+    preserved.push(m);
+    return placeholder(preserved.length - 1);
+  });
+  return { editable, preserved };
+}
+
+/**
+ * EDITモードで保存時、プレースホルダをpreservedの内容で置換して復元。
+ */
+export function mergeForSave(editedHtml: string, preserved: string[]): string {
+  let result = editedHtml;
+  preserved.forEach((p, i) => {
+    const ph = new RegExp(`<div[^>]*data-edit-ph="${i}"[^>]*>[^<]*</div>`, "i");
+    result = result.replace(ph, p);
+  });
+  return result;
+}
+
+/**
  * HTML 내 긴 data: URL(Base64 이미지/오디오 등) 및 의미 없는 긴 문자열 제거.
  * paste 시 본문에 끼어드는 이상한 문자열 방지.
  */

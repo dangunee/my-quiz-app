@@ -1059,27 +1059,38 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
               ) : (
                 kotaePaginated.map((item, i) => (
                   <li key={item.id} className="border-b border-gray-200 last:border-b-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (expandedKotaeId === item.id) {
-                          setExpandedKotaeId(null);
-                          router.replace("/qna");
-                        } else {
-                          router.replace(`/qna?id=${item.id}`);
-                        }
-                      }}
-                      className="w-full text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
-                    >
-                      <span>{item.title}</span>
-                      <span
-                        className={`shrink-0 text-gray-400 transition-transform ${
-                          expandedKotaeId === item.id ? "rotate-180" : ""
-                        }`}
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (expandedKotaeId === item.id) {
+                            setExpandedKotaeId(null);
+                            router.replace("/qna");
+                          } else {
+                            router.replace(`/qna?id=${item.id}`);
+                          }
+                        }}
+                        className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                       >
-                        ▼
-                      </span>
-                    </button>
+                        <span className="truncate">{item.title}</span>
+                        <span
+                          className={`shrink-0 text-gray-400 transition-transform ${
+                            expandedKotaeId === item.id ? "rotate-180" : ""
+                          }`}
+                        >
+                          ▼
+                        </span>
+                      </button>
+                      {isAdmin && !isLoggedIn && (
+                        <Link
+                          href={`/admin?tab=qnaEdit&qna=${item.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="shrink-0 px-2 py-1.5 text-xs font-medium text-gray-600 hover:text-[var(--primary)] hover:bg-gray-100 rounded"
+                        >
+                          編集
+                        </Link>
+                      )}
+                    </div>
                     {expandedKotaeId === item.id && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
                         <div className="min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
@@ -1184,22 +1195,33 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
               ) : (
                 seikatsuPaginated.map((title, i) => (
                   <li key={i} className="border-b border-gray-200 last:border-b-0">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setExpandedSeikatsuTitle((prev) => (prev === title ? null : title))
-                      }
-                      className="w-full text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
-                    >
-                      <span>{title}</span>
-                      <span
-                        className={`shrink-0 text-gray-400 transition-transform ${
-                          expandedSeikatsuTitle === title ? "rotate-180" : ""
-                        }`}
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedSeikatsuTitle((prev) => (prev === title ? null : title))
+                        }
+                        className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
                       >
-                        ▼
-                      </span>
-                    </button>
+                        <span className="truncate">{title}</span>
+                        <span
+                          className={`shrink-0 text-gray-400 transition-transform ${
+                            expandedSeikatsuTitle === title ? "rotate-180" : ""
+                          }`}
+                        >
+                          ▼
+                        </span>
+                      </button>
+                      {isAdmin && !isLoggedIn && (
+                        <Link
+                          href={`/admin?tab=qnaEdit&seikatsu=${encodeURIComponent(title)}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="shrink-0 px-2 py-1.5 text-xs font-medium text-gray-600 hover:text-[var(--primary)] hover:bg-gray-100 rounded"
+                        >
+                          編集
+                        </Link>
+                      )}
+                    </div>
                     {expandedSeikatsuTitle === title && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
                         <div className="seikatsu-content min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { QUIZZES } from "../quiz-data";
 import { RichTextEditor } from "@/components/RichTextEditor";
+import { extractForEdit, mergeForSave } from "@/lib/html-utils";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
@@ -195,6 +196,7 @@ export default function AdminPage() {
   const [qnaEditData, setQnaEditData] = useState<{ title: string; content: string; url: string } | null>(null);
   const [qnaEditLoading, setQnaEditLoading] = useState(false);
   const [qnaEditMode, setQnaEditMode] = useState<"edit" | "html">("edit");
+  const [qnaPreservedBlocks, setQnaPreservedBlocks] = useState<string[]>([]);
   const [qnaSaveLoading, setQnaSaveLoading] = useState(false);
   const [qnaIsNewMode, setQnaIsNewMode] = useState(false);
   const [dbEditSubTab, setDbEditSubTab] = useState<"qna" | "seikatsu">("qna");
@@ -204,6 +206,7 @@ export default function AdminPage() {
   const [seikatsuEditData, setSeikatsuEditData] = useState<{ title: string; content: string; url: string } | null>(null);
   const [seikatsuEditLoading, setSeikatsuEditLoading] = useState(false);
   const [seikatsuEditMode, setSeikatsuEditMode] = useState<"edit" | "html">("edit");
+  const [seikatsuPreservedBlocks, setSeikatsuPreservedBlocks] = useState<string[]>([]);
   const [seikatsuSaveLoading, setSeikatsuSaveLoading] = useState(false);
   const [seikatsuIsNewMode, setSeikatsuIsNewMode] = useState(false);
   const [qnaCheckedIds, setQnaCheckedIds] = useState<Set<number>>(new Set());
@@ -383,6 +386,32 @@ export default function AdminPage() {
     }, 300);
   }, [loading, quizIdFromUrl, tabFromUrl, overrides]);
 
+  const qnaParamFromUrl = searchParams.get("qna");
+  const seikatsuParamFromUrl = searchParams.get("seikatsu");
+  const qnaEditParamHandled = useRef(false);
+  useEffect(() => {
+    if (!authChecked || !isAuthenticated || tabFromUrl !== "qnaEdit" || qnaEditParamHandled.current) return;
+    if (qnaParamFromUrl) {
+      const id = parseInt(qnaParamFromUrl, 10);
+      if (!isNaN(id)) {
+        qnaEditParamHandled.current = true;
+        setActiveTab("qnaEdit");
+        setDbEditSubTab("qna");
+        setQnaSelectedId(id);
+        setQnaIsNewMode(false);
+      }
+    } else if (seikatsuParamFromUrl) {
+      const title = decodeURIComponent(seikatsuParamFromUrl);
+      if (title) {
+        qnaEditParamHandled.current = true;
+        setActiveTab("qnaEdit");
+        setDbEditSubTab("seikatsu");
+        setSeikatsuSelectedTitle(title);
+        setSeikatsuIsNewMode(false);
+      }
+    }
+  }, [authChecked, isAuthenticated, tabFromUrl, qnaParamFromUrl, seikatsuParamFromUrl]);
+
   const [loginError, setLoginError] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
@@ -502,7 +531,18 @@ export default function AdminPage() {
       .then((r) => r.json())
       .then((data) => {
         if (data.error) setQnaEditData(null);
-        else setQnaEditData({ title: data.title ?? "", content: data.content ?? "", url: data.url ?? "" });
+        else {
+          const content = data.content ?? "";
+          if (content.includes("<script") || content.includes("<audio")) {
+            const { editable, preserved } = extractForEdit(content);
+            setQnaEditData({ title: data.title ?? "", content: editable, url: data.url ?? "" });
+            setQnaPreservedBlocks(preserved);
+            setQnaEditMode("edit");
+          } else {
+            setQnaEditData({ title: data.title ?? "", content, url: data.url ?? "" });
+            setQnaPreservedBlocks([]);
+          }
+        }
       })
       .catch(() => setQnaEditData(null))
       .finally(() => setQnaEditLoading(false));
@@ -521,7 +561,18 @@ export default function AdminPage() {
       .then((r) => r.json())
       .then((data) => {
         if (data.error) setSeikatsuEditData(null);
-        else setSeikatsuEditData({ title: data.title ?? "", content: data.content ?? "", url: data.url ?? "" });
+        else {
+          const content = data.content ?? "";
+          if (content.includes("<script") || content.includes("<audio")) {
+            const { editable, preserved } = extractForEdit(content);
+            setSeikatsuEditData({ title: data.title ?? "", content: editable, url: data.url ?? "" });
+            setSeikatsuPreservedBlocks(preserved);
+            setSeikatsuEditMode("edit");
+          } else {
+            setSeikatsuEditData({ title: data.title ?? "", content, url: data.url ?? "" });
+            setSeikatsuPreservedBlocks([]);
+          }
+        }
       })
       .catch(() => setSeikatsuEditData(null))
       .finally(() => setSeikatsuEditLoading(false));
@@ -643,10 +694,11 @@ export default function AdminPage() {
         setQnaList(Array.isArray(listData) ? listData : []);
         if (data?.id) setQnaSelectedId(data.id);
       } else {
+        const contentToSave = qnaPreservedBlocks.length > 0 ? mergeForSave(qnaEditData.content, qnaPreservedBlocks) : qnaEditData.content;
         const res = await fetch(`/api/admin/qna/${qnaSelectedId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
-          body: JSON.stringify(qnaEditData),
+          body: JSON.stringify({ ...qnaEditData, content: contentToSave }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "保存に失敗しました");
@@ -682,12 +734,13 @@ export default function AdminPage() {
         setSeikatsuList(Array.isArray(listData) ? listData : []);
         if (data?.title) setSeikatsuSelectedTitle(data.title);
       } else {
+        const contentToSave = seikatsuPreservedBlocks.length > 0 ? mergeForSave(seikatsuEditData.content, seikatsuPreservedBlocks) : seikatsuEditData.content;
         const res = await fetch("/api/admin/seikatsu", {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
           body: JSON.stringify({
             title: seikatsuSelectedTitle,
-            content: seikatsuEditData.content,
+            content: contentToSave,
             url: seikatsuEditData.url,
           }),
         });
@@ -2034,11 +2087,33 @@ export default function AdminPage() {
                         <div className="flex items-center justify-between mb-1">
                           <label className="text-sm font-medium text-gray-700">본문</label>
                           <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
-                            <button type="button" onClick={() => setQnaEditMode("edit")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (qnaEditMode === "html" && qnaEditData.content && (qnaEditData.content.includes("<script") || qnaEditData.content.includes("<audio"))) {
+                                  const { editable, preserved } = extractForEdit(qnaEditData.content);
+                                  setQnaEditData((d) => d ? { ...d, content: editable } : null);
+                                  setQnaPreservedBlocks(preserved);
+                                }
+                                setQnaEditMode("edit");
+                              }}
+                              className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}
+                            >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                               EDIT
                             </button>
-                            <button type="button" onClick={() => setQnaEditMode("html")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (qnaEditMode === "edit" && qnaPreservedBlocks.length > 0) {
+                                  const full = mergeForSave(qnaEditData?.content ?? "", qnaPreservedBlocks);
+                                  setQnaEditData((d) => d ? { ...d, content: full } : null);
+                                  setQnaPreservedBlocks([]);
+                                }
+                                setQnaEditMode("html");
+                              }}
+                              className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}
+                            >
                               <span>&lt;/&gt;</span> HTML
                             </button>
                             {qnaSelectedId != null && !qnaIsNewMode ? (
@@ -2051,6 +2126,9 @@ export default function AdminPage() {
                             )}
                           </div>
                         </div>
+                        {qnaPreservedBlocks.length > 0 && (
+                          <p className="mb-2 text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded">音声・スクリプト部分は編集画面では非表示です。テキストや色の編集が可能です。HTMLモードで全体を編集できます。</p>
+                        )}
                         {qnaEditMode === "edit" ? (
                           <RichTextEditor value={qnaEditData.content} onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
                         ) : (
@@ -2066,6 +2144,7 @@ export default function AdminPage() {
                           onClick={() => {
                             setQnaSelectedId(null);
                             setQnaEditData(null);
+                            setQnaPreservedBlocks([]);
                             setQnaIsNewMode(false);
                           }}
                           className="px-4 py-2 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
@@ -2210,11 +2289,33 @@ export default function AdminPage() {
                         <div className="flex items-center justify-between mb-1">
                           <label className="text-sm font-medium text-gray-700">본문</label>
                           <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
-                            <button type="button" onClick={() => setSeikatsuEditMode("edit")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (seikatsuEditMode === "html" && seikatsuEditData.content && (seikatsuEditData.content.includes("<script") || seikatsuEditData.content.includes("<audio"))) {
+                                  const { editable, preserved } = extractForEdit(seikatsuEditData.content);
+                                  setSeikatsuEditData((d) => d ? { ...d, content: editable } : null);
+                                  setSeikatsuPreservedBlocks(preserved);
+                                }
+                                setSeikatsuEditMode("edit");
+                              }}
+                              className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}
+                            >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                               EDIT
                             </button>
-                            <button type="button" onClick={() => setSeikatsuEditMode("html")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (seikatsuEditMode === "edit" && seikatsuPreservedBlocks.length > 0) {
+                                  const full = mergeForSave(seikatsuEditData?.content ?? "", seikatsuPreservedBlocks);
+                                  setSeikatsuEditData((d) => d ? { ...d, content: full } : null);
+                                  setSeikatsuPreservedBlocks([]);
+                                }
+                                setSeikatsuEditMode("html");
+                              }}
+                              className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}
+                            >
                               <span>&lt;/&gt;</span> HTML
                             </button>
                             {seikatsuSelectedTitle && !seikatsuIsNewMode ? (
@@ -2227,6 +2328,9 @@ export default function AdminPage() {
                             )}
                           </div>
                         </div>
+                        {seikatsuPreservedBlocks.length > 0 && (
+                          <p className="mb-2 text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded">音声・スクリプト部分は編集画面では非表示です。テキストや色の編集が可能です。HTMLモードで全体を編集できます。</p>
+                        )}
                         {seikatsuEditMode === "edit" ? (
                           <RichTextEditor value={seikatsuEditData.content} onChange={(html) => setSeikatsuEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
                         ) : (
@@ -2243,6 +2347,7 @@ export default function AdminPage() {
                             setSeikatsuSelectedTitle(null);
                             setSeikatsuIsNewMode(false);
                             setSeikatsuEditData(null);
+                            setSeikatsuPreservedBlocks([]);
                           }}
                           className="px-4 py-2 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
                         >
