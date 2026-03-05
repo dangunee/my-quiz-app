@@ -196,6 +196,14 @@ export default function AdminPage() {
   const [qnaEditLoading, setQnaEditLoading] = useState(false);
   const [qnaEditMode, setQnaEditMode] = useState<"edit" | "visual" | "html">("edit");
   const [qnaSaveLoading, setQnaSaveLoading] = useState(false);
+  const [dbEditSubTab, setDbEditSubTab] = useState<"qna" | "seikatsu">("qna");
+  const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
+  const [seikatsuListLoading, setSeikatsuListLoading] = useState(false);
+  const [seikatsuSelectedTitle, setSeikatsuSelectedTitle] = useState<string | null>(null);
+  const [seikatsuEditData, setSeikatsuEditData] = useState<{ title: string; content: string; url: string } | null>(null);
+  const [seikatsuEditLoading, setSeikatsuEditLoading] = useState(false);
+  const [seikatsuEditMode, setSeikatsuEditMode] = useState<"edit" | "visual" | "html">("edit");
+  const [seikatsuSaveLoading, setSeikatsuSaveLoading] = useState(false);
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
   const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
@@ -441,6 +449,16 @@ export default function AdminPage() {
   }, [activeTab, isAuthenticated]);
 
   useEffect(() => {
+    if (!isAuthenticated || activeTab !== "qnaEdit" || dbEditSubTab !== "seikatsu") return;
+    setSeikatsuListLoading(true);
+    fetch("/api/dailylife-list")
+      .then((r) => r.json())
+      .then((data) => setSeikatsuList(Array.isArray(data) ? data : []))
+      .catch(() => setSeikatsuList([]))
+      .finally(() => setSeikatsuListLoading(false));
+  }, [activeTab, isAuthenticated, dbEditSubTab]);
+
+  useEffect(() => {
     if (!qnaSelectedId || !authKey) {
       setQnaEditData(null);
       return;
@@ -455,6 +473,24 @@ export default function AdminPage() {
       .catch(() => setQnaEditData(null))
       .finally(() => setQnaEditLoading(false));
   }, [qnaSelectedId, authKey]);
+
+  useEffect(() => {
+    if (!seikatsuSelectedTitle || !authKey) {
+      setSeikatsuEditData(null);
+      return;
+    }
+    setSeikatsuEditLoading(true);
+    fetch(`/api/admin/seikatsu?title=${encodeURIComponent(seikatsuSelectedTitle)}`, {
+      headers: { Authorization: `Bearer ${authKey}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) setSeikatsuEditData(null);
+        else setSeikatsuEditData({ title: data.title ?? "", content: data.content ?? "", url: data.url ?? "" });
+      })
+      .catch(() => setSeikatsuEditData(null))
+      .finally(() => setSeikatsuEditLoading(false));
+  }, [seikatsuSelectedTitle, authKey]);
 
   const handleSaveQna = async () => {
     if (!qnaSelectedId || !qnaEditData || !authKey) return;
@@ -472,6 +508,29 @@ export default function AdminPage() {
       alert(e instanceof Error ? e.message : "保存に失敗しました");
     } finally {
       setQnaSaveLoading(false);
+    }
+  };
+
+  const handleSaveSeikatsu = async () => {
+    if (!seikatsuSelectedTitle || !seikatsuEditData || !authKey) return;
+    setSeikatsuSaveLoading(true);
+    try {
+      const res = await fetch("/api/admin/seikatsu", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${authKey}` },
+        body: JSON.stringify({
+          title: seikatsuSelectedTitle,
+          content: seikatsuEditData.content,
+          url: seikatsuEditData.url,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "保存に失敗しました");
+      alert("保存しました");
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "保存に失敗しました");
+    } finally {
+      setSeikatsuSaveLoading(false);
     }
   };
 
@@ -817,7 +876,7 @@ export default function AdminPage() {
             onClick={() => setActiveTab("qnaEdit")}
             className={`px-4 py-2 rounded font-medium ${activeTab === "qnaEdit" ? "bg-red-600 text-white" : "bg-white"}`}
           >
-            Q&A 편집
+            DB편집
           </button>
           </div>
           <div className="flex items-center gap-3">
@@ -1635,134 +1694,193 @@ export default function AdminPage() {
 
         {activeTab === "qnaEdit" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">Q&A 편집</h1>
-            <div className="flex gap-6 min-h-[500px]">
-              <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
-                <div className="p-3 bg-gray-50 border-b font-medium">질문 목록</div>
-                <ul className="max-h-[480px] overflow-y-auto">
-                  {qnaListLoading ? (
-                    <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
-                  ) : qnaList.length === 0 ? (
-                    <li className="p-4 text-gray-500 text-sm">질문이 없습니다</li>
-                  ) : (
-                    qnaList.map((item) => (
-                      <li key={item.id}>
-                        <button
-                          type="button"
-                          onClick={() => setQnaSelectedId(item.id)}
-                          className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
-                            qnaSelectedId === item.id ? "bg-red-50 border-l-4 border-l-red-600" : ""
-                          }`}
-                        >
-                          {item.title.slice(0, 50)}{item.title.length > 50 ? "…" : ""}
-                        </button>
-                      </li>
-                    ))
-                  )}
-                </ul>
-              </div>
-              <div className="flex-1 min-w-0">
-                {!qnaSelectedId ? (
-                  <p className="text-gray-500 py-8">목록에서 질문을 선택하세요</p>
-                ) : qnaEditLoading ? (
-                  <p className="text-gray-500 py-8">読み込み中...</p>
-                ) : qnaEditData ? (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
-                      <input
-                        type="text"
-                        value={qnaEditData.title}
-                        onChange={(e) => setQnaEditData((d) => d ? { ...d, title: e.target.value } : null)}
-                        className="w-full px-3 py-2 border rounded text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
-                      <input
-                        type="text"
-                        value={qnaEditData.url}
-                        onChange={(e) => setQnaEditData((d) => d ? { ...d, url: e.target.value } : null)}
-                        className="w-full px-3 py-2 border rounded text-sm"
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-sm font-medium text-gray-700">본문</label>
-                        <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
-                          <button
-                            type="button"
-                            onClick={() => setQnaEditMode("edit")}
-                            className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${
-                              qnaEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"
-                            }`}
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                            </svg>
-                            EDIT
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQnaEditMode("html")}
-                            className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${
-                              qnaEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"
-                            }`}
-                          >
-                            <span>&lt;/&gt;</span>
-                            HTML
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQnaEditMode("visual")}
-                            className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${
-                              qnaEditMode === "visual" ? "bg-white shadow text-gray-800" : "text-gray-500"
-                            }`}
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7C7.523 19 3.732 16.057 2.458 12z" />
-                            </svg>
-                            미리보기
-                          </button>
-                        </div>
-                      </div>
-                      {qnaEditMode === "edit" ? (
-                        <RichTextEditor
-                          value={qnaEditData.content}
-                          onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)}
-                          placeholder="내용을 입력하세요..."
-                          minHeight="300px"
-                        />
-                      ) : qnaEditMode === "html" ? (
-                        <textarea
-                          value={qnaEditData.content}
-                          onChange={(e) => setQnaEditData((d) => d ? { ...d, content: e.target.value } : null)}
-                          rows={18}
-                          className="w-full px-3 py-2 border rounded text-sm font-mono"
-                          placeholder="HTML 입력"
-                        />
-                      ) : (
-                        <div
-                          className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800"
-                          dangerouslySetInnerHTML={{ __html: qnaEditData.content }}
-                        />
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      disabled={qnaSaveLoading}
-                      onClick={handleSaveQna}
-                      className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
-                    >
-                      {qnaSaveLoading ? "저장 중..." : "저장"}
-                    </button>
-                  </div>
-                ) : (
-                  <p className="text-gray-500 py-8">데이터를 불러올 수 없습니다</p>
-                )}
-              </div>
+            <h1 className="text-2xl font-bold mb-4">DB편집</h1>
+            <div className="flex gap-2 mb-4">
+              <button
+                type="button"
+                onClick={() => setDbEditSubTab("qna")}
+                className={`px-4 py-2 rounded text-sm font-medium ${
+                  dbEditSubTab === "qna" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                &lt;큐앤에이&gt;
+              </button>
+              <button
+                type="button"
+                onClick={() => setDbEditSubTab("seikatsu")}
+                className={`px-4 py-2 rounded text-sm font-medium ${
+                  dbEditSubTab === "seikatsu" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                &lt;생활한국어&gt;
+              </button>
             </div>
+            {dbEditSubTab === "qna" ? (
+              <div className="flex gap-6 min-h-[500px]">
+                <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
+                  <div className="p-3 bg-gray-50 border-b font-medium">질문 목록</div>
+                  <ul className="max-h-[480px] overflow-y-auto">
+                    {qnaListLoading ? (
+                      <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
+                    ) : qnaList.length === 0 ? (
+                      <li className="p-4 text-gray-500 text-sm">질문이 없습니다</li>
+                    ) : (
+                      qnaList.map((item) => (
+                        <li key={item.id}>
+                          <button
+                            type="button"
+                            onClick={() => setQnaSelectedId(item.id)}
+                            className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
+                              qnaSelectedId === item.id ? "bg-red-50 border-l-4 border-l-red-600" : ""
+                            }`}
+                          >
+                            {item.title.slice(0, 50)}{item.title.length > 50 ? "…" : ""}
+                          </button>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </div>
+                <div className="flex-1 min-w-0">
+                  {!qnaSelectedId ? (
+                    <p className="text-gray-500 py-8">목록에서 질문을 선택하세요</p>
+                  ) : qnaEditLoading ? (
+                    <p className="text-gray-500 py-8">読み込み中...</p>
+                  ) : qnaEditData ? (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
+                        <input
+                          type="text"
+                          value={qnaEditData.title}
+                          onChange={(e) => setQnaEditData((d) => d ? { ...d, title: e.target.value } : null)}
+                          className="w-full px-3 py-2 border rounded text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                        <input
+                          type="text"
+                          value={qnaEditData.url}
+                          onChange={(e) => setQnaEditData((d) => d ? { ...d, url: e.target.value } : null)}
+                          className="w-full px-3 py-2 border rounded text-sm"
+                        />
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-sm font-medium text-gray-700">본문</label>
+                          <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
+                            <button type="button" onClick={() => setQnaEditMode("edit")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                              EDIT
+                            </button>
+                            <button type="button" onClick={() => setQnaEditMode("html")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                              <span>&lt;/&gt;</span> HTML
+                            </button>
+                            <button type="button" onClick={() => setQnaEditMode("visual")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "visual" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7C7.523 19 3.732 16.057 2.458 12z" /></svg>
+                              미리보기
+                            </button>
+                          </div>
+                        </div>
+                        {qnaEditMode === "edit" ? (
+                          <RichTextEditor value={qnaEditData.content} onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
+                        ) : qnaEditMode === "html" ? (
+                          <textarea value={qnaEditData.content} onChange={(e) => setQnaEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
+                        ) : (
+                          <div className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: qnaEditData.content }} />
+                        )}
+                      </div>
+                      <button type="button" disabled={qnaSaveLoading} onClick={handleSaveQna} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50">
+                        {qnaSaveLoading ? "저장 중..." : "저장"}
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 py-8">데이터를 불러올 수 없습니다</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-6 min-h-[500px]">
+                <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
+                  <div className="p-3 bg-gray-50 border-b font-medium">記事 목록</div>
+                  <ul className="max-h-[480px] overflow-y-auto">
+                    {seikatsuListLoading ? (
+                      <li className="p-4 text-gray-500 text-sm">読み込み中...</li>
+                    ) : seikatsuList.length === 0 ? (
+                      <li className="p-4 text-gray-500 text-sm">記事がありません</li>
+                    ) : (
+                      seikatsuList.map((title) => (
+                        <li key={title}>
+                          <button
+                            type="button"
+                            onClick={() => setSeikatsuSelectedTitle(title)}
+                            className={`w-full text-left px-4 py-3 text-sm border-b hover:bg-gray-50 ${
+                              seikatsuSelectedTitle === title ? "bg-red-50 border-l-4 border-l-red-600" : ""
+                            }`}
+                          >
+                            {title.slice(0, 50)}{title.length > 50 ? "…" : ""}
+                          </button>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </div>
+                <div className="flex-1 min-w-0">
+                  {!seikatsuSelectedTitle ? (
+                    <p className="text-gray-500 py-8">목록에서 글을 선택하세요</p>
+                  ) : seikatsuEditLoading ? (
+                    <p className="text-gray-500 py-8">読み込み中...</p>
+                  ) : seikatsuEditData ? (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
+                        <input type="text" value={seikatsuEditData.title} readOnly className="w-full px-3 py-2 border rounded text-sm bg-gray-50" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                        <input
+                          type="text"
+                          value={seikatsuEditData.url}
+                          onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, url: e.target.value } : null)}
+                          className="w-full px-3 py-2 border rounded text-sm"
+                        />
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-sm font-medium text-gray-700">본문</label>
+                          <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
+                            <button type="button" onClick={() => setSeikatsuEditMode("edit")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "edit" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                              EDIT
+                            </button>
+                            <button type="button" onClick={() => setSeikatsuEditMode("html")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                              <span>&lt;/&gt;</span> HTML
+                            </button>
+                            <button type="button" onClick={() => setSeikatsuEditMode("visual")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "visual" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7C7.523 19 3.732 16.057 2.458 12z" /></svg>
+                              미리보기
+                            </button>
+                          </div>
+                        </div>
+                        {seikatsuEditMode === "edit" ? (
+                          <RichTextEditor value={seikatsuEditData.content} onChange={(html) => setSeikatsuEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
+                        ) : seikatsuEditMode === "html" ? (
+                          <textarea value={seikatsuEditData.content} onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
+                        ) : (
+                          <div className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: seikatsuEditData.content }} />
+                        )}
+                      </div>
+                      <button type="button" disabled={seikatsuSaveLoading} onClick={handleSaveSeikatsu} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50">
+                        {seikatsuSaveLoading ? "저장 중..." : "저장"}
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 py-8">데이터를 불러올 수 없습니다</p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
