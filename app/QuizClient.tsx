@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
+import { MIRINAE_JP } from "../lib/config";
 
 /** Matches 2+ underscores so admin can use any underline length; first group is the blank. (dotall via [\s\S]) */
 const BLANK_REGEX = /([\s\S]*?)(_{2,})([\s\S]*)/;
@@ -551,13 +552,13 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
 
   const menuLinks = [
     { label: "ログイン", onClick: () => setShowLoginModal(true), external: false },
-    { label: "個人レッスン", href: "/kojin", external: false },
-    { label: "短期個人", href: "/tanki-kojin", external: false },
-    { label: "発音講座", href: "https://mirinae.jp/kaiwa.html?tab=tab03", external: true },
-    { label: "会話クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab01", external: true },
-    { label: "音読クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
-    { label: "集中講座", href: "https://mirinae.jp/syutyu.html?tab=tab02", external: true },
-    { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab01", external: true },
+    { label: "個人レッスン", href: `${MIRINAE_JP}/kojin.html`, external: true },
+    { label: "短期個人", href: `${MIRINAE_JP}/kojin.html#tab02`, external: true },
+    { label: "発音講座", href: `${MIRINAE_JP}/kojin.html#tab03`, external: true },
+    { label: "会話クラス", href: `${MIRINAE_JP}/kaiwa.html`, external: true },
+    { label: "音読クラス", href: `${MIRINAE_JP}/kaiwa.html#tab02`, external: true },
+    { label: "集中講座", href: `${MIRINAE_JP}/syutyu.html`, external: true },
+    { label: "申し込み", href: `${MIRINAE_JP}/trial.html`, external: true },
   ];
 
   const navLinks = (
@@ -1395,6 +1396,9 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
         </>
         )}
         <section className="quiz-bottom-nav flex flex-nowrap gap-3 justify-center items-center py-4 px-4 border-t shrink-0 overflow-x-auto" style={{ borderColor: "var(--border)", backgroundColor: "var(--background)" }}>
+          <a href="/main.html" className="quiz-bottom-link flex items-center justify-center w-10 h-10 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }} aria-label="ホームページ">
+            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+          </a>
           <a href="https://apps.mirinae.jp/writing" target="_blank" rel="noopener noreferrer" className="quiz-bottom-link flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
             作文
@@ -1402,9 +1406,6 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
           <a href="https://apps.mirinae.jp/ondoku" target="_blank" rel="noopener noreferrer" className="quiz-bottom-link flex items-center gap-2 px-4 py-2.5 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }}>
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0V8m0 7a7 7 0 017-7" /></svg>
             音読
-          </a>
-          <a href="/main.html" className="quiz-bottom-link flex items-center justify-center w-10 h-10 rounded-lg border hover:border-[var(--primary)] transition shrink-0" style={{ borderColor: "var(--border)", color: "var(--foreground)" }} aria-label="ホームページ">
-            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
           </a>
         </section>
         </div>

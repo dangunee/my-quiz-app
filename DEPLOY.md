@@ -84,6 +84,7 @@ Vercel 프로젝트 → **Settings** → **Environment Variables**:
 | `ADMIN_SECRET` | 관리자 로그인 비밀키 | ✅ |
 | `RESEND_API_KEY` | Resend API Key (音読 메일 전송용) | 音読 메일 전송 시 |
 | `RESEND_FROM` | 발신 메일 주소 (예: noreply@mirinae.jp) | 선택 |
+| `NEXT_PUBLIC_MIRINAE_JP` | ミリネ本サイトURL（左メニュー講座リンク先）。未設定時は mirinae-jp.vercel.app。www.mirinae.jp 移行時は `https://www.mirinae.jp` | 선택 |
 
 ---
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { fetchWithAuth, getStoredToken, getStoredUser, clearStoredSession } from "../../lib/auth";
+import { MIRINAE_JP } from "../../lib/config";
 import { LoginModal } from "../../components/LoginModal";
 import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
 
@@ -508,14 +509,14 @@ export default function WritingPage() {
     { label: "ログイン", href: "/login", external: false },
     { label: "クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "音読トレ", href: "/ondoku", external: false },
-    { label: "ホームページ", href: "https://mirinae.jp", external: true },
-    { label: "個人レッスン", href: "/kojin", external: false },
-    { label: "短期個人", href: "/tanki-kojin", external: false },
-    { label: "発音講座", href: "https://mirinae.jp/kaiwa.html?tab=tab03", external: true },
-    { label: "会話クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab01", external: true },
-    { label: "音読クラス", href: "https://mirinae.jp/kaiwa.html?tab=tab02", external: true },
-    { label: "集中講座", href: "https://mirinae.jp/syutyu.html?tab=tab02", external: true },
-    { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab01", external: true },
+    { label: "ホームページ", href: MIRINAE_JP, external: true },
+    { label: "個人レッスン", href: `${MIRINAE_JP}/kojin.html`, external: true },
+    { label: "短期個人", href: `${MIRINAE_JP}/kojin.html#tab02`, external: true },
+    { label: "発音講座", href: `${MIRINAE_JP}/kojin.html#tab03`, external: true },
+    { label: "会話クラス", href: `${MIRINAE_JP}/kaiwa.html`, external: true },
+    { label: "音読クラス", href: `${MIRINAE_JP}/kaiwa.html#tab02`, external: true },
+    { label: "集中講座", href: `${MIRINAE_JP}/syutyu.html`, external: true },
+    { label: "申し込み", href: `${MIRINAE_JP}/trial.html`, external: true },
   ];
 
   const handleAdminLogout = () => {

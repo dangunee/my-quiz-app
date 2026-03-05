@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { fetchWithAuth, getStoredToken, getStoredUser, clearStoredSession } from "../../lib/auth";
+import { MIRINAE_JP } from "../../lib/config";
 import { LoginModal } from "../../components/LoginModal";
 import { LogoutConfirmModal } from "../../components/LogoutConfirmModal";
 
@@ -338,8 +339,8 @@ export default function OndokuPage() {
     { label: "ログイン", href: "/login", external: false },
     { label: "クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "作文トレ", href: "/writing", external: false },
-    { label: "ホームページ", href: "https://mirinae.jp", external: true },
-    { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab02", external: true },
+    { label: "ホームページ", href: MIRINAE_JP, external: true },
+    { label: "申し込み", href: `${MIRINAE_JP}/trial.html`, external: true },
   ];
 
   const handleAdminLogout = () => {
