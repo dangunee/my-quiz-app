@@ -217,6 +217,34 @@ export default function AdminPage() {
   const [ondokuPdfScheduledAt, setOndokuPdfScheduledAt] = useState<string>("");
   const ONDOKU_PERIOD_LABELS = ["1期", "2期", "3期", "4期"];
 
+  const TAB_GROUPS = {
+    management: [
+      { id: "analytics" as const, label: "アクセス解析" },
+      { id: "users" as const, label: "会員一覧" },
+    ],
+    applications: [
+      { id: "quiz" as const, label: "クイズ編集" },
+      { id: "sync" as const, label: "DB 동기화" },
+      { id: "qnaEdit" as const, label: "DB편집" },
+    ],
+    teacher: [
+      { id: "kadai" as const, label: "作文課題" },
+      { id: "writingVisibility" as const, label: "作文公開日" },
+      { id: "submissions" as const, label: "作文提出" },
+      { id: "ondokuKadai" as const, label: "音読課題" },
+      { id: "ondoku" as const, label: "音読提出" },
+    ],
+  } as const;
+
+  const getMainTab = (tab: string) => {
+    for (const [main, subs] of Object.entries(TAB_GROUPS)) {
+      if (subs.some((s) => s.id === tab)) return main as keyof typeof TAB_GROUPS;
+    }
+    return "applications";
+  };
+
+  const currentMainTab = getMainTab(activeTab);
+
   const DEFAULT_SEGMENT_ROWS = 40;
   const DEFAULT_SEGMENT_COLS = 10; // 課題, 正しい発音, 学習者の発音(3) + 追加列7
   const defaultExtraColumns = () => Array.from({ length: DEFAULT_SEGMENT_COLS - 3 }, (_, i) => ({ key: `ext_${i + 1}`, label: `列${i + 1}` }));
@@ -798,86 +826,58 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-full px-4">
         <div className="flex justify-between items-center mb-6">
-          <div className="flex gap-4">
-          <button
-            onClick={() => {
-              setActiveTab("analytics");
-              setAnalyticsLoading(true);
-              fetch(`/api/admin/analytics?days=${analyticsDays}`, {
-                headers: { Authorization: `Bearer ${authKey}` },
-              })
-                .then((r) => r.json())
-                .then((data) => {
-                  if (data.error) throw new Error(data.error);
-                  setAnalytics(data);
-                })
-                .catch(() => setAnalytics(null))
-                .finally(() => setAnalyticsLoading(false));
-            }}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "analytics" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            アクセス解析
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("users");
-              loadUsers();
-            }}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "users" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            会員一覧
-          </button>
-          <button
-            onClick={() => setActiveTab("quiz")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "quiz" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            クイズ編集
-          </button>
-          <button
-            onClick={() => setActiveTab("kadai")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "kadai" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            作文課題
-          </button>
-          <button
-            onClick={() => setActiveTab("writingVisibility")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "writingVisibility" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            作文公開日
-          </button>
-          <button
-            onClick={() => setActiveTab("submissions")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "submissions" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            作文提出
-          </button>
-          <button
-            onClick={() => setActiveTab("ondokuKadai")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "ondokuKadai" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            音読課題
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab("ondoku");
-              loadOndokuSubmissions();
-            }}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "ondoku" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            音読提出
-          </button>
-          <button
-            onClick={() => setActiveTab("sync")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "sync" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            DB 동기화
-          </button>
-          <button
-            onClick={() => setActiveTab("qnaEdit")}
-            className={`px-4 py-2 rounded font-medium ${activeTab === "qnaEdit" ? "bg-red-600 text-white" : "bg-white"}`}
-          >
-            DB편집
-          </button>
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-2">
+              {(["management", "applications", "teacher"] as const).map((main) => {
+                const firstId = TAB_GROUPS[main][0].id;
+                return (
+                  <button
+                    key={main}
+                    onClick={() => {
+                      setActiveTab(firstId);
+                      if (firstId === "analytics") {
+                        setAnalyticsLoading(true);
+                        fetch(`/api/admin/analytics?days=${analyticsDays}`, { headers: { Authorization: `Bearer ${authKey}` } })
+                          .then((r) => r.json())
+                          .then((data) => { if (data.error) throw new Error(data.error); setAnalytics(data); })
+                          .catch(() => setAnalytics(null))
+                          .finally(() => setAnalyticsLoading(false));
+                      } else if (firstId === "users") loadUsers();
+                      else if (firstId === "ondoku") loadOndokuSubmissions();
+                    }}
+                    className={`px-4 py-2 rounded font-medium capitalize ${
+                      currentMainTab === main ? "bg-red-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {main === "management" ? "Management" : main === "applications" ? "Applications" : "Teacher"}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {TAB_GROUPS[currentMainTab].map((sub) => (
+                <button
+                  key={sub.id}
+                  onClick={() => {
+                    setActiveTab(sub.id);
+                    if (sub.id === "analytics") {
+                      setAnalyticsLoading(true);
+                      fetch(`/api/admin/analytics?days=${analyticsDays}`, { headers: { Authorization: `Bearer ${authKey}` } })
+                        .then((r) => r.json())
+                        .then((data) => { if (data.error) throw new Error(data.error); setAnalytics(data); })
+                        .catch(() => setAnalytics(null))
+                        .finally(() => setAnalyticsLoading(false));
+                    } else if (sub.id === "users") loadUsers();
+                    else if (sub.id === "ondoku") loadOndokuSubmissions();
+                  }}
+                  className={`px-4 py-2 rounded font-medium text-sm ${
+                    activeTab === sub.id ? "bg-red-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {sub.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Link
