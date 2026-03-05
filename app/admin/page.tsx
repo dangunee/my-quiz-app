@@ -839,11 +839,13 @@ export default function AdminPage() {
                         setAnalyticsLoading(true);
                         fetch(`/api/admin/analytics?days=${analyticsDays}`, { headers: { Authorization: `Bearer ${authKey}` } })
                           .then((r) => r.json())
-                          .then((data) => { if (data.error) throw new Error(data.error); setAnalytics(data); })
+                          .then((data) => {
+                            if (data?.error) throw new Error(data.error);
+                            setAnalytics(data);
+                          })
                           .catch(() => setAnalytics(null))
                           .finally(() => setAnalyticsLoading(false));
-                      } else if (firstId === "users") loadUsers();
-                      else if (firstId === "ondoku") loadOndokuSubmissions();
+                      }
                     }}
                     className={`px-4 py-2 rounded font-medium capitalize ${
                       currentMainTab === main ? "bg-red-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
