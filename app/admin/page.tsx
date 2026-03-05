@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { QUIZZES } from "../quiz-data";
 import { RichTextEditor } from "@/components/RichTextEditor";
+import { stripLongDataUrls } from "@/lib/html-utils";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
@@ -208,6 +209,7 @@ export default function AdminPage() {
   const [seikatsuIsNewMode, setSeikatsuIsNewMode] = useState(false);
   const [qnaCheckedIds, setQnaCheckedIds] = useState<Set<number>>(new Set());
   const [seikatsuCheckedTitles, setSeikatsuCheckedTitles] = useState<Set<string>>(new Set());
+  const [clearUrlsLoading, setClearUrlsLoading] = useState(false);
   const [ondokuSubmissions, setOndokuSubmissions] = useState<OndokuSubmission[]>([]);
   const [ondokuLoading, setOndokuLoading] = useState(false);
   const [ondokuPeriodTab, setOndokuPeriodTab] = useState(0);
@@ -699,6 +701,36 @@ export default function AdminPage() {
     } finally {
       setSeikatsuSaveLoading(false);
       setSeikatsuListLoading(false);
+    }
+  };
+
+  const handleClearUrls = async () => {
+    if (!confirm("Q&A·生活韓国語 전체 URL을 삭제합니다. 계속할까요?")) return;
+    setClearUrlsLoading(true);
+    try {
+      const res = await fetch("/api/admin/clear-urls", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${authKey}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "URL 삭제 실패");
+      alert("URL 모두 삭제되었습니다.");
+      if (qnaEditData && qnaSelectedId) setQnaEditData((d) => d ? { ...d, url: "" } : null);
+      if (seikatsuEditData) setSeikatsuEditData((d) => d ? { ...d, url: "" } : null);
+      setQnaListLoading(true);
+      fetch("/api/kotae-list")
+        .then((r) => r.json())
+        .then((data) => setQnaList(Array.isArray(data) ? data : []))
+        .finally(() => setQnaListLoading(false));
+      setSeikatsuListLoading(true);
+      fetch("/api/dailylife-list")
+        .then((r) => r.json())
+        .then((data) => setSeikatsuList(Array.isArray(data) ? data : []))
+        .finally(() => setSeikatsuListLoading(false));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "URL 삭제 실패");
+    } finally {
+      setClearUrlsLoading(false);
     }
   };
 
@@ -1836,31 +1868,41 @@ export default function AdminPage() {
 
         {activeTab === "qnaEdit" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">DB편집</h1>
-            <div className="flex gap-2 mb-4">
+            <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+              <div className="flex gap-2">
+                <h1 className="text-2xl font-bold">DB편집</h1>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDbEditSubTab("qna");
+                    setSeikatsuIsNewMode(false);
+                  }}
+                  className={`px-4 py-2 rounded text-sm font-medium ${
+                    dbEditSubTab === "qna" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  &lt;Q&amp;A&gt;
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDbEditSubTab("seikatsu");
+                    setQnaIsNewMode(false);
+                  }}
+                  className={`px-4 py-2 rounded text-sm font-medium ${
+                    dbEditSubTab === "seikatsu" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  &lt;생활한국어&gt;
+                </button>
+              </div>
               <button
                 type="button"
-                onClick={() => {
-                  setDbEditSubTab("qna");
-                  setSeikatsuIsNewMode(false);
-                }}
-                className={`px-4 py-2 rounded text-sm font-medium ${
-                  dbEditSubTab === "qna" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                onClick={handleClearUrls}
+                disabled={clearUrlsLoading}
+                className="px-3 py-1.5 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50"
               >
-                &lt;Q&amp;A&gt;
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setDbEditSubTab("seikatsu");
-                  setQnaIsNewMode(false);
-                }}
-                className={`px-4 py-2 rounded text-sm font-medium ${
-                  dbEditSubTab === "seikatsu" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                &lt;생활한국어&gt;
+                {clearUrlsLoading ? "처리 중..." : "URL 일괄 삭제"}
               </button>
             </div>
             {dbEditSubTab === "qna" ? (
@@ -2009,14 +2051,27 @@ export default function AdminPage() {
                         {qnaEditMode === "edit" ? (
                           <RichTextEditor value={qnaEditData.content} onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
                         ) : qnaEditMode === "html" ? (
-                          <textarea value={qnaEditData.content} onChange={(e) => setQnaEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
+                          <textarea value={qnaEditData.content} onChange={(e) => setQnaEditData((d) => d ? { ...d, content: stripLongDataUrls(e.target.value) } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         ) : (
                           <div className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: qnaEditData.content }} />
                         )}
                       </div>
-                      <button type="button" disabled={qnaSaveLoading} onClick={handleSaveQna} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50">
-                        {qnaSaveLoading ? "저장 중..." : "저장"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button type="button" disabled={qnaSaveLoading} onClick={handleSaveQna} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50">
+                          {qnaSaveLoading ? "저장 중..." : "저장"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setQnaSelectedId(null);
+                            setQnaEditData(null);
+                            setQnaIsNewMode(false);
+                          }}
+                          className="px-4 py-2 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
+                        >
+                          취소
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-gray-500 py-8">데이터를 불러올 수 없습니다</p>
@@ -2170,14 +2225,27 @@ export default function AdminPage() {
                         {seikatsuEditMode === "edit" ? (
                           <RichTextEditor value={seikatsuEditData.content} onChange={(html) => setSeikatsuEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
                         ) : seikatsuEditMode === "html" ? (
-                          <textarea value={seikatsuEditData.content} onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
+                          <textarea value={seikatsuEditData.content} onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, content: stripLongDataUrls(e.target.value) } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         ) : (
                           <div className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: seikatsuEditData.content }} />
                         )}
                       </div>
-                      <button type="button" disabled={seikatsuSaveLoading} onClick={handleSaveSeikatsu} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50">
-                        {seikatsuSaveLoading ? "저장 중..." : "저장"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button type="button" disabled={seikatsuSaveLoading} onClick={handleSaveSeikatsu} className="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50">
+                          {seikatsuSaveLoading ? "저장 중..." : "저장"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSeikatsuSelectedTitle(null);
+                            setSeikatsuIsNewMode(false);
+                            setSeikatsuEditData(null);
+                          }}
+                          className="px-4 py-2 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
+                        >
+                          취소
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-gray-500 py-8">데이터를 불러올 수 없습니다</p>

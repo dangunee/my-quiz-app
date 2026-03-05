@@ -34,10 +34,19 @@ export function extractBodyIfFullDocument(html: string): string {
 }
 
 /**
- * HTML 내 긴 data: URL(Base64 이미지/오디오 등) 제거.
+ * HTML 내 긴 data: URL(Base64 이미지/오디오 등) 및 의미 없는 긴 문자열 제거.
  * paste 시 본문에 끼어드는 이상한 문자열 방지.
  */
 export function stripLongDataUrls(html: string): string {
   if (!html || typeof html !== "string") return html;
-  return html.replace(/(src|href)=["'](data:[^"']{300,})["']/gi, '$1=""');
+  let out = html;
+  // src, href 속성의 data: URL
+  out = out.replace(/(src|href)=["'](data:[^"']{300,})["']/gi, '$1=""');
+  // style 내 url(data:...)
+  out = out.replace(/url\(["']?(data:[^"')]{300,})["']?\)/gi, 'url("")');
+  // 속성값이 아닌 곳에 끼어든 data: URL (태그 밖 등)
+  out = out.replace(/data:[^"'\s<>)]{300,}/gi, "");
+  // base64 인코딩만 남은 긴 문자열 (data: 접두사 없이, 속성/태그 내부가 아닌 곳)
+  out = out.replace(/(^|[^A-Za-z0-9+/=])([A-Za-z0-9+/=]{500,})($|[^A-Za-z0-9+/=])/g, "$1$3");
+  return out;
 }
