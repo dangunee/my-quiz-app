@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { extractBodyIfFullDocument } from "@/lib/html-utils";
 
 /** 本文明文はDB(seikatsu_items)から取得。강좌 안내는 sync 시 상단만 저장되어 있음 */
 export async function GET(req: NextRequest) {
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
       if (error || !data) {
         return NextResponse.json({ error: "Not found", html: null }, { status: 404 });
       }
-      const html = data.content ?? "";
+      const html = extractBodyIfFullDocument(data.content ?? "");
       const url = data.url ?? `https://mirinae.jp/blog/?p=${wpId}`;
       return NextResponse.json({ html, url });
     }
@@ -45,7 +46,7 @@ export async function GET(req: NextRequest) {
     if (error || !data) {
       return NextResponse.json({ error: "Not found", html: null }, { status: 404 });
     }
-    const html = data.content ?? "";
+    const html = extractBodyIfFullDocument(data.content ?? "");
     const url = data.url ?? "https://mirinae.jp/blog/";
     return NextResponse.json({ html, url });
   } catch (err) {

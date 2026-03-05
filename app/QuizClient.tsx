@@ -819,12 +819,6 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                   </>
                 )}
               </div>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <button type="button" onClick={() => { setActiveTab("quiz"); router.replace(QUIZ_BASE); closeRightMenu(); }} className="w-full p-4 text-left">
-                  <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
-                  <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white">クイズを始める</span>
-                </button>
-              </div>
               <div className="border-t border-gray-200 pt-4">
                 <p className="text-xs font-semibold text-gray-500 mb-2">その他</p>
                 {rightMenuLinks.filter((l) => !["生活韓国語"].includes(l.label)).map((item) => (

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { extractBodyIfFullDocument } from "@/lib/html-utils";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -55,7 +56,8 @@ export async function GET(req: NextRequest) {
     }
 
     const rawContent = data.content ?? "";
-    const html = stripFooter(rawContent);
+    const extracted = extractBodyIfFullDocument(rawContent);
+    const html = stripFooter(extracted);
     const url = data.url ?? `https://apps.mirinae.jp/qna/${id}`;
 
     return NextResponse.json({ html, url, title: data.title ?? "" });
