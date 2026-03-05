@@ -226,8 +226,8 @@ export default function AdminPage() {
     ],
     applications: [
       { id: "quiz" as const, label: "クイズ編集" },
-      { id: "sync" as const, label: "DB 동기화" },
       { id: "qnaEdit" as const, label: "DB편집" },
+      { id: "sync" as const, label: "DB 동기화" },
     ],
     teacher: [
       { id: "kadai" as const, label: "作文課題" },

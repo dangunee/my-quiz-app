@@ -5,16 +5,29 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 /**
- * 本文から「........」以降（ミリネ韓国語教室ホームページ 以降）を除去する
+ * 本文から「........」以降、または「･･････...・・・・・・...」以降
+ * （講座案内・書籍紹介など）を除去する
  */
 function stripFooter(content: string): string {
   if (!content || typeof content !== "string") return "";
+  let cutIndex = -1;
+
   // 4つ以上の連続するドット（.）から末尾までを除去
   const dotMatch = content.match(/\.{4,}/);
   if (dotMatch) {
-    const cutIndex = content.indexOf(dotMatch[0]);
-    if (cutIndex >= 0) return content.slice(0, cutIndex).trim();
+    const idx = content.indexOf(dotMatch[0]);
+    if (idx >= 0 && (cutIndex < 0 || idx < cutIndex)) cutIndex = idx;
   }
+
+  // ･･････････････････････････・・・・・・・・・・・・・・・・・ パターン
+  // （･ U+FF65 と ・ U+30FB の長い並び＝強좌 안내・책 소개の区切り線）
+  const dottedLineMatch = content.match(/[･・]{25,}/);
+  if (dottedLineMatch) {
+    const idx = content.indexOf(dottedLineMatch[0]);
+    if (idx >= 0 && (cutIndex < 0 || idx < cutIndex)) cutIndex = idx;
+  }
+
+  if (cutIndex >= 0) return content.slice(0, cutIndex).trim();
   return content.trim();
 }
 
