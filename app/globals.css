@@ -1016,6 +1016,9 @@ body {
   overflow-x: auto !important;
   overflow-y: auto;
   max-width: 100%;
+  width: 100%;
+  /* containがオーバーフローを妨げる場合があるため、エディタでは無効化 */
+  contain: none;
 }
 
 .qna-rich-editor:empty::before {

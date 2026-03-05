@@ -1905,7 +1905,7 @@ export default function AdminPage() {
               </button>
             </div>
             {dbEditSubTab === "qna" ? (
-              <div className="flex gap-6 min-h-[500px]">
+              <div className="flex gap-6 min-h-[500px] overflow-x-hidden">
                 <div className="w-72 shrink-0 border rounded-lg overflow-hidden">
                   <div className="p-3 bg-gray-50 border-b flex items-center justify-between gap-2">
                     <span className="font-medium">질문 목록</span>
@@ -1993,7 +1993,7 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 overflow-x-hidden">
                   {!qnaSelectedId && !qnaIsNewMode ? (
                     <p className="text-gray-500 py-8">목록에서 질문을 선택하세요</p>
                   ) : qnaEditLoading && !qnaIsNewMode ? (
