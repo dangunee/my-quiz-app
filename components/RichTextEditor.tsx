@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect, useCallback } from "react";
-import { stripLongDataUrls } from "@/lib/html-utils";
 
 type RichTextEditorProps = {
   value: string;
@@ -37,9 +36,9 @@ export function RichTextEditor({ value, onChange, placeholder, className = "", m
   const handlePaste = useCallback(
     (e: React.ClipboardEvent) => {
       const html = e.clipboardData?.getData("text/html");
-      if (html && /data:[^"'\s]{300,}/i.test(html)) {
+      if (html) {
         e.preventDefault();
-        document.execCommand("insertHTML", false, stripLongDataUrls(html));
+        document.execCommand("insertHTML", false, html);
         handleInput();
       }
     },

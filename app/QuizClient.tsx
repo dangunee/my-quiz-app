@@ -8,6 +8,7 @@ import { QUIZZES } from "./quiz-data";
 import { LoginModal } from "../components/LoginModal";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 import { MIRINAE_JP } from "../lib/config";
+import { wrapHtmlForIframe } from "../lib/html-utils";
 
 /** Matches 2+ underscores so admin can use any underline length; first group is the blank. (dotall via [\s\S]) */
 const BLANK_REGEX = /([\s\S]*?)(_{2,})([\s\S]*)/;
@@ -1005,7 +1006,14 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
                           ) : kotaeError ? (
                             <p className="text-center text-red-500 py-4">{kotaeError}</p>
-                          ) : kotaeContent?.html ? (
+                          ) : kotaeContent?.html ? kotaeContent.html.includes("<script") ? (
+                            <iframe
+                              srcDoc={wrapHtmlForIframe(kotaeContent.html)}
+                              title="Q&A content"
+                              className="w-full min-h-[400px] border-0 kotae-blog-content"
+                              sandbox="allow-scripts"
+                            />
+                          ) : (
                             <div
                               className="kotae-blog-content text-gray-800"
                               dangerouslySetInnerHTML={{ __html: kotaeContent.html }}
@@ -1118,7 +1126,14 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
                           ) : seikatsuError ? (
                             <p className="text-center text-red-500 py-4">{seikatsuError}</p>
-                          ) : seikatsuContent?.html ? (
+                          ) : seikatsuContent?.html ? seikatsuContent.html.includes("<script") ? (
+                            <iframe
+                              srcDoc={wrapHtmlForIframe(seikatsuContent.html)}
+                              title="生活韓国語 content"
+                              className="w-full min-h-[400px] border-0 kotae-blog-content"
+                              sandbox="allow-scripts"
+                            />
+                          ) : (
                             <div
                               className="kotae-blog-content text-gray-800"
                               dangerouslySetInnerHTML={{ __html: seikatsuContent.html }}

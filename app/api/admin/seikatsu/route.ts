@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { stripLongDataUrls } from "@/lib/html-utils";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -57,7 +56,7 @@ export async function PUT(req: NextRequest) {
 
   const supabase = createClient(supabaseUrl, supabaseKey);
   const updates: Record<string, unknown> = {};
-  if (typeof content === "string") updates.content = stripLongDataUrls(content);
+  if (typeof content === "string") updates.content = content;
   if (typeof url === "string") updates.url = url;
 
   if (Object.keys(updates).length === 0) {
@@ -121,7 +120,7 @@ export async function POST(req: NextRequest) {
     .from("seikatsu_items")
     .insert({
       title: title.trim(),
-      content: stripLongDataUrls(typeof content === "string" ? content : ""),
+      content: typeof content === "string" ? content : "",
       url: typeof url === "string" && url.trim() ? url.trim() : `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(title.trim())}`,
       wp_id: null,
       sort_order: newSortOrder,

@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { wrapHtmlForIframe } from "@/lib/html-utils";
 
 const APPS_BASE = "https://apps.mirinae.jp";
 
@@ -102,10 +103,19 @@ export default function QnaArticlePage() {
             </button>
           </div>
         </div>
-        <div
-          className="kotae-blog-content p-6 text-gray-800 prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: data.html }}
-        />
+        {data.html.includes("<script") ? (
+          <iframe
+            srcDoc={wrapHtmlForIframe(data.html)}
+            title={data.title || "Q&A content"}
+            className="w-full min-h-[500px] border-0 kotae-blog-content p-6"
+            sandbox="allow-scripts"
+          />
+        ) : (
+          <div
+            className="kotae-blog-content p-6 text-gray-800 prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={{ __html: data.html }}
+          />
+        )}
       </div>
     </div>
   );

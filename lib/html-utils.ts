@@ -34,6 +34,17 @@ export function extractBodyIfFullDocument(html: string): string {
 }
 
 /**
+ * HTML에 <script>가 포함된 경우 iframe srcdoc로 렌더링할 수 있도록
+ * 전체 문서로 감싼다. (innerHTML로 삽입하면 script가 실행되지 않음)
+ */
+export function wrapHtmlForIframe(html: string): string {
+  if (!html || typeof html !== "string") return "";
+  const trimmed = html.trim();
+  if (!trimmed) return "";
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>${trimmed}</body></html>`;
+}
+
+/**
  * HTML 내 긴 data: URL(Base64 이미지/오디오 등) 및 의미 없는 긴 문자열 제거.
  * paste 시 본문에 끼어드는 이상한 문자열 방지.
  */
