@@ -994,6 +994,11 @@ export default function QuizClient({ initialShowLanding = true, initialTab }: Qu
                 </button>
               </div>
             </div>
+            {kotaeSingleViewIdx >= 0 && filteredKotae[kotaeSingleViewIdx]?.title && (
+              <div className="shrink-0 px-4 py-3 text-white font-medium text-sm md:text-base truncate" style={{ background: "var(--primary)" }}>
+                {filteredKotae[kotaeSingleViewIdx].title}
+              </div>
+            )}
             <div className="flex-1 min-h-0 overflow-y-auto px-0 py-4 md:px-4">
               {kotaeLoading ? (
                 <p className="text-center text-gray-500 py-8">読み込み中...</p>
