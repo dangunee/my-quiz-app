@@ -45,8 +45,9 @@ export function wrapHtmlForIframe(html: string): string {
   if (/<!DOCTYPE\s+html/i.test(trimmed) || /<html[\s>]/i.test(trimmed)) {
     trimmed = extractBodyIfFullDocument(trimmed);
   }
-  const fullWidthStyle = `<style>html,body{width:100%!important;max-width:none!important;margin:0;padding:0;box-sizing:border-box}body,body *{max-width:100%!important;box-sizing:border-box}</style>`;
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${fullWidthStyle}</head><body>${trimmed}</body></html>`;
+  // body末尾に配置してユーザーHTMLのstyleより優先させる（カスケード順で最後に適用）
+  const fullWidthOverride = `<style id="kotae-fullwidth-override">html,body{width:100%!important;max-width:none!important;margin:0;padding:0;box-sizing:border-box}body>*{width:100%!important;max-width:none!important;box-sizing:border-box}body *{max-width:100%!important;box-sizing:border-box}</style>`;
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body>${trimmed}${fullWidthOverride}</body></html>`;
 }
 
 /**
