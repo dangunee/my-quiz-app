@@ -27,7 +27,7 @@ function useOndokuBase() {
       setBase({
         adminPath: "/admin",
         redirectPath: isOndoku ? "/" : "/ondoku",
-        quizLink: isOndoku ? "https://quiz.mirinae.jp" : "/",
+        quizLink: isOndoku ? "https://apps.mirinae.jp/quiz" : "/quiz",
       });
     }
   }, []);
@@ -337,7 +337,7 @@ export default function OndokuPage() {
 
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
-    { label: "クイズ", href: "https://quiz.mirinae.jp", external: true },
+    { label: "クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "作文トレ", href: "/writing", external: false },
     { label: "ホームページ", href: "https://mirinae.jp", external: true },
     { label: "申し込み", href: "https://mirinae.jp/trial.html?tab=tab02", external: true },

@@ -1,5 +1,5 @@
-import QuizClient from "./QuizClient";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <QuizClient initialShowLanding={false} />;
+  redirect("/quiz");
 }

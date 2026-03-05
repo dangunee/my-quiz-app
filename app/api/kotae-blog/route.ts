@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
     const rawContent = data.content ?? "";
     const html = stripFooter(rawContent);
-    const url = data.url ?? `https://quiz.mirinae.jp/qna/${id}`;
+    const url = data.url ?? `https://apps.mirinae.jp/qna/${id}`;
 
     return NextResponse.json({ html, url, title: data.title ?? "" });
   } catch (err) {

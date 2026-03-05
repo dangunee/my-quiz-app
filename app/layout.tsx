@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 
-const QUIZ_URL = "https://quiz.mirinae.jp";
+const QUIZ_URL = "https://apps.mirinae.jp/quiz";
 const WRITING_URL = "https://writing.mirinae.jp";
 const ONDOKU_URL = "https://ondoku.mirinae.jp";
 

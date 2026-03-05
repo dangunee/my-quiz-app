@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
     .insert({
       title: title.trim(),
       content: typeof content === "string" ? content : "",
-      url: typeof url === "string" && url.trim() ? url.trim() : `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(title.trim())}`,
+      url: typeof url === "string" && url.trim() ? url.trim() : `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(title.trim())}`,
       wp_id: null,
       sort_order: newSortOrder,
     })

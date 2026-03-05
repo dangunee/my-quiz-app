@@ -86,7 +86,7 @@ function DailyLifeContent() {
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <Link
-            href="/"
+            href="/quiz"
             className="text-[#0ea5e9] hover:underline text-sm mb-4 inline-block"
           >
             ← クイズに戻る
@@ -140,18 +140,18 @@ function DailyLifeContent() {
                       <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
                       <div className="flex flex-wrap items-center gap-2">
                         <a
-                          href={`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`}
+                          href={`https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 min-w-0 text-xs text-[#0ea5e9] hover:underline break-all"
                         >
-                          {`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`}
+                          {`https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`}
                         </a>
                         <button
                           type="button"
                           onClick={async () => {
                             try {
-                              const url = `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`;
+                              const url = `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(expandedTitle)}`;
                               await navigator.clipboard.writeText(url);
                               setUrlCopied(true);
                               setTimeout(() => setUrlCopied(false), 2000);

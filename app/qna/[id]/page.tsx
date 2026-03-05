@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-const QUIZ_BASE = "https://quiz.mirinae.jp";
+const APPS_BASE = "https://apps.mirinae.jp";
 
 export default function QnaArticlePage() {
   const params = useParams();
@@ -15,7 +15,7 @@ export default function QnaArticlePage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const shareUrl = id ? `${QUIZ_BASE}/qna/${id}` : "";
+  const shareUrl = id ? `${APPS_BASE}/qna/${id}` : "";
 
   useEffect(() => {
     if (!id || !/^\d+$/.test(id)) {
@@ -68,7 +68,7 @@ export default function QnaArticlePage() {
     return (
       <div className="min-h-screen bg-[#f5f5f5] p-4 flex flex-col items-center justify-center">
         <p className="text-red-500 mb-4">{error || "記事が見つかりません"}</p>
-        <Link href="/?tab=qna" className="text-[#0ea5e9] hover:underline">
+        <Link href="/quiz?tab=qna" className="text-[#0ea5e9] hover:underline">
           Q&A一覧に戻る
         </Link>
       </div>
@@ -80,7 +80,7 @@ export default function QnaArticlePage() {
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <Link
-            href="/?tab=qna"
+            href="/quiz?tab=qna"
             className="text-[#0ea5e9] hover:underline text-sm mb-4 inline-block"
           >
             ← Q&A一覧に戻る

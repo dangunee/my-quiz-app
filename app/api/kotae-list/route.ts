@@ -25,7 +25,7 @@ export async function GET() {
     const list = (data || []).map((row) => ({
       id: row.id,
       title: row.title ?? "",
-      url: row.url ?? (typeof row.id === "number" ? `https://quiz.mirinae.jp/qna/${row.id}` : ""),
+      url: row.url ?? (typeof row.id === "number" ? `https://apps.mirinae.jp/qna/${row.id}` : ""),
     }));
 
     return NextResponse.json(list);

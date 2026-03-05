@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const WRITING_HOST = "writing.mirinae.jp";
 const ONDOKU_HOST = "ondoku.mirinae.jp";
 const QUIZ_HOST = "quiz.mirinae.jp";
+const APPS_HOST = "apps.mirinae.jp";
 
 export function middleware(request: NextRequest) {
   const rawHost =
@@ -46,6 +47,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
+  // apps.mirinae.jp: root → /quiz
+  const isAppsHost = host === APPS_HOST || host === `www.${APPS_HOST}`;
+  if (isAppsHost && (pathname === "/" || pathname === "")) {
+    return NextResponse.redirect(new URL("/quiz", request.url), 302);
+  }
+
   // quiz.mirinae.jp: /writing, /writing/* → redirect to writing.mirinae.jp
   const isQuizHost = host === QUIZ_HOST || host === `www.${QUIZ_HOST}`;
   if (isQuizHost && pathname.startsWith("/writing")) {
@@ -59,6 +66,13 @@ export function middleware(request: NextRequest) {
     const rest = pathname === "/ondoku" || pathname === "/ondoku/" ? "" : pathname.slice(7); // "/ondoku".length = 7
     const target = `https://${ONDOKU_HOST}${rest ? `/${rest}` : "/"}`;
     return NextResponse.redirect(target, 302);
+  }
+
+  // quiz.mirinae.jp: 그 외 전체 → apps.mirinae.jp (기존 링크 호환)
+  if (isQuizHost) {
+    const targetPath = pathname === "/" || pathname === "" ? "/quiz" : pathname;
+    const target = new URL(targetPath + request.nextUrl.search, `https://${APPS_HOST}`);
+    return NextResponse.redirect(target.toString(), 302);
   }
 
   return NextResponse.next({ request: { headers: requestHeaders } });

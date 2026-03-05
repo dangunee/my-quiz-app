@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         all.push({
           title,
           content,
-          url: `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(title)}`,
+          url: `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(title)}`,
           wp_id: p.id,
         });
       }

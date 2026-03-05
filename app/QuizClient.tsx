@@ -39,6 +39,8 @@ function getOptionNumber(id: number) {
   return ["❶", "❷", "❸", "❹"][id - 1] || "❶";
 }
 
+const QUIZ_BASE = "/quiz";
+
 interface QuizClientProps {
   initialShowLanding?: boolean;
 }
@@ -243,7 +245,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
 
   const handleStartFromLanding = (tab: "quiz" | "qna" | "dailylife") => {
     if (pathname === "/main.html") {
-      router.push(`/?tab=${tab}`);
+      router.push(`${QUIZ_BASE}?tab=${tab}`);
     } else {
       setShowLanding(false);
       setActiveTab(tab);
@@ -258,7 +260,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     } else if (tab === "kotae") {
       setActiveTab("qna");
       setShowLanding(false);
-      router.replace("/?tab=qna", { scroll: false });
+      router.replace(`${QUIZ_BASE}?tab=qna`, { scroll: false });
     }
   }, [searchParams]);
 
@@ -527,7 +529,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
     { label: "作文トレ", href: "https://writing.mirinae.jp", external: true },
     { label: "音読トレ", href: "https://ondoku.mirinae.jp", external: true },
     { label: "生活韓国語", href: "/dailylife", external: false },
-    { label: "初級クイズ", href: "https://quiz.mirinae.jp", external: true },
+    { label: "初級クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "変則活用", href: "https://mirinae.jp", external: true },
     { label: "初級文法", href: "https://mirinae.jp", external: true },
     { label: "中級文法", href: "https://mirinae.jp", external: true },
@@ -804,7 +806,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                 )}
               </div>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <button type="button" onClick={() => { setActiveTab("quiz"); router.replace("/"); closeRightMenu(); }} className="w-full p-4 text-left">
+                <button type="button" onClick={() => { setActiveTab("quiz"); router.replace(QUIZ_BASE); closeRightMenu(); }} className="w-full p-4 text-left">
                   <h3 className="font-bold text-gray-800 text-sm mb-3">クイズ</h3>
                   <span className="block w-full py-2.5 text-center text-sm font-medium rounded-xl bg-[var(--primary)] text-white">クイズを始める</span>
                 </button>
@@ -870,7 +872,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("quiz"); router.replace("/"); }}
+            onClick={() => { setActiveTab("quiz"); router.replace(QUIZ_BASE); }}
             className={`quiz-tab-btn flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "quiz"
                 ? "text-white"
@@ -882,7 +884,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("qna"); router.replace("/?tab=qna"); }}
+            onClick={() => { setActiveTab("qna"); router.replace(`${QUIZ_BASE}?tab=qna`); }}
             className={`quiz-tab-btn flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "qna"
                 ? "text-white"
@@ -894,7 +896,7 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab("dailylife"); router.replace("/?tab=dailylife"); }}
+            onClick={() => { setActiveTab("dailylife"); router.replace(`${QUIZ_BASE}?tab=dailylife`); }}
             className={`quiz-tab-btn flex-1 py-2.5 px-3 text-sm font-bold rounded-lg transition ${
               activeTab === "dailylife"
                 ? "text-white"
@@ -989,18 +991,18 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                             <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
                             <div className="flex flex-wrap items-center gap-2">
                               <a
-                                href={`https://quiz.mirinae.jp/qna/${expandedKotaeId}`}
+                                href={`https://apps.mirinae.jp/qna/${expandedKotaeId}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex-1 min-w-0 text-xs text-[var(--primary)] hover:underline truncate"
                               >
-                                https://quiz.mirinae.jp/qna/{expandedKotaeId}
+                                {`https://apps.mirinae.jp/qna/${expandedKotaeId}`}
                               </a>
                               <button
                                 type="button"
                                 onClick={async () => {
                                   try {
-                                    await navigator.clipboard.writeText(`https://quiz.mirinae.jp/qna/${expandedKotaeId}`);
+                                    await navigator.clipboard.writeText(`https://apps.mirinae.jp/qna/${expandedKotaeId}`);
                                     setKotaeUrlCopied(true);
                                     setTimeout(() => setKotaeUrlCopied(false), 2000);
                                   } catch {}
@@ -1102,18 +1104,18 @@ export default function QuizClient({ initialShowLanding = true }: QuizClientProp
                             <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
                             <div className="flex flex-wrap items-center gap-2">
                               <a
-                                href={`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`}
+                                href={`https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex-1 min-w-0 text-xs text-[var(--primary)] hover:underline break-all"
                               >
-                                {`https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`}
+                                {`https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`}
                               </a>
                               <button
                                 type="button"
                                 onClick={async () => {
                                   try {
-                                    const url = `https://quiz.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`;
+                                    const url = `https://apps.mirinae.jp/dailylife?title=${encodeURIComponent(expandedSeikatsuTitle)}`;
                                     await navigator.clipboard.writeText(url);
                                     setSeikatsuUrlCopied(true);
                                     setTimeout(() => setSeikatsuUrlCopied(false), 2000);

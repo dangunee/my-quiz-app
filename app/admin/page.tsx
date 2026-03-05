@@ -929,7 +929,7 @@ export default function AdminPage() {
             <Link
               href={
                 ["quiz", "sync", "qnaEdit"].includes(activeTab)
-                  ? "https://quiz.mirinae.jp"
+                  ? "https://apps.mirinae.jp/quiz"
                   : ["ondokuKadai", "ondoku"].includes(activeTab)
                     ? "https://ondoku.mirinae.jp"
                     : "https://writing.mirinae.jp"

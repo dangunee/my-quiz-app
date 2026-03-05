@@ -28,7 +28,7 @@ function useWritingBase() {
       setBase({
         adminPath: "/admin",
         redirectPath: isWriting ? "/" : "/writing",
-        quizLink: isWriting ? "https://quiz.mirinae.jp" : "/",
+        quizLink: isWriting ? "https://apps.mirinae.jp/quiz" : "/quiz",
       });
     }
   }, []);
@@ -504,7 +504,7 @@ export default function WritingPage() {
 
   const menuLinks = [
     { label: "ログイン", href: "/login", external: false },
-    { label: "クイズ", href: "https://quiz.mirinae.jp", external: true },
+    { label: "クイズ", href: "https://apps.mirinae.jp/quiz", external: true },
     { label: "音読トレ", href: "/ondoku", external: false },
     { label: "ホームページ", href: "https://mirinae.jp", external: true },
     { label: "個人レッスン", href: "/kojin", external: false },
