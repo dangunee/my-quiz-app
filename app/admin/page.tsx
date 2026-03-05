@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { QUIZZES } from "../quiz-data";
 import { RichTextEditor } from "@/components/RichTextEditor";
-import { stripLongDataUrls } from "@/lib/html-utils";
 import { DEFAULT_ASSIGNMENT_EXAMPLES, PERIOD_LABELS } from "../data/assignment-examples-defaults";
 import { PERIOD_EXAMPLES } from "../data/assignment-examples-period";
 import { ONDOKU_PERIOD_EXAMPLES } from "../data/ondoku-assignment-examples";
@@ -195,7 +194,7 @@ export default function AdminPage() {
   const [qnaSelectedId, setQnaSelectedId] = useState<number | null>(null);
   const [qnaEditData, setQnaEditData] = useState<{ title: string; content: string; url: string } | null>(null);
   const [qnaEditLoading, setQnaEditLoading] = useState(false);
-  const [qnaEditMode, setQnaEditMode] = useState<"edit" | "visual" | "html">("edit");
+  const [qnaEditMode, setQnaEditMode] = useState<"edit" | "html">("edit");
   const [qnaSaveLoading, setQnaSaveLoading] = useState(false);
   const [qnaIsNewMode, setQnaIsNewMode] = useState(false);
   const [dbEditSubTab, setDbEditSubTab] = useState<"qna" | "seikatsu">("qna");
@@ -204,7 +203,7 @@ export default function AdminPage() {
   const [seikatsuSelectedTitle, setSeikatsuSelectedTitle] = useState<string | null>(null);
   const [seikatsuEditData, setSeikatsuEditData] = useState<{ title: string; content: string; url: string } | null>(null);
   const [seikatsuEditLoading, setSeikatsuEditLoading] = useState(false);
-  const [seikatsuEditMode, setSeikatsuEditMode] = useState<"edit" | "visual" | "html">("edit");
+  const [seikatsuEditMode, setSeikatsuEditMode] = useState<"edit" | "html">("edit");
   const [seikatsuSaveLoading, setSeikatsuSaveLoading] = useState(false);
   const [seikatsuIsNewMode, setSeikatsuIsNewMode] = useState(false);
   const [qnaCheckedIds, setQnaCheckedIds] = useState<Set<number>>(new Set());
@@ -2042,18 +2041,20 @@ export default function AdminPage() {
                             <button type="button" onClick={() => setQnaEditMode("html")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
                               <span>&lt;/&gt;</span> HTML
                             </button>
-                            <button type="button" onClick={() => setQnaEditMode("visual")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${qnaEditMode === "visual" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7C7.523 19 3.732 16.057 2.458 12z" /></svg>
-                              미리보기
-                            </button>
+                            {qnaSelectedId != null && !qnaIsNewMode ? (
+                              <a href={`https://apps.mirinae.jp/qna?id=${qnaSelectedId}`} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 text-xs rounded flex items-center gap-1 text-gray-600 hover:text-gray-800 hover:bg-white">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                프론트 페이지 보기
+                              </a>
+                            ) : (
+                              <span className="px-2.5 py-1 text-xs text-gray-400" title="저장 후 확인 가능">프론트 페이지 보기</span>
+                            )}
                           </div>
                         </div>
                         {qnaEditMode === "edit" ? (
                           <RichTextEditor value={qnaEditData.content} onChange={(html) => setQnaEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
-                        ) : qnaEditMode === "html" ? (
-                          <textarea value={qnaEditData.content} onChange={(e) => setQnaEditData((d) => d ? { ...d, content: stripLongDataUrls(e.target.value) } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         ) : (
-                          <div className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: qnaEditData.content }} />
+                          <textarea value={qnaEditData.content} onChange={(e) => setQnaEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         )}
                       </div>
                       <div className="flex items-center gap-2">
@@ -2216,18 +2217,20 @@ export default function AdminPage() {
                             <button type="button" onClick={() => setSeikatsuEditMode("html")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "html" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
                               <span>&lt;/&gt;</span> HTML
                             </button>
-                            <button type="button" onClick={() => setSeikatsuEditMode("visual")} className={`px-2.5 py-1 text-xs rounded flex items-center gap-1 ${seikatsuEditMode === "visual" ? "bg-white shadow text-gray-800" : "text-gray-500"}`}>
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7C7.523 19 3.732 16.057 2.458 12z" /></svg>
-                              미리보기
-                            </button>
+                            {seikatsuSelectedTitle && !seikatsuIsNewMode ? (
+                              <a href={`https://apps.mirinae.jp/quiz?tab=dailylife&title=${encodeURIComponent(seikatsuSelectedTitle)}`} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 text-xs rounded flex items-center gap-1 text-gray-600 hover:text-gray-800 hover:bg-white">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                프론트 페이지 보기
+                              </a>
+                            ) : (
+                              <span className="px-2.5 py-1 text-xs text-gray-400" title="저장 후 확인 가능">프론트 페이지 보기</span>
+                            )}
                           </div>
                         </div>
                         {seikatsuEditMode === "edit" ? (
                           <RichTextEditor value={seikatsuEditData.content} onChange={(html) => setSeikatsuEditData((d) => d ? { ...d, content: html } : null)} placeholder="내용을 입력하세요..." minHeight="300px" />
-                        ) : seikatsuEditMode === "html" ? (
-                          <textarea value={seikatsuEditData.content} onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, content: stripLongDataUrls(e.target.value) } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         ) : (
-                          <div className="w-full min-h-[300px] px-3 py-2 border rounded text-sm bg-white overflow-y-auto kotae-blog-content text-gray-800" dangerouslySetInnerHTML={{ __html: seikatsuEditData.content }} />
+                          <textarea value={seikatsuEditData.content} onChange={(e) => setSeikatsuEditData((d) => d ? { ...d, content: e.target.value } : null)} rows={18} className="w-full px-3 py-2 border rounded text-sm font-mono" placeholder="HTML 입력" />
                         )}
                       </div>
                       <div className="flex items-center gap-2">
