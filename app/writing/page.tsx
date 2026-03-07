@@ -906,9 +906,6 @@ export default function WritingPage() {
                       <h3 className="text-base md:text-lg font-bold text-[#2C2C2E]">
                         メールで作文トレーニング
                       </h3>
-                      <p className="mt-1 text-xs md:text-sm text-[#8E8E93]">
-                        このページでは、コースの特徴・詳細・体験例・授業料・生徒の声をご紹介します。
-                      </p>
                     </div>
                     <div className="p-6 space-y-6 md:space-y-8">
                       {/* FEATURES */}
