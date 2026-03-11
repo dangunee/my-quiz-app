@@ -1007,7 +1007,16 @@ export default function QuizClient({
         {activeTab === "qna" ? kotaeSingleViewId ? (
           <div className="kotae-single flex flex-col flex-1 min-h-0 overflow-hidden w-full h-full" style={{ minHeight: "calc(100dvh - 7rem)" }}>
             <div className="shrink-0 flex items-center justify-between gap-2 px-2 md:px-4 py-3 border-b bg-white" style={{ borderColor: "var(--border)" }}>
-              <button type="button" onClick={() => router.replace("/qna")} className="flex items-center gap-1 text-sm text-gray-600 hover:text-[var(--primary)]">
+              <button
+                type="button"
+                onClick={() => {
+                  setExpandedKotaeId(null);
+                  setKotaeContent(null);
+                  setKotaeError(null);
+                  router.replace("/qna", { scroll: false });
+                }}
+                className="flex items-center gap-1 text-sm text-gray-600 hover:text-[var(--primary)]"
+              >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 リストに戻る
               </button>
@@ -1015,7 +1024,7 @@ export default function QuizClient({
                 <button
                   type="button"
                   disabled={!kotaePrevItem}
-                  onClick={() => kotaePrevItem && router.replace(`/qna?id=${kotaePrevItem.id}`)}
+                  onClick={() => kotaePrevItem && router.replace(`/qna?id=${kotaePrevItem.id}`, { scroll: false })}
                   className="p-2 rounded-lg border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
                   style={{ borderColor: "var(--border)" }}
                   aria-label="이전 글"
@@ -1028,7 +1037,7 @@ export default function QuizClient({
                 <button
                   type="button"
                   disabled={!kotaeNextItem}
-                  onClick={() => kotaeNextItem && router.replace(`/qna?id=${kotaeNextItem.id}`)}
+                  onClick={() => kotaeNextItem && router.replace(`/qna?id=${kotaeNextItem.id}`, { scroll: false })}
                   className="p-2 rounded-lg border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
                   style={{ borderColor: "var(--border)" }}
                   aria-label="다음 글"
@@ -1113,10 +1122,10 @@ export default function QuizClient({
                         onClick={() => {
                           if (expandedKotaeId === item.id) {
                             setExpandedKotaeId(null);
-                            router.replace("/qna");
+                            setKotaeContent(null);
+                            router.replace("/qna", { scroll: false });
                           } else {
-                            setExpandedKotaeId(item.id);
-                            router.replace(`/qna?id=${item.id}`);
+                            router.replace(`/qna?id=${item.id}`, { scroll: false });
                           }
                         }}
                         className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
@@ -1284,6 +1293,21 @@ export default function QuizClient({
                     </div>
                     {expandedSeikatsuTitle === title && (
                       <div className="border-t border-gray-200 bg-white overflow-hidden">
+                        <div className="shrink-0 flex items-center px-2 md:px-4 py-2 border-b border-gray-100 bg-gray-50">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setExpandedSeikatsuTitle(null);
+                              setSeikatsuContent(null);
+                              setSeikatsuError(null);
+                              router.replace("/dailylife", { scroll: false });
+                            }}
+                            className="flex items-center gap-1 text-sm text-gray-600 hover:text-[var(--primary)]"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                            リストに戻る
+                          </button>
+                        </div>
                         <div className="seikatsu-content min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
                           {seikatsuLoading ? (
                             <p className="text-center text-gray-500 py-8">読み込み中...</p>
