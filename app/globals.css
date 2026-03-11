@@ -1011,6 +1011,14 @@ body {
   box-shadow: none !important;
 }
 
+/* Q&A/생활한국어 리스트: 펼침 시 레이아웃 떨림 방지 */
+.kotae-list-expand {
+  min-height: 300px;
+}
+.kotae-list ul {
+  overflow-anchor: none !important;
+}
+
 /* Q&A Rich Editor: 貼り付けHTMLの横オーバーフローをエディタ内に閉じ込める */
 .qna-rich-editor {
   overflow-x: auto !important;

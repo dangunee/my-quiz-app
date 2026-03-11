@@ -1117,28 +1117,14 @@ export default function QuizClient({
                 kotaePaginated.map((item, i) => (
                   <li key={item.id} className="border-b border-gray-200 last:border-b-0">
                     <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (expandedKotaeId === item.id) {
-                            setExpandedKotaeId(null);
-                            setKotaeContent(null);
-                            router.replace("/qna", { scroll: false });
-                          } else {
-                            router.replace(`/qna?id=${item.id}`, { scroll: false });
-                          }
-                        }}
-                        className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2"
+                      <Link
+                        href={`/qna?id=${item.id}`}
+                        scroll={false}
+                        className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2 hover:bg-gray-50/50"
                       >
                         <span className="truncate">{item.title}</span>
-                        <span
-                          className={`shrink-0 text-gray-400 transition-transform ${
-                            expandedKotaeId === item.id ? "rotate-180" : ""
-                          }`}
-                        >
-                          ▼
-                        </span>
-                      </button>
+                        <span className="shrink-0 text-gray-400">▼</span>
+                      </Link>
                       {isAdmin && !isLoggedIn && (
                         <Link
                           href={`/admin?tab=qnaEdit&qna=${item.id}`}
@@ -1149,57 +1135,6 @@ export default function QuizClient({
                         </Link>
                       )}
                     </div>
-                    {expandedKotaeId === item.id && (
-                      <div className="border-t border-gray-200 bg-white overflow-hidden">
-                        <div className="min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
-                          {kotaeLoading ? (
-                            <p className="text-center text-gray-500 py-8">読み込み中...</p>
-                          ) : kotaeError ? (
-                            <p className="text-center text-red-500 py-4">{kotaeError}</p>
-                          ) : kotaeContent?.html ? kotaeContent.html.includes("<script") ? (
-                            <iframe
-                              srcDoc={wrapHtmlForIframe(kotaeContent.html)}
-                              title="Q&A content"
-                              className="w-full min-h-[400px] border-0 kotae-blog-content"
-                              sandbox="allow-scripts"
-                            />
-                          ) : (
-                            <div
-                              className="kotae-blog-content text-gray-800"
-                              dangerouslySetInnerHTML={{ __html: kotaeContent.html }}
-                            />
-                          ) : null}
-                        </div>
-                        {expandedKotaeId && (
-                          <div className="py-3 px-2 md:px-4 border-t border-gray-100 bg-gray-50">
-                            <p className="text-xs text-gray-500 mb-1.5">この記事のリンク（共有用）:</p>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <a
-                                href={`https://apps.mirinae.jp/qna/${expandedKotaeId}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 min-w-0 text-xs text-[var(--primary)] hover:underline truncate"
-                              >
-                                {`https://apps.mirinae.jp/qna/${expandedKotaeId}`}
-                              </a>
-                              <button
-                                type="button"
-                                onClick={async () => {
-                                  try {
-                                    await navigator.clipboard.writeText(`https://apps.mirinae.jp/qna/${expandedKotaeId}`);
-                                    setKotaeUrlCopied(true);
-                                    setTimeout(() => setKotaeUrlCopied(false), 2000);
-                                  } catch {}
-                                }}
-                                className="px-2.5 py-1 text-xs font-medium rounded bg-[var(--primary)] text-white hover:opacity-90 shrink-0"
-                              >
-                                {kotaeUrlCopied ? "コピーしました" : "URLをコピー"}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </li>
                 ))
               )}
@@ -1292,7 +1227,7 @@ export default function QuizClient({
                       )}
                     </div>
                     {expandedSeikatsuTitle === title && (
-                      <div className="border-t border-gray-200 bg-white overflow-hidden">
+                      <div className="kotae-list-expand border-t border-gray-200 bg-white overflow-hidden">
                         <div className="shrink-0 flex items-center px-2 md:px-4 py-2 border-b border-gray-100 bg-gray-50">
                           <button
                             type="button"
