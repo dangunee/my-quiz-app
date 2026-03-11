@@ -1117,14 +1117,13 @@ export default function QuizClient({
                 kotaePaginated.map((item, i) => (
                   <li key={item.id} className="border-b border-gray-200 last:border-b-0">
                     <div className="flex items-center gap-1">
-                      <Link
+                      <a
                         href={`/qna?id=${item.id}`}
-                        scroll={false}
-                        className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2 hover:bg-gray-50/50"
+                        className="flex-1 min-w-0 text-left py-3 px-2 md:px-4 text-gray-800 text-sm flex items-center justify-between gap-2 hover:bg-gray-50/50 block"
                       >
                         <span className="truncate">{item.title}</span>
                         <span className="shrink-0 text-gray-400">▼</span>
-                      </Link>
+                      </a>
                       {isAdmin && !isLoggedIn && (
                         <Link
                           href={`/admin?tab=qnaEdit&qna=${item.id}`}
@@ -1243,16 +1242,18 @@ export default function QuizClient({
                             リストに戻る
                           </button>
                         </div>
-                        <div className="seikatsu-content min-h-[300px] max-h-[70vh] md:max-h-[calc(100vh-12rem)] overflow-y-auto px-0 py-4 md:px-4">
+                        <div className="seikatsu-content h-[50vh] min-h-[400px] overflow-y-auto px-0 py-4 md:px-4">
                           {seikatsuLoading ? (
-                            <p className="text-center text-gray-500 py-8">読み込み中...</p>
+                            <div className="flex items-center justify-center h-full min-h-[300px]">
+                              <p className="text-gray-500">読み込み中...</p>
+                            </div>
                           ) : seikatsuError ? (
                             <p className="text-center text-red-500 py-4">{seikatsuError}</p>
                           ) : seikatsuContent?.html ? seikatsuContent.html.includes("<script") ? (
                             <iframe
                               srcDoc={wrapHtmlForIframe(seikatsuContent.html)}
                               title="生活韓国語 content"
-                              className="w-full min-h-[400px] border-0 kotae-blog-content"
+                              className="w-full h-full min-h-[400px] border-0 kotae-blog-content"
                               sandbox="allow-scripts"
                             />
                           ) : (
