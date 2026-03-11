@@ -1115,6 +1115,7 @@ export default function QuizClient({
                             setExpandedKotaeId(null);
                             router.replace("/qna");
                           } else {
+                            setExpandedKotaeId(item.id);
                             router.replace(`/qna?id=${item.id}`);
                           }
                         }}

@@ -56,18 +56,12 @@ export function middleware(request: NextRequest) {
     if (pathname === "/" || pathname === "") {
       return NextResponse.redirect(new URL("/quiz", request.url), 302);
     }
-    // /quiz?tab=qna → /qna (dailylife는 탭에서 인라인 표시 유지)
+    // /quiz?tab=qna → /qna (dailylife는 /dailylife 페이지에서 직접 서빙)
     if (pathname === "/quiz") {
       const tab = request.nextUrl.searchParams.get("tab");
       if (tab === "qna") return NextResponse.redirect(new URL("/qna", request.url), 302);
     }
-    // /dailylife → /quiz?tab=dailylife (탭 안에서 표시)
-    if (pathname === "/dailylife") {
-      const target = new URL("/quiz", request.url);
-      target.searchParams.set("tab", "dailylife");
-      request.nextUrl.searchParams.forEach((v, k) => target.searchParams.set(k, v));
-      return NextResponse.redirect(target.toString(), 302);
-    }
+    // /dailylife: app/dailylife/page.tsx에서 직접 서빙 (ISR, SEO). 리다이렉트 제거하여 루프 방지
   }
 
   // quiz.mirinae.jp: 전체 → apps.mirinae.jp (기존 링크 호환)
