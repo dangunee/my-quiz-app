@@ -7,8 +7,6 @@ import QnaArticleClient from "./QnaArticleClient";
 
 const APPS_BASE = "https://apps.mirinae.jp";
 
-export const revalidate = 60; // ISR: 1분마다 재생성
-
 export async function generateStaticParams() {
   const { getKotaeList } = await import("@/lib/qna-data");
   const list = await getKotaeList();

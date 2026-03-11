@@ -18,13 +18,6 @@ interface KotaeItem {
   title: string;
   url: string;
 }
-
-interface KotaeContent {
-  id: number;
-  title: string;
-  url: string;
-  html: string;
-}
 const FREE_QUIZ_LIMIT = 999; // 결제 모듈 보류 - 무제한
 
 function shuffle<T>(arr: T[]): T[] {
@@ -53,23 +46,11 @@ const QUIZ_BASE = "/quiz";
 interface QuizClientProps {
   initialShowLanding?: boolean;
   initialTab?: "quiz" | "qna" | "dailylife";
-  /** ISR: 서버에서 미리 가져온 Q&A 리스트 (있으면 fetch 생략) */
-  initialKotaeList?: KotaeItem[];
-  /** ISR: 서버에서 미리 가져온 Q&A 본문 (클릭 시 즉시 표시) */
-  initialKotaeContents?: KotaeContent[];
-  /** ISR: 서버에서 미리 가져온 생활한국어 리스트 */
-  initialSeikatsuList?: string[];
-  /** ISR: 서버에서 미리 가져온 생활한국어 본문 */
-  initialSeikatsuContents?: { title: string; url: string; html: string }[];
 }
 
 export default function QuizClient({
   initialShowLanding = true,
   initialTab,
-  initialKotaeList,
-  initialKotaeContents = [],
-  initialSeikatsuList,
-  initialSeikatsuContents = [],
 }: QuizClientProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -97,9 +78,9 @@ export default function QuizClient({
   const landingNavDropdownRef = useRef<HTMLDivElement>(null);
   const [kotaeSearch, setKotaeSearch] = useState("");
   const [kotaePage, setKotaePage] = useState(0);
-  const [kotaeList, setKotaeList] = useState<KotaeItem[]>(initialKotaeList ?? []);
-  const [kotaeListLoading, setKotaeListLoading] = useState(!initialKotaeList);
-  const [seikatsuList, setSeikatsuList] = useState<string[]>(initialSeikatsuList ?? []);
+  const [kotaeList, setKotaeList] = useState<KotaeItem[]>([]);
+  const [kotaeListLoading, setKotaeListLoading] = useState(true);
+  const [seikatsuList, setSeikatsuList] = useState<string[]>([]);
   const [seikatsuPage, setSeikatsuPage] = useState(0);
   const [seikatsuSearch, setSeikatsuSearch] = useState("");
   const [expandedSeikatsuTitle, setExpandedSeikatsuTitle] = useState<string | null>(null);
@@ -220,7 +201,6 @@ export default function QuizClient({
   }, []);
 
   useEffect(() => {
-    if (initialKotaeList) return;
     fetch("/api/kotae-list")
       .then((r) => r.json())
       .then((data) => {
@@ -228,17 +208,16 @@ export default function QuizClient({
       })
       .catch(() => setKotaeList([]))
       .finally(() => setKotaeListLoading(false));
-  }, [initialKotaeList]);
+  }, []);
 
   useEffect(() => {
-    if (initialSeikatsuList) return;
     fetch("/api/dailylife-list")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setSeikatsuList(data);
       })
       .catch(() => setSeikatsuList([]));
-  }, [initialSeikatsuList]);
+  }, []);
 
   const filteredKotae = kotaeSearch.trim()
     ? kotaeList.filter((item) =>
@@ -371,16 +350,6 @@ export default function QuizClient({
       setSeikatsuError(null);
       return;
     }
-    // ISR: 미리 가져온 본문이 있으면 즉시 표시 (fetch 생략)
-    const preloaded = initialSeikatsuContents.find(
-      (c) => c.title === expandedSeikatsuTitle
-    );
-    if (preloaded) {
-      setSeikatsuContent({ html: preloaded.html, url: preloaded.url });
-      setSeikatsuError(null);
-      setSeikatsuLoading(false);
-      return;
-    }
     setSeikatsuLoading(true);
     setSeikatsuError(null);
     fetch(`/api/dailylife-blog?title=${encodeURIComponent(expandedSeikatsuTitle)}`)
@@ -399,7 +368,7 @@ export default function QuizClient({
         setSeikatsuContent(null);
       })
       .finally(() => setSeikatsuLoading(false));
-  }, [expandedSeikatsuTitle, initialSeikatsuContents]);
+  }, [expandedSeikatsuTitle]);
 
   useEffect(() => {
     if (!expandedKotaeId) {
@@ -409,15 +378,6 @@ export default function QuizClient({
     }
     const item = kotaeList.find((i) => i.id === expandedKotaeId);
     if (!item) return;
-
-    // ISR: 미리 가져온 본문이 있으면 즉시 표시 (fetch 생략)
-    const preloaded = initialKotaeContents.find((c) => c.id === expandedKotaeId);
-    if (preloaded) {
-      setKotaeContent({ html: preloaded.html, url: preloaded.url });
-      setKotaeError(null);
-      setKotaeLoading(false);
-      return;
-    }
 
     setKotaeLoading(true);
     setKotaeError(null);
@@ -437,7 +397,7 @@ export default function QuizClient({
         setKotaeContent(null);
       })
       .finally(() => setKotaeLoading(false));
-  }, [expandedKotaeId, kotaeList, initialKotaeContents]);
+  }, [expandedKotaeId, kotaeList]);
 
   useEffect(() => {
     const validQuizzes = QUIZZES.filter(
@@ -1161,17 +1121,6 @@ export default function QuizClient({
                 </button>
               </div>
             )}
-            {/* SEO: 20개 Q&A 본문을 HTML에 포함 (크롤러용, display:none) */}
-            {initialKotaeContents.length > 0 && (
-              <div className="hidden" aria-hidden="true">
-                {initialKotaeContents.map((c) => (
-                  <article key={c.id}>
-                    <h3>{c.title}</h3>
-                    <div dangerouslySetInnerHTML={{ __html: c.html }} />
-                  </article>
-                ))}
-              </div>
-            )}
           </div>
         ) : activeTab === "dailylife" ? (
           <div className="kotae-list flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -1319,17 +1268,6 @@ export default function QuizClient({
                 >
                   次へ
                 </button>
-              </div>
-            )}
-            {/* SEO: 20개 생활한국어 본문을 HTML에 포함 (크롤러용) */}
-            {initialSeikatsuContents.length > 0 && (
-              <div className="hidden" aria-hidden="true">
-                {initialSeikatsuContents.map((c) => (
-                  <article key={c.title}>
-                    <h3>{c.title}</h3>
-                    <div dangerouslySetInnerHTML={{ __html: c.html }} />
-                  </article>
-                ))}
               </div>
             )}
           </div>
