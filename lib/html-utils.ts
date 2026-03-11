@@ -129,6 +129,20 @@ export function mergeForSave(editedHtml: string, preserved: string[]): string {
 }
 
 /**
+ * HTML 내 img 태그 최적화: loading="lazy", decoding="async" 추가.
+ * 답변에 이미지가 있다면 WebP 사용을 권장 (업로드 시 변환).
+ */
+export function optimizeImagesInHtml(html: string): string {
+  if (!html || typeof html !== "string") return html;
+  return html.replace(/<img([^>]*?)>/gi, (match, attrs) => {
+    let newAttrs = attrs;
+    if (!/loading\s*=/i.test(newAttrs)) newAttrs += ' loading="lazy"';
+    if (!/decoding\s*=/i.test(newAttrs)) newAttrs += ' decoding="async"';
+    return `<img${newAttrs}>`;
+  });
+}
+
+/**
  * HTML 내 긴 data: URL(Base64 이미지/오디오 등) 및 의미 없는 긴 문자열 제거.
  * paste 시 본문에 끼어드는 이상한 문자열 방지.
  */
