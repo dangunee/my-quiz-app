@@ -878,7 +878,7 @@ export default function WritingPage() {
                       <div className="schedule-strip">
                         <div className="sched-item">
                           <div className="s-label">開講日</div>
-                          <div className="s-val">4月4日（金）</div>
+                          <div className="s-val">4月10日（金）</div>
                         </div>
                         <div className="sched-item">
                           <div className="s-label">期間</div>
@@ -886,7 +886,7 @@ export default function WritingPage() {
                         </div>
                         <div className="sched-item">
                           <div className="s-label">募集期限</div>
-                          <div className="s-val">〜4月3日（木）</div>
+                          <div className="s-val">〜4月8日（木）</div>
                         </div>
                         <div className="sched-item">
                           <div className="s-label">授業料</div>
@@ -1054,7 +1054,7 @@ export default function WritingPage() {
                               日程
                             </div>
                             <div className="flex flex-wrap items-center gap-2 text-[#1F2933] font-medium">
-                              <span>4月4日（金）から</span>
+                              <span>4月10日（金）から</span>
                               <span className="inline-flex items-center rounded-full bg-[#E6F0EC] px-3 py-1 text-[11px] font-semibold text-[#3D6B5A]">
                                 10週間
                               </span>
@@ -1072,7 +1072,7 @@ export default function WritingPage() {
                             <div className="pt-0.5 text-[12px] font-semibold text-[#3D6B5A]">
                               募集期間
                             </div>
-                            <div className="text-[#1F2933] font-medium">〜 2026年4月3日（木）</div>
+                            <div className="text-[#1F2933] font-medium">〜 2026年4月8日（木）</div>
                           </div>
                           {/* テキスト */}
                           <div className="grid grid-cols-[90px,1fr] gap-3 rounded-2xl border border-[#E2D9CC] bg-[#FAF8F3] px-4 py-3 text-[13px] md:text-[14px]">
@@ -1477,10 +1477,10 @@ export default function WritingPage() {
                           </div>
                           <div className="border-collapse text-sm md:text-base">
                             {[
-                              { label: "体験申込の締切", content: "3月19日(木)" },
-                              { label: "体験課題送信日", content: "3月20日(金)" },
-                              { label: "体験添削送信日", content: "3月27日(金)" },
-                              { label: "当講座開始日", content: "4月3日(金)" },
+                              { label: "体験申込の締切", content: "〜3月31日(火)" },
+                              { label: "体験課題送信日", content: "〜4月1日(水)" },
+                              { label: "体験添削送信日", content: "〜4月8日(水)" },
+                              { label: "当講座開始日", content: "4月10日(金)" },
                             ].map((row, i) => (
                               <div
                                 key={row.label}

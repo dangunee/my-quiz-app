@@ -1114,11 +1114,11 @@ export default function OndokuPage() {
                       </div>
                       <div className="ondoku-detail-row">
                         <div className="ondoku-detail-label">日程</div>
-                        <div className="ondoku-detail-value">4月3日（金）から <span className="ondoku-detail-badge">10週間</span></div>
+                        <div className="ondoku-detail-value">4月10日（金）から <span className="ondoku-detail-badge">10週間</span></div>
                       </div>
                       <div className="ondoku-detail-row">
                         <div className="ondoku-detail-label">募集期間</div>
-                        <div className="ondoku-detail-value">〜 2026年4月1日（水）</div>
+                        <div className="ondoku-detail-value">〜 2026年4月8日（木）</div>
                       </div>
                       <div className="ondoku-detail-row">
                         <div className="ondoku-detail-label">テキスト</div>
