@@ -41,6 +41,8 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "writing", label: "課題提出" },
   { id: "assignment", label: "音読課題" },
 ];
+// 音読課題タブは非表示（内部用に残す）
+const VISIBLE_TABS = TABS.filter((t) => t.id !== "assignment");
 
 const PERIOD_LABELS = ["1期", "2期", "3期", "4期"] as const;
 const ALL_PERIODS = [0, 1, 2, 3] as const; // 1期, 2期, 3期, 4期 (both levels)
@@ -97,7 +99,7 @@ export default function OndokuPage() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab === "assignment") setActiveTab("assignment");
+    if (tab === "assignment") setActiveTab("writing"); // 音読課題タブ非表示のため writing へ
     else if (tab === "writing") setActiveTab("writing");
   }, []);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -800,7 +802,7 @@ export default function OndokuPage() {
             )}
             <div className="bg-white border-b border-gray-200 shadow-sm shrink-0">
               <nav className="flex overflow-x-auto px-4 md:px-6 py-0">
-                {TABS.map((tab) => (
+                {VISIBLE_TABS.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
