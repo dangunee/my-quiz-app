@@ -109,12 +109,11 @@ function saveAssignments(assignments: Assignment[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(assignments));
 }
 
-type TabId = "experience" | "writing" | "topik";
+type TabId = "experience" | "writing";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "experience", label: "作文トレーニング" },
   { id: "writing", label: "課題提出" },
-  { id: "topik", label: "TOPIK作文トレ" },
 ];
 
 export default function WritingPage() {
@@ -179,10 +178,10 @@ export default function WritingPage() {
   const [emailModalSending, setEmailModalSending] = useState(false);
   const [embedded, setEmbedded] = useState(false);
 
-  // URL ?tab=topik 등으로 진입 시 해당 탭 열기 (메인 사이트 通信講座 → TOPIK Training 링크용)
+  // URL ?tab=writing 등으로 진입 시 해당 탭 열기
   useEffect(() => {
     const tab = searchParams.get("tab");
-    if (tab === "topik" || tab === "writing" || tab === "experience") {
+    if (tab === "writing" || tab === "experience") {
       setActiveTab(tab as TabId);
     }
   }, [searchParams]);
@@ -2053,15 +2052,6 @@ export default function WritingPage() {
                 </div>
               )}
 
-              {activeTab === "topik" && (
-                <div className="px-4 md:px-0 mx-auto max-w-2xl w-full">
-                  <div className="rounded-xl border border-[#e5dfd4] p-4 md:p-6 bg-white shadow-sm">
-                    <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">TOPIK作文トレ</h2>
-                    <p className="text-gray-600">TOPIK作文トレのコンテンツはこちらに表示されます。</p>
-                    <p className="text-gray-500 text-sm mt-2">準備中です。</p>
-                  </div>
-                </div>
-              )}
             </div>
           </main>
           {desktopSidebarOpen && (
